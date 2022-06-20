@@ -20,6 +20,8 @@ class Requesthandler ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 		  var OnTrolleyPaper = 0.0
 		  var CurrentRequestMaterial = ""
 		  var CurrentRequestQuantity = 0.0
+		  var CurrentRequestCheck = 0.0
+		  var FulfillRequestFlag = false
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
@@ -29,12 +31,8 @@ class Requesthandler ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 				state("idle") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 
-								TrolleyOut = false
-								OnTrolleyGlass = 0.0
-								OnTrolleyPaper = 0.0
 					}
-					 transition(edgeName="tIdle0",targetState="askStorage",cond=whenRequest("deposit"))
+					 transition(edgeName="tIdle2",targetState="askStorage",cond=whenRequest("deposit"))
 				}	 
 				state("askStorage") { //this:State
 					action { //it:State
@@ -43,7 +41,7 @@ class Requesthandler ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 
 								  				CurrentRequestMaterial = payloadArg(0)
-								  				CurrentRequestQuantity = payloadArg(1)
+								  				CurrentRequestQuantity = payloadArg(1).toDouble()
 								  				CurrentRequestCheck = CurrentRequestQuantity
 								if(  CurrentRequestMaterial == "glass"  
 								 ){request("storageAsk", "storageAsk(_)" ,"storage_glass" )  
@@ -55,38 +53,40 @@ class Requesthandler ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 								 }
 						}
 					}
-					 transition(edgeName="tAskStorage1",targetState="handleRequest",cond=whenReply("storageAt"))
+					 transition(edgeName="tAskStorage3",targetState="handleRequest",cond=whenReply("storageAt"))
 				}	 
 				state("handleRequest") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 SendRobotFlag = false  
 						if( checkMsgContent( Term.createTerm("storageAt(QNT)"), Term.createTerm("storageAt(QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								if(  CurrentRequestCheck > payloadArg(0)  
-								 ){answer("deposit", "allowDeposit", "allowDeposit("false")"   )  
-								}
-								else
-								 {answer("deposit", "allowDeposit", "allowDeposit("true")"   )  
-								 if(  !TrolleyOut  
-								  ){ SendRobotFlag = true  
-								 }
-								 }
+								 FulfillRequestFlag = CurrentRequestCheck <= payloadArg(0).toDouble()  
+								answer("deposit", "allowDeposit", "allowDeposit($FulfillRequestFlag)"   )  
 						}
 					}
-					 transition( edgeName="goto",targetState="sendTrolley", cond=doswitchGuarded({ SendRobotFlag  
+					 transition( edgeName="goto",targetState="fulfillRequest", cond=doswitchGuarded({ FulfillRequestFlag  
 					}) )
-					transition( edgeName="goto",targetState="waitForTrolley", cond=doswitchGuarded({! ( SendRobotFlag  
+					transition( edgeName="goto",targetState="idle", cond=doswitchGuarded({! ( FulfillRequestFlag  
+					) }) )
+				}	 
+				state("fulfillRequest") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
+					}
+					 transition( edgeName="goto",targetState="sendTrolley", cond=doswitchGuarded({ !TrolleyOut  
+					}) )
+					transition( edgeName="goto",targetState="waitForTrolley", cond=doswitchGuarded({! ( !TrolleyOut  
 					) }) )
 				}	 
 				state("waitForTrolley") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
-					 transition(edgeName="tWaitForTrolley2",targetState="sendTrolley",cond=whenReply("doneDeposit"))
+					 transition(edgeName="tWaitForTrolley4",targetState="sendTrolley",cond=whenReply("doneDeposit"))
 				}	 
 				state("sendTrolley") { //this:State
 					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 						forward("pickedUp", "pickedUp($CurrentRequestMaterial,$CurrentRequestQuantity)" ,"camion" ) 
 						request("deposit", "deposit($CurrentRequestMaterial,$CurrentRequestQuantity)" ,"trolley" )  
 						if(  CurrentRequestMaterial == "glass"  
@@ -97,11 +97,21 @@ class Requesthandler ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 						 }
 						
 								TrolleyOut = true
-								CurrentRequestQuantity = 0
-								CurentRequestMaterial = ""
+								CurrentRequestQuantity = 0.0
+								CurrentRequestMaterial = ""
 					}
-					 transition(edgeName="tSendTrolley3",targetState="idle",cond=whenReply("doneDeposit"))
-					transition(edgeName="tSendTrolley4",targetState="askStorage",cond=whenRequest("deposit"))
+					 transition(edgeName="tSendTrolley5",targetState="trolleyBack",cond=whenReply("doneDeposit"))
+					transition(edgeName="tSendTrolley6",targetState="askStorage",cond=whenRequest("deposit"))
+				}	 
+				state("trolleyBack") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
+						 
+									TrolleyOut = false
+									OnTrolleyGlass = 0.0
+									OnTrolleyPaper = 0.0
+					}
+					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}
 		}

@@ -14,10 +14,51 @@ class Camion ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 		return "init"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		
+				var Allowed = false	
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
+						 var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(1000, 6000)  
+						delay(DelayTime)
 					}
+					 transition( edgeName="goto",targetState="req", cond=doswitch() )
+				}	 
+				state("req") { //this:State
+					action { //it:State
+						
+									var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "paper"
+									var Quantity = kotlin.random.Random.nextInt(10, 30)	
+						println("Truck with $Material in amount $Quantity arrived")
+						request("deposit", "deposit($Material,$Quantity)" ,"requesthandler" )  
+					}
+					 transition(edgeName="t10",targetState="handleAllowReply",cond=whenReply("allowDeposit"))
+				}	 
+				state("handleAllowReply") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("allowDeposit(ALLOW)"), Term.createTerm("allowDeposit(ALLOW)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 Allowed = payloadArg(0).toBoolean()  
+								if(  !Allowed  
+								 ){println("	Truck left (denied)")
+								}
+						}
+					}
+					 transition( edgeName="goto",targetState="init", cond=doswitchGuarded({ !Allowed  
+					}) )
+					transition( edgeName="goto",targetState="waitPickup", cond=doswitchGuarded({! ( !Allowed  
+					) }) )
+				}	 
+				state("waitPickup") { //this:State
+					action { //it:State
+					}
+					 transition(edgeName="t31",targetState="finish",cond=whenDispatch("pickedUp"))
+				}	 
+				state("finish") { //this:State
+					action { //it:State
+						println("	Truck left (done)")
+					}
+					 transition( edgeName="goto",targetState="init", cond=doswitch() )
 				}	 
 			}
 		}

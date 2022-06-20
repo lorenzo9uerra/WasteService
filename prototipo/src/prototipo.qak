@@ -24,9 +24,45 @@ Context ctxwasteservice ip [host="localhost" port=8050]
 // Non sarà probabilmente attore nella versione finale, 
 // rappresentato così per semplicità nel sistema
 QActor camion context ctxwasteservice {
+	[#
+		var Allowed = false	
+	#]
 	State init initial {
-		
+		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(1000, 6000) #]
+		delayVar DelayTime
 	}
+	Goto req
+	
+	State req {
+		[#
+			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "paper"
+			var Quantity = kotlin.random.Random.nextInt(10, 30)	
+		#]
+		println ("Truck with $Material in amount $Quantity arrived")
+		request requesthandler -m deposit : deposit($Material, $Quantity)
+	}
+	Transition t1 whenReply allowDeposit -> handleAllowReply
+	
+	State handleAllowReply {
+		onMsg(allowDeposit : allowDeposit(ALLOW)) {
+			[# Allowed = payloadArg(0).toBoolean() #]
+			
+			if [# !Allowed #] {
+				println("\tTruck left (denied)")
+			}
+		}
+	}
+	Goto init if [# !Allowed #] else waitPickup
+	
+	State waitPickup {
+		
+	} 
+	Transition t3 whenMsg pickedUp -> finish
+	
+	State finish {
+		println("\tTruck left (done)")
+	}
+	Goto init
 }
 
 QActor requesthandler context ctxwasteservice{
@@ -36,6 +72,8 @@ QActor requesthandler context ctxwasteservice{
   var OnTrolleyPaper = 0.0
   var CurrentRequestMaterial = ""
   var CurrentRequestQuantity = 0.0
+  var CurrentRequestCheck = 0.0
+  var FulfillRequestFlag = false
 #]  
 	State init initial {
 		
@@ -44,11 +82,6 @@ QActor requesthandler context ctxwasteservice{
 	
 	State idle {
 		printCurrentMessage
-		[# 
-		TrolleyOut = false
-		OnTrolleyGlass = 0.0
-		OnTrolleyPaper = 0.0
-		#]
 	}
 	Transition tIdle whenRequest deposit -> askStorage
 	
@@ -57,7 +90,7 @@ QActor requesthandler context ctxwasteservice{
 		onMsg( deposit : deposit(MAT, QNT) ){
   			[# 
   				CurrentRequestMaterial = payloadArg(0)
-  				CurrentRequestQuantity = payloadArg(1)
+  				CurrentRequestQuantity = payloadArg(1).toDouble()
   				CurrentRequestCheck = CurrentRequestQuantity
 			#]
   			
@@ -74,20 +107,18 @@ QActor requesthandler context ctxwasteservice{
 	
 	State handleRequest {
 		printCurrentMessage
-		[# SendRobotFlag = false #]
 		// Nota: non serve sapere più da che storage arriva
 		onMsg( storageAt : storageAt(QNT) ) {
-			if [# CurrentRequestCheck > payloadArg(0) #] {
-				replyTo deposit with allowDeposit : allowDeposit("false")
-			} else {
-				replyTo deposit with allowDeposit : allowDeposit("true")
-				if [# !TrolleyOut #] {
-					[# SendRobotFlag = true #]
-				}
-			}
+			[# FulfillRequestFlag = CurrentRequestCheck <= payloadArg(0).toDouble() #]
+			replyTo deposit with allowDeposit : allowDeposit($FulfillRequestFlag)
 		}
 	}
-	Goto sendTrolley if [# SendRobotFlag #] else waitForTrolley
+	Goto fulfillRequest if [# FulfillRequestFlag #] else idle 
+	
+	State fulfillRequest {
+		printCurrentMessage
+	}
+	Goto sendTrolley if [# !TrolleyOut #] else waitForTrolley
 	
 	State waitForTrolley {
 		printCurrentMessage
@@ -95,6 +126,8 @@ QActor requesthandler context ctxwasteservice{
 	Transition tWaitForTrolley whenReply doneDeposit -> sendTrolley 
 	
 	State sendTrolley {
+		printCurrentMessage
+		
 		forward camion -m pickedUp : pickedUp($CurrentRequestMaterial, $CurrentRequestQuantity)
 		request trolley -m deposit : deposit($CurrentRequestMaterial, $CurrentRequestQuantity)
 		
@@ -106,28 +139,124 @@ QActor requesthandler context ctxwasteservice{
 		
 		[#
 		TrolleyOut = true
-		CurrentRequestQuantity = 0
-		CurentRequestMaterial = ""
+		CurrentRequestQuantity = 0.0
+		CurrentRequestMaterial = ""
 		#]
 	}
-	Transition tSendTrolley whenReply doneDeposit -> idle
+	Transition tSendTrolley whenReply doneDeposit -> trolleyBack
 							whenRequest deposit -> askStorage
-}
-
-QActor storage_glass context ctxwasteservice {
-	State init initial {
-		
+							
+	State trolleyBack {
+		printCurrentMessage
+		[# 
+			TrolleyOut = false
+			OnTrolleyGlass = 0.0
+			OnTrolleyPaper = 0.0
+		#]
 	}
-}
-
-QActor storage_paper context ctxwasteservice {
-	State init initial {
-		
-	}
+	Goto idle
 }
 
 QActor trolley context ctxwasteservice {
+	[#
+		var CarryType = ""
+		var CarryAmount = 0.0	
+	#]
+	
 	State init initial {
 		
 	}
+	Goto idle
+	
+	State idle {
+		printCurrentMessage
+	}
+	Transition tIdle whenRequest deposit -> startMoveDeposit
+	
+	State startMoveDeposit {
+		printCurrentMessage
+		onMsg(deposit: deposit(MAT, QNT)) {
+			[# 
+  				CarryType = payloadArg(0)
+  				CarryAmount = payloadArg(1).toDouble()
+			#]
+		}
+			
+		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(800, 5000) #]
+		delayVar DelayTime
+	}
+	Goto depositEnd
+	
+	State depositEnd {
+		printCurrentMessage
+		
+		if [# CarryType == "glass" #] {
+			forward storage_glass -m storageDeposit : storageDeposit($CarryAmount)
+		} else {
+			forward storage_paper -m storageDeposit : storageDeposit($CarryAmount)
+		}
+	}
+	Goto startReturnIndoor
+	
+	State startReturnIndoor {
+		printCurrentMessage
+		
+		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(800, 5000) #]
+		delayVar DelayTime
+		
+		replyTo deposit with doneDeposit : doneDeposit($CarryType, $CarryAmount)
+	}
+	Goto idle
+}
+
+QActor storage_glass context ctxwasteservice {
+	[#
+		var Current = 0.0
+		var Max = 100	
+	#]
+	State init initial {
+		
+	}
+	Transition t0 whenRequest storageAsk -> handleReply
+				  whenMsg storageDeposit -> doDeposit
+	
+	State handleReply {
+		[# var Left = Max - Current #]
+		replyTo storageAsk with storageAt : storageAt($Left)
+	}
+	Goto init
+	
+	State doDeposit {
+		onMsg(storageDeposit : storageDeposit(QNT)) {
+			[# Current += payloadArg(0).toDouble() #]
+		}
+		println("\tCurrent glass storage: $Current/$Max")
+	}
+	Goto init
+}
+
+QActor storage_paper context ctxwasteservice {
+	[#
+		var Current = 0.0
+		var Max = 100	
+	#]
+	State init initial {
+		
+	}
+	Transition t0 whenRequest storageAsk -> handleReply
+				  whenMsg storageDeposit -> doDeposit
+	
+	State handleReply {
+		[# var Left = Max - Current #]
+		replyTo storageAsk with storageAt : storageAt($Left)
+	}
+	Goto init
+	
+	State doDeposit {
+		onMsg(storageDeposit : storageDeposit(QNT)) {
+			[# Current += payloadArg(0).toDouble() #]
+		}
+		println("\tCurrent paper storage: $Current/$Max")
+	}
+	Goto init
 }

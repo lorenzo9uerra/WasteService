@@ -14,10 +14,55 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 		return "init"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		
+				var CarryType = ""
+				var CarryAmount = 0.0	
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
 					}
+					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
+				}	 
+				state("idle") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
+					}
+					 transition(edgeName="tIdle7",targetState="startMoveDeposit",cond=whenRequest("deposit"))
+				}	 
+				state("startMoveDeposit") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
+						if( checkMsgContent( Term.createTerm("deposit(MAT,QNT)"), Term.createTerm("deposit(MAT,QNT)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 
+								  				CarryType = payloadArg(0)
+								  				CarryAmount = payloadArg(1).toDouble()
+						}
+						 var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(800, 5000)  
+						delay(DelayTime)
+					}
+					 transition( edgeName="goto",targetState="depositEnd", cond=doswitch() )
+				}	 
+				state("depositEnd") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
+						if(  CarryType == "glass"  
+						 ){forward("storageDeposit", "storageDeposit($CarryAmount)" ,"storage_glass" ) 
+						}
+						else
+						 {forward("storageDeposit", "storageDeposit($CarryAmount)" ,"storage_paper" ) 
+						 }
+					}
+					 transition( edgeName="goto",targetState="startReturnIndoor", cond=doswitch() )
+				}	 
+				state("startReturnIndoor") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
+						 var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(800, 5000)  
+						delay(DelayTime)
+						answer("deposit", "doneDeposit", "doneDeposit($CarryType,$CarryAmount)"   )  
+					}
+					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}
 		}

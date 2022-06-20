@@ -14,10 +14,32 @@ class Storage_paper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 		return "init"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		
+				var Current = 0.0
+				var Max = 100	
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
 					}
+					 transition(edgeName="t010",targetState="handleReply",cond=whenRequest("storageAsk"))
+					transition(edgeName="t011",targetState="doDeposit",cond=whenDispatch("storageDeposit"))
+				}	 
+				state("handleReply") { //this:State
+					action { //it:State
+						 var Left = Max - Current  
+						answer("storageAsk", "storageAt", "storageAt($Left)"   )  
+					}
+					 transition( edgeName="goto",targetState="init", cond=doswitch() )
+				}	 
+				state("doDeposit") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("storageDeposit(QNT)"), Term.createTerm("storageDeposit(QNT)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 Current += payloadArg(0).toDouble()  
+						}
+						println("	Current paper storage: $Current/$Max")
+					}
+					 transition( edgeName="goto",targetState="init", cond=doswitch() )
 				}	 
 			}
 		}
