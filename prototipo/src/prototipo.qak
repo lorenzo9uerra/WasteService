@@ -1,0 +1,133 @@
+System waste_service_prototipo
+
+Request deposit : deposit(MAT, QNT)
+Reply allowDeposit : allowDeposit(ALLOW)
+Dispatch pickedUp : pickedUp(MAT, QNT)
+
+Request storageAsk : storageAsk(_)
+Reply storageAt : storageAt(QNT)
+Event storageUpdate : storageUpdate(MAT, QNT)
+
+Reply doneDeposit : doneDeposit(MAT, QNT)
+
+Event tStatus : tStatus(STATE, POSDATA)
+
+Dispatch storageDeposit : storageDeposit(QNT)
+
+Dispatch ledStatus : ledStatus(STATUS)
+
+Event trolleyStop : trolleyStop(_)
+Event trolleyResume : trolleyResume(_)
+
+Context ctxwasteservice ip [host="localhost" port=8050]
+
+// Non sarà probabilmente attore nella versione finale, 
+// rappresentato così per semplicità nel sistema
+QActor camion context ctxwasteservice {
+	State init initial {
+		
+	}
+}
+
+QActor requesthandler context ctxwasteservice{
+[#
+  var TrolleyOut = false
+  var OnTrolleyGlass = 0.0
+  var OnTrolleyPaper = 0.0
+  var CurrentRequestMaterial = ""
+  var CurrentRequestQuantity = 0.0
+#]  
+	State init initial {
+		
+	}
+	Goto idle
+	
+	State idle {
+		printCurrentMessage
+		[# 
+		TrolleyOut = false
+		OnTrolleyGlass = 0.0
+		OnTrolleyPaper = 0.0
+		#]
+	}
+	Transition tIdle whenRequest deposit -> askStorage
+	
+	State askStorage {
+		printCurrentMessage
+		onMsg( deposit : deposit(MAT, QNT) ){
+  			[# 
+  				CurrentRequestMaterial = payloadArg(0)
+  				CurrentRequestQuantity = payloadArg(1)
+  				CurrentRequestCheck = CurrentRequestQuantity
+			#]
+  			
+  			if [# CurrentRequestMaterial == "glass" #] {
+  				request storage_glass -m storageAsk : storageAsk(_)
+  				[# CurrentRequestCheck += OnTrolleyGlass #]
+  			} else {
+  				request storage_paper -m storageAsk : storageAsk(_)
+  				[# CurrentRequestCheck += OnTrolleyPaper #]
+  			}
+		}
+	}
+	Transition tAskStorage whenReply storageAt -> handleRequest 
+	
+	State handleRequest {
+		printCurrentMessage
+		[# SendRobotFlag = false #]
+		// Nota: non serve sapere più da che storage arriva
+		onMsg( storageAt : storageAt(QNT) ) {
+			if [# CurrentRequestCheck > payloadArg(0) #] {
+				replyTo deposit with allowDeposit : allowDeposit("false")
+			} else {
+				replyTo deposit with allowDeposit : allowDeposit("true")
+				if [# !TrolleyOut #] {
+					[# SendRobotFlag = true #]
+				}
+			}
+		}
+	}
+	Goto sendTrolley if [# SendRobotFlag #] else waitForTrolley
+	
+	State waitForTrolley {
+		printCurrentMessage
+	}
+	Transition tWaitForTrolley whenReply doneDeposit -> sendTrolley 
+	
+	State sendTrolley {
+		forward camion -m pickedUp : pickedUp($CurrentRequestMaterial, $CurrentRequestQuantity)
+		request trolley -m deposit : deposit($CurrentRequestMaterial, $CurrentRequestQuantity)
+		
+		if [# CurrentRequestMaterial == "glass" #] {
+			[# OnTrolleyGlass = CurrentRequestQuantity #]
+		} else {
+			[# OnTrolleyPaper = CurrentRequestQuantity #]
+		}
+		
+		[#
+		TrolleyOut = true
+		CurrentRequestQuantity = 0
+		CurentRequestMaterial = ""
+		#]
+	}
+	Transition tSendTrolley whenReply doneDeposit -> idle
+							whenRequest deposit -> askStorage
+}
+
+QActor storage_glass context ctxwasteservice {
+	State init initial {
+		
+	}
+}
+
+QActor storage_paper context ctxwasteservice {
+	State init initial {
+		
+	}
+}
+
+QActor trolley context ctxwasteservice {
+	State init initial {
+		
+	}
+}
