@@ -16,3 +16,8 @@ Schema architettura:
 
 ![schema dell'architettura](doc/img/architettura1.jpg)
 
+Questa prima architettura evidenzia i vari componenti e i collegamenti tra loro, senza soffermarsi troppo sul comportamento interno (in particolare quello del Trolley) per ora.
+
+#### Requisiti
+
+*Fare lista dei requisiti e come sono stati implementati nell'architettura per ora*
