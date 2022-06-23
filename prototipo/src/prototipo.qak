@@ -27,7 +27,13 @@ QActor camion context ctxwasteservice {
 	[#
 		var Allowed = false	
 	#]
+	
 	State init initial {
+		
+	}
+	Goto req
+	
+	State waitArrival {
 		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(7000, 10000) #]
 		delayVar DelayTime
 	}
@@ -52,7 +58,7 @@ QActor camion context ctxwasteservice {
 			}
 		}
 	}
-	Goto init if [# !Allowed #] else waitPickup
+	Goto waitArrival if [# !Allowed #] else waitPickup
 	
 	State waitPickup {
 		
@@ -62,7 +68,7 @@ QActor camion context ctxwasteservice {
 	State finish {
 		println("\tTruck left (done)")
 	}
-	Goto init
+	Goto waitArrival
 }
 
 QActor requesthandler context ctxwasteservice {
@@ -159,6 +165,8 @@ QActor requesthandler context ctxwasteservice {
 
 QActor trolley context ctxwasteservice {
 	[#
+		var TrolleyState = ""
+		var Interrupt = false
 		var CarryType = ""
 		var CarryAmount = 0.0
 		var Position = 0.0	
@@ -171,12 +179,16 @@ QActor trolley context ctxwasteservice {
 	Goto idle
 	
 	State idle {
+		[# TrolleyState = "idle" #]
 		printCurrentMessage
 		emit tStatus : tStatus(home, $Position)
 	}
-	Transition tIdle whenRequest deposit -> startMoveDeposit
+	Transition tIdle whenEvent trolleyStop -> handleStop
+					 whenEvent trolleyResume -> handleResume
+					 whenRequest deposit -> startMoveDeposit
 	
 	State startMoveDeposit {
+		[# TrolleyState = "startMoveDeposit" #]
 		printCurrentMessage
 		
 		emit tStatus : tStatus(moving, $Position)
@@ -188,21 +200,25 @@ QActor trolley context ctxwasteservice {
 			#]
 		}
 	}
-	
-	Goto waitDepositEnd
+	Transition twaitDepositEnd whenTime 10 -> waitDepositEnd
+							   whenEvent trolleyStop -> handleStop
 	
 	State waitDepositEnd {
+		[# TrolleyState = "waitDepositEnd" #]
 		[# Position += 1.0 #]
 		printCurrentMessage
 		println("\tCurrent Position is: $Position")
 		emit tStatus : tStatus(moving, $Position)
 		delay 1000
 	}
-	
+	Transition tDepositEnd whenTime 10 -> pass1
+							   whenEvent trolleyStop -> handleStop	
+	State pass1{}
 	Goto depositEnd if [# Position >= MaxPos #] else waitDepositEnd
 	
 	State depositEnd {
 		printCurrentMessage
+		[# TrolleyState = "depositEnd" #]
 		
 		emit tStatus : tStatus(stopped, $Position)
 		
@@ -212,9 +228,11 @@ QActor trolley context ctxwasteservice {
 			forward storage_paper -m storageDeposit : storageDeposit($CarryAmount)
 		}
 	}
-	Goto waitReturnedIndoor
+	Transition tWaitReturnedIndoor whenTime 10 -> waitReturnedIndoor
+							   whenEvent trolleyStop -> handleStop	
 	
 	State waitReturnedIndoor {
+		[# TrolleyState = "waitReturnedIndoor" #]
 		[#
 			Position -= 1.0	
 		#]
@@ -224,17 +242,50 @@ QActor trolley context ctxwasteservice {
 		emit tStatus : tStatus(moving, $Position)
 		delay 1000
 	}
-	
+	Transition tReturnedIndoor whenTime 10 -> pass2
+							   whenEvent trolleyStop -> handleStop	
+	State pass2{}
 	Goto returnedIndoor if [# Position <= 0 #] else waitReturnedIndoor
 	
 	State returnedIndoor {
+		[# TrolleyState = "returnedIndoor" #]
 		printCurrentMessage
 		
 		emit tStatus : tStatus(home, $Position)
 		
 		replyTo deposit with doneDeposit : doneDeposit($CarryType, $CarryAmount)
 	}
-	Goto idle
+	Transition tIdle whenTime 10 -> idle
+							   whenEvent trolleyStop -> handleStop
+	
+	State handleStop {
+		printCurrentMessage
+		[# Interrupt = true #]
+	}
+	Goto waitSonar
+	
+	
+	State handleResume {
+		printCurrentMessage
+		[# Interrupt = false #]
+	}
+	Goto startMoveDeposit if [# TrolleyState == "idle" #] else fake1
+	State fake1{}
+	Goto waitDepositEnd if [# TrolleyState == "startMoveDeposit" #] else fake2
+	State fake2{}
+	Goto depositEnd if [# TrolleyState == "waitDepositEnd" #] else fake3
+	State fake3{}
+	Goto waitReturnedIndoor if [# TrolleyState == "depositEnd" #] else fake4
+	State fake4{}
+	Goto returnedIndoor if [# TrolleyState == "waitReturnedIndoor" #] else fake5
+	State fake5{}
+	Goto idle 
+	
+	State waitSonar {
+		emit tStatus : tStatus(stop, $Position)
+	}
+	Transition tSonar whenTime 1000 -> waitSonar
+					  whenEvent trolleyResume -> handleResume
 }
 
 QActor storage_glass context ctxwasteservice {
@@ -361,6 +412,28 @@ QActor led_actor context ctxwasteservice {
 			}
 		}
 		forward gui -m ledStatus : ledStatus($Status)
+	}
+	Goto init
+}
+
+QActor sonar context ctxwasteservice {
+	[#
+	var Status = "continue"
+	#]
+	State init initial {
+		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(4000, 9000) #]
+		delayVar DelayTime
+		if [# Status == "continue" #]{
+			[# Status = "stop" #]
+			emit trolleyStop : trolleyStop(_)
+			println("\tEMESSO")
+			println("\tEMESSO")
+			println("\tEMESSO")
+			println("\tEMESSO")
+		} else {
+			[# Status = "continue" #]
+			emit trolleyResume : trolleyResume(_)
+		}
 	}
 	Goto init
 }

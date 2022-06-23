@@ -21,8 +21,8 @@ class Storage_paper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 				state("init") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t010",targetState="handleReply",cond=whenRequest("storageAsk"))
-					transition(edgeName="t011",targetState="doDeposit",cond=whenDispatch("storageDeposit"))
+					 transition(edgeName="t024",targetState="handleReply",cond=whenRequest("storageAsk"))
+					transition(edgeName="t025",targetState="doDeposit",cond=whenDispatch("storageDeposit"))
 				}	 
 				state("handleReply") { //this:State
 					action { //it:State

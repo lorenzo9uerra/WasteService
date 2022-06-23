@@ -21,8 +21,8 @@ class Storage_glass ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 				state("init") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t08",targetState="handleReply",cond=whenRequest("storageAsk"))
-					transition(edgeName="t09",targetState="doDeposit",cond=whenDispatch("storageDeposit"))
+					 transition(edgeName="t022",targetState="handleReply",cond=whenRequest("storageAsk"))
+					transition(edgeName="t023",targetState="doDeposit",cond=whenDispatch("storageDeposit"))
 				}	 
 				state("handleReply") { //this:State
 					action { //it:State

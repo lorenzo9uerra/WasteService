@@ -20,7 +20,7 @@ class Led_actor ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				state("init") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t015",targetState="handleLed",cond=whenEvent("tStatus"))
+					 transition(edgeName="t029",targetState="handleLed",cond=whenEvent("tStatus"))
 				}	 
 				state("handleLed") { //this:State
 					action { //it:State

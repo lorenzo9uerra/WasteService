@@ -19,6 +19,11 @@ class Camion ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
+					}
+					 transition( edgeName="goto",targetState="req", cond=doswitch() )
+				}	 
+				state("waitArrival") { //this:State
+					action { //it:State
 						 var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(7000, 10000)  
 						delay(DelayTime)
 					}
@@ -44,7 +49,7 @@ class Camion ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								}
 						}
 					}
-					 transition( edgeName="goto",targetState="init", cond=doswitchGuarded({ !Allowed  
+					 transition( edgeName="goto",targetState="waitArrival", cond=doswitchGuarded({ !Allowed  
 					}) )
 					transition( edgeName="goto",targetState="waitPickup", cond=doswitchGuarded({! ( !Allowed  
 					) }) )
@@ -58,7 +63,7 @@ class Camion ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("	Truck left (done)")
 					}
-					 transition( edgeName="goto",targetState="init", cond=doswitch() )
+					 transition( edgeName="goto",targetState="waitArrival", cond=doswitch() )
 				}	 
 			}
 		}

@@ -23,9 +23,9 @@ class Gui ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("init") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t012",targetState="handlePosition",cond=whenEvent("tStatus"))
-					transition(edgeName="t013",targetState="handleLed",cond=whenDispatch("ledStatus"))
-					transition(edgeName="t014",targetState="handleStorage",cond=whenEvent("storageUpdate"))
+					 transition(edgeName="t026",targetState="handlePosition",cond=whenEvent("tStatus"))
+					transition(edgeName="t027",targetState="handleLed",cond=whenDispatch("ledStatus"))
+					transition(edgeName="t028",targetState="handleStorage",cond=whenEvent("storageUpdate"))
 				}	 
 				state("handleLed") { //this:State
 					action { //it:State
