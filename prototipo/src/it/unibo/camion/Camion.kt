@@ -19,7 +19,7 @@ class Camion ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
-						 var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(1000, 6000)  
+						 var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(7000, 10000)  
 						delay(DelayTime)
 					}
 					 transition( edgeName="goto",targetState="req", cond=doswitch() )

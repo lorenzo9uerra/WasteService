@@ -21,14 +21,14 @@ Event trolleyResume : trolleyResume(_)
 
 Context ctxwasteservice ip [host="localhost" port=8050]
 
-// Non sarà probabilmente attore nella versione finale, 
-// rappresentato così per semplicità nel sistema
+// Non sarï¿½ probabilmente attore nella versione finale, 
+// rappresentato cosï¿½ per semplicitï¿½ nel sistema
 QActor camion context ctxwasteservice {
 	[#
 		var Allowed = false	
 	#]
 	State init initial {
-		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(1000, 6000) #]
+		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(7000, 10000) #]
 		delayVar DelayTime
 	}
 	Goto req
@@ -65,7 +65,7 @@ QActor camion context ctxwasteservice {
 	Goto init
 }
 
-QActor requesthandler context ctxwasteservice{
+QActor requesthandler context ctxwasteservice {
 [#
   var TrolleyOut = false
   var OnTrolleyGlass = 0.0
@@ -107,7 +107,7 @@ QActor requesthandler context ctxwasteservice{
 	
 	State handleRequest {
 		printCurrentMessage
-		// Nota: non serve sapere più da che storage arriva
+		// Nota: non serve sapere piï¿½2 da che storage arriva
 		onMsg( storageAt : storageAt(QNT) ) {
 			[# FulfillRequestFlag = CurrentRequestCheck <= payloadArg(0).toDouble() #]
 			replyTo deposit with allowDeposit : allowDeposit($FulfillRequestFlag)
@@ -160,7 +160,9 @@ QActor requesthandler context ctxwasteservice{
 QActor trolley context ctxwasteservice {
 	[#
 		var CarryType = ""
-		var CarryAmount = 0.0	
+		var CarryAmount = 0.0
+		var Position = 0.0	
+		var MaxPos = kotlin.random.Random.nextLong(1, 8)
 	#]
 	
 	State init initial {
@@ -170,25 +172,39 @@ QActor trolley context ctxwasteservice {
 	
 	State idle {
 		printCurrentMessage
+		emit tStatus : tStatus(home, $Position)
 	}
 	Transition tIdle whenRequest deposit -> startMoveDeposit
 	
 	State startMoveDeposit {
 		printCurrentMessage
+		
+		emit tStatus : tStatus(moving, $Position)
+		
 		onMsg(deposit: deposit(MAT, QNT)) {
 			[# 
   				CarryType = payloadArg(0)
   				CarryAmount = payloadArg(1).toDouble()
 			#]
 		}
-			
-		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(800, 5000) #]
-		delayVar DelayTime
 	}
-	Goto depositEnd
+	
+	Goto waitDepositEnd
+	
+	State waitDepositEnd {
+		[# Position += 1.0 #]
+		printCurrentMessage
+		println("\tCurrent Position is: $Position")
+		emit tStatus : tStatus(moving, $Position)
+		delay 1000
+	}
+	
+	Goto depositEnd if [# Position >= MaxPos #] else waitDepositEnd
 	
 	State depositEnd {
 		printCurrentMessage
+		
+		emit tStatus : tStatus(stopped, $Position)
 		
 		if [# CarryType == "glass" #] {
 			forward storage_glass -m storageDeposit : storageDeposit($CarryAmount)
@@ -196,13 +212,25 @@ QActor trolley context ctxwasteservice {
 			forward storage_paper -m storageDeposit : storageDeposit($CarryAmount)
 		}
 	}
-	Goto startReturnIndoor
+	Goto waitReturnedIndoor
 	
-	State startReturnIndoor {
+	State waitReturnedIndoor {
+		[#
+			Position -= 1.0	
+		#]
+		printCurrentMessage
+				println("\tGoing back. Current Position is: $Position")
+		
+		emit tStatus : tStatus(moving, $Position)
+		delay 1000
+	}
+	
+	Goto returnedIndoor if [# Position <= 0 #] else waitReturnedIndoor
+	
+	State returnedIndoor {
 		printCurrentMessage
 		
-		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(800, 5000) #]
-		delayVar DelayTime
+		emit tStatus : tStatus(home, $Position)
 		
 		replyTo deposit with doneDeposit : doneDeposit($CarryType, $CarryAmount)
 	}
@@ -260,3 +288,81 @@ QActor storage_paper context ctxwasteservice {
 	}
 	Goto init
 }
+
+QActor gui context ctxwasteservice {
+	[#
+		var LedStatus = "off"
+		var Position = 0.0
+		var CurrentGlass = 0.0
+		var CurrentPaper = 0.0
+	#]
+	State init initial {
+	}
+	
+	Transition t0 whenEvent tStatus ->  handlePosition
+				  whenMsg ledStatus ->  handleLed
+				  whenEvent storageUpdate ->  handleStorage
+	
+	State handleLed {
+		onMsg(ledStatus : ledStatus(STATUS)){
+			[# LedStatus = payloadArg(0) #]
+		}
+		println("LedStatus: $LedStatus")
+		println("Position: $Position")
+		println("CurrentGlass: $CurrentGlass")
+		println("CurrentPaper: $CurrentPaper")
+	}
+	Goto init
+	
+	State handlePosition {
+		onMsg(tStatus : tStatus(_,POS)){
+			[# Position = payloadArg(1).toDouble() #]
+		}
+	}
+	Goto init
+	
+	State handleStorage {
+		onMsg(storageUpdate : storageUpdate(MAT, QNT)){
+			if [# payloadArg(0) == "glass" #]{
+				[# CurrentGlass = payloadArg(1).toDouble() #]
+			} else {
+				[# CurrentPaper = payloadArg(1).toDouble() #]
+			}
+		}
+		println("LedStatus: $LedStatus")
+		println("Position: $Position")
+		println("CurrentGlass: $CurrentGlass")
+		println("CurrentPaper: $CurrentPaper")
+	}
+	Goto init
+}
+
+
+QActor led_actor context ctxwasteservice {
+	[#
+	var Status = "off"
+	#]
+	State init initial {
+		
+	}
+	
+	Transition t0 whenEvent tStatus ->  handleLed
+	
+	State handleLed {
+		onMsg(tStatus : tStatus(STATE, _)){
+			if [# payloadArg(0) == "moving" #] {
+				[# Status = "blinking" #]
+		    } else {
+				if [# payloadArg(0) == "home" #]{
+					[# Status = "off" #]
+				} else {
+					[# Status = "on" #]
+				}
+			}
+		}
+		forward gui -m ledStatus : ledStatus($Status)
+	}
+	Goto init
+}
+
+
