@@ -166,6 +166,14 @@ QActor gui context ctxwasteservice {...}
 
 Da requisiti, si suppone che le posizioni e grandezza delle aree di HOME, INDOOR, e cassonetti vari, siano decise a priori e a priori comunicate al trolley prima dell'inizio del movimento.
 
+Data una posizione di partenza e di arrivo verso la quale il trolley deve navigare, questo può calcolare due tipi di percorso:
+- Dividendo la stanza in una griglia quadrata di lato RD, il trolley può semplicemente navigare lungo le direzioni cartesiane, prima ad una coordinata della destinazione e poi all'altra.
+
+![](./doc/img/navigazione_cart.jpg)
+
+- Il trolley compie un percorso diretto a destinazione ignorando la griglia, opzione più veloce ma con maggiori difficoltà implementative.
+
+![](./doc/img/navigazione_diretta.jpg)
 
 ## Da inserire poi
 
