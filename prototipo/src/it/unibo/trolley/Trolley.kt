@@ -34,8 +34,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						emit("tStatus", "tStatus(home,$Position)" ) 
 					}
 					 transition(edgeName="tIdle7",targetState="handleStop",cond=whenEvent("trolleyStop"))
-					transition(edgeName="tIdle8",targetState="handleResume",cond=whenEvent("trolleyResume"))
-					transition(edgeName="tIdle9",targetState="startMoveDeposit",cond=whenRequest("deposit"))
+					transition(edgeName="tIdle8",targetState="startMoveDeposit",cond=whenRequest("deposit"))
 				}	 
 				state("startMoveDeposit") { //this:State
 					action { //it:State
@@ -49,10 +48,10 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 								  				CarryAmount = payloadArg(1).toDouble()
 						}
 						stateTimer = TimerActor("timer_startMoveDeposit", 
-							scope, context!!, "local_tout_trolley_startMoveDeposit", 10.toLong() )
+							scope, context!!, "local_tout_trolley_startMoveDeposit", 0.toLong() )
 					}
-					 transition(edgeName="twaitDepositEnd10",targetState="waitDepositEnd",cond=whenTimeout("local_tout_trolley_startMoveDeposit"))   
-					transition(edgeName="twaitDepositEnd11",targetState="handleStop",cond=whenEvent("trolleyStop"))
+					 transition(edgeName="twaitDepositEnd9",targetState="waitDepositEnd",cond=whenTimeout("local_tout_trolley_startMoveDeposit"))   
+					transition(edgeName="twaitDepositEnd10",targetState="handleStop",cond=whenEvent("trolleyStop"))
 				}	 
 				state("waitDepositEnd") { //this:State
 					action { //it:State
@@ -63,12 +62,12 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						emit("tStatus", "tStatus(moving,$Position)" ) 
 						delay(1000) 
 						stateTimer = TimerActor("timer_waitDepositEnd", 
-							scope, context!!, "local_tout_trolley_waitDepositEnd", 10.toLong() )
+							scope, context!!, "local_tout_trolley_waitDepositEnd", 0.toLong() )
 					}
-					 transition(edgeName="tDepositEnd12",targetState="pass1",cond=whenTimeout("local_tout_trolley_waitDepositEnd"))   
-					transition(edgeName="tDepositEnd13",targetState="handleStop",cond=whenEvent("trolleyStop"))
+					 transition(edgeName="tDepositEnd11",targetState="depositEndCheck",cond=whenTimeout("local_tout_trolley_waitDepositEnd"))   
+					transition(edgeName="tDepositEnd12",targetState="handleStop",cond=whenEvent("trolleyStop"))
 				}	 
-				state("pass1") { //this:State
+				state("depositEndCheck") { //this:State
 					action { //it:State
 					}
 					 transition( edgeName="goto",targetState="depositEnd", cond=doswitchGuarded({ Position >= MaxPos  
@@ -88,10 +87,10 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 {forward("storageDeposit", "storageDeposit($CarryAmount)" ,"storage_paper" ) 
 						 }
 						stateTimer = TimerActor("timer_depositEnd", 
-							scope, context!!, "local_tout_trolley_depositEnd", 10.toLong() )
+							scope, context!!, "local_tout_trolley_depositEnd", 0.toLong() )
 					}
-					 transition(edgeName="tWaitReturnedIndoor14",targetState="waitReturnedIndoor",cond=whenTimeout("local_tout_trolley_depositEnd"))   
-					transition(edgeName="tWaitReturnedIndoor15",targetState="handleStop",cond=whenEvent("trolleyStop"))
+					 transition(edgeName="tWaitReturnedIndoor13",targetState="waitReturnedIndoor",cond=whenTimeout("local_tout_trolley_depositEnd"))   
+					transition(edgeName="tWaitReturnedIndoor14",targetState="handleStop",cond=whenEvent("trolleyStop"))
 				}	 
 				state("waitReturnedIndoor") { //this:State
 					action { //it:State
@@ -103,12 +102,12 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						emit("tStatus", "tStatus(moving,$Position)" ) 
 						delay(1000) 
 						stateTimer = TimerActor("timer_waitReturnedIndoor", 
-							scope, context!!, "local_tout_trolley_waitReturnedIndoor", 10.toLong() )
+							scope, context!!, "local_tout_trolley_waitReturnedIndoor", 0.toLong() )
 					}
-					 transition(edgeName="tReturnedIndoor16",targetState="pass2",cond=whenTimeout("local_tout_trolley_waitReturnedIndoor"))   
-					transition(edgeName="tReturnedIndoor17",targetState="handleStop",cond=whenEvent("trolleyStop"))
+					 transition(edgeName="tReturnedIndoor15",targetState="checkReturnedIndoor",cond=whenTimeout("local_tout_trolley_waitReturnedIndoor"))   
+					transition(edgeName="tReturnedIndoor16",targetState="handleStop",cond=whenEvent("trolleyStop"))
 				}	 
-				state("pass2") { //this:State
+				state("checkReturnedIndoor") { //this:State
 					action { //it:State
 					}
 					 transition( edgeName="goto",targetState="returnedIndoor", cond=doswitchGuarded({ Position <= 0  
@@ -123,10 +122,10 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						emit("tStatus", "tStatus(home,$Position)" ) 
 						answer("deposit", "doneDeposit", "doneDeposit($CarryType,$CarryAmount)"   )  
 						stateTimer = TimerActor("timer_returnedIndoor", 
-							scope, context!!, "local_tout_trolley_returnedIndoor", 10.toLong() )
+							scope, context!!, "local_tout_trolley_returnedIndoor", 0.toLong() )
 					}
-					 transition(edgeName="tIdle18",targetState="idle",cond=whenTimeout("local_tout_trolley_returnedIndoor"))   
-					transition(edgeName="tIdle19",targetState="handleStop",cond=whenEvent("trolleyStop"))
+					 transition(edgeName="tIdle17",targetState="idle",cond=whenTimeout("local_tout_trolley_returnedIndoor"))   
+					transition(edgeName="tIdle18",targetState="handleStop",cond=whenEvent("trolleyStop"))
 				}	 
 				state("handleStop") { //this:State
 					action { //it:State
@@ -142,54 +141,55 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 					}
 					 transition( edgeName="goto",targetState="startMoveDeposit", cond=doswitchGuarded({ TrolleyState == "idle"  
 					}) )
-					transition( edgeName="goto",targetState="fake1", cond=doswitchGuarded({! ( TrolleyState == "idle"  
+					transition( edgeName="goto",targetState="checkResume_startMoveDeposit", cond=doswitchGuarded({! ( TrolleyState == "idle"  
 					) }) )
 				}	 
-				state("fake1") { //this:State
+				state("checkResume_startMoveDeposit") { //this:State
 					action { //it:State
 					}
 					 transition( edgeName="goto",targetState="waitDepositEnd", cond=doswitchGuarded({ TrolleyState == "startMoveDeposit"  
 					}) )
-					transition( edgeName="goto",targetState="fake2", cond=doswitchGuarded({! ( TrolleyState == "startMoveDeposit"  
+					transition( edgeName="goto",targetState="checkResume_waitDepositEnd", cond=doswitchGuarded({! ( TrolleyState == "startMoveDeposit"  
 					) }) )
 				}	 
-				state("fake2") { //this:State
+				state("checkResume_waitDepositEnd") { //this:State
 					action { //it:State
 					}
-					 transition( edgeName="goto",targetState="depositEnd", cond=doswitchGuarded({ TrolleyState == "waitDepositEnd"  
+					 transition( edgeName="goto",targetState="depositEndCheck", cond=doswitchGuarded({ TrolleyState == "waitDepositEnd"  
 					}) )
-					transition( edgeName="goto",targetState="fake3", cond=doswitchGuarded({! ( TrolleyState == "waitDepositEnd"  
+					transition( edgeName="goto",targetState="checkResume_depositEnd", cond=doswitchGuarded({! ( TrolleyState == "waitDepositEnd"  
 					) }) )
 				}	 
-				state("fake3") { //this:State
+				state("checkResume_depositEnd") { //this:State
 					action { //it:State
 					}
 					 transition( edgeName="goto",targetState="waitReturnedIndoor", cond=doswitchGuarded({ TrolleyState == "depositEnd"  
 					}) )
-					transition( edgeName="goto",targetState="fake4", cond=doswitchGuarded({! ( TrolleyState == "depositEnd"  
+					transition( edgeName="goto",targetState="checkResume_waitReturnedIndoor", cond=doswitchGuarded({! ( TrolleyState == "depositEnd"  
 					) }) )
 				}	 
-				state("fake4") { //this:State
+				state("checkResume_waitReturnedIndoor") { //this:State
 					action { //it:State
 					}
-					 transition( edgeName="goto",targetState="returnedIndoor", cond=doswitchGuarded({ TrolleyState == "waitReturnedIndoor"  
+					 transition( edgeName="goto",targetState="checkReturnedIndoor", cond=doswitchGuarded({ TrolleyState == "waitReturnedIndoor"  
 					}) )
-					transition( edgeName="goto",targetState="fake5", cond=doswitchGuarded({! ( TrolleyState == "waitReturnedIndoor"  
+					transition( edgeName="goto",targetState="checkResume_idle", cond=doswitchGuarded({! ( TrolleyState == "waitReturnedIndoor"  
 					) }) )
 				}	 
-				state("fake5") { //this:State
+				state("checkResume_idle") { //this:State
 					action { //it:State
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("waitSonar") { //this:State
 					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 						emit("tStatus", "tStatus(stop,$Position)" ) 
 						stateTimer = TimerActor("timer_waitSonar", 
 							scope, context!!, "local_tout_trolley_waitSonar", 1000.toLong() )
 					}
-					 transition(edgeName="tSonar20",targetState="waitSonar",cond=whenTimeout("local_tout_trolley_waitSonar"))   
-					transition(edgeName="tSonar21",targetState="handleResume",cond=whenEvent("trolleyResume"))
+					 transition(edgeName="tSonar19",targetState="waitSonar",cond=whenTimeout("local_tout_trolley_waitSonar"))   
+					transition(edgeName="tSonar20",targetState="handleResume",cond=whenEvent("trolleyResume"))
 				}	 
 			}
 		}

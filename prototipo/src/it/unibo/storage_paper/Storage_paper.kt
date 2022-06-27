@@ -20,9 +20,10 @@ class Storage_paper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
+						emit("storageUpdate", "storageUpdate(paper,$Current)" ) 
 					}
-					 transition(edgeName="t024",targetState="handleReply",cond=whenRequest("storageAsk"))
-					transition(edgeName="t025",targetState="doDeposit",cond=whenDispatch("storageDeposit"))
+					 transition(edgeName="t023",targetState="handleReply",cond=whenRequest("storageAsk"))
+					transition(edgeName="t024",targetState="doDeposit",cond=whenDispatch("storageDeposit"))
 				}	 
 				state("handleReply") { //this:State
 					action { //it:State
@@ -36,6 +37,7 @@ class Storage_paper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						if( checkMsgContent( Term.createTerm("storageDeposit(QNT)"), Term.createTerm("storageDeposit(QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Current += payloadArg(0).toDouble()  
+								emit("storageUpdate", "storageUpdate(paper,$Current)" ) 
 						}
 						println("	Current paper storage: $Current/$Max")
 					}

@@ -19,19 +19,17 @@ class Sonar ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
-						 var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(4000, 9000)  
+						 var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(9000, 13000)  
 						delay(DelayTime)
 						if(  Status == "continue"  
 						 ){ Status = "stop"  
 						emit("trolleyStop", "trolleyStop(_)" ) 
-						println("	EMESSO")
-						println("	EMESSO")
-						println("	EMESSO")
-						println("	EMESSO")
+						println("	SONAR: STOP")
 						}
 						else
 						 { Status = "continue"  
 						 emit("trolleyResume", "trolleyResume(_)" ) 
+						 println("	SONAR: RESUME")
 						 }
 					}
 					 transition( edgeName="goto",targetState="init", cond=doswitch() )

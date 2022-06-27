@@ -20,9 +20,10 @@ class Storage_glass ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
+						emit("storageUpdate", "storageUpdate(glass,$Current)" ) 
 					}
-					 transition(edgeName="t022",targetState="handleReply",cond=whenRequest("storageAsk"))
-					transition(edgeName="t023",targetState="doDeposit",cond=whenDispatch("storageDeposit"))
+					 transition(edgeName="t021",targetState="handleReply",cond=whenRequest("storageAsk"))
+					transition(edgeName="t022",targetState="doDeposit",cond=whenDispatch("storageDeposit"))
 				}	 
 				state("handleReply") { //this:State
 					action { //it:State
@@ -36,6 +37,7 @@ class Storage_glass ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						if( checkMsgContent( Term.createTerm("storageDeposit(QNT)"), Term.createTerm("storageDeposit(QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Current += payloadArg(0).toDouble()  
+								emit("storageUpdate", "storageUpdate(glass,$Current)" ) 
 						}
 						println("	Current glass storage: $Current/$Max")
 					}
