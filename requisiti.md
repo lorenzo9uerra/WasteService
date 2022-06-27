@@ -20,7 +20,7 @@
     - *lampeggia* se il *trolley* è in attività
     - è *spento* se il trolley è in stato di *stop*
 
-- **sonarStop**: è presente un *sonar* che, se misura una distanza sotto DLIMIT (valore prefissato), mette il *trolley* in stato di *stop* fino a che la distanza non torna a DLIMIT, nel qual caso il *trolley* riparte
+- **sonar-stop**: è presente un *sonar* che, se misura una distanza sotto DLIMIT (valore prefissato), mette il *trolley* in stato di *stop* fino a che la distanza non torna a DLIMIT, nel qual caso il *trolley* riparte
     1. `Domanda: cosa vuol dire precisamente *stop*? Torna a HOME o rimane lì?`
     Sì ferma e basta.
 
