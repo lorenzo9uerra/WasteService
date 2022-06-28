@@ -1,1 +1,3 @@
-Eliminare moreRequests ed inviare doneDeposit immediatamente dopo lo scarico ai cassonetti
+- Eliminare moreRequests ed inviare doneDeposit immediatamente dopo lo scarico ai cassonetti
+
+- Aggiungere test per trolley con stop
