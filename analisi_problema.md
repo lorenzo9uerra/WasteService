@@ -51,7 +51,7 @@ Dispatch doneDeposit : doneDeposit(MAT, QNT)
 ```
 Nel primo caso, sarebbe più chiaro a livello concettuale, ma si avrebbe una risposta in un momento molto distante dalla richiesta; nel secondo, la separazione rappresenterebbe meglio questa distanza nel tempo, evitando il mantenimento di una connessione a seconda dell'implementazione.
 
-Nel caso in cui il funzionamento del trolley fosse completamente affidabile e istantaneo, il messaggio di _startedDeposit_, che serve per comunicare al camion che è stato raccolto il suo carico, non sarebbe necessario in quanto coinciderebbe con l'invio del messaggio _deposit_ al trolley; ma in un caso reale, il trolley necessita di tempo per scaricare i rifiuti dal camion, oltre alla possibilità che si rompa e quindi che non li scarichi mai.
+Il messaggio di _startedDeposit_ è necessario perchè quando il trolley parte da HOME ha bisogno di tempo per dirigersi ad INDOOR; inoltre, in un caso reale, impiega del tempo per scaricare i rifiuti dal camion e potrebbe anche rompersi prima di completare lo scarico. Il camion quindi ha bisogno di sapere quando lo scarico è avvenuto per poter partire.
 
 - Nella prototipazione, abbiamo realizzato che è necessaria una comunicazione successiva al trolley nel caso in cui arrivino altre richieste mentre è al lavoro, per permettergli di decidere in base a questo se tornare a HOME o INDOOR a lavoro finito:
 
@@ -230,8 +230,8 @@ Per verificare il passaggio nelle varie posizioni target bisogna verificare che 
 
 - **Test Messaggi**: Ignorando lo spostamento e la posizione del trolley, verificare che, ricevuto il segnale di inizio deposito, invii un segnale di inizio trasporto al RequestHandler e che invii almeno un aggiornamento di stato e posizione, dopodiché invii un segnale di deposito al gestore dello storage. Infine deve inviare almeno un altro aggiornamento di stato e posizione e invii _done_ al RequestHandler.
 
-- **Test Movimento Base**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti a INDOOR, poi al cassonetto corrispondente e nuovamente ad HOME.
+- **Test Movimento Base**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti a INDOOR, poi al cassonetto corrispondente e nuovamente ad HOME ed invia _doneDeposit_.
 
-- **Test Movimento Senza Ritorno**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti ad INDOOR, poi, prima di arrivare al cassonetto corrispondente riceva il messaggio di moreRequests, così arrivato al cassonetto torni ad INDOOR senza passare da HOME.
+- **Test Movimento Senza Ritorno**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti ad INDOOR, poi, prima di arrivare al cassonetto corrispondente riceva il messaggio di moreRequests, così arrivato al cassonetto torni ad INDOOR senza passare da HOME ed invii _doneDeposit_.
 
-- **Test Movimento Cambio Direzione**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti ad INDOOR e poi al cassonetto corrispondente, ma durante il ritorno ad HOME riceva il messaggio di moreRequests. In questo caso deve cambiare direzione e tornare ad INDOOR senza passare per HOME, anche se vi era diretto inizialmente.
+- **Test Movimento Cambio Direzione**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti ad INDOOR e poi al cassonetto corrispondente, ma durante il ritorno ad HOME riceva il messaggio di moreRequests. In questo caso deve cambiare direzione e tornare ad INDOOR senza passare per HOME, anche se vi era diretto inizialmente, per poi inviare _doneDeposit_.
