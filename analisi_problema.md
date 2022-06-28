@@ -229,7 +229,7 @@ Verificare che l'interfaccia si aggiorni correttamente dopo aver ricevuto eventi
 
 Per verificare il passaggio nelle varie posizioni target bisogna verificare che passi su certe coordinate. Un modo rapido di testarlo è di dividere lo spazio in una griglia e, per verificare che abbia raggiunto la destinazione, controllare che sia passato sopra uno dei quadretti corrispondenti ad essa.
 
-- **Test Messaggi**: Ignorando lo spostamento e la posizione del trolley, verificare che, ricevuto il segnale di inizio deposito, invii un segnale di inizio trasporto al RequestHandler e che invii almeno un aggiornamento di stato e posizione, dopodiché invii un segnale di deposito al gestore dello storage. Infine deve inviare almeno un altro aggiornamento di stato e posizione e invii _done_ al RequestHandler.
+- **Test Messaggi**: Ignorando lo spostamento e la posizione del trolley, verificare che, ricevuto il segnale di inizio deposito, invii un segnale di inizio trasporto al RequestHandler e che invii almeno un aggiornamento di stato e posizione, dopodiché invii un segnale di deposito al gestore dello storage. Infine deve inviare almeno un altro aggiornamento di stato e posizione e inviare _doneDeposit_ al RequestHandler.
 
 - **Test Movimento Base**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti a INDOOR, poi al cassonetto corrispondente e nuovamente ad HOME ed invia _doneDeposit_.
 

@@ -1,0 +1,536 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+	font-size: 93%;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+	border-radius: 10px;
+	padding: 5px;
+}
+
+top {
+	width: 100%;
+}
+
+
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 90%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #abe876;
+    color: #1632cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 90%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	font-size: 90%;
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	font-size: 90%;
+}
+pre{
+	font-family: "Consolas";
+	font-size: 85%;
+	background-color: #f5f5f5;
+	border: 1.5px solid silver;
+	padding: 5px;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	 
+    font-size: 18px;
+}
+k{
+    color: #990000;
+	font-weight: bold;
+	font-size: 90%;
+}
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+	padding: 10px;
+}
+
+h2 {
+    background-color: #9ed8ff;
+    font-size: 130%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 100%;
+}
+h4 {
+    background-color: #ccffcc;
+    font-size: 100%;
+	width: 95%;
+	border-radius: 5px;
+	padding: 2px;
+}
+h5 {
+    background-color: #d5ffb0;
+    font-size: 100%;
+
+}
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}
+div.remark{
+	background-color: #E3F2FD;
+    border: 1.5px solid #d5f2ed;
+    padding: 15px;
+    margin: 10px;
+	border-radius: 25px;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+ol, ul, li {
+  margin: 0;
+  margin-left: 10px;
+  padding: 0;
+  padding-bottom: 5px;
+}
+
+table, th, td {
+	border: 1px solid black;
+}
+
+img {
+	border: 1.5px solid #d5f2ed
+
+}
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+div.wrapdesc{
+	width: 90%;
+	margin: auto;
+}
+
+div.imagedesc{
+	width: 85%;
+	margin: auto;
+}
+</style>
+    
+<head>
+   
+<title>TemplateToFill</title></head>
+    
+<body>
+<div id="top">
+<h1>LABORATORIO DI INGEGNERIA DEI SISTEMI SOFTWARE <font size="5"></font> </h1>
+</div>  
+
+<div class="body"> 
+<h2>Introduction</h2>
+ 
+ 
+<h2>Requirements</h2>
+
+           
+    <section id="temafinale22">
+        <p>A company intends to build a <span class="blue">WasteService</span> for the <em>separate collection of waste</em>,  composed of a set of elements:</p>
+        <ol class="arabic">
+        <li><p>a service area (rectangular, flat) that includes:</p>
+        <ul class="simple">
+        <li><p>an <span class="blue">INDOOR</span> port, to enter waste material</p></li>
+        <li><p>a <span class="blue">PlasticBox</span> container, devoted to store objects made of plastic, upto <strong>MAXPB</strong> kg of material.</p></li>
+        <li><p>a <span class="blue">GlassBox</span> container, devoted to store objects made of glass, upto <strong>MAXGB</strong> kg of material.</p></li>
+        </ul>
+        <p>The service area is free from internal obstacles, as shown in the following picture:</p>
+        <blockquote>
+        <div><a class="reference internal image-reference" href="https://raw.githubusercontent.com/anatali/issLab2022/main/it.unibo.issLabStart/userDocs/Dispense/lezioni/html/_images/WasteServiceRoom.PNG">
+            <img alt="WasteServiceRoom.PNG" class="align-center" src="https://raw.githubusercontent.com/anatali/issLab2022/main/it.unibo.issLabStart/userDocs/Dispense/lezioni/html/_images/WasteServiceRoom.PNG" style="width: 60%;"></a>
+        </div></blockquote>
+        </li>
+        <li><p>a DDR robot working as a <span class="blue">transport trolley</span>, that is intially situated in its <span class="blue">HOME</span> location.
+        The transport trolley has  the form of a square of side length <strong>RD</strong>.</p>
+        <p>The <cite>transport trolley</cite> is used to performa a <span class="blue">deposit action</span> that consists in the following phases:</p>
+        <ol class="arabic simple">
+        <li><p>pick up a waste-load from a <span class="blue">Waste truck</span> located on the <cite>INDOOR</cite></p></li>
+        <li><p>go from the <cite>INDOOR</cite> to the proper waste container</p></li>
+        <li><p>deposit the waste-load in the container</p></li>
+        </ol>
+        </li>
+        <li><p>a <span class="blue">Service-manager</span> (an human being) which supervises the state of the service-area by using a
+        <span class="blue">WasteServiceStatusGUI</span>.</p></li>
+        <li><p>a <span class="blue">Sonar</span> and a <span class="blue">Led</span> connected to a RaspnerryPi. The <cite>Led</cite> is used as a <em>warning devices</em>,
+        according to the following scheme:</p>
+        <ul class="simple">
+        <li><p>the <cite>Led</cite> is <strong>off</strong> when the  <cite>transport trolley</cite> is at <cite>HOME</cite></p></li>
+        <li><p>the <cite>Led</cite> <strong>blinks</strong> while the <cite>transport trolley</cite> is moving</p></li>
+        <li><p>the <cite>Led</cite> is <strong>on</strong> when <cite>transport trolley</cite> is stopped.</p></li>
+        </ul>
+        <p>The <cite>Sonar</cite> is used as an ‘alarm device’: when it measures a distance less that a prefixed value <strong>DLIMT</strong>,
+        the <cite>transport trolley</cite> must be stopped.
+        It will be resumed when <cite>Sonar</cite> detects again a distance higher than  <strong>DLIMT</strong>.</p>
+        </li>
+        </ol>
+        <section id="tfrequirements">
+            <h3>TFRequirements</h3>
+            <p>The main goal of the <span class="blue">WasteService</span> software is to allow a <span class="blue">Waste truck</span> to deposit its load of
+            <strong>TruckLoad</strong> kg plastic or glass in the proper container.</p>
+            <p>The global story can be described as follows:</p>
+            <ol class="arabic simple">
+            <li><p>The <cite>Waste truck</cite> driver approaches the <cite>INDOOR</cite> and sends (using a smart device) a request to store the load,
+            by specifyng the <cite>type of  the material</cite> (plastic or glass) and its <cite>TruckLoad</cite>.</p></li>
+            <li><p>The <cite>WasteService</cite> sends the answer <em>loadaccept</em> if the final content of proper container will not surpass the
+            maximum value allowed (<em>MAXPB</em> or <em>MAXGB</em>). Otherwise, it sends the answer <em>loadrejecetd</em> and the  <cite>Waste truck</cite>
+            leaves the <cite>INDOOR</cite> area.</p></li>
+            <li><p>When the load is accepted, the <cite>transport trolley</cite> reaches the <cite>INDOOR</cite>, picks up the material, goes to the
+            proper container and settles the material. During this activity, the <cite>WasteService</cite> <strong>blinks</strong> the <cite>Led</cite></p></li>
+            <li><p>When the deposit action is terminated, the <cite>transport trolley</cite>  excutes another deposit command (if any)
+            or returns to its <cite>HOME</cite>.</p></li>
+            </ol>
+            <p>The <cite>WasteService</cite> must create a <span class="blue">WasteServiceStatusGUI</span> that shows to the <em>Service-manager</em>:</p>
+            <ul>
+            <li><p>the current state of the <cite>transport trolley</cite> and it position in the room</p></li>
+            <li><p>the current weigth of the material stored in the two waste-containers</p></li>
+            <li><p>the current state of the <cite>Led</cite></p>
+        </section>
+    </section>
+
+<h2>Requirement analysis</h2>
+ 
+<h3 id="requisiti">Requisiti</h3>
+<ul>
+<li><p><strong>request</strong>: il sistema accetta richieste di deposito da <em>camion</em> che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare</p>
+<ol>
+<li><code>Domanda: le richieste possono essere gestite anche mentre il robot è in attività?</code>
+Sì, potrebbe arrivare altro camion che chiede.</li>
+<li><code>Domanda: solo un camion alla volta in INDOOR?</code>
+Sì.</li>
+</ol>
+</li>
+<li><p><strong>storage-check</strong>: il sistema può controllare se c'è spazio per un certo materiale, e rifiuta le richieste di deposito in caso contrario</p>
+</li>
+<li><p><strong>navigation</strong>: il <em>trolley</em> deve essere in grado di navigare tra varie aree preimpostate per adempiere al proprio lavoro</p>
+</li>
+<li><p><strong>deposit</strong>: il <em>trolley</em>, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX</p>
+<ul>
+<li>A lavoro finito, il <em>trolley</em> torna a HOME solo se non ci sono altre richieste da gestire, sennò gestisce subito la richiesta successiva</li>
+</ul>
+</li>
+<li><p><strong>led</strong>: nel sistema è presente un led che:</p>
+<ul>
+<li>è <em>acceso</em> se il <em>trolley</em> è a HOME</li>
+<li><em>lampeggia</em> se il <em>trolley</em> è in attività</li>
+<li>è <em>spento</em> se il trolley è in stato di <em>stop</em></li>
+</ul>
+</li>
+<li><p><strong>sonar-stop</strong>: è presente un <em>sonar</em> che, se misura una distanza sotto DLIMIT (valore prefissato), mette il <em>trolley</em> in stato di <em>stop</em> fino a che la distanza non torna a DLIMIT, nel qual caso il <em>trolley</em> riparte</p>
+<ol>
+<li><code>Domanda: cosa vuol dire precisamente *stop*? Torna a HOME o rimane lì?</code>
+Sì ferma e basta.</li>
+</ol>
+</li>
+<li><p><strong>gui</strong>: è presente una gui (<em>WasteServiceStatusGUI</em>) che mostra i seguenti dati:</p>
+<ul>
+<li>Stato del <em>trolley</em> e sua posizione</li>
+<li>Carico depositato attuale (in kg)</li>
+<li>Stato del Led (acceso/spento/lampeggiante)</li>
+</ul>
+</li>
+</ul>
+<h3 id="glossario">Glossario</h3>
+<ul>
+<li><p>Area di servizio: <strong>INDOOR</strong>, <strong>PlasticBox</strong>, <strong>GlassBox</strong>, aree definite nella creazione del sistema e punti di riferimento per il <em>trolley</em>. In particolare:</p>
+<ul>
+<li>INDOOR: area dove i <em>camion</em> si fermano a lasciare il proprio carico, facendo una richiesta di deposito. Essa può contenere un camion</li>
+<li>PlasticBox: area dove depositare la plastica</li>
+<li>GlassBox: area dove depositare il vetro</li>
+</ul>
+</li>
+<li><p><em>trolley</em>: robot DDR (differential drive robot), di dimensione approssimabile a quadrato di lato RD, usato per trasportare i rifiuti nel sistema</p>
+</li>
+<li><p><em>Service-manager</em>: umano che supervisiona il sistema tramite la <em>WasteServiceStatusGUI</em></p>
+</li>
+<li><p><em>Sonar</em>: sensore che misura distanza</p>
+</li>
+</ul>
+
+
+
+<h2>Problem analysis</h2>
+ 
+<h3 id="prototipo-iniziale">Prototipo Iniziale</h3>
+<p>Per poter avere una migliore visione d'insieme del problema, è stato realizzato un prototipo usando una architettura logica di prova (non definitiva, mancando ancora una vera fase di analisi):</p>
+<p><img src="https://i.imgur.com/n3wIPjB.jpg" alt="schema dell'architettura" style="width: 50%"/></p>
+<p>Il <a href="prototipo/src/prototipo.qak">prototipo è questo</a> (per semplicità, non è inclusa la distinzione tra ritorno a HOME e ritorno a INDOOR, che rimane un requisito del sistema vero e proprio).</p>
+<h3 id="interazione">Interazione</h3>
+<p>Vengono definite diverse tipologie di messaggio:</p>
+<h4 id="requisito-request">Requisito <strong>request</strong>:</h4>
+<p>Si tratta di una domanda con risposta, quindi l'implementazione immediata è request-reply:</p>
+<pre><code>Request deposit : deposit(MAT, QNT)
+Reply allowDeposit : allowDeposit(ALLOW)
+</code></pre>
+<p>È emersa a realizzare il primo prototipo la necessità di comunicare al camion l'avvenuta raccolta dei rifiuti nel caso il deposito venga accettato:</p>
+<pre><code>Dispatch pickedUp : pickedUp(MAT, QNT)
+</code></pre>
+<h4 id="requisito-storage-check">Requisito <strong>storage-check</strong>:</h4>
+<p>Come sopra, request-reply:</p>
+<pre><code>Request storageAsk : storageAsk(_)
+Reply storageAt : storageAt(QNT)
+</code></pre>
+<ul>
+<li>Potrebbe essere anche sfruttato l'evento del <a href="#requisito-led-e-requisito-gui">requisito GUI</a>, con alcune conseguenze (vedi sotto).</li>
+</ul>
+<h4 id="requisito-deposit">Requisito <strong>deposit</strong>:</h4>
+<p>Viene comunicato il deposito di un materiale:</p>
+<pre><code>Dispatch storageDeposit : storageDeposit(QNT)
+</code></pre>
+<p>Il trolley, per permettere la gestione di casi di coda, deve anche notificare al sistema quando inizia e quando finisce l'operazione di trasporto; questo potrebbe essere implementato come risposta a una richiesta deposit per iniziare il lavoro:</p>
+<pre><code>Request deposit : deposit(MAT, QNT)
+Reply startedDeposit : startedDeposit(MAT, QNT)
+Dispatch doneDeposit : doneDeposit(MAT, QNT)
+</code></pre>
+<p>Oppure, in alternativa, come dispatch successivo e scollegato:</p>
+<pre><code>Dispatch trolleyDeposit : deposit(MAT, QNT)
+Dispatch startedDeposit : startedDeposit(MAT, QNT)
+Dispatch doneDeposit : doneDeposit(MAT, QNT)
+</code></pre>
+<p>Nel primo caso, sarebbe più chiaro a livello concettuale, ma si avrebbe una risposta in un momento molto distante dalla richiesta; nel secondo, la separazione rappresenterebbe meglio questa distanza nel tempo, evitando il mantenimento di una connessione a seconda dell'implementazione.</p>
+<p>Il messaggio di <em>startedDeposit</em> è necessario perchè quando il trolley parte da HOME ha bisogno di tempo per dirigersi ad INDOOR; inoltre, in un caso reale, impiega del tempo per scaricare i rifiuti dal camion e potrebbe anche rompersi prima di completare lo scarico. Il camion quindi ha bisogno di sapere quando lo scarico è avvenuto per poter partire.</p>
+<ul>
+<li>Nella prototipazione, abbiamo realizzato che è necessaria una comunicazione successiva al trolley nel caso in cui arrivino altre richieste mentre è al lavoro, per permettergli di decidere in base a questo se tornare a HOME o INDOOR a lavoro finito:</li>
+</ul>
+<pre><code>Dispatch moreRequests : moreRequests(MAT)
+</code></pre>
+<h4 id="requisito-led-e-requisito-gui">Requisito <strong>led</strong> e requisito <strong>gui</strong>:</h4>
+<p>Led e GUI devono ricevere aggiornamenti sullo stato del trollley. Un modo di farlo potrebbe essere tramite eventi:</p>
+<pre><code>Event tStatus : tStatus(STATE, POSDATA)
+</code></pre>
+<p>Questo avrebbe il lato positivo di poter inviare in una sola volta a tutti i componenti che lo richiedono i dati necessari, ma inviando anche dati non necessari dovendo mandare lo stesso messaggio a ogni destinatario (per esempio, POSDATA al Led).</p>
+<p>Un altro modo è inviare dispatch ad ogni componente: più complicato e meno espandibile (nel caso vengano introdotti altri componenti di osservazione), ma evita la trasmissione di dati inutili:</p>
+<pre><code>Dispatch tStatusLed : tStatusLed(STATE)
+Dispatch tStatusGUI : tStatusGUI(STATE, POSDATA)
+</code></pre>
+<p>GUI inoltre deve ricevere lo stato del Led; potrebbe ricavarlo dallo stato del trolley ricevuto (visto che lo stato del Led dipende direttamente dallo stato del trolley), ma questo avrebbe la conseguenza di non poter rilevare eventuali errori o guasti del Led; in alternativa, il Led può comunicare alla Gui il proprio stato, anche qua potendolo realizzare sia come dispatch che come evento:</p>
+<pre><code>Dispatch ledStatus : ledStatus(STATUS)
+//---
+Event ledStatus : ledStatus(STATUS)
+</code></pre>
+<p>Qua non sono presenti dati inutili, ma data la specificità del dato usare eventi potrebbe avere più overhead sul sistema inutilmente a seconda dell'implementazione.</p>
+<p>Infine, la GUI deve ricevere informazioni sullo storage; nello stesso modo e con le stesse conseguenze, può essere sia dispatch che evento:</p>
+<pre><code>Dispatch storageUpdate : storageUpdate(MAT, QNT)
+//---
+Event storageUpdate : storageUpdate(MAT, QNT)
+</code></pre>
+<p>Data la maggiore probabilità che questi dati siano utili a più componenti, l'evento in questo caso potrebbe essere l'opzione migliore.</p>
+<ul>
+<li>Inoltre, se realizzato come evento, potrebbe essere sfruttato per il <a href="#requisito-storage-check">requisito storage-check</a> (vedi sopra), aumentando il traffico di dati ma evitando la necessità di una richiesta esplicita dello storage attuale. L'efficacia di questo approccio dipende da quanto sia frequente la modifica dello storage rispetto alla frequenza di nuove richieste da parte dei camion.</li>
+</ul>
+<h4 id="requisito-sonar-stop">Requisito <strong>sonar-stop</strong>:</h4>
+<p>Il sonar deve comunicare al trolley di fermarsi o riprendere; anche qua, sia dispatch che eventi sono approcci possibili:</p>
+<pre><code>Event trolleyStop : trolleyStop(_)
+Event trolleyResume : trolleyResume(_)
+//---
+Dispatch trolleyStop : trolleyStop(_)
+Dispatch trolleyResume : trolleyResume(_)
+</code></pre>
+<p>L'uso di un evento permetterebbe una maggiore espandibilità nel caso vengano introdotti più trolley in una versione futura del sistema; chiaramente quale versione convenga dipende dal comportamento che sarebbe desiderato in quel caso, fermare tutti i trolley oppure uno solo. Al di fuori del future-proofing, la scelta influisce solo sull'overhead del sistema in quantità minore.</p>
+<h3 id="architettura">Architettura</h3>
+<p>Data la numerosa quantità di componenti che comunicano tra loro, implementare la logica del sistema come un insieme di attori è abbastanza naturale.</p>
+<p>Gli attori ricavati dai componenti fisici sono:</p>
+<ul>
+<li><strong>Trolley</strong>: si occupa di controllare il trolley.</li>
+<li><strong>LedController</strong>: si occupa di controllare il Led, che è un oggetto &quot;alieno&quot; al sistema di attori; due versioni possibili:
+<ul>
+<li><em>Gestione led e controller separati</em>: un attore, LedActor, gestisce 1:1 l'oggetto Led &quot;agnostico&quot; (messaggi <em>setState(on/off)</em>, <em>getState</em>, ecc.), con il controller che in base allo stato del trolley invia i messaggi di controllo a LedActor, e aggiornamenti alla Gui; più concettualmente &quot;pulito&quot; ma molto più traffico, specie per il lampeggiamento richiesto in certi casi</li>
+<li><em>Gestione led e controller uniti</em>: LedController riceve i dati del sistema, decide lo stato che dovrebbe avere il Led in base ad essi, e comunica direttamente con l'oggetto esterno; evitando overhead nel caso di lampeggiamento.</li>
+</ul>
+</li>
+<li><strong>SonarActor</strong>: si occupa di ricevere dati dal sonar e comunicarli al sistema, anche qua due versioni possibili analoghe a quelle del Led
+<ul>
+<li><em>Sonar e controller separati</em>: analogamente, attore che invia eventi su ogni aggiornamento della distanza del sonar, e attore &quot;controller&quot; che osserva il sonar e in base a esso invia i segnali di STOP e RESUME</li>
+<li><em>Sonar e controller uniti</em>: come per il Led, con le stesse conseguenze: pulizia logica contro minore overhead e complessità.</li>
+</ul>
+</li>
+</ul>
+<pre><code>Context ctxwasteservice ip [host=&quot;localhost&quot; port=8050]
+
+QActor trolley context ctxwasteservice {...}
+QActor led_actor context ctxwasteservice {...}
+QActor sonar context ctxwasteservice {...}
+</code></pre>
+<p>Inoltre, per poter interagire con i cassonetti, sono introdotti degli attori di Storage per comunicare modifiche allo storage e inviare aggiornamenti a Gui, ecc.</p>
+<pre><code>QActor storage_glass context ctxwasteservice {...}
+QActor storage_paper context ctxwasteservice {...}
+</code></pre>
+<p>Anche qua due opzioni possibili:</p>
+<ul>
+<li><em>Storage manager centrale</em>: un solo attore che gestisce tutti i cassonetti, tenendo traccia dei contenuti attuali e facendo da unico fronte di comunicazione nel sistema per questi dati. Questo semplificherebbe la comunicazione non richiedendo di distinguere il destinatario in base al materiale, ma richiedendo forse più complessità nel caso, per esempio, in cui i dati di storage siano ricavati da sensori su ogni cassonetto, che quindi dovrebbero aggiornare separatamente lo stesso controllore contenente lo StorageManager.</li>
+<li><em>Storage manager separati</em>: un attore per cassonetto (rappresentato nell'esempio sopra), che andrà quindi separatamente interpellato in base al tipo di materiale. La soluzione sarebbe la più intuitiva ma con i problemi sopraelencati.</li>
+</ul>
+<p>Per scopo di prototipo e simulazione, i camion vengono trattati come attori, ma nel caso reale sarebbero &quot;alieni&quot; al sistema, inviando dati dall'esterno.</p>
+<pre><code>Context ctxcamion ip [host=&quot;localhost&quot; port=8060]
+
+QActor camion context ctxcamion {...}
+</code></pre>
+<h4 id="requisito-request-architettura">Requisito <strong>request</strong>: architettura</h4>
+<p>Le richieste ricevute dai camion possono venire gestite direttamente dal Trolley, che però aggiungerebbe overhead al componente che già deve comunicare con buona parte del sistema, oppure da un attore dedicato: viene introdotto <strong>RequestHandler</strong>:</p>
+<ul>
+<li>Riceve richieste dai camion</li>
+<li>In base allo stato di storage (vedi <a href="#requisito-storage-check">req. storage-check</a>) conferma o rifiuta</li>
+<li>Se conferma, o invia il trolley a depositare, oppure se esso è al lavoro gli comunica la presenza di ulteriori richieste</li>
+</ul>
+<pre><code>QActor requesthandler context ctxwasteservice {...}
+</code></pre>
+<p>Questo approccio eviterebbe overhead ulteriore sul trolley, permetterebbe una maggiore espandibilità nel caso di aggiunta di trolley o altro al sistema, e ridurrebbe il response time per i camion.</p>
+<h4 id="requisito-gui-architettura">Requisito <strong>GUI</strong>: architettura</h4>
+<p>Viene introdotto un GuiActor per interagire con il contesto di attori del sistema e aggiornare la GUI (oggetto &quot;alieno&quot;) con i dati ricevuti:</p>
+<pre><code>QActor gui context ctxwasteservice {...}
+</code></pre>
+<h3 id="navigation-movimento-del-trolley">Navigation: movimento del trolley</h3>
+<p>Da requisiti, si suppone che le posizioni e grandezza delle aree di HOME, INDOOR, e cassonetti vari, siano decise a priori e a priori comunicate al trolley prima dell'inizio del movimento.</p>
+<p>Data una posizione di partenza e di arrivo verso la quale il trolley deve navigare, questo può calcolare due tipi di percorso:</p>
+<ul>
+<li>Dividendo la stanza in una griglia quadrata di lato RD, il trolley può semplicemente navigare lungo le direzioni cartesiane, prima ad una coordinata della destinazione e poi all'altra.</li>
+</ul>
+<p><img src="https://i.imgur.com/rxpvLX1.jpg" alt="" style="width: 40%"/></p>
+<ul>
+<li>Il trolley compie un percorso diretto a destinazione ignorando la griglia, opzione più veloce ma con maggiori difficoltà implementative.</li>
+</ul>
+<p><img src="https://i.imgur.com/jcUqovj.jpg" alt=""  style="width: 40%"/></p>
+
+<h1 id="testplan">TestPlan</h1>
+<h4 id="test-sonar">Test Sonar</h4>
+<p>Fornito un sonar mock fatto per il test, verificare che il segnale stop/resume venga correttamente inviato quando la distanza rilevata è minore o maggiore di un valore DLIMIT.</p>
+<h4 id="test-led">Test Led</h4>
+<p>Fornito un led mock e inviando segnali di stato del trolley simulati, questo si accenda nel caso in cui lo stato indichi che il trolley è fermo, si spenga nel caso in cui il trolley sia alla home e lampeggi nel caso in cui il trolley si muova (controllando che si accenda e si spenga con una determinata frequenza). Dopo ogni cambiamento di stato invii un segnale alla gui mock comunicandoglielo.</p>
+<h4 id="test-requesthandler">Test RequestHandler</h4>
+<p>Sono necessari mock per la gestione dello storage, a scopo verifica, per il trolley, che deve aspettare un tempo casuale per poi inviare segnali ed un oggetto virtuale che simuli l'arrivo di camion.</p>
+<ul>
+<li><p><strong>Test Deny</strong>: il camion invia una richiesta di deposito al RequestHandler e il gestore dello storage risponde con un segnale che indica che lo spazio non è sufficiente; il RequestHandler risponde così con un rifiuto al camion e non invia nulla al trolley.</p>
+</li>
+<li><p><strong>Test Accept Idle</strong>: il camion invia una richiesta di deposito al RequestHandler, il gestore dello storage risponde che c'è sufficiente spazio disponibile, così il RequestHandler comunica l'accettazione del carico al camion e invia un messaggio di inizio deposito al trolley, poi, ricevuto il messaggio di inizio trasporto dal trolley, invia un segnale di avvenuto scarico al camion. Finito il deposito riceve un messaggio che indica la terminazione del trasferimento.</p>
+</li>
+<li><p><strong>Test Accept Move</strong>: durante l'esecuzione del test precedente, il camion invia un'ulteriore richiesta e il gestore dello storage comunica che c'è sufficiente spazio disponibile, così il RequestHandler comunica l'accettazione del carico al camion e al trolley che è presente una nuova richiesta in attesa. Solo dopo il ritorno del trolley che invia un segnale di completamento del deposito precedente, il RequestHandler invia il segnale di deposito al trolley e, ricevuto il messaggio di inizio trasporto da parte del trolley, invia un segnale di avvenuto scarico al camion.</p>
+</li>
+</ul>
+<h4 id="test-gestione-storage">Test Gestione Storage</h4>
+<p>A prescindere che venga implementato come una o più classi (vedi <a href="#architettura">analisi</a>), il gestore dello storage inizializza lo spazio disponibile a 0, riceve richieste di storageAsk e risponde con lo stato corrente dello storage. Le richieste di deposito modificano correttamente lo stato. Inoltre deve inviare degli eventi dopo ogni modifica dello stato, contenenti lo stato aggiornato.</p>
+<h4 id="test-gui">Test GUI</h4>
+<p>Verificare che l'interfaccia si aggiorni correttamente dopo aver ricevuto eventi di stato da parte del led, del trolley e del gestore dello storage.</p>
+<h4 id="test-trolley">Test Trolley</h4>
+<p>Per verificare il passaggio nelle varie posizioni target bisogna verificare che passi su certe coordinate. Un modo rapido di testarlo è di dividere lo spazio in una griglia e, per verificare che abbia raggiunto la destinazione, controllare che sia passato sopra uno dei quadretti corrispondenti ad essa.</p>
+<ul>
+<li><p><strong>Test Messaggi</strong>: Ignorando lo spostamento e la posizione del trolley, verificare che, ricevuto il segnale di inizio deposito, invii un segnale di inizio trasporto al RequestHandler e che invii almeno un aggiornamento di stato e posizione, dopodiché invii un segnale di deposito al gestore dello storage. Infine deve inviare almeno un altro aggiornamento di stato e posizione e inviare <em>doneDeposit</em> al RequestHandler.</p>
+</li>
+<li><p><strong>Test Movimento Base</strong>: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti a INDOOR, poi al cassonetto corrispondente e nuovamente ad HOME ed invia <em>doneDeposit</em>.</p>
+</li>
+<li><p><strong>Test Movimento Senza Ritorno</strong>: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti ad INDOOR, poi, prima di arrivare al cassonetto corrispondente riceva il messaggio di moreRequests, così arrivato al cassonetto torni ad INDOOR senza passare da HOME ed invii <em>doneDeposit</em>.</p>
+</li>
+<li><p><strong>Test Movimento Cambio Direzione</strong>: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti ad INDOOR e poi al cassonetto corrispondente, ma durante il ritorno ad HOME riceva il messaggio di moreRequests. In questo caso deve cambiare direzione e tornare ad INDOOR senza passare per HOME, anche se vi era diretto inizialmente, per poi inviare <em>doneDeposit</em>.</p>
+</li>
+</ul>
+
+
+<h2>Test plans</h2> 
+
+
+<h2>Project</h2> 
+ 
+
+<h2>Testing</h2> 
+ 
+
+<h2>Deployment</h2> 
+
+ 
+<h2>Maintenance</h2> 
+ 
+<!-- USEFUL
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+</td>
+<td></td>
+</tr>
+</table>
+-->
+	      	
+<br/><br/> 	
+</div>  
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
+Filippo Lenzi filippo.lenzi2@studio.unibo.it - Lorenzo Guerra lorenzo.guerra5@studio.unibo.it
+<!-- <img src="./img/emiglio.png" alt="mbot" width="15%" height="15%"> -->
+</div> 
+</body>
+</html>

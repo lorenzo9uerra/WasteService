@@ -1,0 +1,58 @@
+<h1 id="wasteservice-analisi-dei-requisiti">WasteService - Analisi dei Requisiti</h1>
+<h2 id="requisiti">Requisiti</h2>
+<ul>
+<li><p><strong>request</strong>: il sistema accetta richieste di deposito da <em>camion</em> che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare</p>
+<ol>
+<li><code>Domanda: le richieste possono essere gestite anche mentre il robot è in attività?</code>
+Sì, potrebbe arrivare altro camion che chiede.</li>
+<li><code>Domanda: solo un camion alla volta in INDOOR?</code>
+Sì.</li>
+</ol>
+</li>
+<li><p><strong>storage-check</strong>: il sistema può controllare se c'è spazio per un certo materiale, e rifiuta le richieste di deposito in caso contrario</p>
+</li>
+<li><p><strong>navigation</strong>: il <em>trolley</em> deve essere in grado di navigare tra varie aree preimpostate per adempiere al proprio lavoro</p>
+</li>
+<li><p><strong>deposit</strong>: il <em>trolley</em>, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX</p>
+<ul>
+<li>A lavoro finito, il <em>trolley</em> torna a HOME solo se non ci sono altre richieste da gestire, sennò gestisce subito la richiesta successiva</li>
+</ul>
+</li>
+<li><p><strong>led</strong>: nel sistema è presente un led che:</p>
+<ul>
+<li>è <em>acceso</em> se il <em>trolley</em> è a HOME</li>
+<li><em>lampeggia</em> se il <em>trolley</em> è in attività</li>
+<li>è <em>spento</em> se il trolley è in stato di <em>stop</em></li>
+</ul>
+</li>
+<li><p><strong>sonar-stop</strong>: è presente un <em>sonar</em> che, se misura una distanza sotto DLIMIT (valore prefissato), mette il <em>trolley</em> in stato di <em>stop</em> fino a che la distanza non torna a DLIMIT, nel qual caso il <em>trolley</em> riparte</p>
+<ol>
+<li><code>Domanda: cosa vuol dire precisamente *stop*? Torna a HOME o rimane lì?</code>
+Sì ferma e basta.</li>
+</ol>
+</li>
+<li><p><strong>gui</strong>: è presente una gui (<em>WasteServiceStatusGUI</em>) che mostra i seguenti dati:</p>
+<ul>
+<li>Stato del <em>trolley</em> e sua posizione</li>
+<li>Carico depositato attuale (in kg)</li>
+<li>Stato del Led (acceso/spento/lampeggiante)</li>
+</ul>
+</li>
+</ul>
+<h2 id="glossario">Glossario</h2>
+<ul>
+<li><p>Area di servizio: <strong>INDOOR</strong>, <strong>PlasticBox</strong>, <strong>GlassBox</strong>, aree definite nella creazione del sistema e punti di riferimento per il <em>trolley</em>. In particolare:</p>
+<ul>
+<li>INDOOR: area dove i <em>camion</em> si fermano a lasciare il proprio carico, facendo una richiesta di deposito. Essa può contenere un camion</li>
+<li>PlasticBox: area dove depositare la plastica</li>
+<li>GlassBox: area dove depositare il vetro</li>
+</ul>
+</li>
+<li><p><em>trolley</em>: robot DDR (differential drive robot), di dimensione approssimabile a quadrato di lato RD, usato per trasportare i rifiuti nel sistema</p>
+</li>
+<li><p><em>Service-manager</em>: umano che supervisiona il sistema tramite la <em>WasteServiceStatusGUI</em></p>
+</li>
+<li><p><em>Sonar</em>: sensore che misura distanza</p>
+</li>
+</ul>
+
