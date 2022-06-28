@@ -181,19 +181,20 @@ Data una posizione di partenza e di arrivo verso la quale il trolley deve naviga
 
 ## Da inserire poi
 
+~~- Necessaria aggiunta di una comunicazione da RequestHandler a Camion per notificare il camion dell'avvenuta raccolta dei rifiuti (usecase: robot impegnato durante arrivo del camion) e permettergli di andare via~~
+~~- Necessaria aggiunta di un qualche messaggio tra Trolley e RequestHandler dopo aver depositato il carico ma prima del ritorno per sapere se tornare a HOME oppure a INDOOR~~
 
-- Necessaria aggiunta di una comunicazione da RequestHandler a Camion per notificare il camion dell'avvenuta raccolta dei rifiuti (usecase: robot impegnato durante arrivo del camion) e permettergli di andare via
-- Necessaria aggiunta di un qualche messaggio tra Trolley e RequestHandler dopo aver depositato il carico ma prima del ritorno per sapere se tornare a HOME oppure a INDOOR
+~~- Le richieste arrivano dall'esterno; viene considerato nel contesto del sistema il camion come un "oggetto" attivo. ~~
 
-- Le richieste arrivano dall'esterno; viene considerato nel contesto del sistema il camion come un "oggetto" attivo. 
+~~- Una prima architettura tratta i vari componenti come attori~~
 
-- Una prima architettura tratta i vari componenti come attori
+~~- Due versioni (si accoda richieste il Trolley, o no?)~~
 
-- Due versioni (si accoda richieste il Trolley, o no?)
+~~- StorageManager osservabile per GUI?~~
 
-- StorageManager osservabile per GUI?
+~~- Questa prima architettura evidenzia i vari componenti e i collegamenti tra loro, senza soffermarsi troppo sul comportamento interno (in particolare quello del Trolley) per ora.~~
 
-- Questa prima architettura evidenzia i vari componenti e i collegamenti tra loro, senza soffermarsi troppo sul comportamento interno (in particolare quello del Trolley) per ora.
+- Ottimizzazione facendo fare a deposit (trolley) le veci di moreRequests~~
 
 
 # TestPlan
