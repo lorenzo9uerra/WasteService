@@ -37,17 +37,21 @@ Viene comunicato il deposito di un materiale:
 ```
 Dispatch storageDeposit : storageDeposit(QNT)
 ```
-Il trolley, per permettere la gestione di casi di coda, deve anche notificare al sistema quando finisce l'operazione di trasporto; questo potrebbe essere implementato come risposta a una richiesta deposit per iniziare il lavoro:
+Il trolley, per permettere la gestione di casi di coda, deve anche notificare al sistema quando inizia e quando finisce l'operazione di trasporto; questo potrebbe essere implementato come risposta a una richiesta deposit per iniziare il lavoro:
 ```
 Request deposit : deposit(MAT, QNT)
-Reply doneDeposit : doneDeposit(MAT, QNT)
+Reply startedDeposit : startedDeposit(MAT, QNT)
+Dispatch doneDeposit : doneDeposit(MAT, QNT)
 ```
 Oppure, in alternativa, come dispatch successivo e scollegato:
 ```
 Dispatch trolleyDeposit : deposit(MAT, QNT)
+Dispatch startedDeposit : startedDeposit(MAT, QNT)
 Dispatch doneDeposit : doneDeposit(MAT, QNT)
 ```
 Nel primo caso, sarebbe più chiaro a livello concettuale, ma si avrebbe una risposta in un momento molto distante dalla richiesta; nel secondo, la separazione rappresenterebbe meglio questa distanza nel tempo, evitando il mantenimento di una connessione a seconda dell'implementazione.
+
+Nel caso in cui il funzionamento del trolley fosse completamente affidabile e istantaneo, il messaggio di _startedDeposit_, che serve per comunicare al camion che è stato raccolto il suo carico, non sarebbe necessario in quanto coinciderebbe con l'invio del messaggio _deposit_ al trolley; ma in un caso reale, il trolley necessita di tempo per scaricare i rifiuti dal camion, oltre alla possibilità che si rompa e quindi che non li scarichi mai.
 
 - Nella prototipazione, abbiamo realizzato che è necessaria una comunicazione successiva al trolley nel caso in cui arrivino altre richieste mentre è al lavoro, per permettergli di decidere in base a questo se tornare a HOME o INDOOR a lavoro finito:
 
@@ -190,3 +194,44 @@ Data una posizione di partenza e di arrivo verso la quale il trolley deve naviga
 - StorageManager osservabile per GUI?
 
 - Questa prima architettura evidenzia i vari componenti e i collegamenti tra loro, senza soffermarsi troppo sul comportamento interno (in particolare quello del Trolley) per ora.
+
+
+# TestPlan
+
+### Test Sonar
+
+Fornito un sonar mock fatto per il test, verificare che il segnale stop/resume venga correttamente inviato quando la distanza rilevata è minore o maggiore di un valore DLIMIT.
+
+### Test Led
+
+Fornito un led mock e inviando segnali di stato del trolley simulati, questo si accenda nel caso in cui lo stato indichi che il trolley è fermo, si spenga nel caso in cui il trolley sia alla home e lampeggi nel caso in cui il trolley si muova (controllando che si accenda e si spenga con una determinata frequenza). Dopo ogni cambiamento di stato invii un segnale alla gui mock comunicandoglielo.
+
+### Test RequestHandler
+
+Sono necessari mock per la gestione dello storage, a scopo verifica, per il trolley, che deve aspettare un tempo casuale per poi inviare segnali ed un oggetto virtuale che simuli l'arrivo di camion.
+
+- **Test Deny**: il camion invia una richiesta di deposito al RequestHandler e il gestore dello storage risponde con un segnale che indica che lo spazio non è sufficiente; il RequestHandler risponde così con un rifiuto al camion e non invia nulla al trolley.
+
+- **Test Accept Idle**: il camion invia una richiesta di deposito al RequestHandler, il gestore dello storage risponde che c'è sufficiente spazio disponibile, così il RequestHandler comunica l'accettazione del carico al camion e invia un messaggio di inizio deposito al trolley, poi, ricevuto il messaggio di inizio trasporto dal trolley, invia un segnale di avvenuto scarico al camion. Finito il deposito riceve un messaggio che indica la terminazione del trasferimento.
+
+- **Test Accept Move**: durante l'esecuzione del test precedente, il camion invia un'ulteriore richiesta e il gestore dello storage comunica che c'è sufficiente spazio disponibile, così il RequestHandler comunica l'accettazione del carico al camion e al trolley che è presente una nuova richiesta in attesa. Solo dopo il ritorno del trolley che invia un segnale di completamento del deposito precedente, il RequestHandler invia il segnale di deposito al trolley e, ricevuto il messaggio di inizio trasporto da parte del trolley, invia un segnale di avvenuto scarico al camion.
+
+### Test Gestione Storage
+
+A prescindere che venga implementato come una o più classi (vedi [analisi](#architettura)), il gestore dello storage inizializza lo spazio disponibile a 0, riceve richieste di storageAsk e risponde con lo stato corrente dello storage. Le richieste di deposito modificano correttamente lo stato. Inoltre deve inviare degli eventi dopo ogni modifica dello stato, contenenti lo stato aggiornato.
+
+### Test GUI
+
+Verificare che l'interfaccia si aggiorni correttamente dopo aver ricevuto eventi di stato da parte del led, del trolley e del gestore dello storage.
+
+### Test Trolley
+
+Per verificare il passaggio nelle varie posizioni target bisogna verificare che passi su certe coordinate. Un modo rapido di testarlo è di dividere lo spazio in una griglia e, per verificare che abbia raggiunto la destinazione, controllare che sia passato sopra uno dei quadretti corrispondenti ad essa.
+
+- **Test Messaggi**: Ignorando lo spostamento e la posizione del trolley, verificare che, ricevuto il segnale di inizio deposito, invii un segnale di inizio trasporto al RequestHandler e che invii almeno un aggiornamento di stato e posizione, dopodiché invii un segnale di deposito al gestore dello storage. Infine deve inviare almeno un altro aggiornamento di stato e posizione e invii _done_ al RequestHandler.
+
+- **Test Movimento Base**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti a INDOOR, poi al cassonetto corrispondente e nuovamente ad HOME.
+
+- **Test Movimento Senza Ritorno**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti ad INDOOR, poi, prima di arrivare al cassonetto corrispondente riceva il messaggio di moreRequests, così arrivato al cassonetto torni ad INDOOR senza passare da HOME.
+
+- **Test Movimento Cambio Direzione**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti ad INDOOR e poi al cassonetto corrispondente, ma durante il ritorno ad HOME riceva il messaggio di moreRequests. In questo caso deve cambiare direzione e tornare ad INDOOR senza passare per HOME, anche se vi era diretto inizialmente.
