@@ -1,5 +1,7 @@
 # Analisi del problema
 
+In questa fase di analisi verrà utilizzato il linguaggio ad attori Qak per la modellazione; i messaggi useranno termini specifici del linguaggio per rappresentare le varie modalità di comunicazione, ma non necessariamente corrisponderanno alla tecnologia specifica utilizzata in implementazione.
+
 ## Prototipo Iniziale
 
 Per poter avere una migliore visione d'insieme del problema, è stato realizzato un prototipo usando una architettura logica di prova (non definitiva, mancando ancora una vera fase di analisi):
@@ -12,202 +14,143 @@ Il [prototipo è questo](prototipo/src/prototipo.qak) (per semplicità, non è i
 
 Vengono definite diverse tipologie di messaggio:
 
-### Requisito **request**:
+### Requisito **request**
+
 Si tratta di una domanda con risposta, quindi l'implementazione immediata è request-reply:
 ```
 Request deposit : deposit(MAT, QNT)
-Reply allowDeposit : allowDeposit(ALLOW)
-```
-È emersa a realizzare il primo prototipo la necessità di comunicare al camion l'avvenuta raccolta dei rifiuti nel caso il deposito venga accettato:
-```
-Dispatch pickedUp : pickedUp(MAT, QNT)
+Reply loadaccept : loadaccept()
+Reply loadrejected : loadrejected()
 ```
 
-### Requisito **storage-check**:
-Come sopra, request-reply:
+È necessario che (in caso di loadaccept) il camion sappia quando lo scarico dei rifiuti da parte del trolley è stato completato per poter ripartire. Ci sono diverse opzioni: 
+
+1. La risposta (loadaccept) potrebbe essere semplicemente inviata solo a scarico completato, a differenza di loadrejected che verrebbe inviata appena possibile. Una volta arrivata la risposta, il camion potrebbe partire. La conseguenza di questo approccio sarebbe l'impossibilità di rilevare errori da parte del Waste truck: "vedrebbe" nella UI un'attesa senza sapere se è per via dello scarico rifiuti in corso oppure per un errore.
+
+2. La risposta (loadaccept) arriva subito come per loadrejected, per informare il Waste truck il prima possibile, e viene inviato un successivo messaggio pickedUp per notificare l'avvenuto scarico e la possibilità di partire. Questo richiede che il Waste truck sia anche in grado di ricevere passivamente messaggi, e non solo inviare richieste e ricevere risposte come da requisiti; è possibile, ma richiede accorgimenti più specifici nello sviluppo.
+
 ```
-Request storageAsk : storageAsk(_)
-Reply storageAt : storageAt(QNT)
+Dispatch pickedUp : pickedUp()
 ```
 
-- Potrebbe essere anche sfruttato l'evento del [requisito GUI](#requisito-led-e-requisito-gui), con alcune conseguenze (vedi sotto).
+### Requisito **deposit**
 
-### Requisito **deposit**:
-Viene comunicato il deposito di un materiale:
-```
-Dispatch storageDeposit : storageDeposit(QNT)
-```
-Il trolley, per permettere la gestione di casi di coda, deve anche notificare al sistema quando inizia e quando finisce l'operazione di trasporto; questo potrebbe essere implementato come risposta a una richiesta deposit per iniziare il lavoro:
+Il Wasteservice invia un messaggio al trolley per richiedere un'azione di deposito. Il trolley, per permettere la gestione di casi di coda, deve anche notificare al WasteService quando finisce lo scarico dei rifiuti dal Waste truck e quando finisce l'operazione di deposito al BOX.
+
+1. Questo potrebbe essere implementato come risposta a una richiesta deposit per iniziare il lavoro:
 ```
 Request deposit : deposit(MAT, QNT)
-Reply startedDeposit : startedDeposit(MAT, QNT)
+Reply collectWaste : collectWaste(MAT, QNT)
 Dispatch doneDeposit : doneDeposit(MAT, QNT)
 ```
-Oppure, in alternativa, come dispatch successivo e scollegato:
+2. Oppure, in alternativa, come dispatch successivo e scollegato:
 ```
 Dispatch trolleyDeposit : deposit(MAT, QNT)
-Dispatch startedDeposit : startedDeposit(MAT, QNT)
+Dispatch collectWaste : collectWaste(MAT, QNT)
 Dispatch doneDeposit : doneDeposit(MAT, QNT)
 ```
 Nel primo caso, sarebbe più chiaro a livello concettuale, ma si avrebbe una risposta in un momento molto distante dalla richiesta; nel secondo, la separazione rappresenterebbe meglio questa distanza nel tempo, evitando il mantenimento di una connessione a seconda dell'implementazione.
 
-Il messaggio di _startedDeposit_ è necessario perchè quando il trolley parte da HOME ha bisogno di tempo per dirigersi ad INDOOR; inoltre, in un caso reale, impiega del tempo per scaricare i rifiuti dal camion e potrebbe anche rompersi prima di completare lo scarico. Il camion quindi ha bisogno di sapere quando lo scarico è avvenuto per poter partire.
+Il messaggio di _collectWaste_ è necessario perchè quando il trolley parte da HOME ha bisogno di tempo per dirigersi ad INDOOR; inoltre, in un caso reale, impiega del tempo per scaricare i rifiuti dal camion e potrebbe anche rompersi prima di completare lo scarico. Il camion quindi ha bisogno di sapere quando lo scarico è avvenuto per poter partire, e il WasteService deve a sua volta saperlo dal trolley.
 
-- Nella prototipazione, abbiamo realizzato che è necessaria una comunicazione successiva al trolley nel caso in cui arrivino altre richieste mentre è al lavoro, per permettergli di decidere in base a questo se tornare a HOME o INDOOR a lavoro finito:
-
+Inoltre, per iniziare lo scarico nel cassonetto viene comunicato il deposito di un materiale da parte del trolley:
 ```
-Dispatch moreRequests : moreRequests(MAT)
-```
-
-### Requisito **led** e requisito **gui**:
-Led e GUI devono ricevere aggiornamenti sullo stato del trollley. Un modo di farlo potrebbe essere tramite eventi:
-```
-Event tStatus : tStatus(STATE, POSDATA)
-```
-Questo avrebbe il lato positivo di poter inviare in una sola volta a tutti i componenti che lo richiedono i dati necessari, ma inviando anche dati non necessari dovendo mandare lo stesso messaggio a ogni destinatario (per esempio, POSDATA al Led).
-
-Un altro modo è inviare dispatch ad ogni componente: più complicato e meno espandibile (nel caso vengano introdotti altri componenti di osservazione), ma evita la trasmissione di dati inutili:
-```
-Dispatch tStatusLed : tStatusLed(STATE)
-Dispatch tStatusGUI : tStatusGUI(STATE, POSDATA)
+Dispatch storageDeposit : storageDeposit(MAT, QNT)
 ```
 
-GUI inoltre deve ricevere lo stato del Led; potrebbe ricavarlo dallo stato del trolley ricevuto (visto che lo stato del Led dipende direttamente dallo stato del trolley), ma questo avrebbe la conseguenza di non poter rilevare eventuali errori o guasti del Led; in alternativa, il Led può comunicare alla Gui il proprio stato, anche qua potendolo realizzare sia come dispatch che come evento:
-```
-Dispatch ledStatus : ledStatus(STATUS)
-//---
-Event ledStatus : ledStatus(STATUS)
-```
-Qua non sono presenti dati inutili, ma data la specificità del dato usare eventi potrebbe avere più overhead sul sistema inutilmente a seconda dell'implementazione.
+- *doneDeposit* viene inviato al termine dell'operazione di deposito: quindi, come da requisiti, quando i rifiuti sono stati scaricati dentro al cassonetto con successo e prima di dirigersi verso HOME o INDOOR. Questo serve per notificare il WasteService che il trolley è libero per altre azioni di deposito.
+- Il WasteService può inviare ulteriori messaggi di *deposit* prima che il trolley torni alla posizione iniziale, così che il trolley possa sapere se tornare a HOME (nel caso in cui non ci siano altre azioni di deposito da compiere) o a INDOOR (nel caso ce ne siano), a seconda di quale componente contenga la logica di movimento del trolley (vedi sotto: [Deposit: movimento del trolley](#deposit-movimento-del-trolley)). In questo caso, ci sono due opzioni:
+    1. Il WasteService invia *deposit* al trolley appena arriva la richiesta dal Waste truck, e il trolley ne tiene traccia e comincia ad eseguirla appena finita la precedente.
+    2. Il WasteService aspetta di ricevere *doneDeposit* per poi inviare un ulteriore richiesta di *deposit* al trolley.
 
-Infine, la GUI deve ricevere informazioni sullo storage; nello stesso modo e con le stesse conseguenze, può essere sia dispatch che evento:
-```
-Dispatch storageUpdate : storageUpdate(MAT, QNT)
-//---
-Event storageUpdate : storageUpdate(MAT, QNT)
-```
-Data la maggiore probabilità che questi dati siano utili a più componenti, l'evento in questo caso potrebbe essere l'opzione migliore.
-
-- Inoltre, se realizzato come evento, potrebbe essere sfruttato per il [requisito storage-check](#requisito-storage-check) (vedi sopra), aumentando il traffico di dati ma evitando la necessità di una richiesta esplicita dello storage attuale. L'efficacia di questo approccio dipende da quanto sia frequente la modifica dello storage rispetto alla frequenza di nuove richieste da parte dei camion.
-
-### Requisito **sonar-stop**:
-Il sonar deve comunicare al trolley di fermarsi o riprendere; anche qua, sia dispatch che eventi sono approcci possibili:
-
-```
-Event trolleyStop : trolleyStop(_)
-Event trolleyResume : trolleyResume(_)
-//---
-Dispatch trolleyStop : trolleyStop(_)
-Dispatch trolleyResume : trolleyResume(_)
-```
-
-L'uso di un evento permetterebbe una maggiore espandibilità nel caso vengano introdotti più trolley in una versione futura del sistema; chiaramente quale versione convenga dipende dal comportamento che sarebbe desiderato in quel caso, fermare tutti i trolley oppure uno solo. Al di fuori del future-proofing, la scelta influisce solo sull'overhead del sistema in quantità minore.
 
 ## Architettura
 
 Data la numerosa quantità di componenti che comunicano tra loro, implementare la logica del sistema come un insieme di attori è abbastanza naturale. 
 
-Gli attori ricavati dai componenti fisici sono:
-
-- **Trolley**: si occupa di controllare il trolley.
-- **LedController**: si occupa di controllare il Led, che è un oggetto "alieno" al sistema di attori; due versioni possibili:
-    - *Gestione led e controller separati*: un attore, LedActor, gestisce 1:1 l'oggetto Led "agnostico" (messaggi *setState(on/off)*, *getState*, ecc.), con il controller che in base allo stato del trolley invia i messaggi di controllo a LedActor, e aggiornamenti alla Gui; più concettualmente "pulito" ma molto più traffico, specie per il lampeggiamento richiesto in certi casi
-    - *Gestione led e controller uniti*: LedController riceve i dati del sistema, decide lo stato che dovrebbe avere il Led in base ad essi, e comunica direttamente con l'oggetto esterno; evitando overhead nel caso di lampeggiamento.
-- **SonarActor**: si occupa di ricevere dati dal sonar e comunicarli al sistema, anche qua due versioni possibili analoghe a quelle del Led
-    - *Sonar e controller separati*: analogamente, attore che invia eventi su ogni aggiornamento della distanza del sonar, e attore "controller" che osserva il sonar e in base a esso invia i segnali di STOP e RESUME
-    - *Sonar e controller uniti*: come per il Led, con le stesse conseguenze: pulizia logica contro minore overhead e complessità.
+Per scopo di prototipo e simulazione, i Waste truck vengono trattati come attori, ma nel caso reale sarebbero "alieni" al sistema, inviando dati dall'esterno, probabilmente tramite una GUI (web o analoga) usabile dal camionista.
 
 ```
-Context ctxwasteservice ip [host="localhost" port=8050]
+Context ctxwastetruck ip [host="localhost" port=8060]
 
-QActor trolley context ctxwasteservice {...}
-QActor led_actor context ctxwasteservice {...}
-QActor sonar context ctxwasteservice {...}
+QActor wastetruck context ctxwastetruck {...}
 ```
 
-Inoltre, per poter interagire con i cassonetti, sono introdotti degli attori di Storage per comunicare modifiche allo storage e inviare aggiornamenti a Gui, ecc.
+Gli attori ricavati dai componenti requisiti e fisici sono:
 
-```
-QActor storage_glass context ctxwasteservice {...}
-QActor storage_paper context ctxwasteservice {...}
-```
+### Requisito **request** - architettura
 
-Anche qua due opzioni possibili:
-- *Storage manager centrale*: un solo attore che gestisce tutti i cassonetti, tenendo traccia dei contenuti attuali e facendo da unico fronte di comunicazione nel sistema per questi dati. Questo semplificherebbe la comunicazione non richiedendo di distinguere il destinatario in base al materiale, ma richiedendo forse più complessità nel caso, per esempio, in cui i dati di storage siano ricavati da sensori su ogni cassonetto, che quindi dovrebbero aggiornare separatamente lo stesso controllore contenente lo StorageManager.
-- *Storage manager separati*: un attore per cassonetto (rappresentato nell'esempio sopra), che andrà quindi separatamente interpellato in base al tipo di materiale. La soluzione sarebbe la più intuitiva ma con i problemi sopraelencati.
-
-Per scopo di prototipo e simulazione, i camion vengono trattati come attori, ma nel caso reale sarebbero "alieni" al sistema, inviando dati dall'esterno.
-
-```
-Context ctxcamion ip [host="localhost" port=8060]
-
-QActor camion context ctxcamion {...}
-```
-
-### Requisito **request**: architettura
-
-Le richieste ricevute dai camion possono venire gestite direttamente dal Trolley, che però aggiungerebbe overhead al componente che già deve comunicare con buona parte del sistema, oppure da un attore dedicato: viene introdotto **RequestHandler**:
+Il WasteService è rappresentato da un attore:
 
 - Riceve richieste dai camion
 - In base allo stato di storage (vedi [req. storage-check](#requisito-storage-check)) conferma o rifiuta
 - Se conferma, o invia il trolley a depositare, oppure se esso è al lavoro gli comunica la presenza di ulteriori richieste
 
 ```
-QActor requesthandler context ctxwasteservice {...}
+Context ctxwasteservice ip [host="localhost" port=8050]
+
+QActor wasteservice context ctxwasteservice {...}
 ```
 
-Questo approccio eviterebbe overhead ulteriore sul trolley, permetterebbe una maggiore espandibilità nel caso di aggiunta di trolley o altro al sistema, e ridurrebbe il response time per i camion.
+Inoltre, per poter interagire con i cassonetti, sono introdotti degli attori di Storage per comunicare modifiche allo storage e inviare aggiornamenti a componenti di controllo per futuri Sprint.
 
-### Requisito **GUI**: architettura
-
-Viene introdotto un GuiActor per interagire con il contesto di attori del sistema e aggiornare la GUI (oggetto "alieno") con i dati ricevuti:
+Anche qua due opzioni possibili:
+- *Storage manager centrale*: un solo attore che gestisce tutti i cassonetti, tenendo traccia dei contenuti attuali e facendo da unico fronte di comunicazione nel sistema per questi dati. Questo semplificherebbe la comunicazione non richiedendo di distinguere il destinatario in base al materiale, ma richiedendo forse più complessità nel caso, per esempio, in cui i dati di storage siano ricavati da sensori su ogni cassonetto, che quindi dovrebbero aggiornare separatamente lo stesso controllore contenente lo StorageManager.
 
 ```
-QActor gui context ctxwasteservice {...}
+QActor storage context ctxwasteservice {...}
 ```
 
-## Navigation: movimento del trolley
+- *Storage manager separati*: un attore per cassonetto (rappresentato nell'esempio sopra), che andrà quindi separatamente interpellato in base al tipo di materiale. La soluzione sarebbe la più intuitiva ma con i problemi sopraelencati.
+
+```
+QActor storage_glass context ctxwasteservice {...}
+QActor storage_paper context ctxwasteservice {...}
+```
+
+
+### Requisito **deposit** - architettura
+
+- **Trolley**: si occupa di controllare il trolley.
+
+```
+QActor trolley context ctxwasteservice {...}
+```
+
+La logica di movimento è analizzata in seguito: [Deposit: movimento del trolley](#deposit-movimento-del-trolley).
+
+## Deposit: movimento del trolley
 
 Da requisiti, si suppone che le posizioni e grandezza delle aree di HOME, INDOOR, e cassonetti vari, siano decise a priori e a priori comunicate al trolley prima dell'inizio del movimento.
 
 Data una posizione di partenza e di arrivo verso la quale il trolley deve navigare, questo può calcolare due tipi di percorso:
-- Dividendo la stanza in una griglia quadrata di lato RD, il trolley può semplicemente navigare lungo le direzioni cartesiane, prima ad una coordinata della destinazione e poi all'altra.
+1. Dividendo la stanza in una griglia quadrata di lato RD, il trolley può semplicemente navigare lungo le direzioni cartesiane, prima ad una coordinata della destinazione e poi all'altra.
 
-![](./doc/img/navigazione_cart.jpg)
+    ![](./doc/img/navigazione_cart.jpg)
 
-- Il trolley compie un percorso diretto a destinazione ignorando la griglia, opzione più veloce ma con maggiori difficoltà implementative.
+    **PRO**: si dispone già di componenti in grado di generare e seguire percorsi su griglia in direzioni cartesiane, l'implementazione sarebbe quindi semplice
+    
+    **CONTRO**: più lento dell'alternativa.
 
-![](./doc/img/navigazione_diretta.jpg)
+2. Il trolley compie un percorso diretto a destinazione ignorando la griglia.
 
-## Da inserire poi
+    ![](./doc/img/navigazione_diretta.jpg)
 
-~~- Necessaria aggiunta di una comunicazione da RequestHandler a Camion per notificare il camion dell'avvenuta raccolta dei rifiuti (usecase: robot impegnato durante arrivo del camion) e permettergli di andare via~~
-~~- Necessaria aggiunta di un qualche messaggio tra Trolley e RequestHandler dopo aver depositato il carico ma prima del ritorno per sapere se tornare a HOME oppure a INDOOR~~
+    **PRO**: il percorso sarebbe diretto e più veloce.
+    
+    **CONTRO**: non disponendo di componenti già implementate per questo scopo, andrebbe programmata la logica di pathfinding e navigazione per questa casistica.
 
-~~- Le richieste arrivano dall'esterno; viene considerato nel contesto del sistema il camion come un "oggetto" attivo. ~~
+Inoltre, esistono anche più opzioni per quanto riguarda quale componente calcoli il percorso:
 
-~~- Una prima architettura tratta i vari componenti come attori~~
+1. Il trolley potrebbe calcolare internamente il percorso, ricevendo dal Wasteservice solo istruzioni riguardo a quali destinazioni raggiungere. Questo sposterebbe parte della logica dentro al trolley, rendendo necessarie componenti computazionali più elaborate dell'alternativa.
 
-~~- Due versioni (si accoda richieste il Trolley, o no?)~~
+2. Il trolley potrebbe essere un puro attuatore, ricevendo il percorso già calcolato dal Wasteservice e limitandosi a seguirlo. Questo aumenta il carico sul WasteService (salvo il dedicare processi appositi a questo scopo) e aumenta i dati trasmessi; inoltre richiede per evitare errori che il WasteService sia aggiornato sulla posizione del trolley.
 
-~~- StorageManager osservabile per GUI?~~
-
-~~- Questa prima architettura evidenzia i vari componenti e i collegamenti tra loro, senza soffermarsi troppo sul comportamento interno (in particolare quello del Trolley) per ora.~~
-
-- Ottimizzazione facendo fare a deposit (trolley) le veci di moreRequests~~
-
+Si è notato inoltre che, data la staticità dell'ambiente, i percorsi in caso di funzionamento regolare hanno un numero ridotto, essendo sempre tra le stesse (e poche) posizioni. Quindi, se necessario, potrebbe essere possibile precalcolare i percorsi, e riutilizzare sempre gli stessi senza richiedere la generazione ogni volta; nel caso per qualche motivo il trolley si ritrovi in una posizione fuori dalle aspettative, il percorso andrebbe comunque calcolato ad hoc.
 
 # TestPlan
 
-### Test Sonar
-
-Fornito un sonar mock fatto per il test, verificare che il segnale stop/resume venga correttamente inviato quando la distanza rilevata è minore o maggiore di un valore DLIMIT.
-
-### Test Led
-
-Fornito un led mock e inviando segnali di stato del trolley simulati, questo si accenda nel caso in cui lo stato indichi che il trolley è fermo, si spenga nel caso in cui il trolley sia alla home e lampeggi nel caso in cui il trolley si muova (controllando che si accenda e si spenga con una determinata frequenza). Dopo ogni cambiamento di stato invii un segnale alla gui mock comunicandoglielo.
-
-### Test RequestHandler
+### TestPlan: request
 
 Sono necessari mock per la gestione dello storage, a scopo verifica, per il trolley, che deve aspettare un tempo casuale per poi inviare segnali ed un oggetto virtuale che simuli l'arrivo di camion.
 
@@ -216,24 +159,3 @@ Sono necessari mock per la gestione dello storage, a scopo verifica, per il trol
 - **Test Accept Idle**: il camion invia una richiesta di deposito al RequestHandler, il gestore dello storage risponde che c'è sufficiente spazio disponibile, così il RequestHandler comunica l'accettazione del carico al camion e invia un messaggio di inizio deposito al trolley, poi, ricevuto il messaggio di inizio trasporto dal trolley, invia un segnale di avvenuto scarico al camion. Finito il deposito riceve un messaggio che indica la terminazione del trasferimento.
 
 - **Test Accept Move**: durante l'esecuzione del test precedente, il camion invia un'ulteriore richiesta e il gestore dello storage comunica che c'è sufficiente spazio disponibile, così il RequestHandler comunica l'accettazione del carico al camion e al trolley che è presente una nuova richiesta in attesa. Solo dopo il ritorno del trolley che invia un segnale di completamento del deposito precedente, il RequestHandler invia il segnale di deposito al trolley e, ricevuto il messaggio di inizio trasporto da parte del trolley, invia un segnale di avvenuto scarico al camion.
-
-### Test Gestione Storage
-
-A prescindere che venga implementato come una o più classi (vedi [analisi](#architettura)), il gestore dello storage inizializza lo spazio disponibile a 0, riceve richieste di storageAsk e risponde con lo stato corrente dello storage. Le richieste di deposito modificano correttamente lo stato. Inoltre deve inviare degli eventi dopo ogni modifica dello stato, contenenti lo stato aggiornato.
-
-### Test GUI
-
-Verificare che l'interfaccia si aggiorni correttamente dopo aver ricevuto eventi di stato da parte del led, del trolley e del gestore dello storage.
-
-### Test Trolley
-
-Per verificare il passaggio nelle varie posizioni target bisogna verificare che passi su certe coordinate. Un modo rapido di testarlo è di dividere lo spazio in una griglia e, per verificare che abbia raggiunto la destinazione, controllare che sia passato sopra uno dei quadretti corrispondenti ad essa.
-
-- **Test Messaggi**: Ignorando lo spostamento e la posizione del trolley, verificare che, ricevuto il segnale di inizio deposito, invii un segnale di inizio trasporto al RequestHandler e che invii almeno un aggiornamento di stato e posizione, dopodiché invii un segnale di deposito al gestore dello storage. Infine deve inviare almeno un altro aggiornamento di stato e posizione e inviare _doneDeposit_ al RequestHandler.
-
-- **Test Movimento Base**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti a INDOOR, poi al cassonetto corrispondente e nuovamente ad HOME ed invia _doneDeposit_.
-
-- **Test Movimento Senza Ritorno**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti ad INDOOR, poi, prima di arrivare al cassonetto corrispondente riceva il messaggio di moreRequests, così arrivato al cassonetto torni ad INDOOR senza passare da HOME ed invii _doneDeposit_.
-
-- **Test Movimento Cambio Direzione**: partendo da HOME, ricevuto il messaggio di inizio deposito, si sposti ad INDOOR e poi al cassonetto corrispondente, ma durante il ritorno ad HOME riceva il messaggio di moreRequests. In questo caso deve cambiare direzione e tornare ad INDOOR senza passare per HOME, anche se vi era diretto inizialmente, per poi inviare _doneDeposit_.
-- **Test Sonar Stop**: il trolley dopo aver ricevuto un messaggio _trolleyStop_ deve fermarsi alla posizione in cui si trova e inviare un aggiornamento del proprio stato. Deve poi riprendere il movimento dopo la ricezione di un messaggio _trolleyResume_.
