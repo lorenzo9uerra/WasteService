@@ -40,6 +40,13 @@ public class TestDeposit {
             ColorsOut.outappl("testLoadOk answer=" + answer, ColorsOut.GREEN);
             connTcp.close();
             assertTrue(answer.contains("doneDeposit"));
+            
+            truckRequestStr = "msg(storageAsk,request,wasteservice,storage,storageAsk(),1)";
+            connTcp = new ConnTcp("localhost", 8050);
+            answer = connTcp.request(truckRequestStr);
+            ColorsOut.outappl("testLoadOk answer=" + answer, ColorsOut.GREEN);
+            connTcp.close();
+            assertTrue(answer.contains("10"));
         } catch (Exception e) {
             ColorsOut.outerr("testLoadOk ERROR:" + e.getMessage());
 

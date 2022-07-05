@@ -34,14 +34,14 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						emit("tStatus", "tStatus(home,$Position)" ) 
 					}
 					 transition(edgeName="tIdle7",targetState="handleStop",cond=whenEvent("trolleyStop"))
-					transition(edgeName="tIdle8",targetState="startMoveDeposit",cond=whenRequest("depositRequest"))
+					transition(edgeName="tIdle8",targetState="startMoveDeposit",cond=whenRequest("deposit"))
 				}	 
 				state("startMoveDeposit") { //this:State
 					action { //it:State
 						 TrolleyState = "startMoveDeposit"  
 						println("$name in ${currentState.stateName} | $currentMsg")
 						emit("tStatus", "tStatus(moving,$Position)" ) 
-						if( checkMsgContent( Term.createTerm("depositRequest(MAT,QNT)"), Term.createTerm("depositRequest(MAT,QNT)"), 
+						if( checkMsgContent( Term.createTerm("deposit(MAT,QNT)"), Term.createTerm("deposit(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 
 								  				CarryType = payloadArg(0)
@@ -120,7 +120,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 TrolleyState = "returnedIndoor"  
 						println("$name in ${currentState.stateName} | $currentMsg")
 						emit("tStatus", "tStatus(home,$Position)" ) 
-						answer("depositRequest", "doneDeposit", "doneDeposit($CarryType,$CarryAmount)"   )  
+						answer("deposit", "doneDeposit", "doneDeposit($CarryType,$CarryAmount)"   )  
 						stateTimer = TimerActor("timer_returnedIndoor", 
 							scope, context!!, "local_tout_trolley_returnedIndoor", 0.toLong() )
 					}
