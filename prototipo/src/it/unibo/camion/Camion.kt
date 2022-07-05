@@ -15,7 +15,7 @@ class Camion ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
-				var Allowed = false	
+				var Allowed = false
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
@@ -35,18 +35,22 @@ class Camion ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 									var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "paper"
 									var Quantity = kotlin.random.Random.nextInt(10, 30)	
 						println("Truck with $Material in amount $Quantity arrived")
-						request("deposit", "deposit($Material,$Quantity)" ,"requesthandler" )  
+						request("depositRequest", "depositRequest($Material,$Quantity)" ,"wasteservice" )  
 					}
-					 transition(edgeName="t10",targetState="handleAllowReply",cond=whenReply("allowDeposit"))
+					 transition(edgeName="t10",targetState="handleReplyDeposit",cond=whenReply("replyDeposit"))
 				}	 
-				state("handleAllowReply") { //this:State
+				state("handleReplyDeposit") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("allowDeposit(ALLOW)"), Term.createTerm("allowDeposit(ALLOW)"), 
+						if( checkMsgContent( Term.createTerm("replyDeposit(RESPONSE)"), Term.createTerm("replyDeposit(ALLOW)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Allowed = payloadArg(0).toBoolean()  
-								if(  !Allowed  
+								if(  "loadaccept" != payloadArg(0)  
 								 ){println("	Truck left (denied)")
+								 Allowed = false  
 								}
+								else
+								 { Allowed = true  
+								 println("	Truck left (allowed)")
+								 }
 						}
 					}
 					 transition( edgeName="goto",targetState="waitArrival", cond=doswitchGuarded({ !Allowed  

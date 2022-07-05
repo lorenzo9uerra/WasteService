@@ -152,10 +152,11 @@ Si è notato inoltre che, data la staticità dell'ambiente, i percorsi in caso d
 
 ### TestPlan: request
 
-Sono necessari mock per la gestione dello storage, a scopo verifica, per il trolley, che deve aspettare un tempo casuale per poi inviare segnali ed un oggetto virtuale che simuli l'arrivo di camion.
+- **Test Deny**: il camion invia una richiesta di deposito al WasteService per una quantità maggiore di quella che i cassonetti possono ospitare e questo risponde con un *loadrejected*.
 
-- **Test Deny**: il camion invia una richiesta di deposito al RequestHandler e il gestore dello storage risponde con un segnale che indica che lo spazio non è sufficiente; il RequestHandler risponde così con un rifiuto al camion e non invia nulla al trolley.
+- **Test Accept**: il camion invia una richiesta di deposito al WasteService, che risponde con un loadaccept. Il WasteService invia quindi un messaggio al camion che indica che il carico è stato prelevato dal trolley.
 
-- **Test Accept Idle**: il camion invia una richiesta di deposito al RequestHandler, il gestore dello storage risponde che c'è sufficiente spazio disponibile, così il RequestHandler comunica l'accettazione del carico al camion e invia un messaggio di inizio deposito al trolley, poi, ricevuto il messaggio di inizio trasporto dal trolley, invia un segnale di avvenuto scarico al camion. Finito il deposito riceve un messaggio che indica la terminazione del trasferimento.
 
-- **Test Accept Move**: durante l'esecuzione del test precedente, il camion invia un'ulteriore richiesta e il gestore dello storage comunica che c'è sufficiente spazio disponibile, così il RequestHandler comunica l'accettazione del carico al camion e al trolley che è presente una nuova richiesta in attesa. Solo dopo il ritorno del trolley che invia un segnale di completamento del deposito precedente, il RequestHandler invia il segnale di deposito al trolley e, ricevuto il messaggio di inizio trasporto da parte del trolley, invia un segnale di avvenuto scarico al camion.
+### TestPlan: deposit
+
+- **Test deposit**: Inviata una richiesta al trolley, questo invia un messaggio comunicando di aver recuperato il carico, dopodichè, depositato il carico, invia un messaggio allo storage manager comunicandogli la quantità di materiale depositato. Infine il WasteService riceve il messaggio *doneDeposit* che indica che il trolley ha terminato il proprio lavoro.
