@@ -13,15 +13,25 @@ public class TestDeposit {
     @Before
     public void up() {
         new Thread(MainCtxwasteserviceKt::main).start();
-        waitForApplStarted();
+        waitForWasteService();
+        waitForStorage();
     }
 
-    protected void waitForApplStarted() {
+    protected void waitForWasteService() {
         ActorBasic wasteservice = QakContext.Companion.getActor("wasteservice");
         while (wasteservice == null) {
-            ColorsOut.outappl("testLoadOk waits for appl ... ", ColorsOut.GREEN);
+            ColorsOut.outappl("TestDeposit waits for wasteservice ... ", ColorsOut.GREEN);
             CommUtils.delay(200);
             wasteservice = QakContext.Companion.getActor("wasteservice");
+        }
+    }
+
+    protected void waitForStorage() {
+        ActorBasic wasteservice = QakContext.Companion.getActor("storage");
+        while (wasteservice == null) {
+            ColorsOut.outappl("TestDeposit waits for appl ... ", ColorsOut.GREEN);
+            CommUtils.delay(200);
+            wasteservice = QakContext.Companion.getActor("storage");
         }
     }
 
