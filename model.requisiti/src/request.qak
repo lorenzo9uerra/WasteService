@@ -1,0 +1,76 @@
+System wasteservice_req_request
+
+Request truckDeposit : truckDeposit(MAT, QNT)
+Reply loadaccept : loadaccept(_)
+Reply loadrejected : loadrejected(_)
+
+Context ctxreq_request ip [host="localhost" port=8050]
+
+QActor wastetruck_req context ctxreq_request {
+	State req initial {
+		printCurrentMessage
+		[#
+			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "paper"
+			var Quantity = kotlin.random.Random.nextInt(10, 30)	
+		#]
+		println ("\tTruck with $Material in amount $Quantity arrived")
+		request wasteservice_req -m truckDeposit : truckDeposit($Material, $Quantity)
+	}
+	Transition t1 whenReply loadaccept -> handleAccepted
+				  whenReply loadrejected -> handleRejected
+	
+	State handleRejected {
+		printCurrentMessage
+		println("\tTruck denied")
+	}
+	Goto waitArrival
+	
+	State handleAccepted {
+		printCurrentMessage
+		println("\tTruck accepted")
+	} 
+	Goto waitArrival
+	
+	State waitArrival {
+		printCurrentMessage
+		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(7000, 10000) #]
+		delayVar DelayTime
+	}
+	Goto req
+}
+
+QActor wasteservice_req context ctxreq_request {
+	[#
+  var CurrentRequestMaterial = ""
+  var CurrentRequestQuantity = 0.0
+  var CurrentRequestCheck = 0.0
+  var CurrentSpace = 0.0
+	#]  
+	State idle initial {
+		printCurrentMessage
+	}
+	Transition tIdle whenRequest truckDeposit -> handleRequest
+	
+	State handleRequest {
+		printCurrentMessage
+		onMsg( truckDeposit : truckDeposit(MAT, QNT) ){
+  			[# 
+  				CurrentRequestMaterial = payloadArg(0)
+  				CurrentRequestQuantity = payloadArg(1).toDouble()
+  				CurrentRequestCheck = CurrentRequestQuantity
+			#]
+  			
+  			// Simula richiesta di contenuti attuali con valore casuale
+  			[# CurrentSpace = kotlin.random.Random.Default.nextDouble(0.0, 50.0) #]
+  			
+  			println("\tWS | Request received $CurrentRequestMaterial $CurrentRequestQuantity, has $CurrentSpace")
+  			
+  			if [# CurrentRequestCheck > CurrentSpace #] {
+  				replyTo truckDeposit with loadrejected : loadrejected(_)
+  			} else {
+  				replyTo truckDeposit with loadaccept : loadaccept(_)  				
+  			}
+		}
+	}
+	Goto idle
+}

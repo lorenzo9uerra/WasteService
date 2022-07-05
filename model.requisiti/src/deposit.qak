@@ -1,0 +1,106 @@
+System wasteservice_req_deposit
+
+Dispatch deposit : deposit(MAT, QNT)
+
+Dispatch depositWaste : depositWaste(MAT, QNT)
+
+Context ctxreq_deposit ip [host="localhost" port=8050]
+
+QActor wasteservice_dep context ctxreq_deposit {
+	State sendDeposit initial {
+		printCurrentMessage
+		[#
+			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "paper"
+			var Quantity = kotlin.random.Random.nextInt(10, 30)	
+		#]
+		forward trolley_dep -m deposit : deposit($Material, $Quantity)
+	}
+	Goto randomWait
+	
+	State randomWait {
+		printCurrentMessage
+		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(500, 3500) #]
+		delayVar DelayTime
+	}
+	Goto sendDeposit
+}
+
+QActor trolley_dep context ctxreq_deposit {
+	[#
+		var CarryingType = ""
+		var CarryingAmount = 0.0
+	#]
+	
+	State home initial {
+		printCurrentMessage
+		println("\tTrolley | At home")
+	}
+	Transition t0 whenMsg deposit -> go_indoor
+	
+	State go_indoor {
+		printCurrentMessage
+		onMsg ( deposit : deposit(MAT, QNT) ) {
+			[#
+			CarryingType = payloadArg(0)
+			CarryingAmount = payloadArg(1).toDouble()	
+			#]
+		}
+		
+		delay 500
+	}
+	Goto indoor
+	
+	State indoor {
+		printCurrentMessage
+		println("\tTrolley | At indoor, picking up $CarryingAmount $CarryingType...")
+		delay 500
+	}
+	Goto go_box
+	
+	State go_box {
+		printCurrentMessage
+		delay 500
+	}
+	Goto box
+	
+	State box {
+		println("\tTrolley | At $CarryingType box, depositing $CarryingAmount $CarryingType...")
+		delay 200
+		forward waste_boxes -m depositWaste : depositWaste($CarryingType, $CarryingAmount)
+	}
+	Goto done
+	
+	State done {
+		println("\tTrolley | Done deposit action")
+	}
+	Transition t1 whenTime 0 -> go_home
+				  whenMsg deposit -> go_indoor
+				  
+  	State go_home {
+  		printCurrentMessage
+  		delay 800
+  	}
+  	Goto home
+}
+
+QActor waste_boxes context ctxreq_deposit {
+	[#
+		var ContentGlass = 0.0
+		var ContentPaper = 0.0	
+	#]
+	State idle initial {
+		println("\tBOXES: Paper $ContentPaper, Glass $ContentGlass")
+	}
+	Transition t0 whenMsg depositWaste -> handleDeposit
+	
+	State handleDeposit {
+		onMsg ( depositWaste : depositWaste(MAT, QNT) ){
+			if [# payloadArg(0) == "glass" #] {
+				[# ContentGlass += payloadArg(1).toDouble() #]
+			} else {
+				[# ContentPaper += payloadArg(1).toDouble() #]				
+			}
+		}
+	}
+	Goto idle
+}
