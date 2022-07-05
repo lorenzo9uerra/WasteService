@@ -50,7 +50,7 @@ Per ogni requisito è stato incluso un modello eseguibile in Qak.
 
     [Modello eseguibile](./model.requisiti/src/gui.qak)
 
-Da questa ananlisi, emerge che il *core business* del sistema è costituito dai requisiti di **request** e **deposit**. Un primo sprint SCRUM sarà quindi lo sviluppo a partire da questi requisiti centrali, mentre i successivi sprint implementeranno le funzionalità aggiuntive di **led**, **sonar-stop**, e **gui**.
+Da questa analisi, emerge che il *core business* del sistema è costituito dai requisiti di **request** e **deposit**. Un primo sprint SCRUM sarà quindi lo sviluppo a partire da questi requisiti centrali, mentre i successivi sprint implementeranno le funzionalità aggiuntive di **led**, **sonar-stop**, e **gui**.
 
 ## Glossario
 
