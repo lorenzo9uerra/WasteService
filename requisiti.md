@@ -3,7 +3,7 @@
 ## Requisiti
 
 - **request**: il *WasteService* accetta richieste di deposito da *Waste truck* che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare
-    - il sistema può controllare se c'è spazio per un certo materiale: accetta (risposta *loadaccept*), e rifiuta (risposta *loadrejecetd*) le richieste di deposito in caso contrario
+    - il sistema può controllare se c'è spazio per un certo materiale: accetta (risposta *loadaccept*), e rifiuta (risposta *loadrejected*) le richieste di deposito in caso contrario
     1. > Domanda: le richieste possono essere gestite anche mentre il robot è in attività?
 
         Sì, potrebbe arrivare altro camion che chiede.
