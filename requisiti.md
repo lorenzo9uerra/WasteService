@@ -1,6 +1,10 @@
+[Ritorna all'inizio](README.md)
+
 # WasteService - Analisi dei Requisiti
 
 ## Requisiti
+
+Per ogni requisito è stato incluso un modello eseguibile in Qak.
 
 - **request**: il *WasteService* accetta richieste di deposito da *Waste truck* che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare
     - il sistema può controllare se c'è spazio per un certo materiale: accetta (risposta *loadaccept*), e rifiuta (risposta *loadrejected*) le richieste di deposito in caso contrario
@@ -12,21 +16,29 @@
 
         Sì.
 
+    [Modello eseguibile](./model.requisiti/src/request.qak)
+
 - **deposit**: il *trolley*, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa è una *deposit action*:
     1. Raccolta di rifiuti da *Waste truck* in INDOOR
     2. Andare da INDOOR a contenitore rifiuti (* BOX)
     3. Depositare rifiuti nel contenitore
     - A lavoro finito, il *trolley* torna a HOME solo se non ci sono altre richieste da gestire, sennò gestisce subito la richiesta successiva andando a INDOOR
 
+    [Modello eseguibile](./model.requisiti/src/deposit.qak)
+
 - **led**: nel sistema è presente un led che:
     - è *acceso* se il *trolley* è a HOME
     - *lampeggia* se il *trolley* è in attività
     - è *spento* se il trolley è in stato di *stop*
+    
+    [Modello eseguibile](./model.requisiti/src/led.qak)
 
 - **sonar-stop**: è presente un *sonar* che, se misura una distanza sotto DLIMIT (valore prefissato), mette il *trolley* in stato di *stop* fino a che la distanza non torna a DLIMIT, nel qual caso il *trolley* riparte
     1. > Domanda: cosa vuol dire precisamente *stop*? Torna a HOME o rimane lì?
 
         Sì ferma e basta.
+
+    [Modello eseguibile](./model.requisiti/src/sonar-stop.qak)
 
 - **gui**: è presente una gui (*WasteServiceStatusGUI*) che mostra i seguenti dati:
     - Stato del *trolley* e sua posizione
@@ -35,6 +47,8 @@
         Basta una posizione più generale.
     - Carico depositato attuale (in kg)
     - Stato del Led (acceso/spento/lampeggiante)
+
+    [Modello eseguibile](./model.requisiti/src/gui.qak)
 
 Da questa ananlisi, emerge che il *core business* del sistema è costituito dai requisiti di **request** e **deposit**. Un primo sprint SCRUM sarà quindi lo sviluppo a partire da questi requisiti centrali, mentre i successivi sprint implementeranno le funzionalità aggiuntive di **led**, **sonar-stop**, e **gui**.
 
