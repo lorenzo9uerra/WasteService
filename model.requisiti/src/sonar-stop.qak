@@ -1,0 +1,46 @@
+System wasteservice_req_sonar_stop
+
+Event sonarStop : sonarStop(_)
+Event sonarResume : sonarResume(_)
+
+Context ctxreq_sonar ip [host="localhost" port=8050]
+
+QActor sonar_sonar context ctxreq_sonar {
+	[#
+		var DLIMIT = 50
+		var Val = 200
+	#]
+
+	State scanWait initial {
+		delay 200
+	}
+	Goto scan
+	
+	State scan {
+		[# 
+			var PrevVal = Val
+			Val = kotlin.random.Random.nextInt(0, 200) 
+		#]
+		println("\tSonar: detected distance $Val")
+		if [# Val <= DLIMIT && PrevVal > DLIMIT #] {
+			emit sonarStop : sonarStop(_)
+		}
+		if [# Val > DLIMIT && PrevVal <= DLIMIT #] {
+			emit sonarResume : sonarResume(_)
+		}
+	}
+	Goto scanWait
+}
+
+QActor trolley_sonar context ctxreq_sonar {
+	State work initial {
+		println("\tTrolley: Working...")
+	}
+	Transition t0 whenEvent sonarStop -> stopped
+	
+	State stopped {
+		println("\tTrolley: Stopped!")
+	}
+	Transition t0 whenEvent sonarResume -> work
+}
+

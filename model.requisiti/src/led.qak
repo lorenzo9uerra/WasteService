@@ -1,0 +1,67 @@
+System wasteservice_req_led
+
+Event trolleyStatus : trolleyStatus(STATUS)
+
+Context ctxreq_led ip [host="localhost" port=8050]
+
+QActor trolley context ctxreq_led {
+	State wait initial {
+		delay 1000
+	}
+	Goto randomStatus
+	
+	State randomStatus {
+		if [# kotlin.random.Random.nextFloat() > 0.5 #] {
+			println("\tTrolley working")
+			emit trolleyStatus : trolleyStatus(working)
+		} else {
+			if [# kotlin.random.Random.nextFloat() > 0.5 #] {
+				println("\tTrolley stopped")
+				emit trolleyStatus : trolleyStatus(stopped)
+			}
+			else {
+				println("\tTrolley at home")
+				emit trolleyStatus : trolleyStatus(home)
+			}
+		}
+	}
+	Goto wait
+}
+
+QActor led context ctxreq_led {
+	[#
+		var Next = 0 
+	#]
+	
+	// Il Trolley inizialmente è a HOME
+	State on initial {
+		println("\tLed | ON")
+	}
+	Transition t0 whenEvent trolleyStatus -> handleStatus
+	
+	State off {
+		println("\tLed | OFF")
+	}
+	Transition t0 whenEvent trolleyStatus -> handleStatus
+	
+	State blinking {
+		println("\tLed | BLINKING")
+	}
+	Transition t0 whenEvent trolleyStatus -> handleStatus
+	
+	
+	State handleStatus {
+		onMsg ( trolleyStatus : trolleyStatus(STATUS) ) {
+			[#
+				Next = when(payloadArg(0)) {
+					"stopped" -> 0
+					"home" -> 1
+					else -> 2
+				}
+			#]
+		}
+	}
+	Goto on if [# Next == 1 #] else elseOffBlink
+	State elseOffBlink {}
+	Goto off if [# Next == 0 #] else blinking
+}
