@@ -2,14 +2,6 @@
 
 In questa fase di analisi verrà utilizzato il linguaggio ad attori Qak per la modellazione; i messaggi useranno termini specifici del linguaggio per rappresentare le varie modalità di comunicazione, ma non necessariamente corrisponderanno alla tecnologia specifica utilizzata in implementazione.
 
-## Prototipo Iniziale
-
-Per poter avere una migliore visione d'insieme del problema, è stato realizzato un prototipo usando una architettura logica di prova (non definitiva, mancando ancora una vera fase di analisi):
-
-![schema dell'architettura](doc/img/architettura1.jpg)
-
-Il [prototipo è questo](prototipo/src/prototipo.qak) (per semplicità, non è inclusa la distinzione tra ritorno a HOME e ritorno a INDOOR, che rimane un requisito del sistema vero e proprio).
-
 ## Interazione
 
 Vengono definite diverse tipologie di messaggio:
@@ -97,25 +89,31 @@ Inoltre, per poter interagire con i cassonetti, sono introdotti degli attori di 
 Anche qua due opzioni possibili:
 - *Storage manager centrale*: un solo attore che gestisce tutti i cassonetti, tenendo traccia dei contenuti attuali e facendo da unico fronte di comunicazione nel sistema per questi dati. Questo semplificherebbe la comunicazione non richiedendo di distinguere il destinatario in base al materiale, ma richiedendo forse più complessità nel caso, per esempio, in cui i dati di storage siano ricavati da sensori su ogni cassonetto, che quindi dovrebbero aggiornare separatamente lo stesso controllore contenente lo StorageManager.
 
-```
-QActor storage context ctxwasteservice {...}
-```
+    ```
+    QActor storage context ctxwasteservice {...}
+    ```
+
+    ![](doc/img/arch_request_1.png)
 
 - *Storage manager separati*: un attore per cassonetto (rappresentato nell'esempio sopra), che andrà quindi separatamente interpellato in base al tipo di materiale. La soluzione sarebbe la più intuitiva ma con i problemi sopraelencati.
 
-```
-QActor storage_glass context ctxwasteservice {...}
-QActor storage_paper context ctxwasteservice {...}
-```
+    ```
+    QActor storage_glass context ctxwasteservice {...}
+    QActor storage_paper context ctxwasteservice {...}
+    ```
 
+    ![](doc/img/arch_request_2.png)
 
 ### Requisito **deposit** - architettura
 
 - **Trolley**: si occupa di controllare il trolley.
 
-```
-QActor trolley context ctxwasteservice {...}
-```
+    ```
+    QActor trolley context ctxwasteservice {...}
+    ```
+
+    ![](doc/img/arch_deposit.png)
+
 
 La logica di movimento è analizzata in seguito: [Deposit: movimento del trolley](#deposit-movimento-del-trolley).
 
