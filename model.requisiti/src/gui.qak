@@ -1,0 +1,102 @@
+System wasteservice_req_gui
+
+Event trolleyStatus : trolleyStatus(STATUS, POS)
+Event ledStatus : ledStatus(STATUS)
+
+Context ctxreq_gui ip [host="localhost" port=8050]
+
+QActor gui_gui context ctxreq_gui {
+	[#
+		var TrolleyPos = ""
+		var TrolleyStatus = ""
+		var LedStatus =	""
+	#]
+	
+	State show initial {
+		println("\tGUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus]")
+	}
+	Transition t0 whenEvent ledStatus -> updateLed
+				  whenEvent trolleyStatus -> updateTrolley
+				  
+  	State updateLed {
+  		onMsg (ledStatus : ledStatus(STATUS)) {
+  			[# LedStatus = payloadArg(0) #]
+  		}
+  	}
+  	Goto show
+  	
+  	State updateTrolley {
+  		onMsg (trolleyStatus : trolleyStatus(STATUS, POS)) {
+			[# TrolleyStatus = payloadArg(0) #]
+			[# TrolleyPos    = payloadArg(1) #]			
+  		}
+  	}
+  	Goto show
+}
+
+QActor trolley_gui context ctxreq_gui {
+	State wait initial {
+		delay 1000
+	}
+	Goto randomStatus
+	
+	State randomStatus {
+		[#
+			var Status = ""
+			var Position = ""	
+
+			var r = kotlin.random.Random.nextFloat() 
+			if (r < 0.25) {
+				Position = "indoor"
+			} else if (r < 0.5) {
+				Position = "room"
+			} else if (r < 0.75) {
+				Position = "glass box"
+			} else {
+				Position = "plastic box"
+			}
+		#]
+		
+		if [# kotlin.random.Random.nextFloat() > 0.5 #] {
+			[# Status = "working" #]
+		} else {
+			if [# kotlin.random.Random.nextFloat() > 0.5 #] {
+				[# Status = "stopped" #]
+			}
+			else {
+				[# 
+					Status = "home"
+					Position = "home"
+				#]
+			}
+		}
+		
+		emit trolleyStatus : trolleyStatus($Status, $Position)
+	}
+	Goto wait
+}
+
+QActor led_gui context ctxreq_gui {
+	State wait initial {
+		delay 1500
+	}
+	Goto randomStatus
+	
+	State randomStatus {
+		[#
+			var Status = ""
+
+			var r = kotlin.random.Random.nextFloat() 
+			if (r < 0.33) {
+				Status = "Off"
+			} else if (r < 0.66) {
+				Status = "On"
+			} else {
+				Status = "Blinking"
+			}
+		#]
+		
+		emit ledStatus : ledStatus($Status)
+	}
+	Goto wait
+}

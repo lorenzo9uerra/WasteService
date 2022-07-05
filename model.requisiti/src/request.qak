@@ -10,7 +10,7 @@ QActor wastetruck_req context ctxreq_request {
 	State req initial {
 		printCurrentMessage
 		[#
-			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "paper"
+			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
 			var Quantity = kotlin.random.Random.nextInt(10, 30)	
 		#]
 		println ("\tTruck with $Material in amount $Quantity arrived")

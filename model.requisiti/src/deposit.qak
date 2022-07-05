@@ -10,7 +10,7 @@ QActor wasteservice_dep context ctxreq_deposit {
 	State sendDeposit initial {
 		printCurrentMessage
 		[#
-			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "paper"
+			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
 			var Quantity = kotlin.random.Random.nextInt(10, 30)	
 		#]
 		forward trolley_dep -m deposit : deposit($Material, $Quantity)
@@ -86,10 +86,10 @@ QActor trolley_dep context ctxreq_deposit {
 QActor waste_boxes context ctxreq_deposit {
 	[#
 		var ContentGlass = 0.0
-		var ContentPaper = 0.0	
+		var ContentPlastic = 0.0	
 	#]
 	State idle initial {
-		println("\tBOXES: Paper $ContentPaper, Glass $ContentGlass")
+		println("\tBOXES: Paper $ContentPlastic, Glass $ContentGlass")
 	}
 	Transition t0 whenMsg depositWaste -> handleDeposit
 	
@@ -98,7 +98,7 @@ QActor waste_boxes context ctxreq_deposit {
 			if [# payloadArg(0) == "glass" #] {
 				[# ContentGlass += payloadArg(1).toDouble() #]
 			} else {
-				[# ContentPaper += payloadArg(1).toDouble() #]				
+				[# ContentPlastic += payloadArg(1).toDouble() #]				
 			}
 		}
 	}
