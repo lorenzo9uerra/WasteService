@@ -57,13 +57,11 @@ public class TestRequest {
             ColorsOut.outappl("answer=" + answer, ColorsOut.GREEN);
             connTcp.close();
             assertTrue(answer.contains("loadaccept"));
-            truckRequestStr = "msg(depositRequest,request,wasteservice,trolley,depositRequest(glass,10),1)";
             connTcp = new ConnTcp("localhost", 8050);
             answer = connTcp.receiveMsg();
             assertTrue(answer.contains("pickedUp"));
         } catch (Exception e) {
             ColorsOut.outerr("ERROR:" + e.getMessage());
-
         }
     }
 }

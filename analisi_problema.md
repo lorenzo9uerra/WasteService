@@ -150,7 +150,11 @@ Si è notato inoltre che, data la staticità dell'ambiente, i percorsi in caso d
 
 # TestPlan
 
+Vengono inclusi test plan codificati in Java (JUnit); non sono eseguibili non disponendo ancora delle vere implementazioni e non conoscendo la precisa tecnologia con cui sarà implementato il progetto, ma sono le tracce che andranno seguite per implementare i test dei requisiti.
+
 ### TestPlan: request
+
+Testplan in Java: [TestRequest.java](./prototipo/test/TestRequest.java)
 
 - **Test Deny**: il camion invia una richiesta di deposito al WasteService per una quantità maggiore di quella che i cassonetti possono ospitare e questo risponde con un *loadrejected*.
 
@@ -158,5 +162,7 @@ Si è notato inoltre che, data la staticità dell'ambiente, i percorsi in caso d
 
 
 ### TestPlan: deposit
+
+Testplan in Java: [TestDeposit.java](./prototipo/test/TestDeposit.java)
 
 - **Test deposit**: Inviata una richiesta al trolley, questo invia un messaggio comunicando di aver recuperato il carico, dopodichè, depositato il carico, invia un messaggio allo storage manager comunicandogli la quantità di materiale depositato. Infine il WasteService riceve il messaggio *doneDeposit* che indica che il trolley ha terminato il proprio lavoro.
