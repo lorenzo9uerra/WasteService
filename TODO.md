@@ -2,6 +2,30 @@
 
 - Aggiungere test per trolley con stop
 
+RICEVIMENTO 08/07
+
+- Trolley in realtà è già attore da requisiti, dovendo poter essere in altro nodo; questo COME MODELLO, poi in implementazione può essere server ecc, ma come linguaggio di modello scelto comunicare = attore
+
+POST RICEVIMENTO 07/07
+
+- WasteService invia richieste al trolley per ogni singolo movimento che deve fare? che così gli stati sono molto più incasinati
+
+- Se trolley invia dispatch a WasteService, come faccio io dall'esterno a verificarlo non potendo fare da destinatario di un messaggio senza attore?
+
+- Test deposit: come faccio a verificare dentro a classe storage che il numero è cambiato nel test **in fase di analisi dei requisiti** se in quella fase il test deve non usare altre componenti (non potendo presumere già l'architettura del sistema?)
+
+- Dire "questa cosa la rappresento con un attore" senza dare opzioni (vedi Trolley e WasteService) è materia di analisi del problema o dei requisiti?
+
+DOPO RICEVIMENTO 07/07
+
+- Valori preimpostati: come si impostano?
+
+- Mantenere nomi di componenti di analisi, non necessariamente supporti per test
+
+- Perchè Qak: permette di formalizzare sistemi distribuiti
+
+- Un requisito è una dichiarazione di cosa ci si aspetta che faccia il sistema
+
 DOPO RICEVIMENTO 30/06
 ~~- Usare nomi giusti, loadaccept/reject, WasteService, WasteTruck, ecc~~
 

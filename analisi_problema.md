@@ -1,88 +1,14 @@
-# Analisi del problema
+## Analisi del problema
 
 In questa fase di analisi verrà utilizzato il linguaggio ad attori Qak per la modellazione; i messaggi useranno termini specifici del linguaggio per rappresentare le varie modalità di comunicazione, ma non necessariamente corrisponderanno alla tecnologia specifica utilizzata in implementazione.
 
-## Interazione
-
-Vengono definite diverse tipologie di messaggio:
-
-### Requisito **request**
-
-Si tratta di una domanda con risposta, quindi l'implementazione immediata è request-reply:
-```
-Request deposit : deposit(MAT, QNT)
-Reply loadaccept : loadaccept()
-Reply loadrejected : loadrejected()
-```
-
-È necessario che (in caso di loadaccept) il camion sappia quando lo scarico dei rifiuti da parte del trolley è stato completato per poter ripartire. Ci sono diverse opzioni: 
-
-1. La risposta (loadaccept) potrebbe essere semplicemente inviata solo a scarico completato, a differenza di loadrejected che verrebbe inviata appena possibile. Una volta arrivata la risposta, il camion potrebbe partire. La conseguenza di questo approccio sarebbe l'impossibilità di rilevare errori da parte del Waste truck: "vedrebbe" nella UI un'attesa senza sapere se è per via dello scarico rifiuti in corso oppure per un errore.
-
-2. La risposta (loadaccept) arriva subito come per loadrejected, per informare il Waste truck il prima possibile, e viene inviato un successivo messaggio pickedUp per notificare l'avvenuto scarico e la possibilità di partire. Questo richiede che il Waste truck sia anche in grado di ricevere passivamente messaggi, e non solo inviare richieste e ricevere risposte come da requisiti; è possibile, ma richiede accorgimenti più specifici nello sviluppo.
-
-```
-Dispatch pickedUp : pickedUp()
-```
-
-### Requisito **deposit**
-
-Il Wasteservice invia un messaggio al trolley per richiedere un'azione di deposito. Il trolley, per permettere la gestione di casi di coda, deve anche notificare al WasteService quando finisce lo scarico dei rifiuti dal Waste truck e quando finisce l'operazione di deposito al BOX.
-
-1. Questo potrebbe essere implementato come risposta a una richiesta deposit per iniziare il lavoro:
-```
-Request deposit : deposit(MAT, QNT)
-Reply collectWaste : collectWaste(MAT, QNT)
-Dispatch doneDeposit : doneDeposit(MAT, QNT)
-```
-2. Oppure, in alternativa, come dispatch successivo e scollegato:
-```
-Dispatch trolleyDeposit : deposit(MAT, QNT)
-Dispatch collectWaste : collectWaste(MAT, QNT)
-Dispatch doneDeposit : doneDeposit(MAT, QNT)
-```
-Nel primo caso, sarebbe più chiaro a livello concettuale, ma si avrebbe una risposta in un momento molto distante dalla richiesta; nel secondo, la separazione rappresenterebbe meglio questa distanza nel tempo, evitando il mantenimento di una connessione a seconda dell'implementazione.
-
-Il messaggio di _collectWaste_ è necessario perchè quando il trolley parte da HOME ha bisogno di tempo per dirigersi ad INDOOR; inoltre, in un caso reale, impiega del tempo per scaricare i rifiuti dal camion e potrebbe anche rompersi prima di completare lo scarico. Il camion quindi ha bisogno di sapere quando lo scarico è avvenuto per poter partire, e il WasteService deve a sua volta saperlo dal trolley.
-
-Inoltre, per iniziare lo scarico nel cassonetto viene comunicato il deposito di un materiale da parte del trolley:
-```
-Dispatch storageDeposit : storageDeposit(MAT, QNT)
-```
-
-- *doneDeposit* viene inviato al termine dell'operazione di deposito: quindi, come da requisiti, quando i rifiuti sono stati scaricati dentro al cassonetto con successo e prima di dirigersi verso HOME o INDOOR. Questo serve per notificare il WasteService che il trolley è libero per altre azioni di deposito.
-- Il WasteService può inviare ulteriori messaggi di *deposit* prima che il trolley torni alla posizione iniziale, così che il trolley possa sapere se tornare a HOME (nel caso in cui non ci siano altre azioni di deposito da compiere) o a INDOOR (nel caso ce ne siano), a seconda di quale componente contenga la logica di movimento del trolley (vedi sotto: [Deposit: movimento del trolley](#deposit-movimento-del-trolley)). In questo caso, ci sono due opzioni:
-    1. Il WasteService invia *deposit* al trolley appena arriva la richiesta dal Waste truck, e il trolley ne tiene traccia e comincia ad eseguirla appena finita la precedente.
-    2. Il WasteService aspetta di ricevere *doneDeposit* per poi inviare un ulteriore richiesta di *deposit* al trolley.
-
-
-## Architettura
+### Componenti
 
 Data la numerosa quantità di componenti che comunicano tra loro, implementare la logica del sistema come un insieme di attori è abbastanza naturale. 
 
-Per scopo di prototipo e simulazione, i Waste truck vengono trattati come attori, ma nel caso reale sarebbero "alieni" al sistema, inviando dati dall'esterno, probabilmente tramite una GUI (web o analoga) usabile dal camionista.
+#### Requisito **request** - componenti
 
-```
-Context ctxwastetruck ip [host="localhost" port=8060]
-
-QActor wastetruck context ctxwastetruck {...}
-```
-
-Gli attori ricavati dai componenti requisiti e fisici sono:
-
-### Requisito **request** - architettura
-
-Il WasteService è rappresentato da un attore:
-
-- Riceve richieste dai camion
-- In base allo stato di storage (vedi [req. storage-check](#requisito-storage-check)) conferma o rifiuta
-- Se conferma, o invia il trolley a depositare, oppure se esso è al lavoro gli comunica la presenza di ulteriori richieste
-
-```
-Context ctxwasteservice ip [host="localhost" port=8050]
-
-QActor wasteservice context ctxwasteservice {...}
-```
+Il WasteService è rappresentato come già detto in analisi dei requisiti da un attore.
 
 Inoltre, per poter interagire con i cassonetti, sono introdotti degli attori di Storage per comunicare modifiche allo storage e inviare aggiornamenti a componenti di controllo per futuri Sprint.
 
@@ -104,22 +30,17 @@ Anche qua due opzioni possibili:
 
     ![](doc/img/arch_request_2.png)
 
-### Requisito **deposit** - architettura
+**Conclusione.** Si è ritenuta migliore la prima opzione, cioè **usare un solo componente StorageManager**, rendendo più semplice la pianificazione e la progettazione del sistema, a livello di architettura e interazione, oltre a rendere più facile l'espansione (per esempio, aggiungendo altri tipi di cassonetto) tramite configurazione interna al componente, che nel secondo caso richiederebbe la creazione di nuovi componenti.
 
-- **Trolley**: si occupa di controllare il trolley.
+![](doc/img/arch_request_1.png)
 
-    ```
-    QActor trolley context ctxwasteservice {...}
-    ```
+### Requisito **deposit** - La deposit action
 
-    ![](doc/img/arch_deposit.png)
+#### Posizione delle aree di interesse
 
+Da requisiti, si suppone che le posizioni e grandezza delle aree di HOME, INDOOR, e cassonetti vari, siano decise a priori e a priori comunicate al trolley prima dell'inizio del movimento. Riguardo a come questo sia deciso si consulti [Configurazione](#configurazione).
 
-La logica di movimento è analizzata in seguito: [Deposit: movimento del trolley](#deposit-movimento-del-trolley).
-
-## Deposit: movimento del trolley
-
-Da requisiti, si suppone che le posizioni e grandezza delle aree di HOME, INDOOR, e cassonetti vari, siano decise a priori e a priori comunicate al trolley prima dell'inizio del movimento.
+#### Pathfinding
 
 Data una posizione di partenza e di arrivo verso la quale il trolley deve navigare, questo può calcolare due tipi di percorso:
 1. Dividendo la stanza in una griglia quadrata di lato RD, il trolley può semplicemente navigare lungo le direzioni cartesiane, prima ad una coordinata della destinazione e poi all'altra.
@@ -138,19 +59,153 @@ Data una posizione di partenza e di arrivo verso la quale il trolley deve naviga
     
     **CONTRO**: non disponendo di componenti già implementate per questo scopo, andrebbe programmata la logica di pathfinding e navigazione per questa casistica.
 
-Inoltre, esistono anche più opzioni per quanto riguarda quale componente calcoli il percorso:
+**Conclusione.** Data la scala ridotta del problema, e la scarsa urgenza di esso, si ritiene migliore la prima opzione, la **navigazione cartesiana**, che permette di riutilizzare i componenti di navigazione di robot già a disposizione ottimizzando i tempi di sviluppo.
 
-1. Il trolley potrebbe calcolare internamente il percorso, ricevendo dal Wasteservice solo istruzioni riguardo a quali destinazioni raggiungere. Questo sposterebbe parte della logica dentro al trolley, rendendo necessarie componenti computazionali più elaborate dell'alternativa.
+#### Gestione della deposit action
 
-2. Il trolley potrebbe essere un puro attuatore, ricevendo il percorso già calcolato dal Wasteservice e limitandosi a seguirlo. Questo aumenta il carico sul WasteService (salvo il dedicare processi appositi a questo scopo) e aumenta i dati trasmessi; inoltre richiede per evitare errori che il WasteService sia aggiornato sulla posizione del trolley.
+Esistono più opzioni per quanto riguarda quale componente
+debba gestire la deposit action:
 
-Si è notato inoltre che, data la staticità dell'ambiente, i percorsi in caso di funzionamento regolare hanno un numero ridotto, essendo sempre tra le stesse (e poche) posizioni. Quindi, se necessario, potrebbe essere possibile precalcolare i percorsi, e riutilizzare sempre gli stessi senza richiedere la generazione ogni volta; nel caso per qualche motivo il trolley si ritrovi in una posizione fuori dalle aspettative, il percorso andrebbe comunque calcolato ad hoc.
+1. Trolley potrebbe svolgere internamente la gestione dei vari passaggi, ricevendo da WasteService solo le istruzioni per iniziare una deposit action. Questo richiederebbe di spostare la logica di business dentro al Trolley, in parte.
 
-# TestPlan
+2. Il Trolley potrebbe essere un puro attuatore, offrendo un' "interfaccia" di operazioni primitive, cioè *spostarsi verso delle coordinate*, *caricare i rifiuti* (da WasteTruck) e *scaricare i rifiuti* (nel cassonetto). Il WasteService si occuperebbe di gestire la successione dei passaggi di una deposit action, mentre il Trolley necessiterebbe solo di gestire la sequenza delle operazioni primitive del BasicRobot per raggiungere le posizioni, non conoscendo logica di business.
 
-Vengono inclusi test plan codificati in Java (JUnit); non sono eseguibili non disponendo ancora delle vere implementazioni e non conoscendo la precisa tecnologia con cui sarà implementato il progetto, ma sono le tracce che andranno seguite per implementare i test dei requisiti.
+**Conclusione.**  Per avere una migliore gestione dei dati, e non dividere troppo la logica di business tra nodi diversi, abbiamo deciso per la seconda opzione, **trattare il Trolley come attuatore e lasciare a WasteService la gestione dell'azione di deposito**. Questo porta a una semplificazione della struttura interna del Trolley, ma al contempo ad una complicazione di WasteService, che deve contemporaneamente gestire richieste e risposte con WasteTruck, e i passaggi della deposit action. 
 
-### TestPlan: request
+Per una formalizzazione degli stati, si consulti [Architettura Logica](#architettura-logica).
+
+Inoltre, questa modalità permette di assolvere il requisito **indoor-more-requests** senza richiedere interazioni apposite tra WasteService e Trolley in caso di nuove richieste durante l'operazione precedente; nel primo caso, sarebbe stato necessario far conoscere al Trolley l'arrivo di richieste per permettere di sapere se tornare o meno ad HOME.
+
+Per poter verificare i requisiti, è necessario poter conoscere la posizione del Trolley, in termini di quale luogo di interesse è stato raggiunto. Visto che con questa modalità Trolley non conosce le posizioni delle vare aree di interesse (dato che riceve direttamente comandi per spostarsi a una certa coordinata), è necessario che comunichi a WasteService la sua posizione numerica. Per farlo, in maniera coerente con il metodo di navigazione scelto si divide la stanza in una griglia, con caselle quadrate di lato RD (grandezza del trolley, da requisiti). Le coordinate dei luoghi d'interesse sono così indicate:
+
+- (0,0) è la casella in alto a sinistra della stanza.
+- (X, Y) è la casella X caselle a destra, e Y caselle in basso, rispetto a (0,0)
+- Un luogo d'interesse copre una o più caselle, ed è delimitato indicando casella in alto a sinistra e casella in basso a destra.
+
+#### Idee per possibile ottimizzazione
+
+Si è notato infine che, data la staticità dell'ambiente, i percorsi in caso di funzionamento regolare hanno un numero ridotto, essendo sempre tra le stesse (e poche) posizioni. Quindi, se necessario, potrebbe essere possibile precalcolare i percorsi, e riutilizzare sempre gli stessi senza richiedere la generazione ogni volta; nel caso per qualche motivo il trolley si ritrovi in una posizione fuori dalle aspettative, il percorso andrebbe comunque calcolato ad hoc.
+
+### Configurazione
+
+Da requisiti, diversi valori, cioè
+
+- *DLIMIT*
+- La posizione di HOME
+- La posizione e area di INDOOR
+- La posizione e area di GLASS BOX e PLASTIC BOX
+
+sono impostati a priori. Questo può essere realizzato cablando i valori nel codice, ma l'opzione più sensata è quella di usare dei file di configurazione, modificabili dall'utente.
+
+In questo SPRINT, considerando solo il core business dell'applicazione, l'unico componente che necessita di conoscere i dati di configurazione è WasteService. Quindi, il file di configurazione sarà collocato all'interno del suo nodo.
+
+Un esempio:
+
+*WasteService.json*
+```json
+{
+    "positions": {
+        "HOME": [[0,0], [0,0]],
+        "INDOOR" : [[0,15], [3,15]],
+        "GLASS_BOX" : [[13,0], [14,0]],
+        "PLASTIC_BOX": [[16,4], [16,5]]
+    },
+    "DLIMIT": 50
+}
+```
+
+### Interazione
+
+#### Requisito **request**
+
+È necessario che (in caso di loadaccept) il waste truck sappia quando lo scarico dei rifiuti da parte del trolley è stato completato per poter ripartire. Ci sono diverse opzioni: 
+
+1. La risposta (loadaccept) potrebbe essere semplicemente inviata solo a scarico completato, a differenza di loadrejected che verrebbe inviata appena possibile. Una volta arrivata la risposta, il camion potrebbe partire. La conseguenza di questo approccio sarebbe l'impossibilità di rilevare errori da parte del Waste truck: "vedrebbe" nella UI un'attesa senza sapere se è per via dello scarico rifiuti in corso oppure per un errore.
+
+2. La risposta (loadaccept) arriva subito come per loadrejected, per informare il Waste truck il prima possibile, e viene inviato un successivo messaggio pickedUp per notificare l'avvenuto scarico e la possibilità di partire. Questo richiede che il Waste truck sia anche in grado di ricevere passivamente messaggi, e non solo inviare richieste e ricevere risposte come da requisiti; è possibile, ma richiede accorgimenti più specifici nello sviluppo.
+
+    ```
+    Dispatch pickedUp : pickedUp()
+    ```
+
+**Conclusione.** Si ritiene migliore la seconda opzione, **la partenza del camion dopo un dispatch pickedUp**: il vantaggio dal punto di vista dell'utente (non necessariamente competente nella tecnologia) nel sapere subito se è stato accettato o meno il carico, e non rimanere bloccati in una schermata di attesa o equivalente anche in caso di successo, vale la pena di avere ulteriori accortezze in implementazione.
+
+Inoltre, WasteService deve poter sapere da StorageManager lo stato attuale di riempimento dei cassonetti.
+
+1. Questo potrebbe essere implementato come una request-reply, chiedendo a StorageManager lo stato dei cassonetti.
+
+    ```
+    Request storageAsk : storageAsk(MAT)
+    Reply storageAt : storageAt(MAT, QNT)
+    ```
+
+2. Potrebbe essere implementato come un evento inviato da StorageManager a ogni modifica dei contenuti, o in modo simile rendendo i cassonetti risorse osservabili.
+
+    ```
+    Event storageUpdate : storageUpdate(MAT, QNT)
+    ```
+
+**Conclusione.** Per adempiere a questo requisito si è ritenuta migliore la prima opzione, **request-reply**; nel secondo caso, WasteService dovrebbe salvare in una variabile interna di stato il dato aggiornato ogni volta che lo riceve, cosa che potrebbe avvenire in qualunque momento, invece di chiederlo semplicemente all'occorrenza.
+
+TODO: immagine modello
+
+TODO: modello eseguibile
+
+#### Requisito **deposit**
+
+Il Wasteservice, come specificato in [Gestione della deposit action](#gestione-della-deposit-action), si occupa dei vari passaggi del deposito. Deve quindi poter inviare messaggi a Trolley per coordinare questa operazione. Deve inoltre sapere quando Trolley termina le operazioni per e le successive.
+
+1. Questo potrebbe essere implementato come una serie di dispatch, con un singolo dispatch per le conferme di operazione conclusa.
+    ```
+    Dispatch trolleyMove : trolleyMove(X, Y)
+    Dispatch trolleyCollect : trolleyCollect(MAT, QNT)
+    Dispatch trolleyDeposit : trolleyDeposit(MAT, QNT)
+    Dispatch trolleyDone : trolleyDone(_)
+    ```
+2. Oppure, in alternativa, come diverse richieste, a cui Trolley risponde a operazione conclusa:
+    ```
+    Request trolleyMove : trolleyMove(X, Y)
+    Request trolleyCollect : trolleyCollect(MAT, QNT)
+    Request trolleyDeposit : trolleyDeposit(MAT, QNT)
+    Reply trolleyDone : trolleyDone(_)
+    ```
+
+**Conclusione.** Si sceglie la seconda opzione, modellare le operazioni primitive come **request-response**, perchè permette a Trolley di non conoscere WasteService ma di agire solo in risposta a delle richieste.
+
+Inoltre, per iniziare lo scarico nel cassonetto viene comunicato il deposito di un materiale da parte del trolley:
+```
+Dispatch storageDeposit : storageDeposit(MAT, QNT)
+```
+Questo messaggio viene inviato da Trolley a StorageManager, ed è necessario per trattare allo stesso modo la situazione di test virtuale e il caso reale; infatti, un caso reale potrebbe usare un sensore nei cassonetti per aggiornare i dati sui contenuti noti a StorageManager, mentre in una situazione virtuale questo deve essere necessariamente contenuto tramite messaggi.
+
+In un caso reale, bisogna quindi testare la consistenza tra dati noti a StorageManager dopo l'invio del messaggio, e i dati reali dei contenuti. Un test plan per questo caso è il seguente:
+
+TODO: test plan dati veri vs dati messaggi
+
+Il modello per le componenti correlate a deposit è il seguente:
+
+TODO: immagine modello
+
+TODO: modello eseguibile
+
+
+### Architettura Logica
+
+Ecco quindi l'architettura logica del sistema in generale per questo SPRINT:
+
+TODO: immagine architettura logica
+
+TODO: immagine stati Trolley
+
+TODO: immagine stati WasteService
+
+TODO: modello eseguibile architettura logica
+
+Per scopo di prototipo e simulazione, i Waste truck vengono trattati come attori, ma nel caso reale sarebbero "alieni" al sistema, inviando dati dall'esterno, probabilmente tramite una GUI (web o analoga) usabile dal camionista. Essi, come specificato in [Interazione: request](#requisito-request), devono comunque disporre di una componente software in grado di rimanere in ascolto di messaggi, oltre che inviare richieste.
+
+## TestPlan
+
+#### TestPlan: request
 
 Testplan in Java: [TestRequest.java](./prototipo/test/TestRequest.java)
 
@@ -159,7 +214,7 @@ Testplan in Java: [TestRequest.java](./prototipo/test/TestRequest.java)
 - **Test Accept**: il camion invia una richiesta di deposito al WasteService, che risponde con un loadaccept. Il WasteService invia quindi un messaggio al camion che indica che il carico è stato prelevato dal trolley.
 
 
-### TestPlan: deposit
+#### TestPlan: deposit
 
 Testplan in Java: [TestDeposit.java](./prototipo/test/TestDeposit.java)
 
