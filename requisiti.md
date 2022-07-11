@@ -41,7 +41,7 @@ Per ogni requisito è stato incluso un modello eseguibile in [Qak](#scelta-del-l
     - Carico depositato attuale (in kg)
     - Stato del Led (acceso/spento/lampeggiante)
 
-Da questa ananlisi, emerge che il *core business* del sistema è costituito dai requisiti di **request**, **deposit**, e **indoor-more-requests**. Un primo sprint SCRUM sarà quindi lo sviluppo a partire da questi requisiti centrali, mentre i successivi sprint implementeranno le funzionalità aggiuntive di **led**, **sonar-stop**, e **gui**.
+Da questa analisi, emerge che il *core business* del sistema è costituito dai requisiti di **request**, **deposit**, e **indoor-more-requests**. Un primo sprint SCRUM sarà quindi lo sviluppo a partire da questi requisiti centrali, mentre i successivi sprint implementeranno le funzionalità aggiuntive di **led**, **sonar-stop**, e **gui**.
 
 ## Glossario
 
