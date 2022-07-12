@@ -147,7 +147,7 @@ Inoltre, WasteService deve poter sapere da StorageManager lo stato attuale di ri
 
 **Conclusione.** Per adempiere a questo requisito si è ritenuta migliore la prima opzione, **request-reply**; nel secondo caso, WasteService dovrebbe salvare in una variabile interna di stato il dato aggiornato ogni volta che lo riceve, cosa che potrebbe avvenire in qualunque momento, invece di chiederlo semplicemente all'occorrenza.
 
-TODO: immagine modello
+![modello request](doc/img/an_int_request.png)
 
 TODO: modello eseguibile
 
@@ -184,7 +184,7 @@ TODO: test plan dati veri vs dati messaggi
 
 Il modello per le componenti correlate a deposit è il seguente:
 
-TODO: immagine modello
+![modello request](doc/img/an_int_deposit.png)
 
 TODO: modello eseguibile
 
@@ -193,11 +193,9 @@ TODO: modello eseguibile
 
 Ecco quindi l'architettura logica del sistema in generale per questo SPRINT:
 
-TODO: immagine architettura logica
+![modello architettura logica](doc/img/arch_logica.png)
 
-TODO: immagine stati Trolley
-
-TODO: immagine stati WasteService
+![diagramma stati WasteService](doc/img/arch_fsm_wasteservice.png)
 
 TODO: modello eseguibile architettura logica
 

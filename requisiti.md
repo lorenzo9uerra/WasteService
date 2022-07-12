@@ -76,6 +76,8 @@ Reply loadaccept : loadaccept()
 Reply loadrejected : loadrejected()
 ```
 
+![schema request](doc/img/req_request.png)
+
 Il WasteService deve di conseguenza essere un attore, in grado di ricevere richieste e inviare risposte, e anche inviare messaggi a sua volta alle altre componenti del sistema.
 
 ```
