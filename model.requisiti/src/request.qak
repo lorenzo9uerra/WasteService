@@ -5,41 +5,9 @@ Reply loadaccept : loadaccept(_)
 Reply loadrejected : loadrejected(_)
 
 Context ctxreq_request ip [host="localhost" port=8050]
+Context ctxreq_request_wt ip [host="localhost" port=8060]
 
-QActor wastetruck_req context ctxreq_request {
-	State req initial {
-		printCurrentMessage
-		[#
-			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
-			var Quantity = kotlin.random.Random.nextInt(10, 30)	
-		#]
-		println ("\tTruck with $Material in amount $Quantity arrived")
-		request wasteservice_req -m truckDeposit : truckDeposit($Material, $Quantity)
-	}
-	Transition t1 whenReply loadaccept -> handleAccepted
-				  whenReply loadrejected -> handleRejected
-	
-	State handleRejected {
-		printCurrentMessage
-		println("\tTruck denied")
-	}
-	Goto waitArrival
-	
-	State handleAccepted {
-		printCurrentMessage
-		println("\tTruck accepted")
-	} 
-	Goto waitArrival
-	
-	State waitArrival {
-		printCurrentMessage
-		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(7000, 10000) #]
-		delayVar DelayTime
-	}
-	Goto req
-}
-
-QActor wasteservice_req context ctxreq_request {
+QActor req_wasteservice context ctxreq_request {
 	[#
   var CurrentRequestMaterial = ""
   var CurrentRequestQuantity = 0.0
@@ -61,7 +29,7 @@ QActor wasteservice_req context ctxreq_request {
 			#]
   			
   			// Simula richiesta di contenuti attuali con valore casuale
-  			[# CurrentSpace = kotlin.random.Random.Default.nextDouble(0.0, 50.0) #]
+  			[# CurrentSpace = kotlin.random.Random.Default.nextDouble(15.0, 50.0) #]
   			
   			println("\tWS | Request received $CurrentRequestMaterial $CurrentRequestQuantity, has $CurrentSpace")
   			
@@ -73,4 +41,45 @@ QActor wasteservice_req context ctxreq_request {
 		}
 	}
 	Goto idle
+}
+
+QActor req_wastetruck context ctxreq_request_wt {
+	[#
+		var Times = 5	
+	#]
+	State req initial {
+		printCurrentMessage
+		[#
+			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
+			var Quantity = kotlin.random.Random.nextInt(10, 30)	
+		#]
+		println ("\tTruck with $Material in amount $Quantity arrived")
+		request req_wasteservice -m truckDeposit : truckDeposit($Material, $Quantity)
+	}
+	Transition t1 whenReply loadaccept -> handleAccepted
+				  whenReply loadrejected -> handleRejected
+	
+	State handleRejected {
+		printCurrentMessage
+		println("\tTruck denied")
+	}
+	Goto waitArrival
+	
+	State handleAccepted {
+		printCurrentMessage
+		println("\tTruck accepted")
+	} 
+	Goto waitArrival
+	
+	State waitArrival {
+		printCurrentMessage
+		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(7000, 10000) #]
+		delayVar DelayTime
+		[# Times-- #]
+	}
+	Goto req if [# Times > 0 #] else finish
+	
+	State finish {
+		println("\tTermine simulazione Qak")
+	}
 }

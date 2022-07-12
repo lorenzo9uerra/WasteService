@@ -6,26 +6,7 @@ Dispatch depositWaste : depositWaste(MAT, QNT)
 
 Context ctxreq_deposit ip [host="localhost" port=8050]
 
-QActor wasteservice_dep context ctxreq_deposit {
-	State sendDeposit initial {
-		printCurrentMessage
-		[#
-			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
-			var Quantity = kotlin.random.Random.nextInt(10, 30)	
-		#]
-		forward trolley_dep -m deposit : deposit($Material, $Quantity)
-	}
-	Goto randomWait
-	
-	State randomWait {
-		printCurrentMessage
-		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(500, 3500) #]
-		delayVar DelayTime
-	}
-	Goto sendDeposit
-}
-
-QActor trolley_dep context ctxreq_deposit {
+QActor dep_trolley context ctxreq_deposit {
 	[#
 		var CarryingType = ""
 		var CarryingAmount = 0.0
@@ -34,6 +15,7 @@ QActor trolley_dep context ctxreq_deposit {
 	State home initial {
 		printCurrentMessage
 		println("\tTrolley | At home")
+		updateResource [# "pos(home)" #]
 	}
 	Transition t0 whenMsg deposit -> go_indoor
 	
@@ -53,6 +35,7 @@ QActor trolley_dep context ctxreq_deposit {
 	State indoor {
 		printCurrentMessage
 		println("\tTrolley | At indoor, picking up $CarryingAmount $CarryingType...")
+		updateResource [# "pos(indoor)" #]
 		delay 500
 	}
 	Goto go_box
@@ -65,31 +48,25 @@ QActor trolley_dep context ctxreq_deposit {
 	
 	State box {
 		println("\tTrolley | At $CarryingType box, depositing $CarryingAmount $CarryingType...")
+		updateResource [# "pos(" + CarryingType + "_box)" #]
 		delay 200
-		forward waste_boxes -m depositWaste : depositWaste($CarryingType, $CarryingAmount)
+		forward dep_waste_boxes -m depositWaste : depositWaste($CarryingType, $CarryingAmount)
 	}
 	Goto done
 	
 	State done {
 		println("\tTrolley | Done deposit action")
 	}
-	Transition t1 whenTime 0 -> go_home
-				  whenMsg deposit -> go_indoor
-				  
-  	State go_home {
-  		printCurrentMessage
-  		delay 800
-  	}
-  	Goto home
 }
 
-QActor waste_boxes context ctxreq_deposit {
+QActor dep_waste_boxes context ctxreq_deposit {
 	[#
 		var ContentGlass = 0.0
 		var ContentPlastic = 0.0	
 	#]
 	State idle initial {
 		println("\tBOXES: Paper $ContentPlastic, Glass $ContentGlass")
+		updateResource [# "glass(" + ContentGlass + ")\nplastic(" + ContentPlastic + ")" #]
 	}
 	Transition t0 whenMsg depositWaste -> handleDeposit
 	
@@ -103,4 +80,21 @@ QActor waste_boxes context ctxreq_deposit {
 		}
 	}
 	Goto idle
+}
+
+// Usato per esecuzione standalone, altrimenti invio messaggio manuale per test
+QActor dep_init context ctxreq_deposit {
+	State wait initial {
+		println("Attesa 2 secondi prima di inizio sistema per permettere test manuali...")
+		delay 2000
+	}
+	Goto send
+	
+	State send {
+		[#
+			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
+			var Quantity = kotlin.random.Random.nextInt(10, 30)	
+		#]
+		forward dep_trolley -m deposit : deposit($Material, $Quantity)
+	}
 }

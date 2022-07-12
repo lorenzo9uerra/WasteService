@@ -84,11 +84,11 @@ Context ctxwasteservice ip [host="localhost" port=8050]
 QActor wasteservice context ctxwasteservice {...}
 ```
 
-[Modello eseguibile](./model.requisiti/src/request.qak)
+[Modello eseguibile Request](./model.requisiti/src/request.qak)
 
 Viene definito un primo test plan, eseguibile con le classi generate dal modello eseguibile:
 
-TODO: test plan request requisiti
+[Test plan Request](./model.requisiti/test/it/unibo/TestRequest.java)
 
 ### Analisi **deposit**
 
@@ -100,17 +100,17 @@ L'interazione tra *Trolley* e *WasteService* riguardante l'innesco e lo svolgime
 
 La struttura dell'operazione è descritta nel modello eseguibile seguente:
 
-[Modello eseguibile](./model.requisiti/src/deposit.qak)
+[Modello eseguibile Deposit](./model.requisiti/src/deposit.qak)
 
 Viene definito un primo test plan, eseguibile con le classi generate dal modello eseguibile:
 
-TODO: test plan deposit requisiti
+[Test plan Deposit](./model.requisiti/test/it/unibo/TestDeposit.java)
 
 ### Analisi **indoor-more-requests**
 
 Dal requisito in sè non è possibile definire con più precisione l'interazione precisa interna al sistema che lo adempie, rimanendo punti aperti diversi elementi fondamentali (i tipi di interazione tra componenti del sistema). Viene definito un test plan primitivo in seguito:
 
-TODO: test plan indoor-more-requests
+[Test plan Indoor-More-Requests](./model.requisiti/test/it/unibo/TestIndoorMoreRequests.java)
 
 ## Materiale fornito dal committente
 
