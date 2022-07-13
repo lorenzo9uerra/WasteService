@@ -1,6 +1,6 @@
 System wasteservice_pro_request
 
-Request truckDeposit : truckDeposit(MAT, QNT)
+Request loadDeposit : loadDeposit(MAT, QNT)
 Reply loadaccept : loadaccept(_)
 Reply loadrejected : loadrejected(_)
 
@@ -13,25 +13,25 @@ Context ctxpro_request ip [host="localhost" port=8050]
 
 QActor pro_req_wasteservice context ctxpro_request {
 	[#
-	  var CurrentRequestMaterial = ""
-	  var CurrentRequestQuantity = 0.0
+	  var CurrentType = ""
+	  var CurrentAmount = 0.0
 	  var CurrentRequestPass = false
 	#]  
 	State idle initial {
 		printCurrentMessage
 	}
-	Transition tIdle whenRequest truckDeposit -> handleRequest
+	Transition tIdle whenRequest loadDeposit -> handleRequest
 	
 	State handleRequest {
 		printCurrentMessage
-		onMsg( truckDeposit : truckDeposit(MAT, QNT) ){
+		onMsg( loadDeposit : loadDeposit(MAT, QNT) ){
   			[# 
-  				CurrentRequestMaterial = payloadArg(0)
-  				CurrentRequestQuantity = payloadArg(1).toDouble()
+  				CurrentType = payloadArg(0)
+  				CurrentAmount = payloadArg(1).toDouble()
 			#]
   			
-  			println("\tWS | Request received $CurrentRequestMaterial $CurrentRequestQuantity")
-  			request pro_req_storagemanager -m storageAsk : storageAsk($CurrentRequestMaterial)
+  			println("\tWS | Request received $CurrentType $CurrentAmount")
+  			request pro_req_storagemanager -m storageAsk : storageAsk($CurrentType)
 		}
 	}
 	Transition t0 whenReply storageAt -> handleStorageReply
@@ -41,7 +41,7 @@ QActor pro_req_wasteservice context ctxpro_request {
 		[# CurrentRequestPass = false #]
 		onMsg( storageAt : storageAt(MAT, QNT) ){
 			println("\tWS | Has space: ${payloadArg(1)} for ${payloadArg(0)}")
-			[# CurrentRequestPass = CurrentRequestQuantity <= payloadArg(1).toDouble() #]
+			[# CurrentRequestPass = CurrentAmount <= payloadArg(1).toDouble() #]
 		}
 	}
 	Goto sendTrolley if [# CurrentRequestPass #] else rejectRequest
@@ -49,13 +49,13 @@ QActor pro_req_wasteservice context ctxpro_request {
 	State rejectRequest {
 		printCurrentMessage
 		println("\tWS | rejected")
-		replyTo truckDeposit with loadrejected : loadrejected(_)
+		replyTo loadDeposit with loadrejected : loadrejected(_)
 	}
 	Goto idle
 	
 	State sendTrolley {
 		printCurrentMessage
-		replyTo truckDeposit with loadaccept : loadaccept(_)
+		replyTo loadDeposit with loadaccept : loadaccept(_)
 		println("\tWS | accepted")
 		delay 1000
 		println("\tWS | done, sending away truck")
@@ -97,7 +97,7 @@ QActor pro_req_wastetruck context ctxpro_request {
 			var Quantity = kotlin.random.Random.nextInt(10, 30)	
 		#]
 		println ("\tTruck with $Material in amount $Quantity arrived")
-		request pro_req_wasteservice -m truckDeposit : truckDeposit($Material, $Quantity)
+		request pro_req_wasteservice -m loadDeposit : loadDeposit($Material, $Quantity)
 	}
 	Transition t1 whenReply loadaccept -> handleAccepted
 				  whenReply loadrejected -> handleRejected

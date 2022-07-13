@@ -1,0 +1,299 @@
+System wasteservice_proto_sprint1
+
+Request loadDeposit : loadDeposit(MAT, QNT)
+Reply loadaccept : loadaccept(_)
+Reply loadrejected : loadrejected(_)
+
+Dispatch pickedUp : pickedUp(_)
+
+Request storageAsk : storageAsk(MAT)
+Reply storageAt : storageAt(MAT, QNT)
+
+Request trolleyMove : trolleyMove(X, Y)
+Request trolleyCollect : trolleyCollect(MAT, QNT)
+Request trolleyDeposit : trolleyDeposit(_)
+Reply trolleyDone : trolleyDone(OK)
+
+Dispatch storageDeposit : storageDeposit(MAT, QNT)
+
+Context ctx_wasteservice_proto_ctx ip [host="localhost" port=8050]
+
+QActor wasteservice context ctx_wasteservice_proto_ctx {
+	[#
+	// Semplificato, usando singola coordinata invece che area
+	var POS_HOME = arrayOf(0,0)
+	var POS_INDOOR = arrayOf(0,5)
+	var POS_PLASTIC_BOX = arrayOf(5,2)
+	var POS_GLASS_BOX = arrayOf(3,0)
+	
+	var CurrentType = ""
+	var CurrentAmount = 0.0
+  	var CurrentRequestPass = false
+	#]  
+	State start initial {
+		updateResource [# "tpos(home)" #]
+		println("\tWS | Start, trolley at home")
+	}
+	Goto waitRequest
+	
+	State waitRequest {
+		printCurrentMessage
+	}
+	Transition tIdle whenRequest loadDeposit -> handleRequest
+	
+	State handleRequest {
+		printCurrentMessage
+		onMsg( loadDeposit : loadDeposit(MAT, QNT) ){
+  			[# 
+  				CurrentType = payloadArg(0)
+  				CurrentAmount = payloadArg(1).toDouble()
+			#]
+  			
+  			println("\tWS | Request received $CurrentType $CurrentAmount")
+  			request storagemanager -m storageAsk : storageAsk($CurrentType)
+		}
+	}
+	Transition t0 whenReply storageAt -> handleStorageReply
+	
+	State handleStorageReply {
+		printCurrentMessage
+		[# CurrentRequestPass = false #]
+		onMsg( storageAt : storageAt(MAT, QNT) ){
+			println("\tWS | Has space: ${payloadArg(1)} for ${payloadArg(0)}")
+			[# CurrentRequestPass = CurrentAmount <= payloadArg(1).toDouble() #]
+		}
+	}
+	Goto go_indoor if [# CurrentRequestPass #] else rejectRequest
+	
+	State rejectRequest {
+		printCurrentMessage
+		println("\tWS | rejected")
+		replyTo loadDeposit with loadrejected : loadrejected(_)
+	}
+	Goto waitRequest
+	
+	State go_indoor {
+		printCurrentMessage
+		println("\tWS | Enough space, sending trolley...")
+		[#var X = POS_INDOOR[0]; var Y = POS_INDOOR[1]#]
+		request trolley -m trolleyMove : trolleyMove($X, $Y)
+		replyTo loadDeposit with loadaccept : loadaccept(_)
+	}
+	Transition t0 whenReply trolleyDone -> indoor
+	
+	State indoor {
+		printCurrentMessage
+		updateResource [# "tpos(indoor)" #]
+		println("\tWT | Trolley at indoor, picking up $CurrentAmount $CurrentType...")
+		request trolley -m trolleyCollect : trolleyCollect($CurrentType, $CurrentAmount)
+	}
+	Transition t0 whenReply trolleyDone -> go_box
+	
+	State go_box {
+		printCurrentMessage
+		forward wastetruck -m pickedUp : pickedUp(_)
+		[#var X = POS_GLASS_BOX[0]; var Y = POS_GLASS_BOX[1]#]
+		if [# CurrentType == "plastic" #] {
+			[#X = POS_PLASTIC_BOX[0]; Y = POS_PLASTIC_BOX[1]#]
+		}
+		request trolley -m trolleyMove : trolleyMove($X, $Y)
+	}
+	Transition t0 whenReply trolleyDone -> box
+	
+	State box {
+		printCurrentMessage
+		println("\tWT | Trolley at $CurrentType box, depositing $CurrentAmount $CurrentType...")
+		updateResource [# "tpos(" + CurrentType + "_box)" #]
+		request trolley -m trolleyDeposit : trolleyDeposit(_)
+	}
+	Transition t0 whenReply trolleyDone -> done
+	
+	State done {
+		printCurrentMessage
+		println("\tWT | Done deposit action")
+	}
+	Transition t0 whenTime 0 -> go_home 
+				  whenRequest loadDeposit -> handleSecondRequest
+				  
+	State handleSecondRequest {
+		printCurrentMessage
+		onMsg( loadDeposit : loadDeposit(MAT, QNT) ){
+  			[# 
+  				CurrentType = payloadArg(0)
+  				CurrentAmount = payloadArg(1).toDouble()
+			#]
+  			
+  			println("\tWS | Another request received $CurrentType $CurrentAmount")
+  			request storagemanager -m storageAsk : storageAsk($CurrentType)
+		}
+	}
+	Transition t0 whenRequest storageAsk -> handleSecondStorageReply
+	
+	State handleSecondStorageReply {
+		printCurrentMessage
+		[# CurrentRequestPass = false #]
+		onMsg( storageAt : storageAt(MAT, QNT) ){
+			println("\tWS | Has space: ${payloadArg(1)} for ${payloadArg(0)}")
+			[# CurrentRequestPass = CurrentAmount <= payloadArg(1).toDouble() #]
+		}
+	}
+	Goto go_indoor if [# CurrentRequestPass #] else rejectSecondRequest
+	
+	State rejectSecondRequest {
+		printCurrentMessage
+		replyTo loadDeposit with loadrejected : loadrejected(_)
+	}
+	Goto go_home
+				  
+	State go_home {
+		printCurrentMessage
+		[#var X = POS_HOME[0]; var Y = POS_HOME[1]#]
+		request trolley -m trolleyMove : trolleyMove($X, $Y)
+	}
+	Transition t0 whenReply trolleyDone -> home
+	
+	State home {
+		printCurrentMessage
+		updateResource [# "tpos(home)" #]
+		println("\tWS | Trolley at home")
+	}
+	Goto waitRequest
+}
+
+QActor trolley context ctx_wasteservice_proto_ctx {
+	[#
+		var CarryingType = ""
+		var CarryingAmount = 0.0
+		var Pos = arrayOf(0,0)
+		fun getContentLine(): String {
+			if (CarryingAmount > 0)
+				return "\ncontent($CarryingType,$CarryingAmount)"
+			else
+				return ""
+		}
+		fun getPosLine(): String {
+			return "\npos(${Pos[0]},${Pos[1]})"
+		}
+	#]
+	State idle initial {
+		printCurrentMessage
+		updateResource [# "state(idle)" + getPosLine() + getContentLine() #]
+	}
+	Transition t0 whenRequest trolleyMove -> handleMove
+				  whenRequest trolleyCollect -> handleCollect
+				  whenRequest trolleyDeposit -> handleDeposit
+		
+	State handleMove {
+		printCurrentMessage
+		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
+		delay 700
+		// <interazione con BasicRobot22>
+		onMsg (trolleyMove : trolleyMove(X,Y)) {
+			[# Pos[0] = payloadArg(0).toInt() #]
+			[# Pos[1] = payloadArg(1).toInt() #]
+			replyTo trolleyMove with trolleyDone : trolleyDone(true)
+		}
+	}
+	Goto idle
+				  
+	State handleCollect {
+		printCurrentMessage
+		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
+		delay 500
+		onMsg ( trolleyCollect : trolleyCollect(MAT, QNT) ) {
+			[# CarryingType = payloadArg(0) #]
+			[# CarryingAmount = payloadArg(1).toDouble() #]
+			replyTo trolleyCollect with trolleyDone : trolleyDone(true)
+		}
+	}
+	Goto idle
+	
+	State handleDeposit {
+		printCurrentMessage
+		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
+		delay 500
+		forward storagemanager -m storageDeposit : storageDeposit($CarryingType,$CarryingAmount)
+		[# CarryingType = "" #]
+		[# CarryingAmount = 0.0 #]
+		replyTo trolleyDeposit with trolleyDone : trolleyDone(true)
+	}
+	Goto idle
+}
+
+QActor storagemanager context ctx_wasteservice_proto_ctx {
+	[#
+		var Content = mutableMapOf("glass" to 0.0, "plastic" to 0.0)
+	#]
+	State init initial {
+		println("STORAGE: Glass ${Content[\"glass\"]}, Plastic ${Content[\"plastic\"]}")
+		updateResource [# Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n") #]
+	}
+	Goto idle
+	
+	State idle {
+		printCurrentMessage
+	}
+	Transition t0 whenRequest storageAsk -> handleAsk
+				  whenMsg storageDeposit -> handleDeposit
+	
+	State handleAsk {
+		printCurrentMessage
+		onMsg (storageAsk : storageAsk(MAT) ) {
+			[# var Amount = kotlin.random.Random.Default.nextDouble(15.0, 50.0) #]
+			replyTo storageAsk with storageAt : storageAt($payloadArg(0), $Amount)
+		}
+	}
+	Goto idle
+	
+	State handleDeposit {
+		onMsg ( storageDeposit : depositWaste(MAT, QNT) ){
+			[# Content[payloadArg(0)] = Content.getOrDefault(payloadArg(0), 0.0) + payloadArg(1).toDouble() #]
+			println("STORAGE: Glass ${Content[\"glass\"]}, Plastic ${Content[\"plastic\"]}")
+			updateResource [# Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n") #]
+		}
+	}
+	Goto idle
+}
+
+
+// Sostituire con controllo manuale per test
+QActor wastetruck context ctx_wasteservice_proto_ctx {
+	[#
+		var Times = 5	
+	#]
+	State req initial {
+		printCurrentMessage
+		[#
+			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
+			var Quantity = kotlin.random.Random.nextInt(10, 30)	
+		#]
+		println ("\tTruck with $Material in amount $Quantity arrived")
+		request wasteservice -m loadDeposit : loadDeposit($Material, $Quantity)
+	}
+	Transition t1 whenReply loadaccept -> handleAccepted
+				  whenReply loadrejected -> handleRejected
+	
+	State handleRejected {
+		printCurrentMessage
+		println("\tTruck denied")
+	}
+	Goto waitArrival
+	
+	State handleAccepted {
+		printCurrentMessage
+		println("\tTruck accepted")
+	} 
+	Transition t0 whenMsg pickedUp -> waitArrival
+	
+	State waitArrival {
+		printCurrentMessage
+		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(500, 10000) #]
+		delayVar DelayTime
+		[# Times-- #]
+	}
+	Goto req if [# Times > 0 #] else finish
+	
+	State finish {
+		println("\tTermine simulazione Qak")
+	}
+}

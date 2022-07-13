@@ -20,7 +20,7 @@ class Dep_init ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 						
 									var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
 									var Quantity = kotlin.random.Random.nextInt(10, 30)	
-						request("truckDeposit", "truckDeposit($Material,$Quantity)" ,"pro_dep_wasteservice" )  
+						request("loadDeposit", "loadDeposit($Material,$Quantity)" ,"pro_dep_wasteservice" )  
 					}
 					 transition(edgeName="t012",targetState="secondSend",cond=whenReply("loadaccept"))
 				}	 
@@ -30,7 +30,7 @@ class Dep_init ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 						
 									var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
 									var Quantity = kotlin.random.Random.nextInt(10, 30)	
-						request("truckDeposit", "truckDeposit($Material,$Quantity)" ,"pro_dep_wasteservice" )  
+						request("loadDeposit", "loadDeposit($Material,$Quantity)" ,"pro_dep_wasteservice" )  
 					}
 					 transition(edgeName="t013",targetState="fin",cond=whenReply("loadaccept"))
 				}	 

@@ -15,26 +15,26 @@ class Pro_req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
-			  var CurrentRequestMaterial = ""
-			  var CurrentRequestQuantity = 0.0
+			  var CurrentType = ""
+			  var CurrentAmount = 0.0
 			  var CurrentRequestPass = false
 		return { //this:ActionBasciFsm
 				state("idle") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
-					 transition(edgeName="tIdle0",targetState="handleRequest",cond=whenRequest("truckDeposit"))
+					 transition(edgeName="tIdle0",targetState="handleRequest",cond=whenRequest("loadDeposit"))
 				}	 
 				state("handleRequest") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						if( checkMsgContent( Term.createTerm("truckDeposit(MAT,QNT)"), Term.createTerm("truckDeposit(MAT,QNT)"), 
+						if( checkMsgContent( Term.createTerm("loadDeposit(MAT,QNT)"), Term.createTerm("loadDeposit(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 
-								  				CurrentRequestMaterial = payloadArg(0)
-								  				CurrentRequestQuantity = payloadArg(1).toDouble()
-								println("	WS | Request received $CurrentRequestMaterial $CurrentRequestQuantity")
-								request("storageAsk", "storageAsk($CurrentRequestMaterial)" ,"pro_req_storagemanager" )  
+								  				CurrentType = payloadArg(0)
+								  				CurrentAmount = payloadArg(1).toDouble()
+								println("	WS | Request received $CurrentType $CurrentAmount")
+								request("storageAsk", "storageAsk($CurrentType)" ,"pro_req_storagemanager" )  
 						}
 					}
 					 transition(edgeName="t01",targetState="handleStorageReply",cond=whenReply("storageAt"))
@@ -46,7 +46,7 @@ class Pro_req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 						if( checkMsgContent( Term.createTerm("storageAt(MAT,QNT)"), Term.createTerm("storageAt(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								println("	WS | Has space: ${payloadArg(1)} for ${payloadArg(0)}")
-								 CurrentRequestPass = CurrentRequestQuantity <= payloadArg(1).toDouble()  
+								 CurrentRequestPass = CurrentAmount <= payloadArg(1).toDouble()  
 						}
 					}
 					 transition( edgeName="goto",targetState="sendTrolley", cond=doswitchGuarded({ CurrentRequestPass  
@@ -58,14 +58,14 @@ class Pro_req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WS | rejected")
-						answer("truckDeposit", "loadrejected", "loadrejected(_)"   )  
+						answer("loadDeposit", "loadrejected", "loadrejected(_)"   )  
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("sendTrolley") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						answer("truckDeposit", "loadaccept", "loadaccept(_)"   )  
+						answer("loadDeposit", "loadaccept", "loadaccept(_)"   )  
 						println("	WS | accepted")
 						delay(1000) 
 						println("	WS | done, sending away truck")

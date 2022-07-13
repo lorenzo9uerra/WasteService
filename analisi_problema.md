@@ -197,19 +197,25 @@ Ecco quindi l'architettura logica del sistema in generale per questo SPRINT:
 
 ![diagramma stati WasteService](doc/img/arch_fsm_wasteservice.png)
 
-TODO: modello eseguibile architettura logica
+[Modello eseguibile dell'architettura logica](wasteservice.prototype/src/prototype_sprint1.qak)
 
 Per scopo di prototipo e simulazione, i Waste truck vengono trattati come attori, ma nel caso reale sarebbero "alieni" al sistema, inviando dati dall'esterno, probabilmente tramite una GUI (web o analoga) usabile dal camionista. Essi, come specificato in [Interazione: request](#requisito-request), devono comunque disporre di una componente software in grado di rimanere in ascolto di messaggi, oltre che inviare richieste.
 
-## TestPlan
+## Test Plan
+
+Vengono aggiornati i test plan introdotti in analisi dei requisiti, e introdotti di nuovi per collaudare alcuni elementi emersi in questa fase. Tutti i test sul prototipo sono fatti presupponendo l'assenza di un wastetruck che invii indipendentemente richieste che interferirebbero con il test.
+
+Per lo scopo di eseguire il modello Qak senza wastetruck, viene incluso un file pl differente a quello generato che non include il wastetruck tra gli attori: [wasteservice_proto_sprint1_test.pl](wasteservice.prototype/wasteservice_proto_sprint1_test.pl), con un [file Kotlin](wasteservice.prototype/test/it/unibo/RunPrototypeNoTruck_Sprint1.kt) apposito per usarlo.
 
 #### TestPlan: request
 
 Testplan in Java: [TestRequest.java](./prototipo/test/TestRequest.java)
 
-- **Test Deny**: il camion invia una richiesta di deposito al WasteService per una quantità maggiore di quella che i cassonetti possono ospitare e questo risponde con un *loadrejected*.
+- **Test Deny**: si invia una richiesta di loadDeposit al WasteService per una quantità maggiore di quella che i cassonetti possono ospitare e si verifica che risponda con un *loadrejected*.
 
-- **Test Accept**: il camion invia una richiesta di deposito al WasteService, che risponde con un loadaccept. Il WasteService invia quindi un messaggio al camion che indica che il carico è stato prelevato dal trolley.
+- **Test Accept**: si invia una richiesta di loadDeposit al WasteServicee si verifica che risponda con loadrejected.
+
+- **Test PickedUp**: si invia una richiesta di loadDeposit al WasteService, usando un finto attore di nome wastetruck
 
 
 #### TestPlan: deposit

@@ -1,6 +1,6 @@
 System wasteservice_pro_deposit
 
-Request truckDeposit : truckDeposit(MAT, QNT)
+Request loadDeposit : loadDeposit(MAT, QNT)
 Reply loadaccept : loadaccept(_)
 
 Request trolleyMove : trolleyMove(X, Y)
@@ -29,12 +29,12 @@ QActor pro_dep_wasteservice context ctxpro_deposit {
 		updateResource [# "tpos(home)" #]
 		println("\tWS | Trolley at home")
 	}
-	Transition t0 whenRequest truckDeposit -> go_indoor
+	Transition t0 whenRequest loadDeposit -> go_indoor
 	
 	State go_indoor {
 		printCurrentMessage
-		replyTo truckDeposit with loadaccept : loadaccept(_)
-		onMsg ( truckDeposit : truckDeposit(MAT, QNT) ) {
+		replyTo loadDeposit with loadaccept : loadaccept(_)
+		onMsg ( loadDeposit : loadDeposit(MAT, QNT) ) {
 			[#
 			CurrentType = payloadArg(0)
 			CurrentAmount = payloadArg(1).toDouble()	
@@ -76,7 +76,7 @@ QActor pro_dep_wasteservice context ctxpro_deposit {
 		println("\tWT | Done deposit action")
 	}
 	Transition t0 whenTime 0 -> go_home 
-				  whenRequest truckDeposit -> go_indoor
+				  whenRequest loadDeposit -> go_indoor
 				  
 	State go_home {
 		printCurrentMessage
@@ -173,7 +173,7 @@ QActor dep_init context ctxpro_deposit {
 			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
 			var Quantity = kotlin.random.Random.nextInt(10, 30)	
 		#]
-		request pro_dep_wasteservice -m truckDeposit : truckDeposit($Material, $Quantity)
+		request pro_dep_wasteservice -m loadDeposit : loadDeposit($Material, $Quantity)
 	}
 	Transition t0 whenReply loadaccept -> secondSend
 	
@@ -183,7 +183,7 @@ QActor dep_init context ctxpro_deposit {
 			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
 			var Quantity = kotlin.random.Random.nextInt(10, 30)	
 		#]
-		request pro_dep_wasteservice -m truckDeposit : truckDeposit($Material, $Quantity)
+		request pro_dep_wasteservice -m loadDeposit : loadDeposit($Material, $Quantity)
 	}
 	Transition t0 whenReply loadaccept -> fin
 	

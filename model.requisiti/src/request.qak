@@ -1,6 +1,6 @@
 System wasteservice_req_request
 
-Request truckDeposit : truckDeposit(MAT, QNT)
+Request loadDeposit : loadDeposit(MAT, QNT)
 Reply loadaccept : loadaccept(_)
 Reply loadrejected : loadrejected(_)
 
@@ -16,11 +16,11 @@ QActor req_wasteservice context ctxreq_request {
 	State idle initial {
 		printCurrentMessage
 	}
-	Transition tIdle whenRequest truckDeposit -> handleRequest
+	Transition tIdle whenRequest loadDeposit -> handleRequest
 	
 	State handleRequest {
 		printCurrentMessage
-		onMsg( truckDeposit : truckDeposit(MAT, QNT) ){
+		onMsg( loadDeposit : loadDeposit(MAT, QNT) ){
   			[# 
   				CurrentRequestMaterial = payloadArg(0)
   				CurrentRequestQuantity = payloadArg(1).toDouble()
@@ -33,9 +33,9 @@ QActor req_wasteservice context ctxreq_request {
   			println("\tWS | Request received $CurrentRequestMaterial $CurrentRequestQuantity, has $CurrentSpace")
   			
   			if [# CurrentRequestCheck > CurrentSpace #] {
-  				replyTo truckDeposit with loadrejected : loadrejected(_)
+  				replyTo loadDeposit with loadrejected : loadrejected(_)
   			} else {
-  				replyTo truckDeposit with loadaccept : loadaccept(_)  				
+  				replyTo loadDeposit with loadaccept : loadaccept(_)  				
   			}
 		}
 	}
@@ -53,7 +53,7 @@ QActor req_wastetruck context ctxreq_request {
 			var Quantity = kotlin.random.Random.nextInt(10, 30)	
 		#]
 		println ("\tTruck with $Material in amount $Quantity arrived")
-		request req_wasteservice -m truckDeposit : truckDeposit($Material, $Quantity)
+		request req_wasteservice -m loadDeposit : loadDeposit($Material, $Quantity)
 	}
 	Transition t1 whenReply loadaccept -> handleAccepted
 				  whenReply loadrejected -> handleRejected

@@ -31,13 +31,13 @@ class Pro_dep_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 						)
 						println("	WS | Trolley at home")
 					}
-					 transition(edgeName="t00",targetState="go_indoor",cond=whenRequest("truckDeposit"))
+					 transition(edgeName="t00",targetState="go_indoor",cond=whenRequest("loadDeposit"))
 				}	 
 				state("go_indoor") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						answer("truckDeposit", "loadaccept", "loadaccept(_)"   )  
-						if( checkMsgContent( Term.createTerm("truckDeposit(MAT,QNT)"), Term.createTerm("truckDeposit(MAT,QNT)"), 
+						answer("loadDeposit", "loadaccept", "loadaccept(_)"   )  
+						if( checkMsgContent( Term.createTerm("loadDeposit(MAT,QNT)"), Term.createTerm("loadDeposit(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
 											CurrentType = payloadArg(0)
@@ -87,7 +87,7 @@ class Pro_dep_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 							scope, context!!, "local_tout_pro_dep_wasteservice_done", 0.toLong() )
 					}
 					 transition(edgeName="t05",targetState="go_home",cond=whenTimeout("local_tout_pro_dep_wasteservice_done"))   
-					transition(edgeName="t06",targetState="go_indoor",cond=whenRequest("truckDeposit"))
+					transition(edgeName="t06",targetState="go_indoor",cond=whenRequest("loadDeposit"))
 				}	 
 				state("go_home") { //this:State
 					action { //it:State

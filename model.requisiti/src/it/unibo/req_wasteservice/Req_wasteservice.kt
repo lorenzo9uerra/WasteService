@@ -24,12 +24,12 @@ class Req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm(
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
-					 transition(edgeName="tIdle0",targetState="handleRequest",cond=whenRequest("truckDeposit"))
+					 transition(edgeName="tIdle0",targetState="handleRequest",cond=whenRequest("loadDeposit"))
 				}	 
 				state("handleRequest") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						if( checkMsgContent( Term.createTerm("truckDeposit(MAT,QNT)"), Term.createTerm("truckDeposit(MAT,QNT)"), 
+						if( checkMsgContent( Term.createTerm("loadDeposit(MAT,QNT)"), Term.createTerm("loadDeposit(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 
 								  				CurrentRequestMaterial = payloadArg(0)
@@ -38,10 +38,10 @@ class Req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm(
 								 CurrentSpace = kotlin.random.Random.Default.nextDouble(15.0, 50.0)  
 								println("	WS | Request received $CurrentRequestMaterial $CurrentRequestQuantity, has $CurrentSpace")
 								if(  CurrentRequestCheck > CurrentSpace  
-								 ){answer("truckDeposit", "loadrejected", "loadrejected(_)"   )  
+								 ){answer("loadDeposit", "loadrejected", "loadrejected(_)"   )  
 								}
 								else
-								 {answer("truckDeposit", "loadaccept", "loadaccept(_)"   )  
+								 {answer("loadDeposit", "loadaccept", "loadaccept(_)"   )  
 								 }
 						}
 					}

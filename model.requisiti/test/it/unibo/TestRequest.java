@@ -56,8 +56,8 @@ public class TestRequest {
     }
 
     protected String askDeposit(String type, int amount) {
-        String truckRequest = MsgUtil.buildRequest(ANON_ACTOR_ID, "truckDeposit",
-                "truckDeposit(" + type + ", " + amount + ")",
+        String truckRequest = MsgUtil.buildRequest(ANON_ACTOR_ID, "loadDeposit",
+                "loadDeposit(" + type + ", " + amount + ")",
                 actor_wasteservice
         ).toString();
         try {

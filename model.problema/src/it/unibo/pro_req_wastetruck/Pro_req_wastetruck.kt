@@ -24,7 +24,7 @@ class Pro_req_wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 									var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
 									var Quantity = kotlin.random.Random.nextInt(10, 30)	
 						println("	Truck with $Material in amount $Quantity arrived")
-						request("truckDeposit", "truckDeposit($Material,$Quantity)" ,"pro_req_wasteservice" )  
+						request("loadDeposit", "loadDeposit($Material,$Quantity)" ,"pro_req_wasteservice" )  
 					}
 					 transition(edgeName="t13",targetState="handleAccepted",cond=whenReply("loadaccept"))
 					transition(edgeName="t14",targetState="handleRejected",cond=whenReply("loadrejected"))
