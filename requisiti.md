@@ -2,9 +2,9 @@
 
 # WasteService - Analisi dei Requisiti
 
-## Requisiti e chiarimenti
+Per ogni requisito analizzato in questo SPRINT è stato incluso un modello eseguibile in [Qak](#scelta-del-linguaggio-di-modellazione). 
 
-Per ogni requisito è stato incluso un modello eseguibile in [Qak](#scelta-del-linguaggio-di-modellazione). 
+## Requisiti e chiarimenti
 
 - **request**: il *WasteService* accetta richieste di deposito da *Waste truck* che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare
     - il sistema può controllare se c'è spazio per un certo materiale: accetta (risposta *loadaccept*), e rifiuta (risposta *loadrejected*) le richieste di deposito in caso contrario
@@ -110,7 +110,7 @@ Viene definito un primo test plan, eseguibile con le classi generate dal modello
 
 ### Analisi **indoor-more-requests**
 
-Dal requisito in sè non è possibile definire con più precisione l'interazione precisa interna al sistema che lo adempie, rimanendo punti aperti diversi elementi fondamentali (i tipi di interazione tra componenti del sistema). Viene definito un test plan primitivo in seguito:
+Dal requisito in sè non è possibile formalizzare con più precisione l'interazione precisa interna al sistema che lo adempie, rimanendo punti aperti diversi elementi fondamentali (i tipi di interazione tra componenti del sistema). Viene definito un test plan primitivo in seguito:
 
 [Test plan Indoor-More-Requests](./model.requisiti/test/it/unibo/TestIndoorMoreRequests.java)
 

@@ -153,7 +153,7 @@ TODO: modello eseguibile
 
 #### Requisito **deposit**
 
-Il Wasteservice, come specificato in [Gestione della deposit action](#gestione-della-deposit-action), si occupa dei vari passaggi del deposito. Deve quindi poter inviare messaggi a Trolley per coordinare questa operazione. Deve inoltre sapere quando Trolley termina le operazioni per e le successive.
+Il Wasteservice, come specificato in [Gestione della deposit action](#gestione-della-deposit-action), si occupa dei vari passaggi del deposito. Deve quindi poter inviare messaggi a Trolley per coordinare questa operazione. Deve inoltre sapere quando Trolley termina le operazioni per iniziare le successive.
 
 1. Questo potrebbe essere implementato come una serie di dispatch, con un singolo dispatch per le conferme di operazione conclusa.
     ```
@@ -176,7 +176,7 @@ Inoltre, per iniziare lo scarico nel cassonetto viene comunicato il deposito di 
 ```
 Dispatch storageDeposit : storageDeposit(MAT, QNT)
 ```
-Questo messaggio viene inviato da Trolley a StorageManager, ed è necessario per trattare allo stesso modo la situazione di test virtuale e il caso reale; infatti, un caso reale potrebbe usare un sensore nei cassonetti per aggiornare i dati sui contenuti noti a StorageManager, mentre in una situazione virtuale questo deve essere necessariamente contenuto tramite messaggi.
+Questo messaggio viene inviato da Trolley a StorageManager, ed è necessario per trattare allo stesso modo la situazione di test virtuale e il caso reale; infatti, un caso reale potrebbe usare un sensore nei cassonetti per aggiornare i dati sui contenuti noti a StorageManager, mentre in una situazione virtuale questo deve essere necessariamente aggiornato tramite messaggi.
 
 In un caso reale, bisogna quindi testare la consistenza tra dati noti a StorageManager dopo l'invio del messaggio, e i dati reali dei contenuti. Un test plan per questo caso è il seguente:
 

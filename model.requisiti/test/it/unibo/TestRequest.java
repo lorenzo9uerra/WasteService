@@ -22,7 +22,7 @@ public class TestRequest {
     final static String CTX_HOST = "localhost";
     final static int CTX_PORT = 8050;
     final static String CTX_TEST = "ctxreq_request";
-    final static String ANON_ACTOR_ID = "python";
+    final static String ANON_ACTOR_ID = "test";
 
     String test_prefix = "req_";
     String actor_wasteservice = test_prefix + "wasteservice";
