@@ -46,7 +46,7 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 				}	 
 				state("handleDeposit") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("storageDeposit(MAT,QNT)"), Term.createTerm("depositWaste(MAT,QNT)"), 
+						if( checkMsgContent( Term.createTerm("storageDeposit(MAT,QNT)"), Term.createTerm("storageDeposit(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Content[payloadArg(0)] = Content.getOrDefault(payloadArg(0), 0.0) + payloadArg(1).toDouble()  
 								println("STORAGE: Glass ${Content["glass"]}/${MaxContent["glass"]}, Plastic ${Content["plastic"]}/${MaxContent["plastic"]}")

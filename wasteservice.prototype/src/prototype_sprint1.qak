@@ -247,7 +247,7 @@ QActor storagemanager context ctx_wasteservice_proto_ctx {
 	Goto idle
 	
 	State handleDeposit {
-		onMsg ( storageDeposit : depositWaste(MAT, QNT) ){
+		onMsg ( storageDeposit : storageDeposit(MAT, QNT) ){
 			[# Content[payloadArg(0)] = Content.getOrDefault(payloadArg(0), 0.0) + payloadArg(1).toDouble() #]
 			println("STORAGE: Glass ${Content[\"glass\"]}/${MaxContent[\"glass\"]}, Plastic ${Content[\"plastic\"]}/${MaxContent[\"plastic\"]}")
 			updateResource [# Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n") #]

@@ -201,7 +201,7 @@ Ecco quindi l'architettura logica del sistema in generale per questo SPRINT:
 
 Per scopo di prototipo e simulazione, i Waste truck vengono trattati come attori, ma nel caso reale sarebbero "alieni" al sistema, inviando dati dall'esterno, probabilmente tramite una GUI (web o analoga) usabile dal camionista. Essi, come specificato in [Interazione: request](#requisito-request), devono comunque disporre di una componente software in grado di rimanere in ascolto di messaggi, oltre che inviare richieste.
 
-## Test Plan
+### Test Plan
 
 Vengono aggiornati i test plan introdotti in analisi dei requisiti, e introdotti di nuovi per collaudare alcuni elementi emersi in questa fase. Tutti i test sul prototipo sono fatti presupponendo l'assenza di un wastetruck che invii indipendentemente richieste che interferirebbero con il test.
 
@@ -209,7 +209,7 @@ Per lo scopo di eseguire il modello Qak senza wastetruck, viene incluso un file 
 
 #### TestPlan: request
 
-Testplan in Java: [TestRequest.java](wasteservice.prototype/test/it/unibo/TestRequest.java)
+Test plan in Java: [TestRequest.java](wasteservice.prototype/test/it/unibo/TestRequest.java)
 
 - **Test Deny**: si invia una richiesta di loadDeposit al WasteService per una quantità maggiore di quella che i cassonetti possono ospitare e si verifica che risponda con un *loadrejected*.
 
@@ -220,6 +220,27 @@ Testplan in Java: [TestRequest.java](wasteservice.prototype/test/it/unibo/TestRe
 
 #### TestPlan: deposit
 
-Testplan in Java: [TestDeposit.java](wasteservice.prototype/test/it/unibo/TestDeposit.java)
+Test plan in Java: [TestDeposit.java](wasteservice.prototype/test/it/unibo/TestDeposit.java)
 
-- **Test deposit**: Invia richiesta
+- **Test TrolleyCollect**: Invia richiesta trolleyCollect con quantità N e materiale M. Verifica che dopo la richiesta Trolley contenga i materiali corrispondenti.
+
+- **Test TrolleyDeposit**: Invia richiesta trolleyDeposit con Trolley già contenente materiale M in quantità M. Verifica che dopo la richiesta Trolley non contenga più materiali, e StorageManager contenga i materiali nelle quantità indicate.
+
+- **Test TrolleyMove**: Invia richiesta trolleyMove con coordinate X e Y. Si verifichi tramite Coap che a fine operazione Trolley si trovi alla posizione corrispondente.
+
+- **Test Positions Glass**: Invia richiesta di deposito con vetro. Verifica che partendo da HOME, le posizioni attraversate siano HOME, INDOOR, e GLASS_BOX.
+
+- **Test Positions Plastic**: Invia richiesta di deposito con plastica. Verifica che partendo da HOME, le posizioni attraversate siano HOME, INDOOR, e PLASTIC_BOX.
+
+- **Test Deposit**: Invia richiesta di deposito con quantità N. Verifica che StorageManager finisca con quantità aumentata di N a deposit action terminata.
+
+
+#### TestPlan: indoor-more-requests
+
+Test plan in Java: [TestMoreRequests.java](wasteservice.prototype/test/it/unibo/TestMoreRequests.java).
+
+- **Test GoHome**: Con Trolley a GLASS_BOX, verifica che in assenza di nuove richieste torni a HOME.
+
+- **Test TrolleyMove**: Con Trolley a GLASS_BOX, verifica che in presenza di nuove richieste torni a INDOOR.
+
+
