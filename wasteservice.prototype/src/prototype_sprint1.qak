@@ -223,9 +223,10 @@ QActor trolley context ctx_wasteservice_proto_ctx {
 QActor storagemanager context ctx_wasteservice_proto_ctx {
 	[#
 		var Content = mutableMapOf("glass" to 0.0, "plastic" to 0.0)
+		var MaxContent = mapOf("glass" to 50.0, "plastic" to 50.0)
 	#]
 	State init initial {
-		println("STORAGE: Glass ${Content[\"glass\"]}, Plastic ${Content[\"plastic\"]}")
+		println("STORAGE: Glass ${Content[\"glass\"]}/${MaxContent[\"glass\"]}, Plastic ${Content[\"plastic\"]}/${MaxContent[\"plastic\"]}")
 		updateResource [# Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n") #]
 	}
 	Goto idle
@@ -239,8 +240,8 @@ QActor storagemanager context ctx_wasteservice_proto_ctx {
 	State handleAsk {
 		printCurrentMessage
 		onMsg (storageAsk : storageAsk(MAT) ) {
-			[# var Amount = kotlin.random.Random.Default.nextDouble(15.0, 50.0) #]
-			replyTo storageAsk with storageAt : storageAt($payloadArg(0), $Amount)
+			[# var SpaceLeft = MaxContent.getOrDefault(payloadArg(0), 0.0) - Content.getOrDefault(payloadArg(0), 0.0) #]
+			replyTo storageAsk with storageAt : storageAt($payloadArg(0), $SpaceLeft)
 		}
 	}
 	Goto idle
@@ -248,7 +249,7 @@ QActor storagemanager context ctx_wasteservice_proto_ctx {
 	State handleDeposit {
 		onMsg ( storageDeposit : depositWaste(MAT, QNT) ){
 			[# Content[payloadArg(0)] = Content.getOrDefault(payloadArg(0), 0.0) + payloadArg(1).toDouble() #]
-			println("STORAGE: Glass ${Content[\"glass\"]}, Plastic ${Content[\"plastic\"]}")
+			println("STORAGE: Glass ${Content[\"glass\"]}/${MaxContent[\"glass\"]}, Plastic ${Content[\"plastic\"]}/${MaxContent[\"plastic\"]}")
 			updateResource [# Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n") #]
 		}
 	}

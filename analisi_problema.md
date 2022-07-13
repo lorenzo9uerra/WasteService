@@ -209,7 +209,7 @@ Per lo scopo di eseguire il modello Qak senza wastetruck, viene incluso un file 
 
 #### TestPlan: request
 
-Testplan in Java: [TestRequest.java](./prototipo/test/TestRequest.java)
+Testplan in Java: [TestRequest.java](wasteservice.prototype/test/it/unibo/TestRequest.java)
 
 - **Test Deny**: si invia una richiesta di loadDeposit al WasteService per una quantità maggiore di quella che i cassonetti possono ospitare e si verifica che risponda con un *loadrejected*.
 
@@ -220,6 +220,6 @@ Testplan in Java: [TestRequest.java](./prototipo/test/TestRequest.java)
 
 #### TestPlan: deposit
 
-Testplan in Java: [TestDeposit.java](./prototipo/test/TestDeposit.java)
+Testplan in Java: [TestDeposit.java](wasteservice.prototype/test/it/unibo/TestDeposit.java)
 
-- **Test deposit**: Inviata una richiesta al trolley, questo invia un messaggio comunicando di aver recuperato il carico, dopodichè, depositato il carico, invia un messaggio allo storage manager comunicandogli la quantità di materiale depositato. Infine il WasteService riceve il messaggio *doneDeposit* che indica che il trolley ha terminato il proprio lavoro.
+- **Test deposit**: Invia richiesta

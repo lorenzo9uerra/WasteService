@@ -16,10 +16,11 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
 				var Content = mutableMapOf("glass" to 0.0, "plastic" to 0.0)
+				var MaxContent = mapOf("glass" to 50.0, "plastic" to 50.0)
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
-						println("STORAGE: Glass ${Content["glass"]}, Plastic ${Content["plastic"]}")
+						println("STORAGE: Glass ${Content["glass"]}/${MaxContent["glass"]}, Plastic ${Content["plastic"]}/${MaxContent["plastic"]}")
 						updateResourceRep( Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n")  
 						)
 					}
@@ -37,8 +38,8 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("storageAsk(MAT)"), Term.createTerm("storageAsk(MAT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 var Amount = kotlin.random.Random.Default.nextDouble(15.0, 50.0)  
-								answer("storageAsk", "storageAt", "storageAt(${payloadArg(0)},$Amount)"   )  
+								 var SpaceLeft = MaxContent.getOrDefault(payloadArg(0), 0.0) - Content.getOrDefault(payloadArg(0), 0.0)  
+								answer("storageAsk", "storageAt", "storageAt(${payloadArg(0)},$SpaceLeft)"   )  
 						}
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
@@ -48,7 +49,7 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 						if( checkMsgContent( Term.createTerm("storageDeposit(MAT,QNT)"), Term.createTerm("depositWaste(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Content[payloadArg(0)] = Content.getOrDefault(payloadArg(0), 0.0) + payloadArg(1).toDouble()  
-								println("STORAGE: Glass ${Content["glass"]}, Plastic ${Content["plastic"]}")
+								println("STORAGE: Glass ${Content["glass"]}/${MaxContent["glass"]}, Plastic ${Content["plastic"]}/${MaxContent["plastic"]}")
 								updateResourceRep( Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n")  
 								)
 						}
