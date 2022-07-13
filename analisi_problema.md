@@ -1,7 +1,5 @@
 ## Analisi del problema
 
-In questa fase di analisi verrà utilizzato il linguaggio ad attori Qak per la modellazione; i messaggi useranno termini specifici del linguaggio per rappresentare le varie modalità di comunicazione, ma non necessariamente corrisponderanno alla tecnologia specifica utilizzata in implementazione.
-
 ### Componenti
 
 Data la numerosa quantità di componenti che comunicano tra loro, implementare la logica del sistema come un insieme di attori è abbastanza naturale. 
@@ -197,7 +195,7 @@ Ecco quindi l'architettura logica del sistema in generale per questo SPRINT:
 
 ![diagramma stati WasteService](doc/img/arch_fsm_wasteservice.png)
 
-[Modello eseguibile dell'architettura logica](wasteservice.prototype/src/prototype_sprint1.qak)
+[**Prototipo eseguibile**](wasteservice.prototype/src/prototype_sprint1.qak)
 
 Per scopo di prototipo e simulazione, i Waste truck vengono trattati come attori, ma nel caso reale sarebbero "alieni" al sistema, inviando dati dall'esterno, probabilmente tramite una GUI (web o analoga) usabile dal camionista. Essi, come specificato in [Interazione: request](#requisito-request), devono comunque disporre di una componente software in grado di rimanere in ascolto di messaggi, oltre che inviare richieste.
 
