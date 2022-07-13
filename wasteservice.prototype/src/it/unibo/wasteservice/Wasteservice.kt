@@ -140,7 +140,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 								request("storageAsk", "storageAsk($CurrentType)" ,"storagemanager" )  
 						}
 					}
-					 transition(edgeName="t08",targetState="handleSecondStorageReply",cond=whenRequest("storageAsk"))
+					 transition(edgeName="t08",targetState="handleSecondStorageReply",cond=whenReply("storageAt"))
 				}	 
 				state("handleSecondStorageReply") { //this:State
 					action { //it:State

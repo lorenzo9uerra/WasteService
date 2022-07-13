@@ -127,7 +127,7 @@ QActor wasteservice context ctx_wasteservice_proto_ctx {
   			request storagemanager -m storageAsk : storageAsk($CurrentType)
 		}
 	}
-	Transition t0 whenRequest storageAsk -> handleSecondStorageReply
+	Transition t0 whenReply storageAt -> handleSecondStorageReply
 	
 	State handleSecondStorageReply {
 		printCurrentMessage
