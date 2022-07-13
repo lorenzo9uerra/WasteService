@@ -5,7 +5,6 @@ Reply loadaccept : loadaccept(_)
 Reply loadrejected : loadrejected(_)
 
 Context ctxreq_request ip [host="localhost" port=8050]
-Context ctxreq_request_wt ip [host="localhost" port=8060]
 
 QActor req_wasteservice context ctxreq_request {
 	[#
@@ -43,7 +42,7 @@ QActor req_wasteservice context ctxreq_request {
 	Goto idle
 }
 
-QActor req_wastetruck context ctxreq_request_wt {
+QActor req_wastetruck context ctxreq_request {
 	[#
 		var Times = 5	
 	#]

@@ -1,0 +1,191 @@
+System wasteservice_pro_deposit
+
+Request truckDeposit : truckDeposit(MAT, QNT)
+Reply loadaccept : loadaccept(_)
+
+Request trolleyMove : trolleyMove(X, Y)
+Request trolleyCollect : trolleyCollect(MAT, QNT)
+Request trolleyDeposit : trolleyDeposit(_)
+Reply trolleyDone : trolleyDone(OK)
+
+Dispatch storageDeposit : storageDeposit(MAT, QNT)
+
+Context ctxpro_deposit ip [host="localhost" port=8050]
+
+QActor pro_dep_wasteservice context ctxpro_deposit {
+	[#
+		// Semplificato, usando singola coordinata invece che area
+		var POS_HOME = arrayOf(0,0)
+		var POS_INDOOR = arrayOf(0,5)
+		var POS_PLASTIC_BOX = arrayOf(5,2)
+		var POS_GLASS_BOX = arrayOf(3,0)
+		
+		var CurrentType = ""
+		var CurrentAmount = 0.0
+	#]
+	
+	State home initial {
+		printCurrentMessage
+		updateResource [# "tpos(home)" #]
+		println("\tWS | Trolley at home")
+	}
+	Transition t0 whenRequest truckDeposit -> go_indoor
+	
+	State go_indoor {
+		printCurrentMessage
+		replyTo truckDeposit with loadaccept : loadaccept(_)
+		onMsg ( truckDeposit : truckDeposit(MAT, QNT) ) {
+			[#
+			CurrentType = payloadArg(0)
+			CurrentAmount = payloadArg(1).toDouble()	
+			#]
+			[#var X = POS_INDOOR[0]; var Y = POS_INDOOR[1]#]
+			request pro_dep_trolley -m trolleyMove : trolleyMove($X, $Y)
+		}
+	}
+	Transition t0 whenReply trolleyDone -> indoor
+	
+	State indoor {
+		printCurrentMessage
+		updateResource [# "tpos(indoor)" #]
+		println("\tWT | Trolley at indoor, picking up $CurrentAmount $CurrentType...")
+		request pro_dep_trolley -m trolleyCollect : trolleyCollect($CurrentType, $CurrentAmount)
+	}
+	Transition t0 whenReply trolleyDone -> go_box
+	
+	State go_box {
+		printCurrentMessage
+		[#var X = POS_GLASS_BOX[0]; var Y = POS_GLASS_BOX[1]#]
+		if [# CurrentType == "plastic" #] {
+			[#X = POS_PLASTIC_BOX[0]; Y = POS_PLASTIC_BOX[1]#]
+		}
+		request pro_dep_trolley -m trolleyMove : trolleyMove($X, $Y)
+	}
+	Transition t0 whenReply trolleyDone -> box
+	
+	State box {
+		printCurrentMessage
+		println("\tWT | Trolley at $CurrentType box, depositing $CurrentAmount $CurrentType...")
+		updateResource [# "tpos(" + CurrentType + "_box)" #]
+		request pro_dep_trolley -m trolleyDeposit : trolleyDeposit(_)
+	}
+	Transition t0 whenReply trolleyDone -> done
+	
+	State done {
+		printCurrentMessage
+		println("\tWT | Done deposit action")
+	}
+	Transition t0 whenTime 0 -> go_home 
+				  whenRequest truckDeposit -> go_indoor
+				  
+	State go_home {
+		printCurrentMessage
+		[#var X = POS_HOME[0]; var Y = POS_HOME[1]#]
+		request pro_dep_trolley -m trolleyMove : trolleyMove($X, $Y)
+	}
+	Transition t0 whenReply trolleyDone -> home
+}
+
+QActor pro_dep_trolley context ctxpro_deposit {
+	[#
+		var CarryingType = ""
+		var CarryingAmount = 0.0
+		var Pos = arrayOf(0,0)
+		fun getContentLine(): String {
+			if (CarryingAmount > 0)
+				return "\ncontent($CarryingType,$CarryingAmount)"
+			else
+				return ""
+		}
+		fun getPosLine(): String {
+			return "\npos(${Pos[0]},${Pos[1]})"
+		}
+	#]
+	State idle initial {
+		printCurrentMessage
+		updateResource [# "state(idle)" + getPosLine() + getContentLine() #]
+	}
+	Transition t0 whenRequest trolleyMove -> handleMove
+				  whenRequest trolleyCollect -> handleCollect
+				  whenRequest trolleyDeposit -> handleDeposit
+		
+	State handleMove {
+		printCurrentMessage
+		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
+		delay 700
+		// <interazione con BasicRobot22>
+		onMsg (trolleyMove : trolleyMove(X,Y)) {
+			[# Pos[0] = payloadArg(0).toInt() #]
+			[# Pos[1] = payloadArg(1).toInt() #]
+			replyTo trolleyMove with trolleyDone : trolleyDone(true)
+		}
+	}
+	Goto idle
+				  
+	State handleCollect {
+		printCurrentMessage
+		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
+		delay 500
+		onMsg ( trolleyCollect : trolleyCollect(MAT, QNT) ) {
+			[# CarryingType = payloadArg(0) #]
+			[# CarryingAmount = payloadArg(1).toDouble() #]
+			replyTo trolleyCollect with trolleyDone : trolleyDone(true)
+		}
+	}
+	Goto idle
+	
+	State handleDeposit {
+		printCurrentMessage
+		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
+		delay 500
+		forward pro_dep_storagemanager -m storageDeposit : storageDeposit($CarryingType,$CarryingAmount)
+		[# CarryingType = "" #]
+		[# CarryingAmount = 0.0 #]
+		replyTo trolleyDeposit with trolleyDone : trolleyDone(true)
+	}
+	Goto idle
+}
+
+QActor pro_dep_storagemanager context ctxpro_deposit {
+	[#
+		var Content = mutableMapOf("glass" to 0.0, "plastic" to 0.0)
+	#]
+	State idle initial {
+		printCurrentMessage
+		println("STORAGE: Glass ${Content[\"glass\"]}, Plastic ${Content[\"plastic\"]}")
+		updateResource [# Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n") #]
+	}
+	Transition t0 whenMsg storageDeposit -> handleDeposit
+	
+	State handleDeposit {
+		onMsg ( storageDeposit : depositWaste(MAT, QNT) ){
+			[# Content[payloadArg(0)] = Content.getOrDefault(payloadArg(0), 0.0) + payloadArg(1).toDouble() #]
+		}
+	}
+	Goto idle
+}
+
+// Usato per esecuzione standalone, altrimenti invio messaggio manuale per test
+// rimuovere per test
+QActor dep_init context ctxpro_deposit {
+	State send initial {
+		[#
+			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
+			var Quantity = kotlin.random.Random.nextInt(10, 30)	
+		#]
+		request pro_dep_wasteservice -m truckDeposit : truckDeposit($Material, $Quantity)
+	}
+	Transition t0 whenReply loadaccept -> secondSend
+	
+	State secondSend {
+		delay 1000
+		[#
+			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
+			var Quantity = kotlin.random.Random.nextInt(10, 30)	
+		#]
+		request pro_dep_wasteservice -m truckDeposit : truckDeposit($Material, $Quantity)
+	}
+	Transition t0 whenReply loadaccept -> fin
+	
+	State fin {}
+}

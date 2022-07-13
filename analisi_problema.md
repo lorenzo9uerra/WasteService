@@ -149,7 +149,7 @@ Inoltre, WasteService deve poter sapere da StorageManager lo stato attuale di ri
 
 ![modello request](doc/img/an_int_request.png)
 
-TODO: modello eseguibile
+[Modello eseguibile di Request dopo queste considerazioni](./model.problema/src/pro_request.qak)
 
 #### Requisito **deposit**
 
@@ -159,15 +159,15 @@ Il Wasteservice, come specificato in [Gestione della deposit action](#gestione-d
     ```
     Dispatch trolleyMove : trolleyMove(X, Y)
     Dispatch trolleyCollect : trolleyCollect(MAT, QNT)
-    Dispatch trolleyDeposit : trolleyDeposit(MAT, QNT)
-    Dispatch trolleyDone : trolleyDone(_)
+    Dispatch trolleyDeposit : trolleyDeposit()
+    Dispatch trolleyDone : trolleyDone(OK)
     ```
 2. Oppure, in alternativa, come diverse richieste, a cui Trolley risponde a operazione conclusa:
     ```
     Request trolleyMove : trolleyMove(X, Y)
     Request trolleyCollect : trolleyCollect(MAT, QNT)
-    Request trolleyDeposit : trolleyDeposit(MAT, QNT)
-    Reply trolleyDone : trolleyDone(_)
+    Request trolleyDeposit : trolleyDeposit()
+    Reply trolleyDone : trolleyDone(OK)
     ```
 
 **Conclusione.** Si sceglie la seconda opzione, modellare le operazioni primitive come **request-response**, perchè permette a Trolley di non conoscere WasteService ma di agire solo in risposta a delle richieste.
@@ -184,9 +184,9 @@ TODO: test plan dati veri vs dati messaggi
 
 Il modello per le componenti correlate a deposit è il seguente:
 
-![modello request](doc/img/an_int_deposit.png)
+![modello deposit](doc/img/an_int_deposit.png)
 
-TODO: modello eseguibile
+[Modello eseguibile di Deposit e Indoor-more-requests dopo queste considerazioni](./model.problema/src/pro_deposit.qak)
 
 
 ### Architettura Logica
