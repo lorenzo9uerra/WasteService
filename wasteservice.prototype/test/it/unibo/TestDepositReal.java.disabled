@@ -1,0 +1,184 @@
+package it.unibo;
+
+import it.unibo.kactor.ActorBasic;
+import it.unibo.kactor.MsgUtil;
+import it.unibo.kactor.QakContext;
+import it.unibo.wasteservice.Wasteservice;
+import kotlin.Pair;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import unibo.actor22comm.coap.CoapConnection;
+import unibo.actor22comm.utils.ColorsOut;
+import unibo.actor22comm.utils.CommSystemConfig;
+import unibo.actor22comm.utils.CommUtils;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.*;
+
+public class TestDepositReal {
+    final static String CTX_HOST = "localhost";
+    final static int CTX_PORT = 8050;
+    final static String CTX_TEST = "ctx_wasteservice_proto_ctx";
+    
+    StorageSensorsReal storageSensors;
+
+    String actor_trolley = "trolley";
+    String actor_wasteservice = "wasteservice";
+    String actor_storage = "storagemanager";
+
+    TrolleyPosObserver trolleyPosObserver;
+    WasteServiceTrolleyPosObserver wasteServiceObserver;
+
+    int[] homeCoords;
+    int[] indoorCoords;
+    int[] glassBoxCoords;
+    int[] plasticBoxCoords;
+
+    @Before
+    public void up() {
+        CommSystemConfig.tracing = false;
+
+        //Istanzia storageSensors
+
+        configCoords();
+
+        new Thread(RunPrototypeNoTruck_Sprint1Kt::main).start();
+
+        waitForTrolley();
+    }
+
+    @After
+    public void down() {
+        ColorsOut.outappl(this.getClass().getName() + " TEST END", ColorsOut.GREEN);
+    }
+
+    @Test
+    public void testTrolleyDepositReal() {
+        int N = 10;
+        // Trolley inizia a glass box, con N vetro contenuto
+
+        float startNumGlass = 0, startNumPlastic = 0;
+        List<String> storageReplyLines = PrologUtils.getFuncLines(coapRequest(actor_storage), "content");
+        for (String line : storageReplyLines) {
+            List<String> args =  contentSpe.extractPayload(line);
+            switch (args.get(0)) {
+                case "glass": 
+                    startNumGlass = Float.parseFloat(args.get(1)); 
+                    assertEquals(storageSensors.get("glass"), startNumGlass, 0.1f);
+                    break;
+                case "plastic": 
+                    startNumPlastic = Float.parseFloat(args.get(1));
+                    assertEquals(storageSensors.get("plastic"), startNumPlastic, 0.1f);
+                    break;
+            }
+        }
+
+        trolleyRequest("trolleyDeposit", "");
+
+        List<String> storageContent = PrologUtils.getFuncLines(coapRequest(actor_storage), "content");
+        for (String cnt : storageContent) {
+            List<String> params = new SimplePayloadExtractor("content").extractPayload(cnt);
+            switch (params.get(0)) {
+                case "glass": 
+                    assertEquals(startNumGlass + 10.0f, Float.parseFloat(params.get(1)), 0.0001f); 
+                    assertEquals(storageSensors.get("glass"), startNumGlass + 10.0f, 0.1f);
+                    break;
+                case "plastic": 
+                    assertEquals(startNumPlastic + 0.0f, Float.parseFloat(params.get(1)), 0.0001f); 
+                    assertEquals(storageSensors.get("plastic"), startNumPlastic, 0.1f);
+                    break;
+            }
+        }
+    }
+
+    @Test
+    public void testDeposit() {
+        String wasteBoxResponse = coapRequest(actor_storage);
+        String[] lines = wasteBoxResponse.split("\n");
+        SimplePayloadExtractor contentSpe = new SimplePayloadExtractor("content");
+
+        float startNumGlass = 0, startNumPlastic = 0;
+        List<String> storageReplyLines = PrologUtils.getFuncLines(coapRequest(actor_storage), "content");
+        for (String line : storageReplyLines) {
+            List<String> args =  contentSpe.extractPayload(line);
+            switch (args.get(0)) {
+                case "glass": startNumGlass = Float.parseFloat(args.get(1)); break;
+                case "plastic": startNumPlastic = Float.parseFloat(args.get(1)); break;
+            }
+        }
+
+        startDeposit("glass", 15);
+
+        int maxSecondsWait = 10;
+        for (int i = 0; i < maxSecondsWait; i++) {
+            CommUtils.delay(1000);
+            String lastPos = wasteServiceObserver.getHistory().get(wasteServiceObserver.getHistory().size() - 1);
+            if (lastPos.equals("glass_box")) {
+                // Lascia tempo di scaricare pesi nel caso la posizione
+                // sia stata appena raggiunta
+                CommUtils.delay(1000);
+
+                float numGlass = 0, numPlastic = 0;
+                storageReplyLines = PrologUtils.getFuncLines(coapRequest(actor_storage), "content");
+                for (String line : storageReplyLines) {
+                    List<String> args =  contentSpe.extractPayload(line);
+                    switch (args.get(0)) {
+                        case "glass": numGlass = Float.parseFloat(args.get(1)); break;
+                        case "plastic": numPlastic = Float.parseFloat(args.get(1)); break;
+                    }
+                }
+                assertEquals(15f, numGlass - startNumGlass, 0.0001f);
+                assertEquals(0f, numPlastic - startNumPlastic, 0.0001f);
+                return;
+            }
+        }
+        fail("Too much time to reach final position, pos history was:<" + trolleyPosObserver.getHistory() + ">");
+    }
+
+    protected void trolleyRequest(String id, String params) {
+        String request = MsgUtil.buildRequest("test", id,
+                id + "(" + params + ")",
+                actor_trolley
+        ).toString();
+        String reply = null;
+        try {
+            ConnTcp connTcp = new ConnTcp("localhost", CTX_PORT);
+            ColorsOut.outappl("Asking trolley: " + id + "(" + params + ")", ColorsOut.CYAN);
+            reply = connTcp.request(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (reply != null && reply.contains("false")) {
+            fail("Trolley request <" + request + "> failed!");
+        }
+    }
+
+    protected void waitForTrolley() {
+        ColorsOut.outappl(this.getClass().getName() + " waits for trolley ... ", ColorsOut.GREEN);
+        ActorBasic trolley = QakContext.Companion.getActor(actor_trolley);
+        while (trolley == null) {
+            CommUtils.delay(200);
+            trolley = QakContext.Companion.getActor(actor_trolley);
+        }
+        ColorsOut.outappl("Trolley loaded", ColorsOut.GREEN);
+    }
+
+    protected String coapRequest(String actor){
+        CoapConnection reqConn = new CoapConnection(CTX_HOST + ":" + CTX_PORT, CTX_TEST + "/" + actor);
+        String answer = reqConn.request("");
+        ColorsOut.outappl("coapRequest answer=" + answer, ColorsOut.CYAN);
+        return answer;
+    }
+
+    protected void configCoords() {
+        // Carica da config in futuro
+        homeCoords = new int[]{0,0};
+        indoorCoords = new int[]{0,5};
+        plasticBoxCoords = new int[]{5,2};
+        glassBoxCoords = new int[]{3,0};
+    }
+}

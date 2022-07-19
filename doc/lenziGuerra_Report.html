@@ -1,0 +1,726 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+    body {
+        margin-left: 30px;
+        margin-right: 30px;
+    }
+
+    ;
+
+    P {
+        font-family: Tahoma;
+        font-size: 10pt;
+    }
+
+    ;
+
+    a,
+    a:visited,
+    a:active,
+    a:link,
+    a:hover {
+        text-decoration: underline;
+        color: #545454;
+        background-color: transparent;
+        font-size: 93%;
+    }
+
+    a:hover {
+        background-color: #cccccc;
+    }
+
+
+    hr {
+        clear: both;
+        height: 1px;
+        color: #242424;
+        background-color: transparent;
+    }
+
+    h1,
+    h2,
+    h3 {
+        color: #242424;
+        clear: left;
+        font: 100% Tahoma, Helvetica, Arial, sans-serif;
+        margin-bottom: 0.5em;
+        padding-top: 0.5em;
+        border-radius: 10px;
+        padding: 5px;
+    }
+
+    top {
+        width: 100%;
+    }
+
+
+    #i {
+        color: #ff1010;
+    }
+
+    tt {
+        font-family: "Arial";
+        font-size: 90%;
+        color: #006600;
+    }
+
+    em {
+        font-family: "Arial";
+        font-size: 80%;
+        font-weight: bold;
+        border-style: solid;
+        border-color: #abe876;
+        color: #1632cc;
+    }
+
+    bc {
+        font-family: "Arial";
+        font-size: 90%;
+        font-weight: bold;
+        color: #990000;
+        background-color: #fcf8c7;
+    }
+
+    ks {
+        font-family: "Arial";
+        font-weight: bold;
+        color: #0000CD;
+        font-size: 90%;
+    }
+
+    kc {
+        font-family: "Arial";
+        font-weight: bold;
+        color: #008000;
+        font-size: 90%;
+    }
+
+    pre {
+        font-family: "Consolas";
+        font-size: 85%;
+        background-color: #f5f5f5;
+        border: 1.5px solid silver;
+        padding: 5px;
+    }
+
+    m {
+        font-family: "Helvetica";
+        line-height: 100%;
+        font-size: 75%;
+    }
+
+    div.body {
+
+        font-size: 18px;
+    }
+
+    k {
+        color: #990000;
+        font-weight: bold;
+        font-size: 90%;
+    }
+
+    h1 {
+        font-size: 150%;
+        background-color: #b2c0ff;
+        padding: 10px;
+    }
+
+    h2 {
+        background-color: #9ed8ff;
+        font-size: 130%;
+    }
+
+    h3 {
+        background-color: #e6ccff;
+        font-size: 100%;
+    }
+
+    h4 {
+        background-color: #ccffcc;
+        font-size: 100%;
+        width: 95%;
+        border-radius: 5px;
+        padding: 2px;
+    }
+
+    h5 {
+        background-color: #d5ffb0;
+        font-size: 100%;
+
+    }
+
+    div.req {
+        background-color: #d9ffb3;
+        font-size: 18px;
+        width: 700px;
+        border: 3px solid green;
+        padding: 15px;
+        margin: 10px;
+    }
+
+    div.remark {
+        background-color: #E3F2FD;
+        border: 1.5px solid #d5f2ed;
+        padding: 15px;
+        margin: 10px;
+        border-radius: 25px;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    ol,
+    ul,
+    li {
+        margin: 0;
+        margin-left: 10px;
+        padding: 0;
+        padding-bottom: 5px;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+
+    img {
+        border: 1.5px solid #d5f2ed
+    }
+
+    a,
+    a:visited,
+    a:active,
+    a:link,
+    a:hover {
+        text-decoration: underline;
+        color: #545454;
+        background-color: transparent;
+    }
+
+    div.wrapdesc {
+        width: 90%;
+        margin: auto;
+    }
+
+    div.imagedesc {
+        width: 85%;
+        margin: auto;
+    }
+</style>
+
+<head>
+
+    <title>TemplateToFill</title>
+</head>
+
+<body>
+    <div id="top">
+        <h1>LABORATORIO DI INGEGNERIA DEI SISTEMI SOFTWARE <font size="5"></font>
+        </h1>
+    </div>
+
+    <div class="body">
+        <h2>Introduction</h2>
+
+
+        <h2>Requirements</h2>
+
+
+        <section id="temafinale22">
+            <p>A company intends to build a <span class="blue">WasteService</span> for the <em>separate collection of
+                    waste</em>, composed of a set of elements:</p>
+            <ol class="arabic">
+                <li>
+                    <p>a service area (rectangular, flat) that includes:</p>
+                    <ul class="simple">
+                        <li>
+                            <p>an <span class="blue">INDOOR</span> port, to enter waste material</p>
+                        </li>
+                        <li>
+                            <p>a <span class="blue">PlasticBox</span> container, devoted to store objects made of
+                                plastic, upto <strong>MAXPB</strong> kg of material.</p>
+                        </li>
+                        <li>
+                            <p>a <span class="blue">GlassBox</span> container, devoted to store objects made of glass,
+                                upto <strong>MAXGB</strong> kg of material.</p>
+                        </li>
+                    </ul>
+                    <p>The service area is free from internal obstacles, as shown in the following picture:</p>
+                    <blockquote>
+                        <div><a class="reference internal image-reference"
+                                href="https://raw.githubusercontent.com/anatali/issLab2022/main/it.unibo.issLabStart/userDocs/Dispense/lezioni/html/_images/WasteServiceRoom.PNG">
+                                <img alt="WasteServiceRoom.PNG" class="align-center"
+                                    src="https://raw.githubusercontent.com/anatali/issLab2022/main/it.unibo.issLabStart/userDocs/Dispense/lezioni/html/_images/WasteServiceRoom.PNG"
+                                    style="width: 60%;"></a>
+                        </div>
+                    </blockquote>
+                </li>
+                <li>
+                    <p>a DDR robot working as a <span class="blue">transport trolley</span>, that is intially situated
+                        in its <span class="blue">HOME</span> location.
+                        The transport trolley has the form of a square of side length <strong>RD</strong>.</p>
+                    <p>The <cite>transport trolley</cite> is used to performa a <span class="blue">deposit action</span>
+                        that consists in the following phases:</p>
+                    <ol class="arabic simple">
+                        <li>
+                            <p>pick up a waste-load from a <span class="blue">Waste truck</span> located on the
+                                <cite>INDOOR</cite>
+                            </p>
+                        </li>
+                        <li>
+                            <p>go from the <cite>INDOOR</cite> to the proper waste container</p>
+                        </li>
+                        <li>
+                            <p>deposit the waste-load in the container</p>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <p>a <span class="blue">Service-manager</span> (an human being) which supervises the state of the
+                        service-area by using a
+                        <span class="blue">WasteServiceStatusGUI</span>.
+                    </p>
+                </li>
+                <li>
+                    <p>a <span class="blue">Sonar</span> and a <span class="blue">Led</span> connected to a RaspnerryPi.
+                        The <cite>Led</cite> is used as a <em>warning devices</em>,
+                        according to the following scheme:</p>
+                    <ul class="simple">
+                        <li>
+                            <p>the <cite>Led</cite> is <strong>off</strong> when the <cite>transport trolley</cite> is
+                                at <cite>HOME</cite></p>
+                        </li>
+                        <li>
+                            <p>the <cite>Led</cite> <strong>blinks</strong> while the <cite>transport trolley</cite> is
+                                moving</p>
+                        </li>
+                        <li>
+                            <p>the <cite>Led</cite> is <strong>on</strong> when <cite>transport trolley</cite> is
+                                stopped.</p>
+                        </li>
+                    </ul>
+                    <p>The <cite>Sonar</cite> is used as an ‘alarm device’: when it measures a distance less that a
+                        prefixed value <strong>DLIMT</strong>,
+                        the <cite>transport trolley</cite> must be stopped.
+                        It will be resumed when <cite>Sonar</cite> detects again a distance higher than
+                        <strong>DLIMT</strong>.
+                    </p>
+                </li>
+            </ol>
+            <section id="tfrequirements">
+                <h3>TFRequirements</h3>
+                <p>The main goal of the <span class="blue">WasteService</span> software is to allow a <span
+                        class="blue">Waste truck</span> to deposit its load of
+                    <strong>TruckLoad</strong> kg plastic or glass in the proper container.
+                </p>
+                <p>The global story can be described as follows:</p>
+                <ol class="arabic simple">
+                    <li>
+                        <p>The <cite>Waste truck</cite> driver approaches the <cite>INDOOR</cite> and sends (using a
+                            smart device) a request to store the load,
+                            by specifyng the <cite>type of the material</cite> (plastic or glass) and its
+                            <cite>TruckLoad</cite>.
+                        </p>
+                    </li>
+                    <li>
+                        <p>The <cite>WasteService</cite> sends the answer <em>loadaccept</em> if the final content of
+                            proper container will not surpass the
+                            maximum value allowed (<em>MAXPB</em> or <em>MAXGB</em>). Otherwise, it sends the answer
+                            <em>loadrejecetd</em> and the <cite>Waste truck</cite>
+                            leaves the <cite>INDOOR</cite> area.
+                        </p>
+                    </li>
+                    <li>
+                        <p>When the load is accepted, the <cite>transport trolley</cite> reaches the
+                            <cite>INDOOR</cite>, picks up the material, goes to the
+                            proper container and settles the material. During this activity, the
+                            <cite>WasteService</cite> <strong>blinks</strong> the <cite>Led</cite>
+                        </p>
+                    </li>
+                    <li>
+                        <p>When the deposit action is terminated, the <cite>transport trolley</cite> excutes another
+                            deposit command (if any)
+                            or returns to its <cite>HOME</cite>.</p>
+                    </li>
+                </ol>
+                <p>The <cite>WasteService</cite> must create a <span class="blue">WasteServiceStatusGUI</span> that
+                    shows to the <em>Service-manager</em>:</p>
+                <ul>
+                    <li>
+                        <p>the current state of the <cite>transport trolley</cite> and it position in the room</p>
+                    </li>
+                    <li>
+                        <p>the current weigth of the material stored in the two waste-containers</p>
+                    </li>
+                    <li>
+                        <p>the current state of the <cite>Led</cite></p>
+            </section>
+        </section>
+
+        <h2>Requirement analysis</h2>
+
+        <section id="analisi_requisiti">
+            <h1 id="wasteservice-analisi-dei-requisiti">WasteService - Analisi dei Requisiti</h1>
+            <p>Per ogni requisito analizzato in questo SPRINT è stato incluso un modello eseguibile in <a href="#scelta-del-linguaggio-di-modellazione">Qak</a>.</p>
+            <h2 id="requisiti-e-chiarimenti">Requisiti e chiarimenti</h2>
+            <ul>
+            <li><p><strong>request</strong>: il <em>WasteService</em> accetta richieste di deposito da <em>Waste truck</em> che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare</p>
+            <ul>
+            <li>il sistema può controllare se c'è spazio per un certo materiale: accetta (risposta <em>loadaccept</em>), e rifiuta (risposta <em>loadrejected</em>) le richieste di deposito in caso contrario</li>
+            </ul>
+            <ol>
+            <li>
+            <blockquote>
+            <p>Domanda: le richieste possono essere gestite anche mentre il robot è in attività?</p>
+            </blockquote>
+            <p>Sì, potrebbe arrivare altro camion che chiede.</p>
+            </li>
+            <li>
+            <blockquote>
+            <p>Domanda: solo un camion alla volta in INDOOR?</p>
+            </blockquote>
+            <p>Sì.</p>
+            </li>
+            </ol>
+            </li>
+            <li><p><strong>deposit</strong>: il <em>trolley</em>, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa è una <em>deposit action</em>:</p>
+            <ol>
+            <li>Raccolta di rifiuti da <em>Waste truck</em> in INDOOR</li>
+            <li>Andare da INDOOR a contenitore rifiuti (* BOX)</li>
+            <li>Depositare rifiuti nel contenitore</li>
+            </ol>
+            </li>
+            <li><p><strong>indoor-more-requests</strong>: il <em>trolley</em>, terminata una <em>deposit action</em>, torna a HOME solo se non ci sono altre richieste da gestire, sennò gestisce subito la richiesta successiva andando a INDOOR</p>
+            </li>
+            <li><p><strong>led</strong>: nel sistema è presente un led che:</p>
+            <ul>
+            <li>è <em>acceso</em> se il <em>trolley</em> è a HOME</li>
+            <li><em>lampeggia</em> se il <em>trolley</em> è in attività</li>
+            <li>è <em>spento</em> se il trolley è in stato di <em>stop</em></li>
+            </ul>
+            </li>
+            <li><p><strong>sonar-stop</strong>: è presente un <em>sonar</em> che, se misura una distanza sotto DLIMIT (valore prefissato), mette il <em>trolley</em> in stato di <em>stop</em> fino a che la distanza non torna a DLIMIT, nel qual caso il <em>trolley</em> riparte</p>
+            <ol>
+            <li>
+            <blockquote>
+            <p>Domanda: cosa vuol dire precisamente <em>stop</em>? Torna a HOME o rimane lì?</p>
+            </blockquote>
+            <p>Si ferma e basta.</p>
+            </li>
+            </ol>
+            </li>
+            <li><p><strong>gui</strong>: è presente una gui (<em>WasteServiceStatusGUI</em>) che mostra i seguenti dati:</p>
+            <ul>
+            <li>Stato del <em>trolley</em> e sua posizione</li>
+            </ul>
+            <ol>
+            <li>
+            <blockquote>
+            <p>Domanda: Posizione del trolley: deve essere precisa o informazione più generale (INDOOR, in mezzo, HOME, ecc)?</p>
+            </blockquote>
+            <p>Basta una posizione più generale.</p>
+            </li>
+            </ol>
+            <ul>
+            <li>Carico depositato attuale (in kg)</li>
+            <li>Stato del Led (acceso/spento/lampeggiante)</li>
+            </ul>
+            </li>
+            </ul>
+            <p>Da questa analisi, emerge che il <em>core business</em> del sistema è costituito dai requisiti di <strong>request</strong>, <strong>deposit</strong>, e <strong>indoor-more-requests</strong>. Un primo sprint SCRUM sarà quindi lo sviluppo a partire da questi requisiti centrali, mentre i successivi sprint implementeranno le funzionalità aggiuntive di <strong>led</strong>, <strong>sonar-stop</strong>, e <strong>gui</strong>.</p>
+            <h2 id="glossario">Glossario</h2>
+            <ul>
+            <li><p><em>WasteService</em>: il servizio centrale che risponde alle richieste dei <em>waste truck</em></p>
+            </li>
+            <li><p><em>Waste truck</em>: i camion che arrivano dall'esterno a depositare rifiuti</p>
+            </li>
+            <li><p>Area di servizio: <strong>INDOOR</strong>, <strong>PlasticBox</strong>, <strong>GlassBox</strong>, aree definite nella creazione del sistema e punti di riferimento per il <em>trolley</em>. In particolare:</p>
+            <ul>
+            <li>INDOOR: area dove i <em>waste truck</em> si fermano a lasciare il proprio carico, facendo una richiesta di deposito. Essa può contenere un <em>waste truck</em> alla volta</li>
+            <li>PlasticBox: area dove depositare la plastica</li>
+            <li>GlassBox: area dove depositare il vetro</li>
+            </ul>
+            </li>
+            <li><p><em>transport trolley</em> (o <em>trolley</em>): robot DDR (differential drive robot), di dimensione approssimabile a quadrato di lato RD, usato per trasportare i rifiuti nel sistema</p>
+            </li>
+            <li><p><em>Service-manager</em>: umano che supervisiona il sistema tramite la <em>WasteServiceStatusGUI</em></p>
+            </li>
+            <li><p><em>Sonar</em>: sensore che misura distanza</p>
+            </li>
+            <li><p><em>Led</em>: spia luminosa</p>
+            </li>
+            </ul>
+            <h2 id="analisi-dei-requisiti">Analisi dei requisiti</h2>
+            <p>Guardando i requisiti definiti dal committente si possono fare delle prime analisi sul da farsi.</p>
+            <h3 id="analisi-request">Analisi <strong>request</strong></h3>
+            <p>Si tratta di una domanda con risposta, quindi l'implementazione immediata è request-reply:</p>
+            <pre><code>Request loadDeposit : loadDeposit(MAT, QNT)
+            Reply loadaccept : loadaccept()
+            Reply loadrejected : loadrejected()
+            </code></pre>
+            <p><img src="img/req_request.png" alt="schema request" /></p>
+            <p>Il WasteService deve di conseguenza essere un attore, in grado di ricevere richieste e inviare risposte, e anche inviare messaggi a sua volta alle altre componenti del sistema.</p>
+            <pre><code>Context ctxwasteservice ip [host=&quot;localhost&quot; port=8050]
+            
+            QActor wasteservice context ctxwasteservice {...}
+            </code></pre>
+            <p><a href="../model.requisiti/src/request.qak">Modello eseguibile Request</a></p>
+            <p>Viene definito un primo test plan, eseguibile con le classi generate dal modello eseguibile:</p>
+            <p><a href="../model.requisiti/test/it/unibo/TestRequest.java">Test plan Request</a></p>
+            <h3 id="analisi-deposit">Analisi <strong>deposit</strong></h3>
+            <p>È presente nel sistema un <em>trolley</em>; visto che necessita di trovarsi in un altro nodo rispetto al WasteService, e di comunicare con esso, viene modellato come un attore: <em>Trolley</em>.</p>
+            <p>Esso, da requisiti, usa un robot DDR che <em>lavora come trolley</em>. Sono già fornite componenti software che implementano il controllo di un robot DDR tramite operazioni primitive (vedi <a href="#materiale-fornito-dal-committente">Materiale fornito dal committente</a>), cioè BasicRobot22. Quindi, il Trolley dovrà interagire con BasicRobot22 tramite i comandi primitivi di quest'ultimo, per controllare il robot DDR.</p>
+            <p>L'interazione tra <em>Trolley</em> e <em>WasteService</em> riguardante l'innesco e lo svolgimento di una <em>deposit action</em> lascia invece aperte diverse opzioni, che sono discusse successivamente in fase di analisi del problema.</p>
+            <p>La struttura dell'operazione è descritta nel modello eseguibile seguente:</p>
+            <p><a href="../model.requisiti/src/deposit.qak">Modello eseguibile Deposit</a></p>
+            <p>Viene definito un primo test plan, eseguibile con le classi generate dal modello eseguibile:</p>
+            <p><a href="../model.requisiti/test/it/unibo/TestDeposit.java">Test plan Deposit</a></p>
+            <h3 id="analisi-indoor-more-requests">Analisi <strong>indoor-more-requests</strong></h3>
+            <p>Dal requisito in sè non è possibile formalizzare con più precisione l'interazione precisa interna al sistema che lo adempie, rimanendo punti aperti diversi elementi fondamentali (i tipi di interazione tra componenti del sistema). Viene definito un test plan primitivo in seguito:</p>
+            <p><a href="../model.requisiti/test/it/unibo/TestIndoorMoreRequests.java.disabled">Test plan Indoor-More-Requests</a></p>
+            <h2 id="materiale-fornito-dal-committente">Materiale fornito dal committente</h2>
+            <ul>
+            <li>Robot DDR: viene fornita una componente software, <em>BasicRobot22</em>, che implementa comandi primitivi <em>MOVE = w | s | l | r | h</em>, e permette di fare <em>step</em> in avanti per un certo tempo.</li>
+            <li>Sonar: viene fornito un programma in C, <em>SonarAlone.c</em>, che stampa su standard output la distanza attualmente rilevata dal sonar, configurando le porte GPIO in questo modo:
+            <ul>
+            <li>Porta VCC : pin fisico 4 (+5v)</li>
+            <li>Porta GND : pin fisico 6 (GND)</li>
+            <li>Porta TRIG: pin fisico 11 (WPI 0, BCM 17)</li>
+            <li>Porta ECHO: pin fisico 13 (WPI 2, BCM 27)</li>
+            </ul>
+            </li>
+            <li>Led: vengono forniti gli script bash e <em>led25GpioTurnOn.sh</em> e <em>led25GpioTurnOff.sh</em> per accendere e spegnere un Led connesso alla porta GPIO 25 di un Raspberry Pi.</li>
+            </ul>
+            <h2 id="scelta-del-linguaggio-di-modellazione">Scelta del linguaggio di modellazione</h2>
+            <p>Nelle varie fasi di analisi di questo progetto abbiamo usato come linguaggio di modellazione il linguaggio ad attori Qak, essendo il sistema da realizzare un sistema distribuito, quindi adatto ad essere rappresentato tramite attori.</p>            
+        </section>
+
+
+
+        <h2>Problem analysis</h2>
+
+        <section id="analisi_problema">
+            <h2 id="analisi-del-problema">Analisi del problema</h2>
+            <h3 id="componenti">Componenti</h3>
+            <p>Data la numerosa quantità di componenti che comunicano tra loro, implementare la logica del sistema come un insieme di attori è abbastanza naturale.</p>
+            <h4 id="requisito-request-componenti">Requisito <strong>request</strong> - componenti</h4>
+            <p>Il WasteService è rappresentato come già detto in analisi dei requisiti da un attore.</p>
+            <p>Inoltre, per poter interagire con i cassonetti, sono introdotti degli attori di Storage per comunicare modifiche allo storage e inviare aggiornamenti a componenti di controllo per futuri Sprint.</p>
+            <p>Anche qua due opzioni possibili:</p>
+            <ul>
+            <li><p><em>Storage manager centrale</em>: un solo attore che gestisce tutti i cassonetti, tenendo traccia dei contenuti attuali e facendo da unico fronte di comunicazione nel sistema per questi dati. Questo semplificherebbe la comunicazione non richiedendo di distinguere il destinatario in base al materiale, ma richiedendo forse più complessità nel caso, per esempio, in cui i dati di storage siano ricavati da sensori su ogni cassonetto, che quindi dovrebbero aggiornare separatamente lo stesso controllore contenente lo StorageManager.</p>
+            <pre><code>QActor storage context ctxwasteservice {...}
+            </code></pre>
+            <p><img src="img/arch_request_1.png" alt="" /></p>
+            </li>
+            <li><p><em>Storage manager separati</em>: un attore per cassonetto (rappresentato nell'esempio sopra), che andrà quindi separatamente interpellato in base al tipo di materiale. La soluzione sarebbe la più intuitiva ma con i problemi sopraelencati.</p>
+            <pre><code>QActor storage_glass context ctxwasteservice {...}
+            QActor storage_paper context ctxwasteservice {...}
+            </code></pre>
+            <p><img src="img/arch_request_2.png" alt="" /></p>
+            </li>
+            </ul>
+            <p><strong>Conclusione.</strong> Si è ritenuta migliore la prima opzione, cioè <strong>usare un solo componente StorageManager</strong>, rendendo più semplice la pianificazione e la progettazione del sistema, a livello di architettura e interazione, oltre a rendere più facile l'espansione (per esempio, aggiungendo altri tipi di cassonetto) tramite configurazione interna al componente, che nel secondo caso richiederebbe la creazione di nuovi componenti.</p>
+            <p><img src="img/arch_request_1.png" alt="" /></p>
+            <h3 id="requisito-deposit-la-deposit-action">Requisito <strong>deposit</strong> - La deposit action</h3>
+            <h4 id="posizione-delle-aree-di-interesse">Posizione delle aree di interesse</h4>
+            <p>Da requisiti, si suppone che le posizioni e grandezza delle aree di HOME, INDOOR, e cassonetti vari, siano decise a priori e a priori comunicate al trolley prima dell'inizio del movimento. Riguardo a come questo sia deciso si consulti <a href="#configurazione">Configurazione</a>.</p>
+            <h4 id="pathfinding">Pathfinding</h4>
+            <p>Data una posizione di partenza e di arrivo verso la quale il trolley deve navigare, questo può calcolare due tipi di percorso:</p>
+            <ol>
+            <li><p>Dividendo la stanza in una griglia quadrata di lato RD, il trolley può semplicemente navigare lungo le direzioni cartesiane, prima ad una coordinata della destinazione e poi all'altra.</p>
+            <p><img src="img/navigazione_cart.jpg" alt="" /></p>
+            <p><strong>PRO</strong>: si dispone già di componenti in grado di generare e seguire percorsi su griglia in direzioni cartesiane, l'implementazione sarebbe quindi semplice</p>
+            <p><strong>CONTRO</strong>: più lento dell'alternativa.</p>
+            </li>
+            <li><p>Il trolley compie un percorso diretto a destinazione ignorando la griglia.</p>
+            <p><img src="img/navigazione_diretta.jpg" alt="" /></p>
+            <p><strong>PRO</strong>: il percorso sarebbe diretto e più veloce.</p>
+            <p><strong>CONTRO</strong>: non disponendo di componenti già implementate per questo scopo, andrebbe programmata la logica di pathfinding e navigazione per questa casistica.</p>
+            </li>
+            </ol>
+            <p><strong>Conclusione.</strong> Data la scala ridotta del problema, e la scarsa urgenza di esso, si ritiene migliore la prima opzione, la <strong>navigazione cartesiana</strong>, che permette di riutilizzare i componenti di navigazione di robot già a disposizione ottimizzando i tempi di sviluppo.</p>
+            <h4 id="gestione-della-deposit-action">Gestione della deposit action</h4>
+            <p>Esistono più opzioni per quanto riguarda quale componente
+            debba gestire la deposit action:</p>
+            <ol>
+            <li><p>Trolley potrebbe svolgere internamente la gestione dei vari passaggi, ricevendo da WasteService solo le istruzioni per iniziare una deposit action. Questo richiederebbe di spostare la logica di business dentro al Trolley, in parte.</p>
+            </li>
+            <li><p>Il Trolley potrebbe essere un puro attuatore, offrendo un' &quot;interfaccia&quot; di operazioni primitive, cioè <em>spostarsi verso delle coordinate</em>, <em>caricare i rifiuti</em> (da WasteTruck) e <em>scaricare i rifiuti</em> (nel cassonetto). Il WasteService si occuperebbe di gestire la successione dei passaggi di una deposit action, mentre il Trolley necessiterebbe solo di gestire la sequenza delle operazioni primitive del BasicRobot per raggiungere le posizioni, non conoscendo logica di business.</p>
+            </li>
+            </ol>
+            <p><strong>Conclusione.</strong>  Per avere una migliore gestione dei dati, e non dividere troppo la logica di business tra nodi diversi, abbiamo deciso per la seconda opzione, <strong>trattare il Trolley come attuatore e lasciare a WasteService la gestione dell'azione di deposito</strong>. Questo porta a una semplificazione della struttura interna del Trolley, ma al contempo ad una complicazione di WasteService, che deve contemporaneamente gestire richieste e risposte con WasteTruck, e i passaggi della deposit action.</p>
+            <p>Per una formalizzazione degli stati, si consulti <a href="#architettura-logica">Architettura Logica</a>.</p>
+            <p>Inoltre, questa modalità permette di assolvere il requisito <strong>indoor-more-requests</strong> senza richiedere interazioni apposite tra WasteService e Trolley in caso di nuove richieste durante l'operazione precedente; nel primo caso, sarebbe stato necessario far conoscere al Trolley l'arrivo di richieste per permettere di sapere se tornare o meno ad HOME.</p>
+            <p>Per poter verificare i requisiti, è necessario poter conoscere la posizione del Trolley, in termini di quale luogo di interesse è stato raggiunto. Visto che con questa modalità Trolley non conosce le posizioni delle vare aree di interesse (dato che riceve direttamente comandi per spostarsi a una certa coordinata), è necessario che comunichi a WasteService la sua posizione numerica. Per farlo, in maniera coerente con il metodo di navigazione scelto si divide la stanza in una griglia, con caselle quadrate di lato RD (grandezza del trolley, da requisiti). Le coordinate dei luoghi d'interesse sono così indicate:</p>
+            <ul>
+            <li>(0,0) è la casella in alto a sinistra della stanza.</li>
+            <li>(X, Y) è la casella X caselle a destra, e Y caselle in basso, rispetto a (0,0)</li>
+            <li>Un luogo d'interesse copre una o più caselle, ed è delimitato indicando casella in alto a sinistra e casella in basso a destra.</li>
+            </ul>
+            <h4 id="idee-per-possibile-ottimizzazione">Idee per possibile ottimizzazione</h4>
+            <p>Si è notato infine che, data la staticità dell'ambiente, i percorsi in caso di funzionamento regolare hanno un numero ridotto, essendo sempre tra le stesse (e poche) posizioni. Quindi, se necessario, potrebbe essere possibile precalcolare i percorsi, e riutilizzare sempre gli stessi senza richiedere la generazione ogni volta; nel caso per qualche motivo il trolley si ritrovi in una posizione fuori dalle aspettative, il percorso andrebbe comunque calcolato ad hoc.</p>
+            <h3 id="configurazione">Configurazione</h3>
+            <p>Da requisiti, diversi valori, cioè</p>
+            <ul>
+            <li><em>DLIMIT</em></li>
+            <li>La posizione di HOME</li>
+            <li>La posizione e area di INDOOR</li>
+            <li>La posizione e area di GLASS BOX e PLASTIC BOX</li>
+            </ul>
+            <p>sono impostati a priori. Questo può essere realizzato cablando i valori nel codice, ma l'opzione più sensata è quella di usare dei file di configurazione, modificabili dall'utente.</p>
+            <p>In questo SPRINT, considerando solo il core business dell'applicazione, l'unico componente che necessita di conoscere i dati di configurazione è WasteService. Quindi, il file di configurazione sarà collocato all'interno del suo nodo.</p>
+            <p>Un esempio:</p>
+            <p><em>WasteService.json</em></p>
+            <pre><code class="language-json">{
+                &quot;positions&quot;: {
+                    &quot;HOME&quot;: [[0,0], [0,0]],
+                    &quot;INDOOR&quot; : [[0,15], [3,15]],
+                    &quot;GLASS_BOX&quot; : [[13,0], [14,0]],
+                    &quot;PLASTIC_BOX&quot;: [[16,4], [16,5]]
+                },
+                &quot;DLIMIT&quot;: 50
+            }
+            </code></pre>
+            <h3 id="interazione">Interazione</h3>
+            <h4 id="requisito-request">Requisito <strong>request</strong></h4>
+            <p>È necessario che (in caso di loadaccept) il waste truck sappia quando lo scarico dei rifiuti da parte del trolley è stato completato per poter ripartire. Ci sono diverse opzioni:</p>
+            <ol>
+            <li><p>La risposta (loadaccept) potrebbe essere semplicemente inviata solo a scarico completato, a differenza di loadrejected che verrebbe inviata appena possibile. Una volta arrivata la risposta, il camion potrebbe partire. La conseguenza di questo approccio sarebbe l'impossibilità di rilevare errori da parte del Waste truck: &quot;vedrebbe&quot; nella UI un'attesa senza sapere se è per via dello scarico rifiuti in corso oppure per un errore.</p>
+            </li>
+            <li><p>La risposta (loadaccept) arriva subito come per loadrejected, per informare il Waste truck il prima possibile, e viene inviato un successivo messaggio pickedUp per notificare l'avvenuto scarico e la possibilità di partire. Questo richiede che il Waste truck sia anche in grado di ricevere passivamente messaggi, e non solo inviare richieste e ricevere risposte come da requisiti; è possibile, ma richiede accorgimenti più specifici nello sviluppo.</p>
+            <pre><code>Dispatch pickedUp : pickedUp()
+            </code></pre>
+            </li>
+            </ol>
+            <p><strong>Conclusione.</strong> Si ritiene migliore la seconda opzione, <strong>la partenza del camion dopo un dispatch pickedUp</strong>: il vantaggio dal punto di vista dell'utente (non necessariamente competente nella tecnologia) nel sapere subito se è stato accettato o meno il carico, e non rimanere bloccati in una schermata di attesa o equivalente anche in caso di successo, vale la pena di avere ulteriori accortezze in implementazione.</p>
+            <p>Inoltre, WasteService deve poter sapere da StorageManager lo stato attuale di riempimento dei cassonetti.</p>
+            <ol>
+            <li><p>Questo potrebbe essere implementato come una request-reply, chiedendo a StorageManager lo stato dei cassonetti.</p>
+            <pre><code>Request storageAsk : storageAsk(MAT)
+            Reply storageAt : storageAt(MAT, QNT)
+            </code></pre>
+            </li>
+            <li><p>Potrebbe essere implementato come un evento inviato da StorageManager a ogni modifica dei contenuti, o in modo simile rendendo i cassonetti risorse osservabili.</p>
+            <pre><code>Event storageUpdate : storageUpdate(MAT, QNT)
+            </code></pre>
+            </li>
+            </ol>
+            <p><strong>Conclusione.</strong> Per adempiere a questo requisito si è ritenuta migliore la prima opzione, <strong>request-reply</strong>; nel secondo caso, WasteService dovrebbe salvare in una variabile interna di stato il dato aggiornato ogni volta che lo riceve, cosa che potrebbe avvenire in qualunque momento, invece di chiederlo semplicemente all'occorrenza.</p>
+            <p><img src="img/an_int_request.png" alt="modello request" /></p>
+            <p><a href="../model.problema/src/pro_request.qak">Modello eseguibile di Request dopo queste considerazioni</a></p>
+            <h4 id="requisito-deposit">Requisito <strong>deposit</strong></h4>
+            <p>Il Wasteservice, come specificato in <a href="#gestione-della-deposit-action">Gestione della deposit action</a>, si occupa dei vari passaggi del deposito. Deve quindi poter inviare messaggi a Trolley per coordinare questa operazione. Deve inoltre sapere quando Trolley termina le operazioni per iniziare le successive.</p>
+            <ol>
+            <li>Questo potrebbe essere implementato come una serie di dispatch, con un singolo dispatch per le conferme di operazione conclusa.
+            <pre><code>Dispatch trolleyMove : trolleyMove(X, Y)
+            Dispatch trolleyCollect : trolleyCollect(MAT, QNT)
+            Dispatch trolleyDeposit : trolleyDeposit()
+            Dispatch trolleyDone : trolleyDone(OK)
+            </code></pre>
+            </li>
+            <li>Oppure, in alternativa, come diverse richieste, a cui Trolley risponde a operazione conclusa:
+            <pre><code>Request trolleyMove : trolleyMove(X, Y)
+            Request trolleyCollect : trolleyCollect(MAT, QNT)
+            Request trolleyDeposit : trolleyDeposit()
+            Reply trolleyDone : trolleyDone(OK)
+            </code></pre>
+            </li>
+            </ol>
+            <p><strong>Conclusione.</strong> Si sceglie la seconda opzione, modellare le operazioni primitive come <strong>request-response</strong>, perchè permette a Trolley di non conoscere WasteService ma di agire solo in risposta a delle richieste.</p>
+            <p>Inoltre, per iniziare lo scarico nel cassonetto viene comunicato il deposito di un materiale da parte del trolley:</p>
+            <pre><code>Dispatch storageDeposit : storageDeposit(MAT, QNT)
+            </code></pre>
+            <p>Questo messaggio viene inviato da Trolley a StorageManager, ed è necessario per trattare allo stesso modo la situazione di test virtuale e il caso reale; infatti, un caso reale potrebbe usare un sensore nei cassonetti per aggiornare i dati sui contenuti noti a StorageManager, mentre in una situazione virtuale questo deve essere necessariamente aggiornato tramite messaggi.</p>
+            <p>In un caso reale, bisogna quindi testare la consistenza tra dati noti a StorageManager dopo l'invio del messaggio, e i dati reali dei contenuti. Un test plan per questo caso è il seguente:</p>
+            <p><a href="../wasteservice.prototype/test/it/unibo/TestDepositReal.java.disabled">Test plan per confronto dati veri e gestiti</a></p>
+            <p>Il modello per le componenti correlate a deposit è il seguente:</p>
+            <p><img src="img/an_int_deposit.png" alt="modello deposit" /></p>
+            <p><a href="../model.problema/src/pro_deposit.qak">Modello eseguibile di Deposit e Indoor-more-requests dopo queste considerazioni</a></p>
+            <h3 id="architettura-logica">Architettura Logica</h3>
+            <p>Ecco quindi l'architettura logica finale del sistema in generale per questo SPRINT:</p>
+            <p><img src="img/arch_logica.png" alt="modello architettura logica" /></p>
+            <p><img src="img/arch_fsm_wasteservice.png" alt="diagramma stati WasteService" /></p>
+            <p><a href="../wasteservice.prototype/src/prototype_sprint1.qak"><strong>Prototipo eseguibile</strong></a></p>
+            <p>Per scopo di prototipo e simulazione, i Waste truck vengono trattati come attori, ma nel caso reale sarebbero &quot;alieni&quot; al sistema, inviando dati dall'esterno, probabilmente tramite una GUI (web o analoga) usabile dal camionista. Essi, come specificato in <a href="#requisito-request">Interazione: request</a>, devono comunque disporre di una componente software in grado di rimanere in ascolto di messaggi, oltre che inviare richieste.</p>
+            <h3 id="test-plan">Test Plan</h3>
+            <p>Vengono aggiornati i test plan introdotti in analisi dei requisiti, e introdotti di nuovi per collaudare alcuni elementi emersi in questa fase. Tutti i test sul prototipo sono fatti presupponendo l'assenza di un wastetruck che invii indipendentemente richieste che interferirebbero con il test.</p>
+            <p>Per lo scopo di eseguire il modello Qak senza wastetruck, viene incluso un file pl differente a quello generato che non include il wastetruck tra gli attori: <a href="../wasteservice.prototype/wasteservice_proto_sprint1_test.pl">wasteservice_proto_sprint1_test.pl</a>, con un <a href="../wasteservice.prototype/test/it/unibo/RunPrototypeNoTruck_Sprint1.kt">file Kotlin</a> apposito per usarlo.</p>
+            <h4 id="testplan-request">TestPlan: request</h4>
+            <p>Test plan in Java: <a href="../wasteservice.prototype/test/it/unibo/TestRequest.java">TestRequest.java</a></p>
+            <ul>
+            <li><p><strong>Test Deny</strong>: si invia una richiesta di loadDeposit al WasteService per una quantità maggiore di quella che i cassonetti possono ospitare e si verifica che risponda con un <em>loadrejected</em>.</p>
+            </li>
+            <li><p><strong>Test Accept</strong>: si invia una richiesta di loadDeposit al WasteServicee si verifica che risponda con loadrejected.</p>
+            </li>
+            <li><p><strong>Test PickedUp</strong>: si invia una richiesta di loadDeposit al WasteService, usando un finto attore di nome wastetruck</p>
+            </li>
+            </ul>
+            <h4 id="testplan-deposit">TestPlan: deposit</h4>
+            <p>Test plan in Java: <a href="../wasteservice.prototype/test/it/unibo/TestDeposit.java">TestDeposit.java</a></p>
+            <ul>
+            <li><p><strong>Test TrolleyCollect</strong>: Invia richiesta trolleyCollect con quantità N e materiale M. Verifica che dopo la richiesta Trolley contenga i materiali corrispondenti.</p>
+            </li>
+            <li><p><strong>Test TrolleyDeposit</strong>: Invia richiesta trolleyDeposit con Trolley già contenente materiale M in quantità M. Verifica che dopo la richiesta Trolley non contenga più materiali, e StorageManager contenga i materiali nelle quantità indicate.</p>
+            </li>
+            <li><p><strong>Test TrolleyMove</strong>: Invia richiesta trolleyMove con coordinate X e Y. Si verifichi tramite Coap che a fine operazione Trolley si trovi alla posizione corrispondente.</p>
+            </li>
+            <li><p><strong>Test Positions Glass</strong>: Invia richiesta di deposito con vetro. Verifica che partendo da HOME, le posizioni attraversate siano HOME, INDOOR, e GLASS_BOX.</p>
+            </li>
+            <li><p><strong>Test Positions Plastic</strong>: Invia richiesta di deposito con plastica. Verifica che partendo da HOME, le posizioni attraversate siano HOME, INDOOR, e PLASTIC_BOX.</p>
+            </li>
+            <li><p><strong>Test Deposit</strong>: Invia richiesta di deposito con quantità N. Verifica che StorageManager finisca con quantità aumentata di N a deposit action terminata.</p>
+            </li>
+            </ul>
+            <h4 id="testplan-indoor-more-requests">TestPlan: indoor-more-requests</h4>
+            <p>Test plan in Java: <a href="../wasteservice.prototype/test/it/unibo/TestMoreRequests.java">TestMoreRequests.java</a>.</p>
+            <ul>
+            <li><p><strong>Test GoHome</strong>: Con Trolley a GLASS_BOX, verifica che in assenza di nuove richieste torni a HOME.</p>
+            </li>
+            <li><p><strong>Test TrolleyMove</strong>: Con Trolley a GLASS_BOX, verifica che in presenza di nuove richieste torni a INDOOR.</p>
+            </li>
+            </ul>            
+        </section>
+
+        <h2>Project</h2>
+
+
+        <h2>Testing</h2>
+
+
+        <h2>Deployment</h2>
+
+
+        <h2>Maintenance</h2>
+
+        <!-- USEFUL
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+</td>
+<td></td>
+</tr>
+</table>
+-->
+
+        <br /><br />
+    </div>
+
+    <div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
+        Filippo Lenzi filippo.lenzi2@studio.unibo.it - Lorenzo Guerra lorenzo.guerra5@studio.unibo.it
+        <!-- <img src="./img/emiglio.png" alt="mbot" width="15%" height="15%"> -->
+    </div>
+</body>
+
+</html>

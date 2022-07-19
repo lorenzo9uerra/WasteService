@@ -17,7 +17,7 @@ Anche qua due opzioni possibili:
     QActor storage context ctxwasteservice {...}
     ```
 
-    ![](doc/img/arch_request_1.png)
+    ![](img/arch_request_1.png)
 
 - *Storage manager separati*: un attore per cassonetto (rappresentato nell'esempio sopra), che andrà quindi separatamente interpellato in base al tipo di materiale. La soluzione sarebbe la più intuitiva ma con i problemi sopraelencati.
 
@@ -26,11 +26,11 @@ Anche qua due opzioni possibili:
     QActor storage_paper context ctxwasteservice {...}
     ```
 
-    ![](doc/img/arch_request_2.png)
+    ![](img/arch_request_2.png)
 
 **Conclusione.** Si è ritenuta migliore la prima opzione, cioè **usare un solo componente StorageManager**, rendendo più semplice la pianificazione e la progettazione del sistema, a livello di architettura e interazione, oltre a rendere più facile l'espansione (per esempio, aggiungendo altri tipi di cassonetto) tramite configurazione interna al componente, che nel secondo caso richiederebbe la creazione di nuovi componenti.
 
-![](doc/img/arch_request_1.png)
+![](img/arch_request_1.png)
 
 ### Requisito **deposit** - La deposit action
 
@@ -43,7 +43,7 @@ Da requisiti, si suppone che le posizioni e grandezza delle aree di HOME, INDOOR
 Data una posizione di partenza e di arrivo verso la quale il trolley deve navigare, questo può calcolare due tipi di percorso:
 1. Dividendo la stanza in una griglia quadrata di lato RD, il trolley può semplicemente navigare lungo le direzioni cartesiane, prima ad una coordinata della destinazione e poi all'altra.
 
-    ![](./doc/img/navigazione_cart.jpg)
+    ![](img/navigazione_cart.jpg)
 
     **PRO**: si dispone già di componenti in grado di generare e seguire percorsi su griglia in direzioni cartesiane, l'implementazione sarebbe quindi semplice
     
@@ -51,7 +51,7 @@ Data una posizione di partenza e di arrivo verso la quale il trolley deve naviga
 
 2. Il trolley compie un percorso diretto a destinazione ignorando la griglia.
 
-    ![](./doc/img/navigazione_diretta.jpg)
+    ![](img/navigazione_diretta.jpg)
 
     **PRO**: il percorso sarebbe diretto e più veloce.
     
@@ -145,9 +145,9 @@ Inoltre, WasteService deve poter sapere da StorageManager lo stato attuale di ri
 
 **Conclusione.** Per adempiere a questo requisito si è ritenuta migliore la prima opzione, **request-reply**; nel secondo caso, WasteService dovrebbe salvare in una variabile interna di stato il dato aggiornato ogni volta che lo riceve, cosa che potrebbe avvenire in qualunque momento, invece di chiederlo semplicemente all'occorrenza.
 
-![modello request](doc/img/an_int_request.png)
+![modello request](img/an_int_request.png)
 
-[Modello eseguibile di Request dopo queste considerazioni](./model.problema/src/pro_request.qak)
+[Modello eseguibile di Request dopo queste considerazioni](../model.problema/src/pro_request.qak)
 
 #### Requisito **deposit**
 
@@ -178,24 +178,24 @@ Questo messaggio viene inviato da Trolley a StorageManager, ed è necessario per
 
 In un caso reale, bisogna quindi testare la consistenza tra dati noti a StorageManager dopo l'invio del messaggio, e i dati reali dei contenuti. Un test plan per questo caso è il seguente:
 
-TODO: test plan dati veri vs dati messaggi
+[Test plan per confronto dati veri e gestiti](../wasteservice.prototype/test/it/unibo/TestDepositReal.java.disabled)
 
 Il modello per le componenti correlate a deposit è il seguente:
 
-![modello deposit](doc/img/an_int_deposit.png)
+![modello deposit](img/an_int_deposit.png)
 
-[Modello eseguibile di Deposit e Indoor-more-requests dopo queste considerazioni](./model.problema/src/pro_deposit.qak)
+[Modello eseguibile di Deposit e Indoor-more-requests dopo queste considerazioni](../model.problema/src/pro_deposit.qak)
 
 
 ### Architettura Logica
 
-Ecco quindi l'architettura logica del sistema in generale per questo SPRINT:
+Ecco quindi l'architettura logica finale del sistema in generale per questo SPRINT:
 
-![modello architettura logica](doc/img/arch_logica.png)
+![modello architettura logica](img/arch_logica.png)
 
-![diagramma stati WasteService](doc/img/arch_fsm_wasteservice.png)
+![diagramma stati WasteService](img/arch_fsm_wasteservice.png)
 
-[**Prototipo eseguibile**](wasteservice.prototype/src/prototype_sprint1.qak)
+[**Prototipo eseguibile**](../wasteservice.prototype/src/prototype_sprint1.qak)
 
 Per scopo di prototipo e simulazione, i Waste truck vengono trattati come attori, ma nel caso reale sarebbero "alieni" al sistema, inviando dati dall'esterno, probabilmente tramite una GUI (web o analoga) usabile dal camionista. Essi, come specificato in [Interazione: request](#requisito-request), devono comunque disporre di una componente software in grado di rimanere in ascolto di messaggi, oltre che inviare richieste.
 
@@ -203,11 +203,11 @@ Per scopo di prototipo e simulazione, i Waste truck vengono trattati come attori
 
 Vengono aggiornati i test plan introdotti in analisi dei requisiti, e introdotti di nuovi per collaudare alcuni elementi emersi in questa fase. Tutti i test sul prototipo sono fatti presupponendo l'assenza di un wastetruck che invii indipendentemente richieste che interferirebbero con il test.
 
-Per lo scopo di eseguire il modello Qak senza wastetruck, viene incluso un file pl differente a quello generato che non include il wastetruck tra gli attori: [wasteservice_proto_sprint1_test.pl](wasteservice.prototype/wasteservice_proto_sprint1_test.pl), con un [file Kotlin](wasteservice.prototype/test/it/unibo/RunPrototypeNoTruck_Sprint1.kt) apposito per usarlo.
+Per lo scopo di eseguire il modello Qak senza wastetruck, viene incluso un file pl differente a quello generato che non include il wastetruck tra gli attori: [wasteservice_proto_sprint1_test.pl](../wasteservice.prototype/wasteservice_proto_sprint1_test.pl), con un [file Kotlin](../wasteservice.prototype/test/it/unibo/RunPrototypeNoTruck_Sprint1.kt) apposito per usarlo.
 
 #### TestPlan: request
 
-Test plan in Java: [TestRequest.java](wasteservice.prototype/test/it/unibo/TestRequest.java)
+Test plan in Java: [TestRequest.java](../wasteservice.prototype/test/it/unibo/TestRequest.java)
 
 - **Test Deny**: si invia una richiesta di loadDeposit al WasteService per una quantità maggiore di quella che i cassonetti possono ospitare e si verifica che risponda con un *loadrejected*.
 
@@ -218,7 +218,7 @@ Test plan in Java: [TestRequest.java](wasteservice.prototype/test/it/unibo/TestR
 
 #### TestPlan: deposit
 
-Test plan in Java: [TestDeposit.java](wasteservice.prototype/test/it/unibo/TestDeposit.java)
+Test plan in Java: [TestDeposit.java](../wasteservice.prototype/test/it/unibo/TestDeposit.java)
 
 - **Test TrolleyCollect**: Invia richiesta trolleyCollect con quantità N e materiale M. Verifica che dopo la richiesta Trolley contenga i materiali corrispondenti.
 
@@ -235,7 +235,7 @@ Test plan in Java: [TestDeposit.java](wasteservice.prototype/test/it/unibo/TestD
 
 #### TestPlan: indoor-more-requests
 
-Test plan in Java: [TestMoreRequests.java](wasteservice.prototype/test/it/unibo/TestMoreRequests.java).
+Test plan in Java: [TestMoreRequests.java](../wasteservice.prototype/test/it/unibo/TestMoreRequests.java).
 
 - **Test GoHome**: Con Trolley a GLASS_BOX, verifica che in assenza di nuove richieste torni a HOME.
 

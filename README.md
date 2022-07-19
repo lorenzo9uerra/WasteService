@@ -3,6 +3,6 @@
 *Gruppo Lenzi F. e Guerra L.*
 
 
-* [Analisi dei requisiti](requisiti.md)
+* [Analisi dei requisiti](doc/requisiti.md)
 
-* [Analisi del problema](analisi_problema.md)
+* [Analisi del problema](doc/analisi_problema.md)

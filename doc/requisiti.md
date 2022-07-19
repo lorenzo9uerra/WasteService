@@ -1,4 +1,4 @@
-[Ritorna all'inizio](README.md)
+[Ritorna all'inizio](../README.md)
 
 # WasteService - Analisi dei Requisiti
 
@@ -76,7 +76,7 @@ Reply loadaccept : loadaccept()
 Reply loadrejected : loadrejected()
 ```
 
-![schema request](doc/img/req_request.png)
+![schema request](img/req_request.png)
 
 Il WasteService deve di conseguenza essere un attore, in grado di ricevere richieste e inviare risposte, e anche inviare messaggi a sua volta alle altre componenti del sistema.
 
@@ -86,11 +86,11 @@ Context ctxwasteservice ip [host="localhost" port=8050]
 QActor wasteservice context ctxwasteservice {...}
 ```
 
-[Modello eseguibile Request](./model.requisiti/src/request.qak)
+[Modello eseguibile Request](../model.requisiti/src/request.qak)
 
 Viene definito un primo test plan, eseguibile con le classi generate dal modello eseguibile:
 
-[Test plan Request](./model.requisiti/test/it/unibo/TestRequest.java)
+[Test plan Request](../model.requisiti/test/it/unibo/TestRequest.java)
 
 ### Analisi **deposit**
 
@@ -102,17 +102,17 @@ L'interazione tra *Trolley* e *WasteService* riguardante l'innesco e lo svolgime
 
 La struttura dell'operazione è descritta nel modello eseguibile seguente:
 
-[Modello eseguibile Deposit](./model.requisiti/src/deposit.qak)
+[Modello eseguibile Deposit](../model.requisiti/src/deposit.qak)
 
 Viene definito un primo test plan, eseguibile con le classi generate dal modello eseguibile:
 
-[Test plan Deposit](./model.requisiti/test/it/unibo/TestDeposit.java)
+[Test plan Deposit](../model.requisiti/test/it/unibo/TestDeposit.java)
 
 ### Analisi **indoor-more-requests**
 
 Dal requisito in sè non è possibile formalizzare con più precisione l'interazione precisa interna al sistema che lo adempie, rimanendo punti aperti diversi elementi fondamentali (i tipi di interazione tra componenti del sistema). Viene definito un test plan primitivo in seguito:
 
-[Test plan Indoor-More-Requests](./model.requisiti/test/it/unibo/TestIndoorMoreRequests.java.disabled)
+[Test plan Indoor-More-Requests](../model.requisiti/test/it/unibo/TestIndoorMoreRequests.java.disabled)
 
 ## Materiale fornito dal committente
 
