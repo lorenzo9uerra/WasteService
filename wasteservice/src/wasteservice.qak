@@ -1,0 +1,43 @@
+System wasteservice
+
+
+Request storageAsk : storageAsk(MAT)
+Reply storageAt : storageAt(MAT, QNT)
+
+Context ctx_storagemanager ip [host="localhost" port=8020]
+
+
+QActor storagemanager context ctx_storagemanager {
+	[#
+		var Support = it.unibo.lenziguerra.wasteservice.storage.StorageManagerSupport.getSupport()
+	#]
+	State init initial {
+		println("$Support")
+		updateResource [# Support.getPrologContent() #]
+	}
+	Goto idle
+	
+	State idle {
+		printCurrentMessage
+	}
+	Transition t0 whenRequest storageAsk -> handleAsk
+//				  whenMsg storageDeposit -> handleDeposit
+	
+	State handleAsk {
+		printCurrentMessage
+		onMsg (storageAsk : storageAsk(MAT) ) {
+			[# var SpaceLeft = Support.getSpace(payloadArg(0)) #]
+			replyTo storageAsk with storageAt : storageAt($payloadArg(0), $SpaceLeft)
+		}
+	}
+	Goto idle
+	
+//	State handleDeposit {
+//		onMsg ( storageDeposit : storageDeposit(MAT, QNT) ){
+//			[# Content[payloadArg(0)] = Content.getOrDefault(payloadArg(0), 0.0) + payloadArg(1).toDouble() #]
+//			println("STORAGE: Glass ${Content[\"glass\"]}/${MaxContent[\"glass\"]}, Plastic ${Content[\"plastic\"]}/${MaxContent[\"plastic\"]}")
+//			updateResource [# Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n") #]
+//		}
+//	}
+//	Goto idle
+}
