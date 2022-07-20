@@ -1,0 +1,30 @@
+{{> header}}
+
+<h1>{{title}}</h1>
+
+<p>
+Inserire il tipo di rifiuto da depositare e la quantità.
+</p>
+
+<div id="main-content" class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <select id="wastetype" name="wastetype">
+                    {{#waste}}
+                        {{#types}}
+                        <option value={{id}}>{{name}}</option>
+                        {{/types}}
+                    {{/waste}}
+                    </select>
+                    <input type="number" id="wasteamount" name="amount">
+                </div>
+                <button id="request" type="submit">Send</button>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>
+
+{{> footer}}
