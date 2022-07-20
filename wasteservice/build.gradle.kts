@@ -115,3 +115,14 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+tasks.bootRun {
+	mainClass.set("it.unibo.lenziguerra.wasteservice.wasteservice.WasteserviceApplicationKt")
+}
+
+
+task<JavaExec>("storageRun") {
+	group = "application"
+	mainClass.set("it.unibo.ctx_storagemanager.MainCtx_storagemanagerKt")
+	classpath = java.sourceSets["main"].runtimeClasspath
+}

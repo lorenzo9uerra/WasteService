@@ -49,4 +49,8 @@ public class PrologUtils {
             return out;
         }
     }
+
+    public static String build(String id, String... args) {
+        return id + "(" + Arrays.stream(args).collect(Collectors.joining(", ")) + ")";
+    }
 }

@@ -1,7 +1,5 @@
 package it.unibo.lenziguerra.wasteservice.storage
 
-import it.unibo.storagemanager.StorageManagerMock
-
 interface IStorageManagerSupport {
     /**
      * @param type Item type to deposit
@@ -33,7 +31,7 @@ object StorageManagerSupport {
     fun getSupport(): IStorageManagerSupport {
         // if real then return real else
         // if virtual then return virtual with config path else
-        return StorageManagerMock()
+        return StorageManagerSupportMock()
     }
 }
 
@@ -81,12 +79,12 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<String, 
     }
 
     override fun getStatus(): String {
-        return "=======================\n" +
+        return "=========================\n" +
                "Storage Manager status:\n" +
                 amount.map {
-                    "\t${it.key.replaceFirstChar { c -> c.uppercase() }}: ${it.value}"
+                    "\t${it.key.replaceFirstChar { c -> c.uppercase() }}: ${it.value} / ${maxAmount[it.key]}"
                 }.joinToString("\n") +
-               "\n======================="
+               "\n========================="
     }
 
     override fun toString(): String = getStatus()
