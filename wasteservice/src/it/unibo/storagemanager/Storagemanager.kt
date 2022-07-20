@@ -30,6 +30,7 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
 					 transition(edgeName="t00",targetState="handleAsk",cond=whenRequest("storageAsk"))
+					transition(edgeName="t01",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
 				}	 
 				state("handleAsk") { //this:State
 					action { //it:State
@@ -38,6 +39,18 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 var SpaceLeft = Support.getSpace(payloadArg(0))  
 								answer("storageAsk", "storageAt", "storageAt(${payloadArg(0)},$SpaceLeft)"   )  
+						}
+					}
+					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
+				}	 
+				state("handleDeposit") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("storageDeposit(MAT,QNT)"), Term.createTerm("storageDeposit(MAT,QNT)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 Support.deposit(payloadArg(0), payloadArg(1).toFloat())  
+								println("$Support")
+								updateResourceRep( Support.getPrologContent()  
+								)
 						}
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
