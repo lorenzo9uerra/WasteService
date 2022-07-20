@@ -42,6 +42,16 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
+sourceSets["main"].java {
+	srcDir("src")
+	srcDir("resources")
+}
+sourceSets["main"].resources {
+	srcDir("resources")
+}
+sourceSets["test"].java {
+	srcDir("test")
+}
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {

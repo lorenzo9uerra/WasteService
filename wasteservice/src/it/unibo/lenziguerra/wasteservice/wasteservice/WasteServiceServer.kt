@@ -15,6 +15,7 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import unibo.actor22comm.utils.ColorsOut
+import it.unibo.lenziguerra.wasteservice.SystemConfig
 
 
 @Controller
@@ -50,7 +51,7 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
             val id = PrologUtils.extractId(payload);
             val args = PrologUtils.extractPayload(payload);
 
-            if (it.unibo.lenziguerra.wasteservice.SystemConfig.debugPrint) {
+            if (SystemConfig.debugPrint) {
                 ColorsOut.outappl("Message arrived: $payload", ColorsOut.BLUE)
                 ColorsOut.outappl("Id: $id, Args: $args", ColorsOut.ANSI_PURPLE)
             }
