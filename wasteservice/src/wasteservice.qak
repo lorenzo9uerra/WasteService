@@ -6,7 +6,6 @@ Reply storageAt : storageAt(MAT, QNT)
 
 Context ctx_storagemanager ip [host="localhost" port=8020]
 
-
 QActor storagemanager context ctx_storagemanager {
 	[#
 		var Support = it.unibo.lenziguerra.wasteservice.storage.StorageManagerSupport.getSupport()

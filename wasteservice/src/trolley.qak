@@ -1,0 +1,46 @@
+System wasteservice
+
+Request trolleyMove : trolleyMove(LOC)
+Request trolleyCollect : trolleyCollect(MAT)
+Request trolleyDeposit : trolleyDeposit(_)
+
+Reply trolleyDone: trolleyDone(_)
+
+Context ctx_trolley ip [host="localhost" port=8021]
+
+QActor trolley context ctx_trolley {
+	[#
+		var Support = it.unibo.lenziguerra.wasteservice.trolley.TrolleySupport.getSupport()
+	#]
+	State init initial {
+		println("$Support")
+	}
+	Goto idle
+
+	State idle {
+		printCurrentMessage
+	}
+	Transition t0 whenRequest trolleyMove -> handleMove
+				  whenRequest trolleyCollect -> handleCollect
+				  whenRequest trolleyDeposit -> handleDeposit
+
+	State handleMove {
+		printCurrentMessage
+		onMsg (trolleyMove : trolleyMove(LOC) ) {
+			if [# Support.move(payloadArg(0)) #]{
+				replyTo trolleyMove with trolleyDone : trolleyDone(_)
+			}
+		}
+	}
+	Goto idle
+	
+	State handleCollect{
+		printCurrentMessage
+	}
+	Goto idle
+	
+	State handleDeposit{
+		printCurrentMessage
+	}
+	Goto idle
+}

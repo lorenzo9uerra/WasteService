@@ -15,3 +15,22 @@ TODO: come interagisce con il WasteService attore/la parte che gestisce il troll
 - Creazione interfaccia IStorageManagerSupport, e classi annesse
 
 - Modifica della resource da content(type, amount) a content(type, amount, max)
+
+### Navigazione
+
+Per lo spostamento del trolley si è pensato di riutilizzare un software già
+sviluppato, chiamato _basicrobot_. Questo componente ci permette di controllare
+il robot DDR attraverso messaggi, come se questo fosse un semplice attuatore. In
+questo modo si può tenere traccia della posizione del trolley così da potergli
+indicare successivamente la strada migliore da percorrere durante ogni suo
+stato.
+Inoltre _basicrobot_ ci permette di far eseguire comandi al robot in modo
+indipendente dalla tecnologia, il che lo rende un componente utile in fase di
+testing. Infatti, prima di utilizzare un robot reale, sarà possibile osservare i
+movimenti del trolley grazie a _WEnv_, un software che simula un robot virtuale
+che ci è fornito ed è quindi riutilizzabile, permettendoci di abbattere i costi
+della fase di testing.
+
+Per interagire con _basicrobot_ viene utilizzato _cril_, ossia _concrete-robot
+interaction language_, che espone un interfaccia con cui è possibile comunicare
+attraverso http o websocket.

@@ -15,7 +15,7 @@ interface IStorageManagerSupport {
     fun getStatus(): String
 
     /**
-     * Returns varios prolog-syntax lines formatted as such:
+     * Returns various prolog-syntax lines formatted as such:
      * `content(type, amount, maxAmount)`
      * representing the content of the StorageManager
      * @return the content lines
@@ -41,7 +41,7 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<String, 
      * massimi e tipi vengono forniti dall'alto (dove vengono caricati
      * con un metodo di configurazione a seconda)
      */
-    private val amount = mutableMapOf<String, Float>();
+    private val amount = mutableMapOf<String, Float>()
 
     init {
         maxAmount.keys.forEach {
@@ -66,7 +66,7 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<String, 
     }
 
     // Override if needed
-    protected fun preChange(type: String, amount: Float) {
+    private fun preChange(type: String, amount: Float) {
     }
 
     override fun deposit(type: String, depositAmnt: Float): Boolean {

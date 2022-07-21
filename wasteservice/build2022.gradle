@@ -106,7 +106,7 @@ eclipse {
 
 application {
     // Define the main class for the application.
-    mainClass = 'it.unibo.ctx_storagemanager.MainCtx_storagemanagerKt'
+    mainClass = 'it.unibo.ctx_trolley.MainCtx_trolleyKt'
 }
 
  jar {
