@@ -30,6 +30,7 @@ QActor trolley context ctx_trolley {
 			if [# Support.move(payloadArg(0)) #]{
 				replyTo trolleyMove with trolleyDone : trolleyDone(_)
 			}
+			replyTo trolleyMove with trolleyDone : trolleyDone(_)
 		}
 	}
 	Goto idle

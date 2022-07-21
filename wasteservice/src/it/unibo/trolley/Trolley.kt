@@ -39,6 +39,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 								if(  Support.move(payloadArg(0))  
 								 ){answer("trolleyMove", "trolleyDone", "trolleyDone(_)"   )  
 								}
+								answer("trolleyMove", "trolleyDone", "trolleyDone(_)"   )  
 						}
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )

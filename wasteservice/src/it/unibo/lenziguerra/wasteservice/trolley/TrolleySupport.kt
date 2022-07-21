@@ -22,7 +22,7 @@ abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>
 
     private fun rotateTo(dir: String) {
         if (dir != direction) {
-            requestSynch(ApplData.turnLeft(1000))
+            requestSynch(ApplData.turnLeft(300))
             when (direction) {
                 "up" -> direction = "left"
                 "left" -> direction = "down"
@@ -53,48 +53,48 @@ abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>
         when (dest?.let { changeDir(it) }) {
             "up" -> {
                 while (position[1] > dest[1]) {
-                    requestSynch(ApplData.moveForward(1000))
+                    requestSynch(ApplData.moveForward(300))
                     position[1]--
                 }
-                requestSynch(ApplData.turnLeft(1000))
+                requestSynch(ApplData.turnLeft(300))
                 while (position[0] > dest[0]) {
-                    requestSynch(ApplData.moveForward(1000))
+                    requestSynch(ApplData.moveForward(300))
                     position[0]--
                 }
                 return true
             }
             "left" -> {
                 while (position[0] > dest[0]) {
-                    requestSynch(ApplData.moveForward(1000))
+                    requestSynch(ApplData.moveForward(300))
                     position[0]--
                 }
-                requestSynch(ApplData.turnLeft(1000))
+                requestSynch(ApplData.turnLeft(300))
                 while (position[1] < dest[1]) {
-                    requestSynch(ApplData.moveForward(1000))
+                    requestSynch(ApplData.moveForward(300))
                     position[1]++
                 }
                 return true
             }
             "down" -> {
                 while (position[1] < dest[1]) {
-                    requestSynch(ApplData.moveForward(1000))
+                    requestSynch(ApplData.moveForward(300))
                     position[1]++
                 }
-                requestSynch(ApplData.turnLeft(1000))
+                requestSynch(ApplData.turnLeft(300))
                 while (position[0] < dest[0]) {
-                    requestSynch(ApplData.moveForward(1000))
+                    requestSynch(ApplData.moveForward(300))
                     position[0]++
                 }
                 return true
             }
             "right" -> {
                 while (position[0] < dest[0]) {
-                    requestSynch(ApplData.moveForward(1000))
+                    requestSynch(ApplData.moveForward(300))
                     position[0]++
                 }
-                requestSynch(ApplData.turnLeft(1000))
+                requestSynch(ApplData.turnLeft(300))
                 while (position[1] > dest[1]) {
-                    requestSynch(ApplData.moveForward(1000))
+                    requestSynch(ApplData.moveForward(300))
                     position[1]--
                 }
                 return true

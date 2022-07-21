@@ -1,4 +1,4 @@
-package kotlin.it.unibo.lenziguerra.wasteservice.wasteservice
+package it.unibo.lenziguerra.wasteservice.wasteservice
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

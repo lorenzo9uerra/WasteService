@@ -10,9 +10,9 @@ class TrolleySupportMock : AbstractTrolleyVirtual(getPositions()) {
     companion object {
         fun getPositions(): Map<String, Array<Int>> {
             val map = mutableMapOf<String, Array<Int>>("HOME" to arrayOf<Int>(0, 0))
-            map["INDOOR"] = arrayOf<Int>(1, 15)
-            map["GLASS"] = arrayOf<Int>(13, 0)
-            map["PAPER"] = arrayOf<Int>(16, 4)
+            map["INDOOR"] = arrayOf<Int>(0, 1)
+            map["GLASS"] = arrayOf<Int>(4, 0)
+            map["PAPER"] = arrayOf<Int>(6, 2)
             return map
         }
     }
