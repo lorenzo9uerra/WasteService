@@ -54,6 +54,16 @@ QActor trolley context ctx_trolley {
 		var Support = it.unibo.lenziguerra.wasteservice.trolley.TrolleySupport.getSupport()
 		var Quantity = 0.0f
 		var Material = ""
+		var Position = ""
+		fun getContentLine(): String {
+			if (Quantity > 0)                          
+				return "\ncontent($Material,$Quantity)"
+			else
+				return ""
+     	}
+     	fun getPos(): String {
+			return "\npos($Position)"
+     	}
 	#]
 	State init initial {
 		println("$Support")
@@ -62,6 +72,7 @@ QActor trolley context ctx_trolley {
 
 	State idle {
 		printCurrentMessage
+		updateResource [# "state(idle)" + getPos() + getContentLine() #]
 	}
 	Transition t0 whenRequest trolleyMove -> handleMove
 				  whenRequest trolleyCollect -> handleCollect
@@ -69,9 +80,14 @@ QActor trolley context ctx_trolley {
 
 	State handleMove {
 		printCurrentMessage
+		updateResource [# "state(idle)" + getPos() + getContentLine() #]
 		onMsg (trolleyMove : trolleyMove(LOC) ) {
 			if [# Support.move(payloadArg(0)) #]{
-				replyTo trolleyMove with trolleyDone : trolleyDone(_)
+				replyTo trolleyMove with trolleyDone : trolleyDone(success)
+				[# Position = payloadArg(0) #]
+			}
+			else {
+				replyTo trolleyMove with trolleyDone : trolleyDone(fail)
 			}
 		}
 	}
@@ -79,21 +95,23 @@ QActor trolley context ctx_trolley {
 	
 	State handleCollect{
 		printCurrentMessage
+		updateResource [# "state(idle)" + getPos() + getContentLine() #]
 		onMsg (trolleyCollect: trolleyCollect(MAT,QNT)){
 			[#
 			Material = payloadArg(0)
 			Quantity = payloadArg(1).toFloat()
 			#]
-			replyTo trolleyMove with trolleyDone : trolleyDone(_)
+			replyTo trolleyCollect with trolleyDone : trolleyDone(success)
 		}
 	}
 	Goto idle
 	
 	State handleDeposit{
 		printCurrentMessage
+		updateResource [# "state(idle)" + getPos() + getContentLine() #]
 		onMsg (trolleyDeposit: trolleyDeposit(_)){
 			forward storagemanager -m storageDeposit : storageDeposit($Material,$Quantity)
-			replyTo trolleyMove with trolleyDone : trolleyDone(_)
+			replyTo trolleyDeposit with trolleyDone : trolleyDone(success)
 		}
 	}
 	Goto idle

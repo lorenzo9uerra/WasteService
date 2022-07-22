@@ -2,10 +2,12 @@ package it.unibo.lenziguerra.wasteservice.wasteservice
 
 import it.unibo.kactor.MsgUtil
 import it.unibo.kactor.QakContext.Companion.getActor
+import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.springframework.test.util.AssertionErrors.*
+import org.springframework.test.util.AssertionErrors.assertEquals
+import org.springframework.test.util.AssertionErrors.fail
 import unibo.actor22comm.coap.CoapConnection
 import unibo.actor22comm.utils.ColorsOut
 import unibo.actor22comm.utils.CommUtils
@@ -13,6 +15,8 @@ import unibo.actor22comm.utils.CommUtils
 
 class TrolleyTest() {
     private var actor_trolley = "trolley"
+    private var actor_storage = "storagemanager"
+    private var actor_wasteservice = "wasteservice"
 
     @Before
     fun up() {
@@ -27,11 +31,28 @@ class TrolleyTest() {
     @Test
     fun testTrolleyMove() {
         trolleyRequest("trolleyMove", "INDOOR")
+        val trolleyContent = PrologUtils.getFuncLine(coapRequest(actor_trolley), "pos")
+        val tContentParams = SimplePayloadExtractor("pos").extractPayload(trolleyContent)
+        assertEquals("Testing Expected Position", "INDOOR", tContentParams[0])
+    }
+
+    @Test
+    fun testTrolleyCollect() {
+        trolleyRequest("trolleyCollect", "glass, 10")
+        val trolleyContent = PrologUtils.getFuncLine(coapRequest(actor_trolley), "content")
+        val tContentParams = SimplePayloadExtractor("content").extractPayload(trolleyContent)
+        assertEquals("Testing Correct Material", "glass", tContentParams[0])
+        assertEquals("Testing Correct Quantity", 10.0f, tContentParams[1].toFloat())
+    }
+
+    @Test
+    fun testTrolleyDeposit() {
+        trolleyRequest("trolleyDeposit", "")
     }
 
     private fun trolleyRequest(id: String, params: String) {
         val request: String = MsgUtil.buildRequest(
-            "trolley", id, "$id($params)", actor_trolley
+            "test", id, "$id($params)", actor_trolley
         ).toString()
         var reply: String? = null
         try {

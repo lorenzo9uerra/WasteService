@@ -6,8 +6,6 @@ import it.unibo.lenziguerra.wasteservice.utils.requestSynch
 interface ITrolleySupport {
     fun init()
     fun move(location: String): Boolean
-    fun deposit(): Boolean
-    fun collect(): Boolean
 }
 
 object TrolleySupport {
@@ -101,13 +99,5 @@ abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>
             }
         }
         return false
-    }
-
-    override fun deposit(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun collect(): Boolean {
-        TODO("Not yet implemented")
     }
 }
