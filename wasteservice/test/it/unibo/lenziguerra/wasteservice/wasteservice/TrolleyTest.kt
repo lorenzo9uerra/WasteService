@@ -12,7 +12,7 @@ import unibo.actor22comm.utils.CommUtils
 
 
 class TrolleyTest() {
-    var actor_trolley = "trolley"
+    private var actor_trolley = "trolley"
 
     @Before
     fun up() {
@@ -29,7 +29,7 @@ class TrolleyTest() {
         trolleyRequest("trolleyMove", "INDOOR")
     }
 
-    protected fun trolleyRequest(id: String, params: String) {
+    private fun trolleyRequest(id: String, params: String) {
         val request: String = MsgUtil.buildRequest(
             "trolley", id, "$id($params)", actor_trolley
         ).toString()
@@ -46,7 +46,7 @@ class TrolleyTest() {
         }
     }
 
-    protected fun waitForTrolley() {
+    private fun waitForTrolley() {
         ColorsOut.outappl(this.javaClass.name + " waits for trolley ... ", ColorsOut.GREEN)
         var trolley = getActor(actor_trolley)
         while (trolley == null) {
@@ -56,7 +56,7 @@ class TrolleyTest() {
         ColorsOut.outappl("Trolley loaded", ColorsOut.GREEN)
     }
 
-    protected fun coapRequest(actor: String): String {
+    private fun coapRequest(actor: String): String {
         val reqConn = CoapConnection(CTX_HOST + ":" + CTX_PORT, CTX_TEST + "/" + actor)
         val answer = reqConn.request("")
         ColorsOut.outappl("coapRequest answer=$answer", ColorsOut.CYAN)
@@ -64,8 +64,8 @@ class TrolleyTest() {
     }
 
     companion object {
-        val CTX_HOST = "localhost"
-        val CTX_PORT = 8021
-        val CTX_TEST = "ctx_trolley"
+        const val CTX_HOST = "localhost"
+        const val CTX_PORT = 8021
+        const val CTX_TEST = "ctx_trolley"
     }
 }

@@ -1,11 +1,17 @@
 System wasteservice
 
-
 Request storageAsk : storageAsk(MAT)
 Reply storageAt : storageAt(MAT, QNT)
 Dispatch storageDeposit : storageDeposit(MAT, QNT)
 
+Request trolleyMove : trolleyMove(LOC)
+Request trolleyCollect : trolleyCollect(MAT,QNT)
+Request trolleyDeposit : trolleyDeposit(_)
+
+Reply trolleyDone: trolleyDone(_)
+
 Context ctx_storagemanager ip [host="localhost" port=8020]
+Context ctx_trolley ip [host="localhost" port=8021]
 
 QActor storagemanager context ctx_storagemanager {
 	[#
@@ -37,6 +43,57 @@ QActor storagemanager context ctx_storagemanager {
 			[# Support.deposit(payloadArg(0), payloadArg(1).toFloat()) #]
 			println("$Support")
 			updateResource [# Support.getPrologContent() #]
+		}
+	}
+	Goto idle
+}
+
+
+QActor trolley context ctx_trolley {
+	[#
+		var Support = it.unibo.lenziguerra.wasteservice.trolley.TrolleySupport.getSupport()
+		var Quantity = 0.0f
+		var Material = ""
+	#]
+	State init initial {
+		println("$Support")
+	}
+	Goto idle
+
+	State idle {
+		printCurrentMessage
+	}
+	Transition t0 whenRequest trolleyMove -> handleMove
+				  whenRequest trolleyCollect -> handleCollect
+				  whenRequest trolleyDeposit -> handleDeposit
+
+	State handleMove {
+		printCurrentMessage
+		onMsg (trolleyMove : trolleyMove(LOC) ) {
+			if [# Support.move(payloadArg(0)) #]{
+				replyTo trolleyMove with trolleyDone : trolleyDone(_)
+			}
+		}
+	}
+	Goto idle
+	
+	State handleCollect{
+		printCurrentMessage
+		onMsg (trolleyCollect: trolleyCollect(MAT,QNT)){
+			[#
+			Material = payloadArg(0)
+			Quantity = payloadArg(1).toFloat()
+			#]
+			replyTo trolleyMove with trolleyDone : trolleyDone(_)
+		}
+	}
+	Goto idle
+	
+	State handleDeposit{
+		printCurrentMessage
+		onMsg (trolleyDeposit: trolleyDeposit(_)){
+			forward storagemanager -m storageDeposit : storageDeposit($Material,$Quantity)
+			replyTo trolleyMove with trolleyDone : trolleyDone(_)
 		}
 	}
 	Goto idle

@@ -16,6 +16,8 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
 				var Support = it.unibo.lenziguerra.wasteservice.trolley.TrolleySupport.getSupport()
+				var Quantity = 0.0f
+				var Material = ""
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
@@ -27,9 +29,9 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
-					 transition(edgeName="t00",targetState="handleMove",cond=whenRequest("trolleyMove"))
-					transition(edgeName="t01",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
-					transition(edgeName="t02",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
+					 transition(edgeName="t02",targetState="handleMove",cond=whenRequest("trolleyMove"))
+					transition(edgeName="t03",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
+					transition(edgeName="t04",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
 				}	 
 				state("handleMove") { //this:State
 					action { //it:State
@@ -39,7 +41,6 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 								if(  Support.move(payloadArg(0))  
 								 ){answer("trolleyMove", "trolleyDone", "trolleyDone(_)"   )  
 								}
-								answer("trolleyMove", "trolleyDone", "trolleyDone(_)"   )  
 						}
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
@@ -47,12 +48,24 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("handleCollect") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						if( checkMsgContent( Term.createTerm("trolleyCollect(MAT,QNT)"), Term.createTerm("trolleyCollect(MAT,QNT)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								
+											Material = payloadArg(0)
+											Quantity = payloadArg(1).toFloat()
+								answer("trolleyMove", "trolleyDone", "trolleyDone(_)"   )  
+						}
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("handleDeposit") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						if( checkMsgContent( Term.createTerm("trolleyDeposit(_)"), Term.createTerm("trolleyDeposit(_)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								forward("storageDeposit", "storageDeposit($Material,$Quantity)" ,"storagemanager" ) 
+								answer("trolleyMove", "trolleyDone", "trolleyDone(_)"   )  
+						}
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
