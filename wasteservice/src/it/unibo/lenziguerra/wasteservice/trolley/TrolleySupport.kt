@@ -15,7 +15,7 @@ object TrolleySupport {
 }
 
 abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>>) : ITrolleySupport {
-    private var position = arrayOf<Int>(0, 0)
+    private var position = arrayOf(0, 0)
     private var direction = "down"
 
     private fun rotateTo(dir: String) {

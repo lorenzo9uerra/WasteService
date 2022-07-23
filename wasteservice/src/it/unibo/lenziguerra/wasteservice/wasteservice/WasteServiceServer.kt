@@ -29,7 +29,7 @@ import java.net.SocketException
 @Controller
 class WasteServiceController {
     init {
-        CommSystemConfig.tracing = true;
+        CommSystemConfig.tracing = true
     }
 
     @GetMapping("/")
@@ -38,10 +38,10 @@ class WasteServiceController {
         model["scripts"] = arrayOf(
             "/jquery-3.6.0.min.js",
             "/truckgui.js",
-        );
+        )
         model["waste"] = mapOf(
           "types" to WasteType.values().map { it -> mapOf("id" to it.id, "name" to it.id.replaceFirstChar { it.uppercase() }) },
-        );
+        )
         return "truck_gui"
     }
 }
@@ -62,8 +62,8 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
         val payload = message.payload
         println("test $payload")
         try {
-            val id = PrologUtils.extractId(payload);
-            val args = PrologUtils.extractPayload(payload);
+            val id = PrologUtils.extractId(payload)
+            val args = PrologUtils.extractPayload(payload)
             val depositType = args[0]
             val depositAmount = args[1].toFloat()
 
@@ -85,14 +85,12 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
                 storageManagerId
             )
 
-            var storageReply = ""
-
-            try {
-                storageReply = storageReqConn.request(storageReqMessage.toString());
+            val storageReply: String = try {
+                storageReqConn.request(storageReqMessage.toString())
             } catch (e: SocketException) {
                 ColorsOut.out("Lost connection to storage, trying to reconnect...", ColorsOut.YELLOW)
                 storageConnect()
-                storageReply = storageReqConn.request(storageReqMessage.toString());
+                storageReqConn.request(storageReqMessage.toString())
             }
 
             val replyMessage = ApplMessage(storageReply)
