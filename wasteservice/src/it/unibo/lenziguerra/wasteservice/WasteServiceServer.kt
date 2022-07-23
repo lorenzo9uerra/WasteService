@@ -1,4 +1,4 @@
-package it.unibo.lenziguerra.wasteservice.wasteservice
+package it.unibo.lenziguerra.wasteservice
 
 import it.unibo.kactor.ApplMessage
 import it.unibo.kactor.MsgUtil
