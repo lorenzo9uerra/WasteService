@@ -25,6 +25,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.springframework:spring-websocket:5.3.20")
 	implementation("org.springframework:spring-messaging:5.3.20")
+	implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 	// Align versions of all Kotlin components

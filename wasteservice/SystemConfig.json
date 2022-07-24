@@ -1,0 +1,31 @@
+{
+    "positions": {
+        "indoor": [
+            [0, 8],
+            [2, 8]
+        ],
+        "plastic_box": [
+            [9, 0],
+            [10, 0]
+        ],
+        "glass_box": [
+            [11, 5],
+            [11, 6]
+        ],
+        "home": [
+            [0, 0],
+            [0, 0]
+        ]
+    },
+    "DLIMIT": 50,
+
+    "debugPrint": true,
+
+    "wasteServiceHost": "localhost",
+    "wasteServiceContextPort": 8023,
+    "wasteServiceServerPort": 8080,
+    "trolleyHost": "localhost",
+    "trolleyPort": 8022,
+    "storageHost": "localhost",
+    "storagePort": 8021
+}

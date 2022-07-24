@@ -1,5 +1,6 @@
 package it.unibo.lenziguerra.wasteservice.wasteservice
 
+import it.unibo.lenziguerra.wasteservice.SystemConfig
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
@@ -7,5 +8,7 @@ import org.springframework.boot.runApplication
 class WasteserviceApplication
 
 fun main(args: Array<String>) {
+	SystemConfig.setConfiguration("SystemConfig.json")
+
 	runApplication<WasteserviceApplication>(*args)
 }
