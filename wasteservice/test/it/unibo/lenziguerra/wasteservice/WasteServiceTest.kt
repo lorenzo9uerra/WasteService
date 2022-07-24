@@ -28,7 +28,9 @@ class WasteServiceTest {
 
     @Test
     fun testDeposit() {
-        wasteServiceRequest("loadDeposit", "glass, 10")
+        wasteServiceDispatch("loadDeposit", "glass, 10")
+        CommUtils.delay(5000)
+        wasteServiceRequest("finishLoad", "")
     }
 
     private fun wasteServiceRequest(id: String, params: String) {
@@ -45,6 +47,17 @@ class WasteServiceTest {
         }
         if (reply != null && reply.contains("false")) {
             AssertionErrors.fail("Trolley request <$request> failed!")
+        }
+    }
+
+    private fun wasteServiceDispatch(id: String, params: String) {
+        val message: String = MsgUtil.buildDispatch("test", id, "$id($params)", actor_wasteservice).toString()
+        try {
+            val connTcp = ConnTcp("localhost", CTX_PORT)
+            ColorsOut.outappl("Sending dispatch to wasteservice: $id($params)", ColorsOut.CYAN)
+            connTcp.forward(message)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

@@ -11,29 +11,12 @@ Request trolleyDeposit : trolleyDeposit(_)
 Reply trolleyDone: trolleyDone(_)
 
 // TEST REQUEST
-Request loadDeposit : loadDeposit(MAT, QNT)
-Reply loadaccept : loadaccept(_)
-Reply loadrejected : loadrejected(_)
-Dispatch pickedUp : pickedUp(_)
-
+Dispatch loadDeposit : loadDeposit(MAT,QNT)
+Request finishLoad : finishLoad(_)
 
 Context ctx_storagemanager ip [host="localhost" port=8021]
 Context ctx_trolley ip [host="localhost" port=8022]
 Context ctx_wasteservice ip [host="localhost" port=8023]
-// wastetruck mock
-Context ctx_wastetruck ip [host="localhost" port=8024]
-
-QActor wastetruck context ctx_wastetruck {
-	State init initial {
-		println("Started WasteTruck")
-	}
-	Goto idle
-	
-	State idle {
-		printCurrentMessage
-	}
-	Transition t0 whenMsg pickedUp -> idle
-}
 
 
 QActor storagemanager context ctx_storagemanager {
@@ -100,6 +83,12 @@ QActor trolley context ctx_trolley {
 	Transition t0 whenRequest trolleyMove -> handleMove
 				  whenRequest trolleyCollect -> handleCollect
 				  whenRequest trolleyDeposit -> handleDeposit
+				  whenRequest finishLoad -> handleFinish
+				  
+	State handleFinish {
+		printCurrentMessage
+	}
+	Goto idle
 
 	State handleMove {
 		printCurrentMessage
@@ -140,13 +129,11 @@ QActor trolley context ctx_trolley {
 	Goto idle
 }
 
-
 // DI PROVA
 QActor wasteservice context ctx_wasteservice {
 	[#
 		var Material = ""
 		var Quantity = 0.0f
-		var Accepted = false
 	#]
 	State init initial {
 		println("Start")
@@ -156,37 +143,16 @@ QActor wasteservice context ctx_wasteservice {
 	State idle {
 		printCurrentMessage
 	}
-	Transition t0 whenRequest loadDeposit -> handleDeposit
+	Transition t0 whenMsg loadDeposit -> moveTrolleyIndoor
 	
-	State handleDeposit {
+	State moveTrolleyIndoor {
 		printCurrentMessage
-		onMsg (loadDeposit : loadDeposit(MAT, QNT)){
+		onMsg(loadDeposit : loadDeposit(MAT,QNT)){
 			[#
 				Material = payloadArg(0)
 				Quantity = payloadArg(1).toFloat()
 			#]
-			request storagemanager -m storageAsk : storageAsk($Material)
 		}
-	}
-	Transition t1 whenReply storageAt -> handleStorageReply
-	
-	State handleStorageReply {
-		printCurrentMessage
-		onMsg (storageAt : storageAt(MAT, QNT)){
-			if [# Quantity < payloadArg(1).toFloat() #]{
-				replyTo loadDeposit with loadaccept : loadaccept(_)
-				[# Accepted = true #]
-			}
-			else {
-				replyTo loadDeposit with loadrejected : loadrejected(_)
-				[# Accepted = false #]
-			}
-		}
-	}
-	Goto idle if [# Accepted == false #] else moveTrolleyIndoor
-	
-	State moveTrolleyIndoor {
-		printCurrentMessage
 		request trolley -m trolleyMove : trolleyMove(indoor)
 	}
 	Transition t2 whenReply trolleyDone -> makeTrolleyCollect
@@ -199,7 +165,7 @@ QActor wasteservice context ctx_wasteservice {
 	
 	State moveTrolleyDeposit {
 		printCurrentMessage
-		forward wastetruck -m pickedUp : pickedUp(_)
+		// forward wastetruck -m pickedUp : pickedUp(_)
 		request trolley -m trolleyMove : trolleyMove($Material)
 	}
 	Transition t4 whenReply trolleyDone -> makeTrolleyDeposit
@@ -208,8 +174,7 @@ QActor wasteservice context ctx_wasteservice {
 		printCurrentMessage
 		request trolley -m trolleyDeposit : trolleyDeposit(_)
 	}
-	Transition t5 whenRequest loadDeposit -> waitTrolleyDone
-				  whenReply trolleyDone -> moveToHome
+	Transition t5 whenReply trolleyDone -> moveToHome
 				  
 	State waitTrolleyDone {
 		printCurrentMessage
