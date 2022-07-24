@@ -10,8 +10,31 @@ Request trolleyDeposit : trolleyDeposit(_)
 
 Reply trolleyDone: trolleyDone(_)
 
+// TEST REQUEST
+Request loadDeposit : loadDeposit(MAT, QNT)
+Reply loadaccept : loadaccept(_)
+Reply loadrejected : loadrejected(_)
+Dispatch pickedUp : pickedUp(_)
+
+
 Context ctx_storagemanager ip [host="localhost" port=8021]
 Context ctx_trolley ip [host="localhost" port=8022]
+Context ctx_wasteservice ip [host="localhost" port=8023]
+// wastetruck mock
+Context ctx_wastetruck ip [host="localhost" port=8024]
+
+QActor wastetruck context ctx_wastetruck {
+	State init initial {
+		println("Started WasteTruck")
+	}
+	Goto idle
+	
+	State idle {
+		printCurrentMessage
+	}
+	Transition t0 whenMsg pickedUp -> idle
+}
+
 
 QActor storagemanager context ctx_storagemanager {
 	[#
@@ -115,4 +138,87 @@ QActor trolley context ctx_trolley {
 		}
 	}
 	Goto idle
+}
+
+
+// DI PROVA
+QActor wasteservice context ctx_wasteservice {
+	[#
+		var Material = ""
+		var Quantity = 0.0f
+		var Accepted = false
+	#]
+	State init initial {
+		println("Start")
+	}
+	Goto idle
+	
+	State idle {
+		printCurrentMessage
+	}
+	Transition t0 whenRequest loadDeposit -> handleDeposit
+	
+	State handleDeposit {
+		printCurrentMessage
+		onMsg (loadDeposit : loadDeposit(MAT, QNT)){
+			[#
+				Material = payloadArg(0)
+				Quantity = payloadArg(1).toFloat()
+			#]
+			request storagemanager -m storageAsk : storageAsk($Material)
+		}
+	}
+	Transition t1 whenReply storageAt -> handleStorageReply
+	
+	State handleStorageReply {
+		printCurrentMessage
+		onMsg (storageAt : storageAt(MAT, QNT)){
+			if [# Quantity < payloadArg(1).toFloat() #]{
+				replyTo loadDeposit with loadaccept : loadaccept(_)
+				[# Accepted = true #]
+			}
+			else {
+				replyTo loadDeposit with loadrejected : loadrejected(_)
+				[# Accepted = false #]
+			}
+		}
+	}
+	Goto idle if [# Accepted == false #] else moveTrolleyIndoor
+	
+	State moveTrolleyIndoor {
+		printCurrentMessage
+		request trolley -m trolleyMove : trolleyMove(indoor)
+	}
+	Transition t2 whenReply trolleyDone -> makeTrolleyCollect
+	
+	State makeTrolleyCollect {
+		printCurrentMessage
+		request trolley -m trolleyCollect : trolleyCollect($Material, $Quantity)
+	}
+	Transition t3 whenReply trolleyDone -> moveTrolleyDeposit
+	
+	State moveTrolleyDeposit {
+		printCurrentMessage
+		forward wastetruck -m pickedUp : pickedUp(_)
+		request trolley -m trolleyMove : trolleyMove($Material)
+	}
+	Transition t4 whenReply trolleyDone -> makeTrolleyDeposit
+	
+	State makeTrolleyDeposit {
+		printCurrentMessage
+		request trolley -m trolleyDeposit : trolleyDeposit(_)
+	}
+	Transition t5 whenRequest loadDeposit -> waitTrolleyDone
+				  whenReply trolleyDone -> moveToHome
+				  
+	State waitTrolleyDone {
+		printCurrentMessage
+	}
+	Transition t6 whenReply trolleyDone -> moveToHome
+				  
+	State moveToHome {
+		printCurrentMessage
+		request trolley -m trolleyMove : trolleyMove(home)
+	}
+	Transition t7 whenReply trolleyDone -> idle
 }

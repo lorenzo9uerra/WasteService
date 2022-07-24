@@ -1,4 +1,4 @@
-package it.unibo.lenziguerra.wasteservice
+package it.unibo.lenziguerra.wasteservice.wasteservice
 
 import it.unibo.kactor.ApplMessage
 import it.unibo.kactor.MsgUtil
@@ -100,7 +100,6 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
 
             if (depositAmount <= freeSpace) {
                 session.sendMessage(TextMessage("loadaccept"))
-
                 sendTrolley(session)
             } else {
                 session.sendMessage(TextMessage("loadrejected"))

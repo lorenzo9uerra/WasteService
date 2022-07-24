@@ -33,10 +33,10 @@ class TrolleyTest() {
 
     @Test
     fun testTrolleyMove() {
-        trolleyRequest("trolleyMove", "INDOOR")
+        trolleyRequest("trolleyMove", "indoor")
         val trolleyContent = coapRequest(actor_trolley)?.let { PrologUtils.getFuncLine(it, "pos") }
         val tContentParams = trolleyContent?.let { SimplePayloadExtractor("pos").extractPayload(it) }
-        assertEquals("Testing Expected Position", "INDOOR", tContentParams?.get(0))
+        assertEquals("Testing Expected Position", "indoor", tContentParams?.get(0))
     }
 
     @Test

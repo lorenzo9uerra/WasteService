@@ -1,4 +1,4 @@
-package it.unibo.lenziguerra.wasteservice
+package it.unibo.lenziguerra.wasteservice.wasteservice
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
