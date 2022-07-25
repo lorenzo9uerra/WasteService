@@ -9,15 +9,16 @@ import org.springframework.test.util.AssertionErrors
 import unibo.actor22comm.coap.CoapConnection
 import unibo.actor22comm.utils.ColorsOut
 import unibo.actor22comm.utils.CommUtils
-import kotlin.concurrent.thread
 
 class WasteServiceTest {
     private var actor_wasteservice = "wasteservice"
+    private var actor_trolley = "trolley"
 
 
     @Before
     fun up() {
-        thread { RunTestWasteServiceKt().main() }
+        RunTestWasteServiceKt().main()
+        waitForTrolley()
         waitForWasteService()
     }
 
@@ -29,7 +30,7 @@ class WasteServiceTest {
     @Test
     fun testDeposit() {
         wasteServiceDispatch("loadDeposit", "glass, 10")
-        CommUtils.delay(5000)
+        CommUtils.delay(15000)
         wasteServiceRequest("finishLoad", "")
     }
 
@@ -71,6 +72,16 @@ class WasteServiceTest {
         ColorsOut.outappl("WasteService loaded", ColorsOut.GREEN)
     }
 
+    private fun waitForTrolley() {
+        ColorsOut.outappl(this.javaClass.name + " waits for trolley ... ", ColorsOut.GREEN)
+        var trolley = QakContext.getActor(actor_trolley)
+        while (trolley == null) {
+            CommUtils.delay(200)
+            trolley = QakContext.getActor(actor_trolley)
+        }
+        ColorsOut.outappl("Trolley loaded", ColorsOut.GREEN)
+    }
+
     private fun coapRequest(actor: String): String? {
         val reqConn = CoapConnection("$CTX_HOST:$CTX_PORT", "$CTX_TEST/$actor")
         val answer = reqConn.request("")
@@ -80,7 +91,7 @@ class WasteServiceTest {
 
     companion object {
         const val CTX_HOST = "localhost"
-        const val CTX_PORT = 8023
+        var CTX_PORT = SystemConfig.wasteServiceContextPort
         const val CTX_TEST = "ctx_wasteservice"
     }
 }

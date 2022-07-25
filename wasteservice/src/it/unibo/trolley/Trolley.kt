@@ -41,10 +41,10 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						updateResourceRep( "state(idle)" + getPos() + getContentLine()  
 						)
 					}
-					 transition(edgeName="t02",targetState="handleMove",cond=whenRequest("trolleyMove"))
-					transition(edgeName="t03",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
-					transition(edgeName="t04",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
-					transition(edgeName="t05",targetState="handleFinish",cond=whenRequest("finishLoad"))
+					 transition(edgeName="t00",targetState="handleMove",cond=whenRequest("trolleyMove"))
+					transition(edgeName="t01",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
+					transition(edgeName="t02",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
+					transition(edgeName="t03",targetState="handleFinish",cond=whenRequest("finishLoad"))
 				}	 
 				state("handleFinish") { //this:State
 					action { //it:State
@@ -92,7 +92,6 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						)
 						if( checkMsgContent( Term.createTerm("trolleyDeposit(_)"), Term.createTerm("trolleyDeposit(_)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								forward("storageDeposit", "storageDeposit($Material,$Quantity)" ,"storagemanager" ) 
 								answer("trolleyDeposit", "trolleyDone", "trolleyDone(success)"   )  
 						}
 					}
