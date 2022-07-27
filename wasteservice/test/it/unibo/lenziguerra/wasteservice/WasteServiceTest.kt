@@ -9,6 +9,7 @@ import org.springframework.test.util.AssertionErrors
 import unibo.actor22comm.coap.CoapConnection
 import unibo.actor22comm.utils.ColorsOut
 import unibo.actor22comm.utils.CommUtils
+import kotlin.concurrent.thread
 
 class WasteServiceTest {
     private var actor_wasteservice = "wasteservice"
@@ -17,7 +18,7 @@ class WasteServiceTest {
 
     @Before
     fun up() {
-        RunTestWasteServiceKt().main()
+        thread { RunTestWasteServiceKt().main() }
         waitForTrolley()
         waitForWasteService()
     }
@@ -29,9 +30,7 @@ class WasteServiceTest {
 
     @Test
     fun testDeposit() {
-        wasteServiceDispatch("loadDeposit", "glass, 10")
-        CommUtils.delay(15000)
-        wasteServiceRequest("finishLoad", "")
+        wasteServiceRequest("loadDeposit", "glass, 10")
     }
 
     private fun wasteServiceRequest(id: String, params: String) {
@@ -57,6 +56,7 @@ class WasteServiceTest {
             val connTcp = ConnTcp("localhost", CTX_PORT)
             ColorsOut.outappl("Sending dispatch to wasteservice: $id($params)", ColorsOut.CYAN)
             connTcp.forward(message)
+            connTcp.close()
         } catch (e: Exception) {
             e.printStackTrace()
         }

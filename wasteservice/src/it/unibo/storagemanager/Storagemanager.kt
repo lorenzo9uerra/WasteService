@@ -29,8 +29,8 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
-					 transition(edgeName="t00",targetState="handleAsk",cond=whenRequest("storageAsk"))
-					transition(edgeName="t01",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
+					 transition(edgeName="t011",targetState="handleAsk",cond=whenRequest("storageAsk"))
+					transition(edgeName="t012",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
 				}	 
 				state("handleAsk") { //this:State
 					action { //it:State

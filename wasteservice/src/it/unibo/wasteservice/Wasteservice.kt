@@ -29,7 +29,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
-					 transition(edgeName="t00",targetState="moveTrolleyIndoor",cond=whenDispatch("loadDeposit"))
+					 transition(edgeName="t00",targetState="moveTrolleyIndoor",cond=whenRequest("loadDeposit"))
 				}	 
 				state("moveTrolleyIndoor") { //this:State
 					action { //it:State

@@ -2,6 +2,7 @@ package it.unibo.lenziguerra.wasteservice.trolley
 
 import it.unibo.lenziguerra.wasteservice.utils.ApplData
 import it.unibo.lenziguerra.wasteservice.utils.requestSynch
+import unibo.actor22comm.utils.ColorsOut
 
 interface ITrolleySupport {
     fun init()
@@ -18,9 +19,9 @@ abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>
     private var position = arrayOf(0, 0)
     private var direction = "down"
 
-    private fun rotateTo(dir: String) {
-        if (dir != direction) {
-            requestSynch(ApplData.turnLeft(300))
+    private fun rotateTo(dir: String): String {
+        while (dir != direction) {
+            requestSynch(ApplData.turnLeft(100))
             when (direction) {
                 "up" -> direction = "left"
                 "left" -> direction = "down"
@@ -28,33 +29,44 @@ abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>
                 "right" -> direction = "up"
             }
         }
+        return dir
     }
 
     private fun changeDir(dest: Array<Int>): String {
-        return if (dest[0] < position[0] && dest[1] < position[1]) {
-            rotateTo("up")
-            "up"
-        } else if (dest[0] < position[0] && dest[1] > position[1]) {
-            rotateTo("left")
-            "left"
-        } else if (dest[0] > position[0] && dest[1] > position[1]) {
-            rotateTo("down")
-            "down"
-        } else {
-            rotateTo("right")
-            "right"
+        if (dest[0] != position[0] && dest[1] != position[1]) {
+            return if (dest[0] <= position[0] && dest[1] <= position[1]) {
+                ColorsOut.outappl("rotating up", ColorsOut.GREEN)
+                rotateTo("up")
+            } else if (dest[0] <= position[0]) {
+                ColorsOut.outappl("rotating left", ColorsOut.GREEN)
+                rotateTo("left")
+            } else if (dest[1] >= position[1]) {
+                ColorsOut.outappl("rotating down", ColorsOut.GREEN)
+                rotateTo("down")
+            } else {
+                ColorsOut.outappl("rotating right", ColorsOut.GREEN)
+                rotateTo("right")
+            }
         }
+        return direction
     }
 
     override fun move(location: String): Boolean {
         val dest = coords[location]
+        dest?.let {
+            ColorsOut.outappl(
+                "have to go " + location + ": " + dest[0] + "-" + dest[1] + "\nMa sono: " + position[0] + "-" + position[1],
+                ColorsOut.GREEN
+            )
+        }
         when (dest?.let { changeDir(it) }) {
             "up" -> {
                 while (position[1] > dest[1]) {
                     requestSynch(ApplData.moveForward(300))
                     position[1]--
                 }
-                requestSynch(ApplData.turnLeft(300))
+                if (dest[0] != position[0] || dest[1] != position[1])
+                    requestSynch(ApplData.turnLeft(300))
                 while (position[0] > dest[0]) {
                     requestSynch(ApplData.moveForward(300))
                     position[0]--
@@ -66,7 +78,8 @@ abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>
                     requestSynch(ApplData.moveForward(300))
                     position[0]--
                 }
-                requestSynch(ApplData.turnLeft(300))
+                if (dest[0] != position[0] || dest[1] != position[1])
+                    requestSynch(ApplData.turnLeft(300))
                 while (position[1] < dest[1]) {
                     requestSynch(ApplData.moveForward(300))
                     position[1]++
@@ -78,7 +91,8 @@ abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>
                     requestSynch(ApplData.moveForward(300))
                     position[1]++
                 }
-                requestSynch(ApplData.turnLeft(300))
+                if (dest[0] != position[0] || dest[1] != position[1])
+                    requestSynch(ApplData.turnLeft(300))
                 while (position[0] < dest[0]) {
                     requestSynch(ApplData.moveForward(300))
                     position[0]++
@@ -90,7 +104,8 @@ abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>
                     requestSynch(ApplData.moveForward(300))
                     position[0]++
                 }
-                requestSynch(ApplData.turnLeft(300))
+                if (dest[0] != position[0] || dest[1] != position[1])
+                    requestSynch(ApplData.turnLeft(300))
                 while (position[1] > dest[1]) {
                     requestSynch(ApplData.moveForward(300))
                     position[1]--

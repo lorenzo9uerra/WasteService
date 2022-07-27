@@ -7,12 +7,8 @@ import kotlin.concurrent.thread
 
 class RunTestWasteServiceKt {
     fun main() = runBlocking {
-        thread { QakContext.createContexts(
-            "localhost", this, "trolley.pl", "sysRules.pl"
-        ) }
-        CommUtils.delay(4000)
-        thread { QakContext.createContexts(
+        QakContext.createContexts(
             "localhost", this, "wasteservice.pl", "sysRules.pl"
-        ) }
+        )
     }
 }

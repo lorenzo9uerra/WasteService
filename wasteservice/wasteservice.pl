@@ -1,7 +1,7 @@
 %====================================================================================
 % wasteservice description   
 %====================================================================================
-context(ctx_trolley, "127.0.0.1",  "TCP", "8022").
 context(ctx_wasteservice, "localhost",  "TCP", "8023").
- qactor( trolley, ctx_trolley, "external").
-  qactor( wasteservice, ctx_wasteservice, "it.unibo.wasteservice.Wasteservice").
+ qactor( wasteservice, ctx_wasteservice, "it.unibo.wasteservice.Wasteservice").
+  qactor( trolley, ctx_wasteservice, "it.unibo.trolley.Trolley").
+  qactor( storagemanager, ctx_wasteservice, "it.unibo.storagemanager.Storagemanager").
