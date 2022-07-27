@@ -30,7 +30,7 @@ class WasteServiceTest {
 
     @Test
     fun testDeposit() {
-        wasteServiceRequest("loadDeposit", "glass, 10")
+        wasteServiceRequest("triggerDeposit", "glass, 10")
     }
 
     private fun wasteServiceRequest(id: String, params: String) {

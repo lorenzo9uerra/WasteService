@@ -10,8 +10,8 @@ Request trolleyDeposit : trolleyDeposit(_)
 Reply trolleyDone: trolleyDone(_)
 
 // TEST REQUEST
-Request loadDeposit : loadDeposit(MAT,QNT)
-Request finishLoad : finishLoad(_)
+Request triggerDeposit : triggerDeposit(MAT,QNT)
+Reply doneDeposit : doneDeposit(_)
 
 Context ctx_wasteservice ip [host="localhost" port=8023]
 
@@ -30,11 +30,11 @@ QActor wasteservice context ctx_wasteservice {
 	State idle {
 		printCurrentMessage
 	}
-	Transition t0 whenRequest loadDeposit -> moveTrolleyIndoor
+	Transition t0 whenRequest triggerDeposit -> moveTrolleyIndoor
 	
 	State moveTrolleyIndoor {
 		printCurrentMessage
-		onMsg(loadDeposit : loadDeposit(MAT,QNT)){
+		onMsg(triggerDeposit : triggerDeposit(MAT,QNT)){
 			[#
 				Material = payloadArg(0)
 				Quantity = payloadArg(1).toFloat()
@@ -72,6 +72,7 @@ QActor wasteservice context ctx_wasteservice {
 	State moveToHome {
 		printCurrentMessage
 		request trolley -m trolleyMove : trolleyMove(home)
+		replyTo triggerDeposit with doneDeposit : doneDeposit(success)
 	}
 	Transition t7 whenReply trolleyDone -> idle
 }
@@ -104,13 +105,6 @@ QActor trolley context ctx_wasteservice {
 	Transition t0 whenRequest trolleyMove -> handleMove
 				  whenRequest trolleyCollect -> handleCollect
 				  whenRequest trolleyDeposit -> handleDeposit
-				  whenRequest finishLoad -> handleFinish
-				  
-	State handleFinish {
-		printCurrentMessage
-		replyTo finishLoad with trolleyDone : trolleyDone(_)
-	}
-	Goto idle
 
 	State handleMove {
 		printCurrentMessage

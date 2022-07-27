@@ -29,12 +29,12 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
-					 transition(edgeName="t00",targetState="moveTrolleyIndoor",cond=whenRequest("loadDeposit"))
+					 transition(edgeName="t00",targetState="moveTrolleyIndoor",cond=whenRequest("triggerDeposit"))
 				}	 
 				state("moveTrolleyIndoor") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						if( checkMsgContent( Term.createTerm("loadDeposit(MAT,QNT)"), Term.createTerm("loadDeposit(MAT,QNT)"), 
+						if( checkMsgContent( Term.createTerm("triggerDeposit(MAT,QNT)"), Term.createTerm("triggerDeposit(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
 												Material = payloadArg(0)
@@ -76,6 +76,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						request("trolleyMove", "trolleyMove(home)" ,"trolley" )  
+						answer("triggerDeposit", "doneDeposit", "doneDeposit(success)"   )  
 					}
 					 transition(edgeName="t76",targetState="idle",cond=whenReply("trolleyDone"))
 				}	 

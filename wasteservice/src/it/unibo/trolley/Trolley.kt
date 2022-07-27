@@ -44,14 +44,6 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 					 transition(edgeName="t07",targetState="handleMove",cond=whenRequest("trolleyMove"))
 					transition(edgeName="t08",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
 					transition(edgeName="t09",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
-					transition(edgeName="t010",targetState="handleFinish",cond=whenRequest("finishLoad"))
-				}	 
-				state("handleFinish") { //this:State
-					action { //it:State
-						println("$name in ${currentState.stateName} | $currentMsg")
-						answer("finishLoad", "trolleyDone", "trolleyDone(_)"   )  
-					}
-					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("handleMove") { //this:State
 					action { //it:State
