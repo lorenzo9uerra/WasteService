@@ -15,9 +15,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
+				val Support = it.unibo.lenziguerra.wasteservice.wasteservice.WasteserviceSupport()
 				var Material = ""
 				var Quantity = 0.0f
 				var Box = ""
+				var Position = "x0y0"
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
@@ -41,7 +43,8 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 												Quantity = payloadArg(1).toFloat()
 												Box = Material + "_box"
 						}
-						request("trolleyMove", "trolleyMove(indoor)" ,"trolley" )  
+						 Position = Support.getDestination("indoor", Position)  
+						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
 					}
 					 transition(edgeName="t21",targetState="makeTrolleyCollect",cond=whenReply("trolleyDone"))
 				}	 
@@ -55,7 +58,9 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("moveTrolleyDeposit") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						request("trolleyMove", "trolleyMove($Box)" ,"trolley" )  
+						answer("triggerDeposit", "trolleyPickedUp", "trolleyPickedUp(_)"   )  
+						 Position = Support.getDestination(Box, Position)  
+						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
 					}
 					 transition(edgeName="t43",targetState="makeTrolleyDeposit",cond=whenReply("trolleyDone"))
 				}	 
@@ -75,8 +80,8 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("moveToHome") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						request("trolleyMove", "trolleyMove(home)" ,"trolley" )  
-						answer("triggerDeposit", "doneDeposit", "doneDeposit(success)"   )  
+						 Position = Support.getDestination("home", Position)  
+						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
 					}
 					 transition(edgeName="t76",targetState="idle",cond=whenReply("trolleyDone"))
 				}	 

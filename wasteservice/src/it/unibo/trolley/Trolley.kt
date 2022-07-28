@@ -15,19 +15,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
-				var Support = it.unibo.lenziguerra.wasteservice.trolley.TrolleySupport.getSupport()
-				var Quantity = 0.0f
-				var Material = ""
-				var Position = ""
-				fun getContentLine(): String {
-					if (Quantity > 0)                          
-						return "\ncontent($Material,$Quantity)"
-					else
-						return ""
-		     	}
-		     	fun getPos(): String {
-					return "\npos($Position)"
-		     	}
+				val Support = it.unibo.lenziguerra.wasteservice.trolley.TrolleySupport.getSupport()
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
@@ -38,7 +26,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("idle") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						updateResourceRep( "state(idle)" + getPos() + getContentLine()  
+						updateResourceRep( Support.getPrologContent()  
 						)
 					}
 					 transition(edgeName="t07",targetState="handleMove",cond=whenRequest("trolleyMove"))
@@ -48,13 +36,13 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("handleMove") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						updateResourceRep( "state(idle)" + getPos() + getContentLine()  
+						updateResourceRep( Support.getPrologContent()  
 						)
 						if( checkMsgContent( Term.createTerm("trolleyMove(LOC)"), Term.createTerm("trolleyMove(LOC)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								if(  Support.move(payloadArg(0))  
 								 ){answer("trolleyMove", "trolleyDone", "trolleyDone(success)"   )  
-								 Position = payloadArg(0)  
+								 Support.setPosition(payloadArg(0))  
 								}
 								else
 								 {answer("trolleyMove", "trolleyDone", "trolleyDone(fail)"   )  
@@ -66,13 +54,12 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("handleCollect") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						updateResourceRep( "state(idle)" + getPos() + getContentLine()  
+						updateResourceRep( Support.getPrologContent() 
 						)
 						if( checkMsgContent( Term.createTerm("trolleyCollect(MAT,QNT)"), Term.createTerm("trolleyCollect(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
-											Material = payloadArg(0)
-											Quantity = payloadArg(1).toFloat()
+												Support.collect(payloadArg(0), payloadArg(1).toFloat())
 								answer("trolleyCollect", "trolleyDone", "trolleyDone(success)"   )  
 						}
 					}
@@ -81,10 +68,13 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("handleDeposit") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						updateResourceRep( "state(idle)" + getPos() + getContentLine()  
+						updateResourceRep( Support.getPrologContent() 
 						)
 						if( checkMsgContent( Term.createTerm("trolleyDeposit(_)"), Term.createTerm("trolleyDeposit(_)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								
+												val Material = Support.getMaterial()
+												val Quantity = Support.getQuantity()
 								forward("storageDeposit", "storageDeposit($Material,$Quantity)" ,"storagemanager" ) 
 								answer("trolleyDeposit", "trolleyDone", "trolleyDone(success)"   )  
 						}

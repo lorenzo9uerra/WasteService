@@ -6,7 +6,12 @@ import unibo.actor22comm.utils.ColorsOut
 
 interface ITrolleySupport {
     fun init()
-    fun move(location: String): Boolean
+    fun move(strdest: String): Boolean
+    fun getPrologContent(): String
+    fun collect(material: String, quantity: Float)
+    fun getMaterial(): String
+    fun getQuantity(): String
+    fun setPosition(pos: String)
 }
 
 object TrolleySupport {
@@ -15,9 +20,26 @@ object TrolleySupport {
     }
 }
 
-abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>>) : ITrolleySupport {
+abstract class AbstractTrolleyVirtual : ITrolleySupport {
     private var position = arrayOf(0, 0)
     private var direction = "down"
+    private var quantity = 0.0f
+    private var material = ""
+
+    override fun setPosition(pos: String) {
+        position = arrayOf(
+            Regex("x(.*)y").find(pos)!!.destructured.component1().toInt(),
+            Regex("y(.*)$").find(pos)!!.destructured.component1().toInt()
+        )
+    }
+
+    override fun getMaterial(): String {
+        return material
+    }
+
+    override fun getQuantity(): String {
+        return quantity.toString()
+    }
 
     private fun rotateTo(dir: String): String {
         while (dir != direction) {
@@ -47,15 +69,22 @@ abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>
         return direction
     }
 
-    override fun move(location: String): Boolean {
-        val dest = coords[location]
-        dest?.let {
-            ColorsOut.outappl(
-                "Have to go at " + location + ": " + dest[0] + "-" + dest[1] + "\nCurrently at: " + position[0] + "-" + position[1],
-                ColorsOut.CYAN
-            )
-        }
-        when (dest?.let { changeDir(it) }) {
+    override fun collect(material: String, quantity: Float) {
+        this.material = material
+        this.quantity = quantity
+    }
+
+    override fun move(strdest: String): Boolean {
+        val dest = arrayOf(
+            Regex("x(.*)y").find(strdest)!!.destructured.component1().toInt(),
+            Regex("y(.*)$").find(strdest)!!.destructured.component1().toInt()
+        )
+
+        ColorsOut.outappl(
+            "Have to go at " + dest[0] + "-" + dest[1] + "\nCurrently at: " + position[0] + "-" + position[1],
+            ColorsOut.CYAN
+        )
+        when (changeDir(dest)) {
             "up" -> {
                 while (position[1] > dest[1]) {
                     requestSynch(ApplData.moveForward(500))
@@ -118,5 +147,9 @@ abstract class AbstractTrolleyVirtual(private val coords: Map<String, Array<Int>
             }
         }
         return false
+    }
+
+    override fun getPrologContent(): String {
+        return "state(idle) $position,$quantity,$material"
     }
 }

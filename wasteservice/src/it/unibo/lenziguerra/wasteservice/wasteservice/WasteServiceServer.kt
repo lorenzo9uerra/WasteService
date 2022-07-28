@@ -18,13 +18,18 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import unibo.actor22comm.utils.ColorsOut
 import it.unibo.lenziguerra.wasteservice.SystemConfig
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import unibo.actor22comm.interfaces.Interaction2021
 import unibo.actor22comm.tcp.TcpClientSupport
 import unibo.actor22comm.utils.CommSystemConfig
 import java.net.SocketException
 
+
+const val STORAGE_REQ_ID = "storageAsk"
+const val DEPOSIT_TRIGGER_ID = "triggerDeposit"
+
+const val ACTOR_STORAGE_MANAGER = "storagemanager"
+const val ACTOR_WASTESERVICE = "wasteservice"
+const val SENDER_WS_SERVER = "wasteservice_server"
 
 @Controller
 class WasteServiceController {
@@ -57,10 +62,10 @@ class WebSocketConfig : WebSocketConfigurer {
 @Component
 class TruckWebsocketHandler : TextWebSocketHandler() {
     lateinit var storageReqConn: Interaction2021
+    lateinit var ctxConnection: Interaction2021
 
     public override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val payload = message.payload
-        println("test $payload")
         try {
             val id = PrologUtils.extractId(payload)
             val args = PrologUtils.extractPayload(payload)
@@ -69,29 +74,27 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
 
             if (SystemConfig.debugPrint) {
                 ColorsOut.outappl("Message arrived: $payload", ColorsOut.BLUE)
-                ColorsOut.outappl("Id: $depositType, Args: $depositAmount", ColorsOut.ANSI_PURPLE)
+                ColorsOut.outappl("Id: $id, Type: $depositType, Args: $depositAmount", ColorsOut.ANSI_PURPLE)
             }
 
             if (!this::storageReqConn.isInitialized) {
                 storageConnect()
             }
 
-            val storageManagerId = "storagemanager"
             val storageReqMessage = MsgUtil.buildRequest(
-//                "wasteservice_server",
-                "test",
-                "storageAsk",
-                PrologUtils.build("storageAsk", args[0]),
-                storageManagerId
+                SENDER_WS_SERVER,
+                STORAGE_REQ_ID,
+                PrologUtils.build(STORAGE_REQ_ID, args[0]),
+                ACTOR_STORAGE_MANAGER
             )
 
             val storageReply: String = try {
-                storageReqConn.request(storageReqMessage.toString())
-            } catch (e: SocketException) {
-                ColorsOut.out("Lost connection to storage, trying to reconnect...", ColorsOut.YELLOW)
-                storageConnect()
-                storageReqConn.request(storageReqMessage.toString())
-            }
+                    storageReqConn.request(storageReqMessage.toString())
+                } catch (e: SocketException) {
+                    ColorsOut.out("Lost connection to storage, trying to reconnect...", ColorsOut.YELLOW)
+                    storageConnect()
+                    storageReqConn.request(storageReqMessage.toString())
+                }
 
             val replyMessage = ApplMessage(storageReply)
             val freeSpace = PrologUtils.extractPayload(replyMessage.msgContent())[1].toFloat()
@@ -100,7 +103,7 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
 
             if (depositAmount <= freeSpace) {
                 session.sendMessage(TextMessage("loadaccept"))
-                sendTrolley(session)
+                sendTrolley(session, depositType, depositAmount)
             } else {
                 session.sendMessage(TextMessage("loadrejected"))
             }
@@ -110,15 +113,37 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
         }
     }
 
-    fun sendTrolley(session: WebSocketSession) {
-        runBlocking {
-            delay(1000)
-            ColorsOut.out("Sending pickup message to waste truck on session $session...")
-            session.sendMessage(TextMessage("pickUp"))
+    fun sendTrolley(session: WebSocketSession, depositType: String, depositAmount: Float) {
+        if (!this::ctxConnection.isInitialized) {
+            ctxConnect()
         }
+
+        val contextTrigger = MsgUtil.buildRequest(
+            SENDER_WS_SERVER,
+            DEPOSIT_TRIGGER_ID,
+            PrologUtils.build(DEPOSIT_TRIGGER_ID, depositType, depositAmount.toString()),
+            ACTOR_WASTESERVICE
+        )
+
+        // Bloccante fino a raccolta da trolley
+        val contextReply: String = try {
+            ctxConnection.request(contextTrigger.toString())
+        } catch (e: SocketException) {
+            ColorsOut.out("Lost connection to wasteservice context, trying to reconnect...", ColorsOut.YELLOW)
+            ctxConnect()
+            ctxConnection.request(contextTrigger.toString())
+        }
+
+        ColorsOut.out("Trash collect done, message was $contextReply")
+        ColorsOut.out("Sending pickup message to waste truck on session $session...")
+        session.sendMessage(TextMessage("pickUp"))
     }
 
     private fun storageConnect() {
         storageReqConn = TcpClientSupport.connect(SystemConfig.storageHost, SystemConfig.storagePort, 5)
+    }
+
+    private fun ctxConnect() {
+        ctxConnection = TcpClientSupport.connect("localhost", SystemConfig.wasteServiceContextPort, 5)
     }
 }

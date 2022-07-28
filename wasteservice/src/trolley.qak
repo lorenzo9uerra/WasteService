@@ -23,15 +23,6 @@ QActor trolley context ctx_trolley {
 		var Quantity = 0.0f
 		var Material = ""
 		var Position = ""
-		fun getContentLine(): String {
-			if (Quantity > 0)                          
-				return "\ncontent($Material,$Quantity)"
-			else
-				return ""
-     	}
-     	fun getPos(): String {
-			return "\npos($Position)"
-     	}
 	#]
 	State init initial {
 		println("$Support")
@@ -40,7 +31,7 @@ QActor trolley context ctx_trolley {
 
 	State idle {
 		printCurrentMessage
-		updateResource [# "state(idle)" + getPos() + getContentLine() #]
+		updateResource [# "state(idle)" + Support.getPos(Position) + Support.getContentLine(Quantity, Material) #]
 	}
 	Transition t0 whenRequest trolleyMove -> handleMove
 				  whenRequest trolleyCollect -> handleCollect
@@ -54,7 +45,7 @@ QActor trolley context ctx_trolley {
 
 	State handleMove {
 		printCurrentMessage
-		updateResource [# "state(idle)" + getPos() + getContentLine() #]
+		updateResource [# "state(idle)" + Support.getPos(Position) + Support.getContentLine(Quantity, Material) #]
 		onMsg (trolleyMove : trolleyMove(LOC) ) {
 			if [# Support.move(payloadArg(0)) #]{
 				replyTo trolleyMove with trolleyDone : trolleyDone(success)
@@ -69,7 +60,7 @@ QActor trolley context ctx_trolley {
 	
 	State handleCollect{
 		printCurrentMessage
-		updateResource [# "state(idle)" + getPos() + getContentLine() #]
+		updateResource [# "state(idle)" + Support.getPos(Position) + Support.getContentLine(Quantity, Material) #]
 		onMsg (trolleyCollect: trolleyCollect(MAT,QNT)){
 			[#
 			Material = payloadArg(0)
@@ -82,7 +73,7 @@ QActor trolley context ctx_trolley {
 	
 	State handleDeposit{
 		printCurrentMessage
-		updateResource [# "state(idle)" + getPos() + getContentLine() #]
+		updateResource [# "state(idle)" + Support.getPos(Position) + Support.getContentLine(Quantity, Material) #]
 		onMsg (trolleyDeposit: trolleyDeposit(_)){
 			// forward storagemanager -m storageDeposit : storageDeposit($Material,$Quantity)
 			replyTo trolleyDeposit with trolleyDone : trolleyDone(success)
