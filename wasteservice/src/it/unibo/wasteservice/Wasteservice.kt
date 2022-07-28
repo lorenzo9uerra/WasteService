@@ -55,6 +55,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("moveTrolleyDeposit") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						answer("triggerDeposit", "trolleyPickedUp", "trolleyPickedUp(_)"   )  
 						request("trolleyMove", "trolleyMove($Box)" ,"trolley" )  
 					}
 					 transition(edgeName="t43",targetState="makeTrolleyDeposit",cond=whenReply("trolleyDone"))
@@ -76,7 +77,6 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						request("trolleyMove", "trolleyMove(home)" ,"trolley" )  
-						answer("triggerDeposit", "doneDeposit", "doneDeposit(success)"   )  
 					}
 					 transition(edgeName="t76",targetState="idle",cond=whenReply("trolleyDone"))
 				}	 

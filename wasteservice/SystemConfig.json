@@ -25,7 +25,7 @@
     "wasteServiceContextPort": 8023,
     "wasteServiceServerPort": 8080,
     "trolleyHost": "localhost",
-    "trolleyPort": 8022,
+    "trolleyPort": 8023,
     "storageHost": "localhost",
-    "storagePort": 8021
+    "storagePort": 8023
 }

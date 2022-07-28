@@ -5,6 +5,9 @@ import it.unibo.kactor.sysUtil
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
+	java.util.logging.Logger.getLogger("org.apache.http.wire").level = java.util.logging.Level.FINEST
+	java.util.logging.Logger.getLogger("org.apache.http.headers").level = java.util.logging.Level.FINEST
+
 	QakContext.createContexts(
 	        "localhost", this, "wasteservice.pl", "sysRules.pl"
 	)

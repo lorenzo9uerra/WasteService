@@ -8,7 +8,8 @@ Questa pagina contiene script che comunicano con il server di WasteService trami
 
 Il server web di WasteService si occupa solo della parte di *core business* correlata alla gestione delle richieste dei Waste Truck.
 
-TODO: come interagisce con il WasteService attore/la parte che gestisce il trolley?
+Interazione WasteService / attore
+- Richiesta da server a attore, risposta quando trolley raccoglie carico per mandare pickedUp a truck
 
 ### StorageManager
 

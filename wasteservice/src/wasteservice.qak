@@ -11,7 +11,7 @@ Reply trolleyDone: trolleyDone(_)
 
 // TEST REQUEST
 Request triggerDeposit : triggerDeposit(MAT,QNT)
-Reply doneDeposit : doneDeposit(_)
+Reply trolleyPickedUp : trolleyPickedUp(_)
 
 Context ctx_wasteservice ip [host="localhost" port=8023]
 
@@ -53,6 +53,7 @@ QActor wasteservice context ctx_wasteservice {
 	
 	State moveTrolleyDeposit {
 		printCurrentMessage
+		replyTo triggerDeposit with trolleyPickedUp : trolleyPickedUp(_)
 		// forward wastetruck -m pickedUp : pickedUp(_)
 		request trolley -m trolleyMove : trolleyMove($Box)
 	}
@@ -72,7 +73,6 @@ QActor wasteservice context ctx_wasteservice {
 	State moveToHome {
 		printCurrentMessage
 		request trolley -m trolleyMove : trolleyMove(home)
-		replyTo triggerDeposit with doneDeposit : doneDeposit(success)
 	}
 	Transition t7 whenReply trolleyDone -> idle
 }

@@ -122,8 +122,14 @@ tasks.bootRun {
 }
 
 
-task<JavaExec>("storageRun") {
-	group = "application"
+task<JavaExec>("storageCtxRun") {
+	group = "qakctx"
 	mainClass.set("it.unibo.ctx_storagemanager.MainCtx_storagemanagerKt")
+	classpath = java.sourceSets["main"].runtimeClasspath
+}
+
+task<JavaExec>("wasteserviceCtxRun") {
+	group = "qakctx"
+	mainClass.set("it.unibo.ctx_wasteservice.MainCtx_wasteserviceKt")
 	classpath = java.sourceSets["main"].runtimeClasspath
 }
