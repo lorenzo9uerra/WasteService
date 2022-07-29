@@ -1,7 +1,7 @@
 package it.unibo.lenziguerra.wasteservice.trolley
 
-import it.unibo.lenziguerra.wasteservice.utils.ApplData
-import it.unibo.lenziguerra.wasteservice.utils.requestSynch
+import it.unibo.lenziguerra.wasteservice.utils.sendDispatch
+import it.unibo.lenziguerra.wasteservice.utils.sendRequest
 import unibo.actor22comm.utils.ColorsOut
 
 interface ITrolleySupport {
@@ -42,8 +42,9 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     }
 
     private fun rotateTo(dir: String): String {
+        var cmd = ""
         while (dir != direction) {
-            requestSynch(ApplData.turnLeft(500))
+            cmd += "l"
             when (direction) {
                 "up" -> direction = "left"
                 "left" -> direction = "down"
@@ -51,6 +52,7 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
                 "right" -> direction = "up"
             }
         }
+        sendRequest("dopath", cmd, "pathexec")
         return dir
     }
 
@@ -75,6 +77,7 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     }
 
     override fun move(strdest: String): Boolean {
+        var command = ""
         val dest = arrayOf(
             Regex("x(.*)y").find(strdest)!!.destructured.component1().toInt(),
             Regex("y(.*)$").find(strdest)!!.destructured.component1().toInt()
@@ -87,66 +90,69 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
         when (changeDir(dest)) {
             "up" -> {
                 while (position[1] > dest[1]) {
-                    requestSynch(ApplData.moveForward(500))
+                    command += "w"
                     position[1]--
                 }
                 if (dest[0] != position[0] || dest[1] != position[1]) {
-                    requestSynch(ApplData.turnLeft(500))
+                    command += "l"
                     direction = "left"
                 }
                 while (position[0] > dest[0]) {
-                    requestSynch(ApplData.moveForward(500))
+                    command += "w"
                     position[0]--
                 }
-                return true
             }
+
             "left" -> {
                 while (position[0] > dest[0]) {
-                    requestSynch(ApplData.moveForward(500))
+                    command += "w"
                     position[0]--
                 }
                 if (dest[0] != position[0] || dest[1] != position[1]) {
-                    requestSynch(ApplData.turnLeft(500))
+                    command += "l"
                     direction = "down"
                 }
                 while (position[1] < dest[1]) {
-                    requestSynch(ApplData.moveForward(500))
+                    command += "w"
                     position[1]++
                 }
-                return true
             }
+
             "down" -> {
                 while (position[1] < dest[1]) {
-                    requestSynch(ApplData.moveForward(500))
+                    command += "w"
                     position[1]++
                 }
                 if (dest[0] != position[0] || dest[1] != position[1]) {
-                    requestSynch(ApplData.turnLeft(500))
+                    command += "l"
                     direction = "right"
                 }
                 while (position[0] < dest[0]) {
-                    requestSynch(ApplData.moveForward(500))
+                    command += "w"
                     position[0]++
                 }
-                return true
             }
+
             "right" -> {
                 while (position[0] < dest[0]) {
-                    requestSynch(ApplData.moveForward(500))
+                    command += "w"
                     position[0]++
                 }
                 if (dest[0] != position[0] || dest[1] != position[1]) {
-                    requestSynch(ApplData.turnLeft(500))
+                    command += "l"
                     direction = "up"
                 }
                 while (position[1] > dest[1]) {
-                    requestSynch(ApplData.moveForward(500))
+                    command += "w"
                     position[1]--
                 }
-                return true
+
             }
+
+            else -> return false
         }
-        return false
+        sendRequest("dopath", command, "pathexec")
+        return true
     }
 
     override fun getPrologContent(): String {

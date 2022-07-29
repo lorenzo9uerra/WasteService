@@ -98,7 +98,7 @@ class TrolleyTest() {
 
     companion object {
         const val CTX_HOST = "localhost"
-        var CTX_PORT = SystemConfig.trolleyPort
+        var CTX_PORT = SystemConfig.ports["trolley"]!!
         const val CTX_TEST = "ctx_trolley"
     }
 }

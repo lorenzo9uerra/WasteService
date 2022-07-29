@@ -45,7 +45,8 @@ class WasteServiceController {
             "/truckgui.js",
         )
         model["waste"] = mapOf(
-          "types" to WasteType.values().map { it -> mapOf("id" to it.id, "name" to it.id.replaceFirstChar { it.uppercase() }) },
+            "types" to WasteType.values()
+                .map { it -> mapOf("id" to it.id, "name" to it.id.replaceFirstChar { it.uppercase() }) },
         )
         return "truck_gui"
     }
@@ -82,19 +83,16 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
             }
 
             val storageReqMessage = MsgUtil.buildRequest(
-                SENDER_WS_SERVER,
-                STORAGE_REQ_ID,
-                PrologUtils.build(STORAGE_REQ_ID, args[0]),
-                ACTOR_STORAGE_MANAGER
+                SENDER_WS_SERVER, STORAGE_REQ_ID, PrologUtils.build(STORAGE_REQ_ID, args[0]), ACTOR_STORAGE_MANAGER
             )
 
             val storageReply: String = try {
-                    storageReqConn.request(storageReqMessage.toString())
-                } catch (e: SocketException) {
-                    ColorsOut.out("Lost connection to storage, trying to reconnect...", ColorsOut.YELLOW)
-                    storageConnect()
-                    storageReqConn.request(storageReqMessage.toString())
-                }
+                storageReqConn.request(storageReqMessage.toString())
+            } catch (e: SocketException) {
+                ColorsOut.out("Lost connection to storage, trying to reconnect...", ColorsOut.YELLOW)
+                storageConnect()
+                storageReqConn.request(storageReqMessage.toString())
+            }
 
             val replyMessage = ApplMessage(storageReply)
             val freeSpace = PrologUtils.extractPayload(replyMessage.msgContent())[1].toFloat()
@@ -140,10 +138,10 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
     }
 
     private fun storageConnect() {
-        storageReqConn = TcpClientSupport.connect(SystemConfig.storageHost, SystemConfig.storagePort, 5)
+        storageReqConn = TcpClientSupport.connect(SystemConfig.hosts["storage"]!!, SystemConfig.ports["storage"]!!, 5)
     }
 
     private fun ctxConnect() {
-        ctxConnection = TcpClientSupport.connect("localhost", SystemConfig.wasteServiceContextPort, 5)
+        ctxConnection = TcpClientSupport.connect("localhost", SystemConfig.ports["wasteServiceContext"]!!, 5)
     }
 }

@@ -21,11 +21,19 @@
 
     "debugPrint": true,
 
-    "wasteServiceHost": "localhost",
-    "wasteServiceContextPort": 8023,
-    "wasteServiceServerPort": 8080,
-    "trolleyHost": "localhost",
-    "trolleyPort": 8023,
-    "storageHost": "localhost",
-    "storagePort": 8023
+    "ports": {
+        "trolley": 8022,
+        "storage": 8021,
+        "wasteServiceServer": 8080,
+        "wasteServiceContext": 8023,
+        "pathexec": 8020
+    },
+
+    "hosts": {
+        "trolley": "localhost",
+        "storage": "localhost",
+        "wasteServiceServer": "localhost",
+        "wasteServiceContext": "localhost",
+        "pathexec": "localhost"
+    }
 }

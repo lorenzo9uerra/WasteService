@@ -32,6 +32,6 @@ movimenti del trolley grazie a _WEnv_, un software che simula un robot virtuale
 che ci è fornito ed è quindi riutilizzabile, permettendoci di abbattere i costi
 della fase di testing.
 
-Per interagire con _basicrobot_ viene utilizzato _cril_, ossia _concrete-robot
+Per interagire con _basicrobot_ viene utilizzato _aril_, ossia _abstract robot
 interaction language_, che espone un interfaccia con cui è possibile comunicare
-attraverso http o websocket.
+in modo indipendente dalla tecnologia.

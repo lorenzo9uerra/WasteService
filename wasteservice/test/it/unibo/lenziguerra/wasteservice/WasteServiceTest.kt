@@ -31,6 +31,7 @@ class WasteServiceTest {
     @Test
     fun testDeposit() {
         wasteServiceRequest("triggerDeposit", "glass, 10")
+        wasteServiceRequest("triggerDeposit", "glass, 10")
     }
 
     private fun wasteServiceRequest(id: String, params: String) {
@@ -90,8 +91,8 @@ class WasteServiceTest {
     }
 
     companion object {
-        const val CTX_HOST = "localhost"
-        var CTX_PORT = SystemConfig.wasteServiceContextPort
+        var CTX_HOST = SystemConfig.hosts["wasteServiceContext"]!!
+        var CTX_PORT = SystemConfig.ports["wasteServiceContext"]!!
         const val CTX_TEST = "ctx_wasteservice"
     }
 }
