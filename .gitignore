@@ -2,6 +2,10 @@
 **/build/
 !src/**/build/
 
+wasteservice/build2022.gradle
+# Usa file kt
+wasteservice/settings.gradle
+
 # Ignore Gradle GUI config
 gradle-app.setting
 
