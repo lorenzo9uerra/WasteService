@@ -3,12 +3,15 @@ package it.unibo.lenziguerra.wasteservice.wasteservice
 import it.unibo.lenziguerra.wasteservice.SystemConfig
 import kotlin.math.abs
 
-class WasteserviceSupport {
-    fun getDestination(location: String, Position: String): String {
-        val posMatch = Regex("x(.*)y(.*)$").find(Position)!!.destructured
+interface IWasteserviceSupport {
+    fun getDestination(location: String, Position: String): String
+}
+
+class WasteserviceSupport : IWasteserviceSupport {
+    override fun getDestination(location: String, Position: String): String {
         val pos = arrayOf(
-            posMatch.component1().toInt(),
-            posMatch.component2().toInt(),
+            Position.split(",")[0].toInt(),
+            Position.split(",")[1].toInt(),
         )
         val destarea = SystemConfig.positions[location] ?: throw IllegalArgumentException("Unknown location $location")
         var x = destarea[0][0]
@@ -27,6 +30,6 @@ class WasteserviceSupport {
                 minY = abs(pos[1] - 1)
             }
         }
-        return "x${x}y$y"
+        return "${x},$y"
     }
 }

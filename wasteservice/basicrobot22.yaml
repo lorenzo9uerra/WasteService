@@ -1,4 +1,4 @@
-version: '4'
+version: '3' # optional since v1.27.0
 services:
   wenv:
     image: docker.io/lnwor/virtualrobotdisi:4.2

@@ -3,29 +3,27 @@ System wasteservice
 Request storageAsk : storageAsk(MAT)
 Reply storageAt : storageAt(MAT, QNT)
 Dispatch storageDeposit : storageDeposit(MAT, QNT)
-Request trolleyMove : trolleyMove(LOC)
+Request trolleyMove : trolleyMove(X,Y)
 Request trolleyCollect : trolleyCollect(MAT,QNT)
 Request trolleyDeposit : trolleyDeposit(_)
 
 Reply trolleyDone: trolleyDone(_)
 
 Request triggerDeposit : triggerDeposit(MAT,QNT)
-Reply trolleyPickedUp : trolleyPickedUp(_)
+Reply depositDone : depositDone(_)
 
-// TEST
 Dispatch testStorageReset : testStorageReset(_)
 Dispatch testStorageSet : testStorageSet(JSON_DATA)
 
 Context ctx_wasteservice ip [host="localhost" port=8023]
 
-// DI PROVA
 QActor wasteservice context ctx_wasteservice {
 	[#
 		val Support = it.unibo.lenziguerra.wasteservice.wasteservice.WasteserviceSupport()
 		var Material = ""
 		var Quantity = 0.0f
 		var Box = ""
-		var Position = "x0y0"
+		var Position = "0,0"
 	#]
 	State start initial {
 		println("\tWS | Start")
@@ -63,7 +61,6 @@ QActor wasteservice context ctx_wasteservice {
 	
 	State go_box {
 		printCurrentMessage
-		replyTo triggerDeposit with trolleyPickedUp : trolleyPickedUp(_)
 		// forward wastetruck -m pickedUp : pickedUp(_)
 		[# Position = Support.getDestination(Box, Position) #]
 		request trolley -m trolleyMove : trolleyMove($Position)
@@ -81,6 +78,7 @@ QActor wasteservice context ctx_wasteservice {
 	State done {
 		printCurrentMessage
 		println("\tWT | Done deposit action")
+		replyTo triggerDeposit with depositDone : depositDone(_)
 	}
 	Transition t0 whenTime 0 -> go_home 
 				  whenRequest triggerDeposit -> go_indoor
@@ -113,10 +111,10 @@ QActor trolley context ctx_wasteservice {
 	State handleMove {
 		printCurrentMessage
 		updateResource [# Support.getPrologContent() #]
-		onMsg (trolleyMove : trolleyMove(LOC) ) {
-			if [# Support.move(payloadArg(0)) #]{
+		onMsg (trolleyMove : trolleyMove(X,Y) ) {
+			if [# Support.move(payloadArg(0).toInt(), payloadArg(1).toInt()) #]{
 				replyTo trolleyMove with trolleyDone : trolleyDone(success)
-				[# Support.setPosition(payloadArg(0)) #]
+				[# Support.setPosition(payloadArg(0).toInt(), payloadArg(1).toInt()) #]
 			}
 			else {
 				replyTo trolleyMove with trolleyDone : trolleyDone(fail)

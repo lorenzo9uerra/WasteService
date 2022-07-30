@@ -5,13 +5,13 @@ import unibo.actor22comm.utils.ColorsOut
 
 interface ITrolleySupport {
     fun init()
-    fun move(strdest: String): Boolean
+    fun move(x: Int, y: Int): Boolean
     fun getPrologContent(): String
     fun collect(material: String, quantity: Float)
     fun deposit()
     fun getMaterial(): String
     fun getQuantity(): String
-    fun setPosition(pos: String)
+    fun setPosition(x: Int, y: Int)
 }
 
 object TrolleySupport {
@@ -26,11 +26,8 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     private var quantity: Float = 0.0f
     private var material: String? = null
 
-    override fun setPosition(pos: String) {
-        position = arrayOf(
-            Regex("x(.*)y").find(pos)!!.destructured.component1().toInt(),
-            Regex("y(.*)$").find(pos)!!.destructured.component1().toInt()
-        )
+    override fun setPosition(x: Int, y: Int) {
+        position = arrayOf(x, y)
     }
 
     override fun getMaterial(): String {
@@ -81,13 +78,9 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
         this.quantity = 0.0f
     }
 
-    override fun move(strdest: String): Boolean {
+    override fun move(x: Int, y: Int): Boolean {
         var command = ""
-        val posMatch = Regex("x(.*)y(.*)$").find(strdest)!!.destructured
-        val dest = arrayOf(
-            posMatch.component1().toInt(),
-            posMatch.component2().toInt(),
-        )
+        val dest = arrayOf(x, y)
 
         ColorsOut.outappl(
             "Have to go at " + dest[0] + "-" + dest[1] + "\nCurrently at: " + position[0] + "-" + position[1],

@@ -2,6 +2,7 @@ package it.unibo.lenziguerra.wasteservice
 
 import it.unibo.kactor.MsgUtil
 import it.unibo.kactor.QakContext
+import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -31,7 +32,9 @@ class WasteServiceTest {
     @Test
     fun testDeposit() {
         wasteServiceRequest("triggerDeposit", "glass, 10")
-        wasteServiceRequest("triggerDeposit", "glass, 10")
+        val wasteServiceContent = coapRequest(actor_wasteservice)?.let { PrologUtils.getFuncLine(it, "tpos") }
+        val tContentParams = wasteServiceContent?.let { SimplePayloadExtractor("tpos").extractPayload(it) }
+        AssertionErrors.assertEquals("Testing Expected Position", "glass_box", tContentParams?.get(0))
     }
 
     private fun wasteServiceRequest(id: String, params: String) {

@@ -19,7 +19,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				var Material = ""
 				var Quantity = 0.0f
 				var Box = ""
-				var Position = "x0y0"
+				var Position = "0,0"
 		return { //this:ActionBasciFsm
 				state("start") { //this:State
 					action { //it:State
@@ -64,7 +64,6 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("go_box") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						answer("triggerDeposit", "trolleyPickedUp", "trolleyPickedUp(_)"   )  
 						 Position = Support.getDestination(Box, Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
 					}
@@ -84,6 +83,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WT | Done deposit action")
+						answer("triggerDeposit", "depositDone", "depositDone(_)"   )  
 						stateTimer = TimerActor("timer_done", 
 							scope, context!!, "local_tout_wasteservice_done", 0.toLong() )
 					}
