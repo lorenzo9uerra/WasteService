@@ -75,6 +75,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 								
 												val Material = Support.getMaterial()
 												val Quantity = Support.getQuantity()
+												Support.deposit()
 								forward("storageDeposit", "storageDeposit($Material,$Quantity)" ,"storagemanager" ) 
 								answer("trolleyDeposit", "trolleyDone", "trolleyDone(success)"   )  
 						}

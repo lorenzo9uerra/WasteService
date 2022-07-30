@@ -144,6 +144,7 @@ QActor trolley context ctx_wasteservice {
 			[#
 				val Material = Support.getMaterial()
 				val Quantity = Support.getQuantity()
+				Support.deposit()
 			#]
 			forward storagemanager -m storageDeposit : storageDeposit($Material,$Quantity)
 			replyTo trolleyDeposit with trolleyDone : trolleyDone(success)

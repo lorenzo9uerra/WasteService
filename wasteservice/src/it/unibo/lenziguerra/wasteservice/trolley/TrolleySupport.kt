@@ -1,6 +1,5 @@
 package it.unibo.lenziguerra.wasteservice.trolley
 
-import it.unibo.lenziguerra.wasteservice.utils.sendDispatch
 import it.unibo.lenziguerra.wasteservice.utils.sendRequest
 import unibo.actor22comm.utils.ColorsOut
 
@@ -9,6 +8,7 @@ interface ITrolleySupport {
     fun move(strdest: String): Boolean
     fun getPrologContent(): String
     fun collect(material: String, quantity: Float)
+    fun deposit()
     fun getMaterial(): String
     fun getQuantity(): String
     fun setPosition(pos: String)
@@ -23,8 +23,8 @@ object TrolleySupport {
 abstract class AbstractTrolleyVirtual : ITrolleySupport {
     private var position = arrayOf(0, 0)
     private var direction = "down"
-    private var quantity = 0.0f
-    private var material = ""
+    private var quantity: Float = 0.0f
+    private var material: String? = null
 
     override fun setPosition(pos: String) {
         position = arrayOf(
@@ -34,7 +34,7 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     }
 
     override fun getMaterial(): String {
-        return material
+        return material ?: ""
     }
 
     override fun getQuantity(): String {
@@ -74,6 +74,11 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     override fun collect(material: String, quantity: Float) {
         this.material = material
         this.quantity = quantity
+    }
+
+    override fun deposit() {
+        this.material = null
+        this.quantity = 0.0f
     }
 
     override fun move(strdest: String): Boolean {
@@ -157,10 +162,12 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     }
 
     override fun getPrologContent(): String {
-        return "state(idle)\npos(${position[0]},${position[1]})\ncontent($material,$quantity)"
+        return "state(work)\npos(${position[0]},${position[1]})" +
+                (material?.let { "\ncontent($material,$quantity)" } ?: "")
     }
 
     override fun toString(): String {
-        return "Trolley | Pos: (${position[0]},${position[1]}), Dir: $direction, Content: $quantity $material"
+        return "Trolley | Pos: (${position[0]},${position[1]}), Dir: $direction" +
+                (material?.let { ", Content: $quantity $material" } ?: "")
     }
 }

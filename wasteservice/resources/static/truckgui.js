@@ -5,6 +5,7 @@
 const MSG_LOADACCEPT = "loadaccept";
 // @ts-ignore
 const MSG_LOADREJECTED = "loadrejected";
+// @ts-ignore
 const MSG_PICKUP = "pickUp"
 
 var ws;

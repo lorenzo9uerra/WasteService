@@ -29,7 +29,7 @@ object SystemConfig {
         "pathexec" to "localhost"
     )
 
-    fun setConfiguration(cfgPath: String) {
+    fun setConfiguration(cfgPath: String = "SystemConfig.json") {
         StaticConfig.setConfiguration(this::class, cfgPath)
     }
 }
