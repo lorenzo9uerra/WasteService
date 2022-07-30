@@ -9,9 +9,12 @@ Request trolleyDeposit : trolleyDeposit(_)
 
 Reply trolleyDone: trolleyDone(_)
 
-// TEST REQUEST
 Request triggerDeposit : triggerDeposit(MAT,QNT)
 Reply trolleyPickedUp : trolleyPickedUp(_)
+
+// TEST
+Dispatch testStorageReset : testStorageReset(_)
+Dispatch testStorageSet : testStorageSet(JSON_DATA)
 
 Context ctx_wasteservice ip [host="localhost" port=8023]
 
@@ -156,6 +159,8 @@ QActor storagemanager context ctx_wasteservice {
 	}
 	Transition t0 whenRequest storageAsk -> handleAsk
 				  whenMsg storageDeposit -> handleDeposit
+				  whenMsg testStorageReset -> handleTestReset
+				  whenMsg testStorageSet -> handleTestSet
 	
 	State handleAsk {
 		printCurrentMessage
@@ -169,6 +174,25 @@ QActor storagemanager context ctx_wasteservice {
 	State handleDeposit {
 		onMsg ( storageDeposit : storageDeposit(MAT, QNT) ){
 			[# Support.deposit(payloadArg(0), payloadArg(1).toFloat()) #]
+			println("$Support")
+			updateResource [# Support.getPrologContent() #]
+		}
+	}
+	Goto idle
+	
+	
+	State handleTestReset {
+		[# Support.reset() #]
+		println("Storage manager: reset contents")
+		println("$Support")
+		updateResource [# Support.getPrologContent() #]
+	}
+	Goto idle
+	
+	State handleTestSet {
+		onMsg ( testStorageSet : testStorageSet(JSON_DATA) ){
+			[# Support.set(org.json.JSONObject(payloadArg(0)).toMap() as Map<String, Float>) #]
+			println("Storage manager: set contents ${payloadArg(0)}")
 			println("$Support")
 			updateResource [# Support.getPrologContent() #]
 		}

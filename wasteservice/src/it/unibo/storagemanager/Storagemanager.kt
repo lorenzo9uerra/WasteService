@@ -31,6 +31,8 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 					}
 					 transition(edgeName="t010",targetState="handleAsk",cond=whenRequest("storageAsk"))
 					transition(edgeName="t011",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
+					transition(edgeName="t012",targetState="handleTestReset",cond=whenDispatch("testStorageReset"))
+					transition(edgeName="t013",targetState="handleTestSet",cond=whenDispatch("testStorageSet"))
 				}	 
 				state("handleAsk") { //this:State
 					action { //it:State
@@ -48,6 +50,29 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 						if( checkMsgContent( Term.createTerm("storageDeposit(MAT,QNT)"), Term.createTerm("storageDeposit(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Support.deposit(payloadArg(0), payloadArg(1).toFloat())  
+								println("$Support")
+								updateResourceRep( Support.getPrologContent()  
+								)
+						}
+					}
+					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
+				}	 
+				state("handleTestReset") { //this:State
+					action { //it:State
+						 Support.reset()  
+						println("Storage manager: reset contents")
+						println("$Support")
+						updateResourceRep( Support.getPrologContent()  
+						)
+					}
+					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
+				}	 
+				state("handleTestSet") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("testStorageSet(JSON_DATA)"), Term.createTerm("testStorageSet(JSON_DATA)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 Support.set(org.json.JSONObject(payloadArg(0)).toMap() as Map<String, Float>)  
+								println("Storage manager: set contents ${payloadArg(0)}")
 								println("$Support")
 								updateResourceRep( Support.getPrologContent()  
 								)
