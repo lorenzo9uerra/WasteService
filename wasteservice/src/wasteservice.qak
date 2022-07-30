@@ -10,8 +10,10 @@ Request trolleyDeposit : trolleyDeposit(_)
 Reply trolleyDone: trolleyDone(_)
 
 Request triggerDeposit : triggerDeposit(MAT,QNT)
-Reply depositDone : depositDone(_)
+Reply trolleyPickedUp : trolleyPickedUp(_)
 
+// MESSAGGI PER TEST
+// Impostazione di valori e reset di attori vari
 Dispatch testStorageReset : testStorageReset(_)
 Dispatch testStorageSet : testStorageSet(JSON_DATA)
 
@@ -61,6 +63,7 @@ QActor wasteservice context ctx_wasteservice {
 	
 	State go_box {
 		printCurrentMessage
+		replyTo triggerDeposit with trolleyPickedUp : trolleyPickedUp(_)
 		// forward wastetruck -m pickedUp : pickedUp(_)
 		[# Position = Support.getDestination(Box, Position) #]
 		request trolley -m trolleyMove : trolleyMove($Position)
@@ -78,7 +81,6 @@ QActor wasteservice context ctx_wasteservice {
 	State done {
 		printCurrentMessage
 		println("\tWT | Done deposit action")
-		replyTo triggerDeposit with depositDone : depositDone(_)
 	}
 	Transition t0 whenTime 0 -> go_home 
 				  whenRequest triggerDeposit -> go_indoor
