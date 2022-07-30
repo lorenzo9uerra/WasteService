@@ -11,7 +11,7 @@ import kotlinx.coroutines.runBlocking
 class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope ){
 
 	override fun getInitialState() : String{
-		return "init"
+		return "start"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
@@ -21,19 +21,22 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				var Box = ""
 				var Position = "x0y0"
 		return { //this:ActionBasciFsm
-				state("init") { //this:State
+				state("start") { //this:State
 					action { //it:State
-						println("Start")
+						println("	WS | Start")
 					}
-					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
+					 transition( edgeName="goto",targetState="home", cond=doswitch() )
 				}	 
-				state("idle") { //this:State
+				state("home") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						updateResourceRep( "tpos(home)"  
+						)
+						println("	WS | Trolley at home")
 					}
-					 transition(edgeName="t00",targetState="moveTrolleyIndoor",cond=whenRequest("triggerDeposit"))
+					 transition(edgeName="t00",targetState="go_indoor",cond=whenRequest("triggerDeposit"))
 				}	 
-				state("moveTrolleyIndoor") { //this:State
+				state("go_indoor") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("triggerDeposit(MAT,QNT)"), Term.createTerm("triggerDeposit(MAT,QNT)"), 
@@ -46,44 +49,54 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						 Position = Support.getDestination("indoor", Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
 					}
-					 transition(edgeName="t21",targetState="makeTrolleyCollect",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t21",targetState="indoor",cond=whenReply("trolleyDone"))
 				}	 
-				state("makeTrolleyCollect") { //this:State
+				state("indoor") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						println("	WT | Trolley at indoor, picking up $Quantity $Material...")
+						updateResourceRep( "tpos(indoor)"  
+						)
 						request("trolleyCollect", "trolleyCollect($Material,$Quantity)" ,"trolley" )  
 					}
-					 transition(edgeName="t32",targetState="moveTrolleyDeposit",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t32",targetState="go_box",cond=whenReply("trolleyDone"))
 				}	 
-				state("moveTrolleyDeposit") { //this:State
+				state("go_box") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						answer("triggerDeposit", "trolleyPickedUp", "trolleyPickedUp(_)"   )  
 						 Position = Support.getDestination(Box, Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
 					}
-					 transition(edgeName="t43",targetState="makeTrolleyDeposit",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t43",targetState="box",cond=whenReply("trolleyDone"))
 				}	 
-				state("makeTrolleyDeposit") { //this:State
+				state("box") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						println("	WT | Trolley at $Material box, depositing $Quantity $Material...")
+						updateResourceRep( "tpos(" + Material + "_box)"  
+						)
 						request("trolleyDeposit", "trolleyDeposit(_)" ,"trolley" )  
 					}
-					 transition(edgeName="t54",targetState="moveToHome",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t54",targetState="done",cond=whenReply("trolleyDone"))
 				}	 
-				state("waitTrolleyDone") { //this:State
+				state("done") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						println("	WT | Done deposit action")
+						stateTimer = TimerActor("timer_done", 
+							scope, context!!, "local_tout_wasteservice_done", 0.toLong() )
 					}
-					 transition(edgeName="t65",targetState="moveToHome",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t05",targetState="go_home",cond=whenTimeout("local_tout_wasteservice_done"))   
+					transition(edgeName="t06",targetState="go_indoor",cond=whenRequest("triggerDeposit"))
 				}	 
-				state("moveToHome") { //this:State
+				state("go_home") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						 Position = Support.getDestination("home", Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
 					}
-					 transition(edgeName="t76",targetState="idle",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t77",targetState="home",cond=whenReply("trolleyDone"))
 				}	 
 			}
 		}

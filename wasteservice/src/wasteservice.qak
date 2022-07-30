@@ -27,17 +27,19 @@ QActor wasteservice context ctx_wasteservice {
 		var Box = ""
 		var Position = "x0y0"
 	#]
-	State init initial {
-		println("Start")
+	State start initial {
+		println("\tWS | Start")
 	}
-	Goto idle
+	Goto home
 	
-	State idle {
+	State home {
 		printCurrentMessage
+		updateResource [# "tpos(home)" #]
+		println("\tWS | Trolley at home")
 	}
-	Transition t0 whenRequest triggerDeposit -> moveTrolleyIndoor
+	Transition t0 whenRequest triggerDeposit -> go_indoor
 	
-	State moveTrolleyIndoor {
+	State go_indoor {
 		printCurrentMessage
 		onMsg(triggerDeposit : triggerDeposit(MAT,QNT)){
 			[#
@@ -49,40 +51,46 @@ QActor wasteservice context ctx_wasteservice {
 		[# Position = Support.getDestination("indoor", Position) #]
 		request trolley -m trolleyMove : trolleyMove($Position)
 	}
-	Transition t2 whenReply trolleyDone -> makeTrolleyCollect
+	Transition t2 whenReply trolleyDone -> indoor
 	
-	State makeTrolleyCollect {
+	State indoor {
 		printCurrentMessage
+		println("\tWT | Trolley at indoor, picking up $Quantity $Material...")
+		updateResource [# "tpos(indoor)" #]
 		request trolley -m trolleyCollect : trolleyCollect($Material, $Quantity)
 	}
-	Transition t3 whenReply trolleyDone -> moveTrolleyDeposit
+	Transition t3 whenReply trolleyDone -> go_box
 	
-	State moveTrolleyDeposit {
+	State go_box {
 		printCurrentMessage
 		replyTo triggerDeposit with trolleyPickedUp : trolleyPickedUp(_)
 		// forward wastetruck -m pickedUp : pickedUp(_)
 		[# Position = Support.getDestination(Box, Position) #]
 		request trolley -m trolleyMove : trolleyMove($Position)
 	}
-	Transition t4 whenReply trolleyDone -> makeTrolleyDeposit
+	Transition t4 whenReply trolleyDone -> box
 	
-	State makeTrolleyDeposit {
+	State box {
 		printCurrentMessage
+		println("\tWT | Trolley at $Material box, depositing $Quantity $Material...")
+		updateResource [# "tpos(" + Material + "_box)" #]
 		request trolley -m trolleyDeposit : trolleyDeposit(_)
 	}
-	Transition t5 whenReply trolleyDone -> moveToHome
-				  
-	State waitTrolleyDone {
+	Transition t5 whenReply trolleyDone -> done
+					
+	State done {
 		printCurrentMessage
+		println("\tWT | Done deposit action")
 	}
-	Transition t6 whenReply trolleyDone -> moveToHome
+	Transition t0 whenTime 0 -> go_home 
+				  whenRequest triggerDeposit -> go_indoor
 				  
-	State moveToHome {
+	State go_home {
 		printCurrentMessage
 		[# Position = Support.getDestination("home", Position) #]
 		request trolley -m trolleyMove : trolleyMove($Position)
 	}
-	Transition t7 whenReply trolleyDone -> idle
+	Transition t7 whenReply trolleyDone -> home
 }
 
 QActor trolley context ctx_wasteservice {
