@@ -19,7 +19,6 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
-						println("$Support")
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
@@ -28,6 +27,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						println("$name in ${currentState.stateName} | $currentMsg")
 						updateResourceRep( Support.getPrologContent()  
 						)
+						println("$Support")
 					}
 					 transition(edgeName="t07",targetState="handleMove",cond=whenRequest("trolleyMove"))
 					transition(edgeName="t08",targetState="handleCollect",cond=whenRequest("trolleyCollect"))

@@ -22,11 +22,11 @@
     "debugPrint": true,
 
     "ports": {
-        "trolley": 8022,
-        "storage": 8021,
+        "trolley": 8023,
+        "storage": 8023,
         "wasteServiceServer": 8080,
         "wasteServiceContext": 8023,
-        "pathexec": 8020
+        "pathexec": 8023
     },
 
     "hosts": {

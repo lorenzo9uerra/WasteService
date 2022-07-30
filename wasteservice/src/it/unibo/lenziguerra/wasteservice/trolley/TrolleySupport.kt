@@ -78,9 +78,10 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
 
     override fun move(strdest: String): Boolean {
         var command = ""
+        val posMatch = Regex("x(.*)y(.*)$").find(strdest)!!.destructured
         val dest = arrayOf(
-            Regex("x(.*)y").find(strdest)!!.destructured.component1().toInt(),
-            Regex("y(.*)$").find(strdest)!!.destructured.component1().toInt()
+            posMatch.component1().toInt(),
+            posMatch.component2().toInt(),
         )
 
         ColorsOut.outappl(
@@ -156,6 +157,10 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     }
 
     override fun getPrologContent(): String {
-        return "state(idle) $position,$quantity,$material"
+        return "state(idle)\npos(${position[0]},${position[1]})\ncontent($material,$quantity)"
+    }
+
+    override fun toString(): String {
+        return "Trolley | Pos: (${position[0]},${position[1]}), Dir: $direction, Content: $quantity $material"
     }
 }

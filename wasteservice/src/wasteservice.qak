@@ -87,13 +87,13 @@ QActor trolley context ctx_wasteservice {
 		val Support = it.unibo.lenziguerra.wasteservice.trolley.TrolleySupport.getSupport()
 	#]
 	State init initial {
-		println("$Support")
 	}
 	Goto idle
 
 	State idle {
 		printCurrentMessage
 		updateResource [# Support.getPrologContent() #]
+		println("$Support")
 	}
 	Transition t0 whenRequest trolleyMove -> handleMove
 				  whenRequest trolleyCollect -> handleCollect

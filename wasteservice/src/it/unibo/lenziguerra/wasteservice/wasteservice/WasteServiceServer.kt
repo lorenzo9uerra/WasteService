@@ -73,6 +73,11 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
             val depositType = args[0]
             val depositAmount = args[1].toFloat()
 
+            if (WasteType.values().find { it.id == depositType } == null) {
+                ColorsOut.outerr("Illegal request received for unknown material $depositType")
+                return
+            }
+
             if (SystemConfig.debugPrint) {
                 ColorsOut.outappl("Message arrived: $payload", ColorsOut.BLUE)
                 ColorsOut.outappl("Id: $id, Type: $depositType, Args: $depositAmount", ColorsOut.ANSI_PURPLE)
