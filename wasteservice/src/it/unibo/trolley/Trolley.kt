@@ -38,11 +38,11 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						println("$name in ${currentState.stateName} | $currentMsg")
 						updateResourceRep( Support.getPrologContent()  
 						)
-						if( checkMsgContent( Term.createTerm("trolleyMove(LOC)"), Term.createTerm("trolleyMove(LOC)"), 
+						if( checkMsgContent( Term.createTerm("trolleyMove(X,Y)"), Term.createTerm("trolleyMove(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								if(  Support.move(payloadArg(0))  
+								if(  Support.move(payloadArg(0).toInt(), payloadArg(1).toInt())  
 								 ){answer("trolleyMove", "trolleyDone", "trolleyDone(success)"   )  
-								 Support.setPosition(payloadArg(0))  
+								 Support.setPosition(payloadArg(0).toInt(), payloadArg(1).toInt())  
 								}
 								else
 								 {answer("trolleyMove", "trolleyDone", "trolleyDone(fail)"   )  
