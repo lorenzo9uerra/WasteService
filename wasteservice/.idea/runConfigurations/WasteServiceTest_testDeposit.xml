@@ -3,7 +3,7 @@
     <module name="unibo.wasteservice.test" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="it.unibo.lenziguerra.wasteservice.*" />
+        <option name="PATTERN" value="it.unibo.lenziguerra.wasteservice.wasteservice.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

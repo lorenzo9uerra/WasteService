@@ -92,7 +92,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.googlecode.aima-java/aima-core
 	implementation("com.googlecode.aima-java:aima-core:3.0.0")
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude("com.vaadin.external.google", "android-json")
+	}
 }
 
 sourceSets["main"].java {

@@ -19,7 +19,7 @@ class WasteServiceTest {
 
     @Before
     fun up() {
-        thread { RunCtxTestDepositKt().main() }
+        thread { RunCtxTestDeposit().main() }
         waitForTrolley()
         waitForWasteService()
     }
@@ -33,7 +33,7 @@ class WasteServiceTest {
     fun testDeposit() {
         wasteServiceRequest("triggerDeposit", "glass, 10")
         val wasteServiceContent = coapRequest(actor_wasteservice)?.let { PrologUtils.getFuncLine(it, "tpos") }
-        val tContentParams = wasteServiceContent?.let { SimplePayloadExtractor("tpos").extractPayload(it) }
+        val tContentParams = wasteServiceContent?.let { PrologUtils.extractPayload(it) }
         AssertionErrors.assertEquals("Testing Expected Position", "glass_box", tContentParams?.get(0))
     }
 

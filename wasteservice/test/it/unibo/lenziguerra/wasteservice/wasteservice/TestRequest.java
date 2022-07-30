@@ -1,18 +1,27 @@
-package it.unibo.lenziguerra.wasteservice;
+package it.unibo.lenziguerra.wasteservice.wasteservice;
 
 import it.unibo.kactor.ActorBasic;
 import it.unibo.kactor.IApplMessage;
 import it.unibo.kactor.MsgUtil;
 import it.unibo.kactor.QakContext;
+import it.unibo.lenziguerra.wasteservice.ConnTcp;
+import it.unibo.lenziguerra.wasteservice.RunCtxTestRequest;
+import it.unibo.lenziguerra.wasteservice.SystemConfig;
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils;
+import it.unibo.lenziguerra.wasteservice.utils.WsConnRequestable;
 import it.unibo.lenziguerra.wasteservice.wasteservice.WasteServiceController;
 import it.unibo.lenziguerra.wasteservice.wasteservice.WasteServiceServerKt;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.*;
+
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
@@ -20,6 +29,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import unibo.actor22comm.coap.CoapConnection;
+import unibo.actor22comm.interfaces.Interaction2021;
 import unibo.actor22comm.utils.ColorsOut;
 import unibo.actor22comm.utils.CommSystemConfig;
 import unibo.actor22comm.utils.CommUtils;
@@ -34,19 +44,22 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
 
 // @SpringBootTest: crea applicazione Spring da classe trovata nel percorso
-@SpringBootTest
+@SpringBootTest(classes = WasteserviceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@RunWith(SpringRunner.class)
 public class TestRequest {
     final static String ACTOR_STORAGE = "storagemanager";
 
     private String ctx_storage;
-    private WsConnection wsConn;
+    private Interaction2021 wsConn;
 
     @Autowired
     private WasteServiceController controller;
+    @LocalServerPort
+    private Integer port;
 
     @Before
     public void up() {
-        CommSystemConfig.tracing = false;
+//        CommSystemConfig.tracing = false;
         SystemConfig.INSTANCE.setConfiguration("SystemConfig.json");
 
         new Thread(() -> {
@@ -59,6 +72,8 @@ public class TestRequest {
         assertThat(controller).isNotNull();
 
         startWsConnection();
+
+        ColorsOut.outappl("Starting TestRequest, port is " + port, ColorsOut.CYAN);
     }
 
     @After
@@ -91,7 +106,8 @@ public class TestRequest {
         int amount = 10;
 
         String storageStatus = coapRequest("storage", ctx_storage, ACTOR_STORAGE);
-        List<String> storageLines = PrologUtils.INSTANCE.getFuncLines("content", storageStatus);
+        List<String> storageLines = PrologUtils.INSTANCE.getFuncLines(storageStatus, "content");
+
         for (String line : storageLines) {
             List<String> payload = PrologUtils.INSTANCE.extractPayload(line);
             if (payload.get(0).equals(type)) {
@@ -99,7 +115,7 @@ public class TestRequest {
                 break;
             }
         }
-        assertNotSame("Max of " + type + " not correctly obtained for test", .0f, max);
+        assertTrue("Max of " + type + " not correctly obtained for test", Math.abs(max) > 0.01);
 
         // Imposta storage a quasi pieno
         dispatch("storage", MsgUtil.buildDispatch(
@@ -136,6 +152,7 @@ public class TestRequest {
     protected String askDeposit(String type, int amount) {
         try {
             return wsConn.request("loadDeposit(" + type + ", " + amount + ")");
+
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -149,6 +166,7 @@ public class TestRequest {
                     SystemConfig.INSTANCE.getHosts().get(hostname),
                     SystemConfig.INSTANCE.getPorts().get(hostname)
             );
+            ColorsOut.outappl("Sending " + msg.toString(), ColorsOut.CYAN);
             connTcp.forward(msg.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -171,10 +189,10 @@ public class TestRequest {
     }
 
     protected void startWsConnection() {
-        wsConn = new WsConnection(String.format(
+        wsConn = new WsConnRequestable(String.format(
             "ws://%s:%d/truck",
-            SystemConfig.INSTANCE.getHosts().get("wasteServiceServer"),
-            SystemConfig.INSTANCE.getPorts().get("wasteServiceServer")
+            "localhost",
+            port
         ));
     }
 

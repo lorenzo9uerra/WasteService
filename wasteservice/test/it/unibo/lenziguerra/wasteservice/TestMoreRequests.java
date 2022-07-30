@@ -18,12 +18,11 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.*;
 
 public class TestMoreRequests {
-    final static String CTX_HOST = "localhost";
-    final static int CTX_PORT = 8050;
-    final static String CTX_TEST = "ctx_wasteservice_proto_ctx";
+    final static String ACTOR_TROLLEY = "trolley";
+    final static String ACTOR_WASTESERVICE = "wasteservice";
 
-    String actor_trolley = "trolley";
-    String actor_wasteservice = "wasteservice";
+    private String ctx_wasteservice;
+    private String ctx_trolley;
 
     TrolleyPosObserver trolleyPosObserver;
     WasteServiceTrolleyPosObserver wasteServiceObserver;
@@ -36,10 +35,13 @@ public class TestMoreRequests {
     @Before
     public void up() {
         CommSystemConfig.tracing = false;
+        SystemConfig.INSTANCE.setConfiguration("SystemConfig.json");
 
-        new Thread(RunPrototypeNoTruck_Sprint1Kt::main).start();
+        new Thread(() -> {
+            new RunCtxTestMoreRequests().main();
+        }).start();
 
-        waitForTrolley();
+        waitForActors();
         startWasteServiceCoapConnection();
     }
 
@@ -89,12 +91,15 @@ public class TestMoreRequests {
     }
 
     protected void startDeposit(String type, int amount) {
-        String startDepositDispatch = MsgUtil.buildRequest("wastetruck", "loadDeposit",
-                "loadDeposit(" + type + ", " + amount + ")",
-                actor_wasteservice
+        String startDepositDispatch = MsgUtil.buildRequest("test", "triggerDeposit",
+                "triggerDeposit(" + type + ", " + amount + ")",
+                ACTOR_WASTESERVICE
         ).toString();
         try {
-            ConnTcp connTcp = new ConnTcp("localhost", CTX_PORT);
+            ConnTcp connTcp = new ConnTcp(
+                    SystemConfig.INSTANCE.getHosts().get("wasteServiceContext"),
+                    SystemConfig.INSTANCE.getPorts().get("wasteServiceContext")
+            );
             connTcp.request(startDepositDispatch);
             ColorsOut.outappl("STARTED DEPOSIT VIA DISPATCH", ColorsOut.GREEN);
         } catch (Exception e) {
@@ -102,20 +107,33 @@ public class TestMoreRequests {
         }
     }
 
-    protected void waitForTrolley() {
-        ColorsOut.outappl(this.getClass().getName() + " waits for trolley ... ", ColorsOut.GREEN);
-        ActorBasic trolley = QakContext.Companion.getActor(actor_trolley);
+    protected void waitForActors() {
+        ColorsOut.outappl(this.getClass().getName() + " waits for actors ... ", ColorsOut.GREEN);
+        ActorBasic trolley = QakContext.Companion.getActor(ACTOR_TROLLEY);
         while (trolley == null) {
             CommUtils.delay(200);
-            trolley = QakContext.Companion.getActor(actor_trolley);
+            trolley = QakContext.Companion.getActor(ACTOR_TROLLEY);
         }
-        ColorsOut.outappl("Trolley loaded", ColorsOut.GREEN);
+        ActorBasic wasteservice = QakContext.Companion.getActor(ACTOR_WASTESERVICE);
+        while (wasteservice == null) {
+            CommUtils.delay(200);
+            wasteservice = QakContext.Companion.getActor(ACTOR_WASTESERVICE);
+        }
+
+        ctx_trolley = trolley.getContext().getName();
+        ctx_wasteservice = wasteservice.getContext().getName();
+
+        ColorsOut.outappl(String.format("Actors loaded, contexts are: %s, %s", ctx_trolley, ctx_wasteservice), ColorsOut.GREEN);
     }
+
 
     protected void startWasteServiceCoapConnection() {
         wasteServiceObserver = new WasteServiceTrolleyPosObserver();
         new Thread(() -> {
-            CoapConnection conn = new CoapConnection(CTX_HOST + ":" + CTX_PORT, CTX_TEST + "/" + actor_wasteservice);
+            CoapConnection conn = new CoapConnection(SystemConfig.INSTANCE.getHosts().get("wasteServiceContext")
+                    + ":" + SystemConfig.INSTANCE.getPorts().get("wasteServiceContext"),
+                    ctx_wasteservice + "/" + ACTOR_WASTESERVICE
+            );
             conn.observeResource(wasteServiceObserver);
             ColorsOut.outappl("connected via Coap conn:" + conn , ColorsOut.CYAN);
         }).start();

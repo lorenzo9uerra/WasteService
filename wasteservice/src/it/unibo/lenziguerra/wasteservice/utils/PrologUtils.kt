@@ -5,18 +5,12 @@ import java.util.regex.Pattern
 import java.util.stream.Collectors
 
 object PrologUtils {
-    fun getFuncLines(lines: String, func: String?): List<String> {
-        val linesArray = lines.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        return Arrays.stream(linesArray).filter { l: String ->
-            l.startsWith(
-                func!!
-            )
-        }.collect(Collectors.toList())
+    fun getFuncLines(lines: String, func: String): List<String> {
+        return lines.split('\n').filter { it.matches(Regex("$func\\(.*\\)")) }
     }
 
-    fun getFuncLine(lines: String, func: String?): String? {
-        val linesL = getFuncLines(lines, func)
-        return if (linesL.isNotEmpty()) linesL[0] else null
+    fun getFuncLine(lines: String, func: String): String? {
+        return getFuncLines(lines, func).getOrNull(0)
     }
 
     fun extractId(str: String): String {

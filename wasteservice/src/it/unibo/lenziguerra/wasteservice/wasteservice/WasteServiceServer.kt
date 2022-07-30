@@ -65,6 +65,10 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
     lateinit var storageReqConn: Interaction2021
     lateinit var ctxConnection: Interaction2021
 
+    init {
+        ColorsOut.out("Initialized TruckWebsocketHandler!", ColorsOut.BLUE)
+    }
+
     public override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val payload = message.payload
         try {
