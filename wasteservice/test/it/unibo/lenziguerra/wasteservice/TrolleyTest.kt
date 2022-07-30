@@ -3,11 +3,12 @@ package it.unibo.lenziguerra.wasteservice
 import it.unibo.kactor.MsgUtil
 import it.unibo.kactor.QakContext.Companion.getActor
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
+import it.unibo.lenziguerra.wasteservice.utils.PrologUtils.getFuncLine
+import it.unibo.lenziguerra.wasteservice.utils.PrologUtils.getFuncLines
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.springframework.test.util.AssertionErrors.assertEquals
-import org.springframework.test.util.AssertionErrors.fail
+import org.junit.Assert.*
 import unibo.actor22comm.coap.CoapConnection
 import unibo.actor22comm.utils.ColorsOut
 import unibo.actor22comm.utils.CommUtils
@@ -15,15 +16,18 @@ import kotlin.concurrent.thread
 
 
 class TrolleyTest() {
-    private var actor_trolley = "trolley"
-    private var trolleyPosObserver: TrolleyPosObserver? = null
+    companion object {
+        const val actor_trolley = "trolley"
+        const val actor_storage = "storagemanager"
+    }
 
+    lateinit var ctx_trolley: String
 
     @Before
     fun up() {
-        thread { RunTestTrolleyKt().main() }
+        SystemConfig.setConfiguration();
+        thread { RunTestTrolley().main() }
         waitForTrolley()
-        startTrolleyCoapConnection()
     }
 
     @After
@@ -32,25 +36,44 @@ class TrolleyTest() {
     }
 
     @Test
-    fun testTrolleyMove() {
-        trolleyRequest("trolleyMove", "indoor")
-        val trolleyContent = coapRequest(actor_trolley)?.let { PrologUtils.getFuncLine(it, "pos") }
-        val tContentParams = trolleyContent?.let { SimplePayloadExtractor("pos").extractPayload(it) }
-        assertEquals("Testing Expected Position", "indoor", tContentParams?.get(0))
-    }
-
-    @Test
     fun testTrolleyCollect() {
+        val trolleyContentBefore = getFuncLine(coapRequestTrolley(actor_trolley), "content") ?: "content(glass, 0)"
+
         trolleyRequest("trolleyCollect", "glass, 10")
-        val trolleyContent = coapRequest(actor_trolley)?.let { PrologUtils.getFuncLine(it, "content") }
-        val tContentParams = trolleyContent?.let { SimplePayloadExtractor("content").extractPayload(it) }
-        assertEquals("Testing Correct Material", "glass", tContentParams?.get(0))
-        assertEquals("Testing Correct Quantity", 10.0f, tContentParams?.get(1)?.toFloat())
+        val trolleyContentAfter = getFuncLine(coapRequestTrolley(actor_trolley), "content")!!
+
+        val tContentParamsBefore = PrologUtils.extractPayload(trolleyContentBefore)
+        val tContentParamsAfter = PrologUtils.extractPayload(trolleyContentAfter)
+
+        assertEquals("glass", tContentParamsAfter[0])
+        assertEquals(10.0, tContentParamsAfter[1].toDouble() - tContentParamsBefore[1].toDouble(), 0.0001)
     }
 
     @Test
     fun testTrolleyDeposit() {
+        storageDispatch("testStorageReset", "")
+
+        trolleyRequest("trolleyCollect", "glass, 10")
         trolleyRequest("trolleyDeposit", "")
+
+        assertNull(getFuncLine(coapRequestTrolley(actor_trolley), "content"))
+        val storageContent = getFuncLines(coapRequestTrolley(actor_storage), "content")
+        for (cnt in storageContent) {
+            val params: List<String> = PrologUtils.extractPayload(cnt)
+            when (params[0]) {
+                "glass" -> assertEquals(10.0, params[1].toDouble(), 0.0001)
+                "plastic" -> assertEquals(0.0, params[1].toDouble(), 0.0001)
+            }
+        }
+    }
+
+    @Test
+    fun testTrolleyMove() {
+        trolleyRequest("trolleyMove", "3, 4")
+        val posLine = getFuncLine(coapRequestTrolley(actor_trolley), "pos")!!
+        val posParams = PrologUtils.extractPayload(posLine)
+        assertEquals(3, posParams[0].toInt())
+        assertEquals(4, posParams[1].toInt())
     }
 
     private fun trolleyRequest(id: String, params: String) {
@@ -59,7 +82,7 @@ class TrolleyTest() {
         ).toString()
         var reply: String? = null
         try {
-            val connTcp = ConnTcp("localhost", CTX_PORT)
+            val connTcp = ConnTcp(SystemConfig.hosts["trolley"], SystemConfig.ports["trolley"]!!)
             ColorsOut.outappl("Asking trolley: $id($params)", ColorsOut.CYAN)
             reply = connTcp.request(request)
         } catch (e: Exception) {
@@ -70,6 +93,19 @@ class TrolleyTest() {
         }
     }
 
+    private fun storageDispatch(id: String, params: String) {
+        val msg: String = MsgUtil.buildDispatch(
+            "test", id, "$id($params)", actor_storage
+        ).toString()
+        try {
+            val connTcp = ConnTcp(SystemConfig.hosts["storage"], SystemConfig.ports["storage"]!!)
+            ColorsOut.outappl("Dispatch storage: $id($params)", ColorsOut.CYAN)
+            connTcp.forward(msg)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     private fun waitForTrolley() {
         ColorsOut.outappl(this.javaClass.name + " waits for trolley ... ", ColorsOut.GREEN)
         var trolley = getActor(actor_trolley)
@@ -77,28 +113,14 @@ class TrolleyTest() {
             CommUtils.delay(200)
             trolley = getActor(actor_trolley)
         }
+        ctx_trolley = trolley.context.toString()
         ColorsOut.outappl("Trolley loaded", ColorsOut.GREEN)
     }
 
-    private fun startTrolleyCoapConnection() {
-        trolleyPosObserver = TrolleyPosObserver()
-        Thread {
-            val conn = CoapConnection("$CTX_HOST:$CTX_PORT", "$CTX_TEST/$actor_trolley")
-            conn.observeResource(trolleyPosObserver)
-            ColorsOut.outappl("connected via Coap conn:$conn", ColorsOut.CYAN)
-        }.start()
-    }
-
-    private fun coapRequest(actor: String): String? {
-        val reqConn = CoapConnection("$CTX_HOST:$CTX_PORT", "$CTX_TEST/$actor")
+    private fun coapRequestTrolley(actor: String): String {
+        val reqConn = CoapConnection("${SystemConfig.hosts["storage"]}:${SystemConfig.ports["storage"]}", "$ctx_trolley/$actor")
         val answer = reqConn.request("")
         ColorsOut.outappl("coapRequest answer=$answer", ColorsOut.CYAN)
         return answer
-    }
-
-    companion object {
-        const val CTX_HOST = "localhost"
-        var CTX_PORT = SystemConfig.ports["trolley"]!!
-        const val CTX_TEST = "ctx_trolley"
     }
 }

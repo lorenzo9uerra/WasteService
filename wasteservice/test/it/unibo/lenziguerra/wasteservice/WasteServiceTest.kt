@@ -18,7 +18,7 @@ class WasteServiceTest {
 
     @Before
     fun up() {
-        thread { RunTestWasteServiceKt().main() }
+        thread { RunCtxTestDepositKt().main() }
         waitForTrolley()
         waitForWasteService()
     }
