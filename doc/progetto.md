@@ -35,3 +35,6 @@ della fase di testing.
 Per interagire con _basicrobot_ viene utilizzato _aril_, ossia _abstract robot
 interaction language_, che espone un interfaccia con cui è possibile comunicare
 in modo indipendente dalla tecnologia.
+
+- Conversione da trolleyDone a trolleyDone/trolleyFail per
+essere più adatto a qak

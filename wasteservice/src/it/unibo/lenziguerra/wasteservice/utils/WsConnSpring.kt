@@ -12,7 +12,7 @@ import unibo.actor22comm.utils.ColorsOut
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 
-class WsConnRequestable(val uri: String) : Interaction2021 {
+class WsConnSpring(val uri: String) : Interaction2021 {
     val msgQueue : BlockingQueue<String> = LinkedBlockingQueue()
     var justErrored = false
     private val session: WebSocketSession
@@ -24,22 +24,22 @@ class WsConnRequestable(val uri: String) : Interaction2021 {
 
     inner class InnerWebsocketHandler : WebSocketHandler {
         override fun afterConnectionEstablished(session: WebSocketSession) {
-            ColorsOut.out("WsConnRequestable | established connection with $uri", ColorsOut.BLUE)
+            ColorsOut.out(this.javaClass.name + " | established connection with $uri", ColorsOut.BLUE)
         }
 
         override fun handleMessage(session: WebSocketSession, message: WebSocketMessage<*>) {
-            ColorsOut.out("WsConnRequestable | received $message", ColorsOut.BLACK)
+            ColorsOut.out(this.javaClass.name + " | received ${message.payload}", ColorsOut.BLACK)
             msgQueue.put(message.payload.toString())
         }
 
         override fun handleTransportError(session: WebSocketSession, exception: Throwable) {
-            ColorsOut.outerr("WsConnRequestable | error: $exception")
+            ColorsOut.outerr(this.javaClass.name + " | error: $exception")
             exception.printStackTrace()
             justErrored = true
         }
 
         override fun afterConnectionClosed(session: WebSocketSession, closeStatus: CloseStatus) {
-            ColorsOut.out("WsConnRequestable | closed connection with $uri", ColorsOut.BLUE)
+            ColorsOut.out(this.javaClass.name + " | closed connection with $uri", ColorsOut.BLUE)
         }
 
         override fun supportsPartialMessages(): Boolean = false
@@ -47,7 +47,7 @@ class WsConnRequestable(val uri: String) : Interaction2021 {
 
     override fun forward(msg: String) {
         session.sendMessage(TextMessage(msg))
-        ColorsOut.out("WsConnRequestable | sent $msg", ColorsOut.BLACK)
+        ColorsOut.out(this.javaClass.name + " | sent $msg", ColorsOut.BLACK)
     }
 
     override fun request(msg: String): String {

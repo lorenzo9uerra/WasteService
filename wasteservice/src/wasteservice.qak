@@ -8,9 +8,17 @@ Request trolleyCollect : trolleyCollect(MAT,QNT)
 Request trolleyDeposit : trolleyDeposit(_)
 
 Reply trolleyDone: trolleyDone(_)
+Reply trolleyFail: trolleyFail(ERR)
 
 Request triggerDeposit : triggerDeposit(MAT,QNT)
 Reply trolleyPickedUp : trolleyPickedUp(_)
+
+// BasicRobot
+
+Request  dopath    : dopath( PATH  )
+Reply dopathdone   : dopathdone( ARG )
+Reply dopathfail   : dopathfail( ARG )
+
 
 // MESSAGGI PER TEST
 // Impostazione di valori e reset di attori vari
@@ -18,6 +26,11 @@ Dispatch testStorageReset : testStorageReset(_)
 Dispatch testStorageSet : testStorageSet(JSON_DATA)
 
 Context ctx_wasteservice ip [host="localhost" port=8023]
+
+// Esterno
+Context ctx_basicrobot ip [host="127.0.0.1" port=8020]
+
+ExternalQActor pathexec context ctx_basicrobot
 
 QActor wasteservice context ctx_wasteservice {
 	[#
@@ -52,6 +65,7 @@ QActor wasteservice context ctx_wasteservice {
 		request trolley -m trolleyMove : trolleyMove($Position)
 	}
 	Transition t2 whenReply trolleyDone -> indoor
+		          whenReply trolleyFail -> error
 	
 	State indoor {
 		printCurrentMessage
@@ -60,6 +74,7 @@ QActor wasteservice context ctx_wasteservice {
 		request trolley -m trolleyCollect : trolleyCollect($Material, $Quantity)
 	}
 	Transition t3 whenReply trolleyDone -> go_box
+		          whenReply trolleyFail -> error
 	
 	State go_box {
 		printCurrentMessage
@@ -69,6 +84,7 @@ QActor wasteservice context ctx_wasteservice {
 		request trolley -m trolleyMove : trolleyMove($Position)
 	}
 	Transition t4 whenReply trolleyDone -> box
+		          whenReply trolleyFail -> error
 	
 	State box {
 		printCurrentMessage
@@ -77,6 +93,7 @@ QActor wasteservice context ctx_wasteservice {
 		request trolley -m trolleyDeposit : trolleyDeposit(_)
 	}
 	Transition t5 whenReply trolleyDone -> done
+		          whenReply trolleyFail -> error
 					
 	State done {
 		printCurrentMessage
@@ -91,6 +108,19 @@ QActor wasteservice context ctx_wasteservice {
 		request trolley -m trolleyMove : trolleyMove($Position)
 	}
 	Transition t7 whenReply trolleyDone -> home
+		          whenReply trolleyFail -> error
+		          
+    State error {
+    	onMsg (trolleyFail : trolleyFail(ERR)) {
+    		updateResource [# "tpos(error)\nerror(${payloadArg(0)})" #]
+    	}
+    	
+    	printCurrentMessage
+    	println("####################################")
+    	println("# WASTESERVICE: ERRORE! AGGIUSTARE #")
+    	println("# MANUALMENTE E RIAVVIARE!         #")
+    	println("####################################")
+    }
 }
 
 QActor trolley context ctx_wasteservice {
@@ -112,34 +142,46 @@ QActor trolley context ctx_wasteservice {
 
 	State handleMove {
 		printCurrentMessage
-		updateResource [# Support.getPrologContent() #]
 		onMsg (trolleyMove : trolleyMove(X,Y) ) {
-			if [# Support.move(payloadArg(0).toInt(), payloadArg(1).toInt()) #]{
-				replyTo trolleyMove with trolleyDone : trolleyDone(success)
-				[# Support.setPosition(payloadArg(0).toInt(), payloadArg(1).toInt()) #]
-			}
-			else {
-				replyTo trolleyMove with trolleyDone : trolleyDone(fail)
-			}
+			[# 
+				val Path = Support.preparePath(payloadArg(0).toInt(), payloadArg(1).toInt()) 
+				println("Doing path $Path")
+			#]
+			request pathexec -m dopath : dopath($Path)
 		}
+	}
+	Transition t0 whenReply dopathdone -> moveSuccess
+				  whenReply dopathfail -> moveFail
+	
+	State moveSuccess {
+		[# Support.applyPath() #]
+		replyTo trolleyMove with trolleyDone : trolleyDone(_)
 	}
 	Goto idle
 	
+	State moveFail {
+		replyTo trolleyMove with trolleyFail : trolleyFail(move)
+    	println("####################################")
+    	println("# TROLLEY BLOCCATO! AGGIUSTARE     #")
+    	println("# MANUALMENTE E RIAVVIARE!         #")
+    	println("####################################")
+	}
+	Goto idle
+	
+	
 	State handleCollect{
 		printCurrentMessage
-		updateResource [# Support.getPrologContent()#]
 		onMsg (trolleyCollect: trolleyCollect(MAT,QNT)){
 			[#
 				Support.collect(payloadArg(0), payloadArg(1).toFloat())
 			#]
-			replyTo trolleyCollect with trolleyDone : trolleyDone(success)
+			replyTo trolleyCollect with trolleyDone : trolleyDone(_)
 		}
 	}
 	Goto idle
 	
 	State handleDeposit{
 		printCurrentMessage
-		updateResource [# Support.getPrologContent()#]
 		onMsg (trolleyDeposit: trolleyDeposit(_)){
 			[#
 				val Material = Support.getMaterial()
@@ -147,10 +189,11 @@ QActor trolley context ctx_wasteservice {
 				Support.deposit()
 			#]
 			forward storagemanager -m storageDeposit : storageDeposit($Material,$Quantity)
-			replyTo trolleyDeposit with trolleyDone : trolleyDone(success)
+			replyTo trolleyDeposit with trolleyDone : trolleyDone(_)
 		}
 	}
 	Goto idle
+	
 }
 
 QActor storagemanager context ctx_wasteservice {
@@ -191,6 +234,7 @@ QActor storagemanager context ctx_wasteservice {
 	
 	
 	State handleTestReset {
+		printCurrentMessage
 		[# Support.reset() #]
 		println("Storage manager: reset contents")
 		println("$Support")
@@ -199,8 +243,9 @@ QActor storagemanager context ctx_wasteservice {
 	Goto idle
 	
 	State handleTestSet {
+		printCurrentMessage
 		onMsg ( testStorageSet : testStorageSet(JSON_DATA) ){
-			[# Support.set(org.json.JSONObject(payloadArg(0)).toMap() as Map<String, Float>) #]
+			[# Support.set(payloadArg(0)) #]
 			println("Storage manager: set contents ${payloadArg(0)}")
 			println("$Support")
 			updateResource [# Support.getPrologContent() #]

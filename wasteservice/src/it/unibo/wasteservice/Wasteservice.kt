@@ -50,6 +50,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
 					}
 					 transition(edgeName="t21",targetState="indoor",cond=whenReply("trolleyDone"))
+					transition(edgeName="t22",targetState="error",cond=whenReply("trolleyFail"))
 				}	 
 				state("indoor") { //this:State
 					action { //it:State
@@ -59,7 +60,8 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						)
 						request("trolleyCollect", "trolleyCollect($Material,$Quantity)" ,"trolley" )  
 					}
-					 transition(edgeName="t32",targetState="go_box",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t33",targetState="go_box",cond=whenReply("trolleyDone"))
+					transition(edgeName="t34",targetState="error",cond=whenReply("trolleyFail"))
 				}	 
 				state("go_box") { //this:State
 					action { //it:State
@@ -68,7 +70,8 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						 Position = Support.getDestination(Box, Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
 					}
-					 transition(edgeName="t43",targetState="box",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t45",targetState="box",cond=whenReply("trolleyDone"))
+					transition(edgeName="t46",targetState="error",cond=whenReply("trolleyFail"))
 				}	 
 				state("box") { //this:State
 					action { //it:State
@@ -78,7 +81,8 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						)
 						request("trolleyDeposit", "trolleyDeposit(_)" ,"trolley" )  
 					}
-					 transition(edgeName="t54",targetState="done",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t57",targetState="done",cond=whenReply("trolleyDone"))
+					transition(edgeName="t58",targetState="error",cond=whenReply("trolleyFail"))
 				}	 
 				state("done") { //this:State
 					action { //it:State
@@ -87,8 +91,8 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						stateTimer = TimerActor("timer_done", 
 							scope, context!!, "local_tout_wasteservice_done", 0.toLong() )
 					}
-					 transition(edgeName="t05",targetState="go_home",cond=whenTimeout("local_tout_wasteservice_done"))   
-					transition(edgeName="t06",targetState="go_indoor",cond=whenRequest("triggerDeposit"))
+					 transition(edgeName="t09",targetState="go_home",cond=whenTimeout("local_tout_wasteservice_done"))   
+					transition(edgeName="t010",targetState="go_indoor",cond=whenRequest("triggerDeposit"))
 				}	 
 				state("go_home") { //this:State
 					action { //it:State
@@ -96,7 +100,22 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						 Position = Support.getDestination("home", Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
 					}
-					 transition(edgeName="t77",targetState="home",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t711",targetState="home",cond=whenReply("trolleyDone"))
+					transition(edgeName="t712",targetState="error",cond=whenReply("trolleyFail"))
+				}	 
+				state("error") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("trolleyFail(ERR)"), Term.createTerm("trolleyFail(ERR)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								updateResourceRep( "tpos(error)\nerror(${payloadArg(0)})"  
+								)
+						}
+						println("$name in ${currentState.stateName} | $currentMsg")
+						println("####################################")
+						println("# WASTESERVICE: ERRORE! AGGIUSTARE #")
+						println("# MANUALMENTE E RIAVVIARE!         #")
+						println("####################################")
+					}
 				}	 
 			}
 		}

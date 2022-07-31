@@ -1,5 +1,7 @@
 package it.unibo.lenziguerra.wasteservice.storage
 
+import org.json.JSONObject
+
 interface IStorageManagerSupport {
     /**
      * @param type Item type to deposit
@@ -24,7 +26,12 @@ interface IStorageManagerSupport {
 
     // Per testing
     fun reset()
-    fun set(contents: Map<String, Float>)
+    /**
+     * Takes contents in a JSON-like format
+     * without surrounding {}
+     * for qak compatibility
+     */
+    fun set(contents: String)
 }
 
 object StorageManagerSupport {
@@ -100,16 +107,19 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<String, 
         amount.replaceAll { _, _ -> 0f }
     }
 
-    override fun set(contents: Map<String, Float>) {
-        contents.forEach {
+    override fun set(contents: String) {
+        val jsonContents = "{$contents}"
+        val contentsMap: Map<String, Float> = JSONObject(jsonContents).toMap() as Map<String, Float>
+
+        contentsMap.forEach {
             preChange(it.key, it.value)
         }
         amount.forEach {
-            if (!contents.containsKey(it.key)) {
+            if (!contentsMap.containsKey(it.key)) {
                 preChange(it.key, 0f)
             }
         }
         amount.clear();
-        amount.putAll(contents)
+        amount.putAll(contentsMap)
     }
 }

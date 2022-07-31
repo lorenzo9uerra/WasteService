@@ -251,9 +251,9 @@ public class TestDeposit {
 
     protected void configCoords() {
         // Carica da config in futuro
-        homeCoords = SystemConfig.INSTANCE.getPositions().get("home");
-        indoorCoords = SystemConfig.INSTANCE.getPositions().get("indoor");
-        plasticBoxCoords = SystemConfig.INSTANCE.getPositions().get("plastic_box");
-        glassBoxCoords = SystemConfig.INSTANCE.getPositions().get("glass_box");
+        homeCoords = SystemConfig.INSTANCE.getPositions().get("home").toArray(new Integer[2][2]);
+        indoorCoords = SystemConfig.INSTANCE.getPositions().get("indoor").toArray(new Integer[2][2]);
+        plasticBoxCoords = SystemConfig.INSTANCE.getPositions().get("plastic_box").toArray(new Integer[2][2]);
+        glassBoxCoords = SystemConfig.INSTANCE.getPositions().get("glass_box").toArray(new Integer[2][2]);
     }
 }

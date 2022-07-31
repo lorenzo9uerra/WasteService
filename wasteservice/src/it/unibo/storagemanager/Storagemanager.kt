@@ -29,10 +29,10 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
-					 transition(edgeName="t011",targetState="handleAsk",cond=whenRequest("storageAsk"))
-					transition(edgeName="t012",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
-					transition(edgeName="t013",targetState="handleTestReset",cond=whenDispatch("testStorageReset"))
-					transition(edgeName="t014",targetState="handleTestSet",cond=whenDispatch("testStorageSet"))
+					 transition(edgeName="t018",targetState="handleAsk",cond=whenRequest("storageAsk"))
+					transition(edgeName="t019",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
+					transition(edgeName="t020",targetState="handleTestReset",cond=whenDispatch("testStorageReset"))
+					transition(edgeName="t021",targetState="handleTestSet",cond=whenDispatch("testStorageSet"))
 				}	 
 				state("handleAsk") { //this:State
 					action { //it:State
@@ -59,6 +59,7 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 				}	 
 				state("handleTestReset") { //this:State
 					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 						 Support.reset()  
 						println("Storage manager: reset contents")
 						println("$Support")
@@ -69,9 +70,10 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 				}	 
 				state("handleTestSet") { //this:State
 					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("testStorageSet(JSON_DATA)"), Term.createTerm("testStorageSet(JSON_DATA)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Support.set(org.json.JSONObject(payloadArg(0)).toMap() as Map<String, Float>)  
+								 Support.set(payloadArg(0))  
 								println("Storage manager: set contents ${payloadArg(0)}")
 								println("$Support")
 								updateResourceRep( Support.getPrologContent()  

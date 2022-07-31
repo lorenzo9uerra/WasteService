@@ -29,38 +29,49 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						)
 						println("$Support")
 					}
-					 transition(edgeName="t08",targetState="handleMove",cond=whenRequest("trolleyMove"))
-					transition(edgeName="t09",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
-					transition(edgeName="t010",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
+					 transition(edgeName="t013",targetState="handleMove",cond=whenRequest("trolleyMove"))
+					transition(edgeName="t014",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
+					transition(edgeName="t015",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
 				}	 
 				state("handleMove") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						updateResourceRep( Support.getPrologContent()  
-						)
 						if( checkMsgContent( Term.createTerm("trolleyMove(X,Y)"), Term.createTerm("trolleyMove(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								if(  Support.move(payloadArg(0).toInt(), payloadArg(1).toInt())  
-								 ){answer("trolleyMove", "trolleyDone", "trolleyDone(success)"   )  
-								 Support.setPosition(payloadArg(0).toInt(), payloadArg(1).toInt())  
-								}
-								else
-								 {answer("trolleyMove", "trolleyDone", "trolleyDone(fail)"   )  
-								 }
+								 
+												val Path = Support.preparePath(payloadArg(0).toInt(), payloadArg(1).toInt()) 
+												println("Doing path $Path")
+								request("dopath", "dopath($Path)" ,"pathexec" )  
 						}
+					}
+					 transition(edgeName="t016",targetState="moveSuccess",cond=whenReply("dopathdone"))
+					transition(edgeName="t017",targetState="moveFail",cond=whenReply("dopathfail"))
+				}	 
+				state("moveSuccess") { //this:State
+					action { //it:State
+						 Support.applyPath()  
+						answer("trolleyMove", "trolleyDone", "trolleyDone(_)"   )  
+					}
+					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
+				}	 
+				state("moveFail") { //this:State
+					action { //it:State
+						answer("trolleyMove", "trolleyFail", "trolleyFail(move)"   )  
+						println("####################################")
+						println("# TROLLEY BLOCCATO! AGGIUSTARE     #")
+						println("# MANUALMENTE E RIAVVIARE!         #")
+						println("####################################")
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("handleCollect") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						updateResourceRep( Support.getPrologContent() 
-						)
 						if( checkMsgContent( Term.createTerm("trolleyCollect(MAT,QNT)"), Term.createTerm("trolleyCollect(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
 												Support.collect(payloadArg(0), payloadArg(1).toFloat())
-								answer("trolleyCollect", "trolleyDone", "trolleyDone(success)"   )  
+								answer("trolleyCollect", "trolleyDone", "trolleyDone(_)"   )  
 						}
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
@@ -68,8 +79,6 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("handleDeposit") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						updateResourceRep( Support.getPrologContent() 
-						)
 						if( checkMsgContent( Term.createTerm("trolleyDeposit(_)"), Term.createTerm("trolleyDeposit(_)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
@@ -77,7 +86,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 												val Quantity = Support.getQuantity()
 												Support.deposit()
 								forward("storageDeposit", "storageDeposit($Material,$Quantity)" ,"storagemanager" ) 
-								answer("trolleyDeposit", "trolleyDone", "trolleyDone(success)"   )  
+								answer("trolleyDeposit", "trolleyDone", "trolleyDone(_)"   )  
 						}
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )

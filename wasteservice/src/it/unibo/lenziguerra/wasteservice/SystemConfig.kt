@@ -7,10 +7,10 @@ object SystemConfig {
 
     var DLIMIT = 50
     var positions = mutableMapOf(
-        "home" to arrayOf(arrayOf(0, 0), arrayOf(0, 0)),
-        "indoor" to arrayOf(arrayOf(0, 5), arrayOf(1, 5)),
-        "plastic_box" to arrayOf(arrayOf(4, 0), arrayOf(5, 0)),
-        "glass_box" to arrayOf(arrayOf(4, 5), arrayOf(5, 5)),
+        "home" to listOf(listOf(0, 0), listOf(0, 0)),
+        "indoor" to listOf(listOf(0, 5), listOf(1, 5)),
+        "plastic_box" to listOf(listOf(4, 0), listOf(5, 0)),
+        "glass_box" to listOf(listOf(4, 5), listOf(5, 5)),
     )
 
     var ports =

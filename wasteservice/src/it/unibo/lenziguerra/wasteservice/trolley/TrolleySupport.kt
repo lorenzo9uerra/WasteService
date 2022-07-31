@@ -1,16 +1,23 @@
 package it.unibo.lenziguerra.wasteservice.trolley
 
-import it.unibo.lenziguerra.wasteservice.utils.sendRequest
 import unibo.actor22comm.utils.ColorsOut
 
 interface ITrolleySupport {
     fun init()
-    fun move(x: Int, y: Int): Boolean
+    fun preparePath(x: Int, y: Int): String
+
+    /**
+     * Confirm last path prepared with preparePath
+     * and apply position and direction changes
+     */
+    fun applyPath()
     fun getPrologContent(): String
     fun collect(material: String, quantity: Float)
     fun deposit()
     fun getMaterial(): String
     fun getQuantity(): String
+
+
     fun setPosition(x: Int, y: Int)
 }
 
@@ -26,6 +33,9 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     private var quantity: Float = 0.0f
     private var material: String? = null
 
+    private lateinit var stagedDirection: String
+    private lateinit var stagedPosition: Array<Int>
+
     override fun setPosition(x: Int, y: Int) {
         position = arrayOf(x, y)
     }
@@ -38,36 +48,6 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
         return quantity.toString()
     }
 
-    private fun rotateTo(dir: String): String {
-        var cmd = ""
-        while (dir != direction) {
-            cmd += "l"
-            when (direction) {
-                "up" -> direction = "left"
-                "left" -> direction = "down"
-                "down" -> direction = "right"
-                "right" -> direction = "up"
-            }
-        }
-        sendRequest("dopath", cmd, "pathexec")
-        return dir
-    }
-
-    private fun changeDir(dest: Array<Int>): String {
-        if (dest[0] != position[0] && dest[1] != position[1]) {
-            if (dest[0] <= position[0] && dest[1] <= position[1]) {
-                rotateTo("up")
-            } else if (dest[0] <= position[0]) {
-                rotateTo("left")
-            } else if (dest[1] >= position[1]) {
-                rotateTo("down")
-            } else {
-                rotateTo("right")
-            }
-        }
-        return direction
-    }
-
     override fun collect(material: String, quantity: Float) {
         this.material = material
         this.quantity = quantity
@@ -78,80 +58,123 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
         this.quantity = 0.0f
     }
 
-    override fun move(x: Int, y: Int): Boolean {
-        var command = ""
+    private fun rotateTo(dir: String): String {
+        var cmd = ""
+        while (dir != stagedDirection) {
+            cmd += "l"
+            when (stagedDirection) {
+                "up" -> stagedDirection = "left"
+                "left" -> stagedDirection = "down"
+                "down" -> stagedDirection = "right"
+                "right" -> stagedDirection = "up"
+            }
+        }
+        return cmd
+    }
+
+    /**
+     * Changes stagedDirection to rotate to target dir
+     * @return cmd to rotate to target dir
+     */
+    private fun changeDir(dest: Array<Int>): String {
+        if (dest[0] != stagedPosition[0] && dest[1] != stagedPosition[1]) {
+            return if (dest[0] <= stagedPosition[0] && dest[1] <= stagedPosition[1]) {
+                rotateTo("up")
+            } else if (dest[0] <= stagedPosition[0]) {
+                rotateTo("left")
+            } else if (dest[1] >= stagedPosition[1]) {
+                rotateTo("down")
+            } else {
+                rotateTo("right")
+            }
+        }
+        return ""
+    }
+
+    override fun preparePath(x: Int, y: Int): String {
         val dest = arrayOf(x, y)
 
+        stagedDirection = direction
+        stagedPosition = position.clone()
+
         ColorsOut.outappl(
-            "Have to go at " + dest[0] + "-" + dest[1] + "\nCurrently at: " + position[0] + "-" + position[1],
+            "Have to go at " + dest[0] + "-" + dest[1] + "\nCurrently at: " + stagedPosition[0] + "-" + stagedPosition[1],
             ColorsOut.CYAN
         )
-        when (changeDir(dest)) {
+        // Initial rotation, side effect: change stagedDirection
+        var command = changeDir(dest)
+
+        when (stagedDirection) {
             "up" -> {
-                while (position[1] > dest[1]) {
+                while (stagedPosition[1] > dest[1]) {
                     command += "w"
-                    position[1]--
+                    stagedPosition[1]--
                 }
-                if (dest[0] != position[0] || dest[1] != position[1]) {
+                if (dest[0] != stagedPosition[0] || dest[1] != stagedPosition[1]) {
                     command += "l"
-                    direction = "left"
+                    stagedDirection = "left"
                 }
-                while (position[0] > dest[0]) {
+                while (stagedPosition[0] > dest[0]) {
                     command += "w"
-                    position[0]--
+                    stagedPosition[0]--
                 }
             }
 
             "left" -> {
-                while (position[0] > dest[0]) {
+                while (stagedPosition[0] > dest[0]) {
                     command += "w"
-                    position[0]--
+                    stagedPosition[0]--
                 }
-                if (dest[0] != position[0] || dest[1] != position[1]) {
+                if (dest[0] != stagedPosition[0] || dest[1] != stagedPosition[1]) {
                     command += "l"
-                    direction = "down"
+                    stagedDirection = "down"
                 }
-                while (position[1] < dest[1]) {
+                while (stagedPosition[1] < dest[1]) {
                     command += "w"
-                    position[1]++
+                    stagedPosition[1]++
                 }
             }
 
             "down" -> {
-                while (position[1] < dest[1]) {
+                while (stagedPosition[1] < dest[1]) {
                     command += "w"
-                    position[1]++
+                    stagedPosition[1]++
                 }
-                if (dest[0] != position[0] || dest[1] != position[1]) {
+                if (dest[0] != stagedPosition[0] || dest[1] != stagedPosition[1]) {
                     command += "l"
-                    direction = "right"
+                    stagedDirection = "right"
                 }
-                while (position[0] < dest[0]) {
+                while (stagedPosition[0] < dest[0]) {
                     command += "w"
-                    position[0]++
+                    stagedPosition[0]++
                 }
             }
 
             "right" -> {
-                while (position[0] < dest[0]) {
+                while (stagedPosition[0] < dest[0]) {
                     command += "w"
-                    position[0]++
+                    stagedPosition[0]++
                 }
-                if (dest[0] != position[0] || dest[1] != position[1]) {
+                if (dest[0] != stagedPosition[0] || dest[1] != stagedPosition[1]) {
                     command += "l"
-                    direction = "up"
+                    stagedDirection = "up"
                 }
-                while (position[1] > dest[1]) {
+                while (stagedPosition[1] > dest[1]) {
                     command += "w"
-                    position[1]--
+                    stagedPosition[1]--
                 }
 
             }
 
-            else -> return false
+            else -> throw java.lang.IllegalStateException("Cannot reach $x, $y from $position")
         }
-        sendRequest("dopath", command, "pathexec")
-        return true
+
+        return command
+    }
+
+    override fun applyPath() {
+        position = stagedPosition.clone()
+        direction = stagedDirection
     }
 
     override fun getPrologContent(): String {
