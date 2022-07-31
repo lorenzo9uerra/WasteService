@@ -7,10 +7,9 @@ import it.unibo.kactor.QakContext;
 import it.unibo.lenziguerra.wasteservice.ConnTcp;
 import it.unibo.lenziguerra.wasteservice.RunCtxTestRequest;
 import it.unibo.lenziguerra.wasteservice.SystemConfig;
+import it.unibo.lenziguerra.wasteservice.utils.MsgUtilsWs;
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils;
-import it.unibo.lenziguerra.wasteservice.utils.WsConnRequestable;
-import it.unibo.lenziguerra.wasteservice.wasteservice.WasteServiceController;
-import it.unibo.lenziguerra.wasteservice.wasteservice.WasteServiceServerKt;
+import it.unibo.lenziguerra.wasteservice.utils.WsConnSpring;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,24 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.client.WebSocketClient;
-import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import unibo.actor22comm.coap.CoapConnection;
 import unibo.actor22comm.interfaces.Interaction2021;
 import unibo.actor22comm.utils.ColorsOut;
-import unibo.actor22comm.utils.CommSystemConfig;
 import unibo.actor22comm.utils.CommUtils;
-import unibo.actor22comm.ws.WsConnection;
 
-import java.awt.*;
-import java.io.IOException;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
@@ -61,6 +50,10 @@ public class TestRequest {
     public void up() {
 //        CommSystemConfig.tracing = false;
         SystemConfig.INSTANCE.setConfiguration("SystemConfig.json");
+        SystemConfig.INSTANCE.getPositions().put("home", List.of(List.of(0, 0),List.of(0, 0)));
+        SystemConfig.INSTANCE.getPositions().put("indoor", List.of(List.of(0, 1),List.of(1, 1)));
+        SystemConfig.INSTANCE.getPositions().put("plastic_box", List.of(List.of(2, 1),List.of(2, 1)));
+        SystemConfig.INSTANCE.getPositions().put("glass_box", List.of(List.of(3, 1),List.of(3, 1)));
 
         new Thread(() -> {
             new RunCtxTestRequest().main();
@@ -121,7 +114,12 @@ public class TestRequest {
         dispatch("storage", MsgUtil.buildDispatch(
                 "test",
                 "testStorageSet",
-                "{\"" + type + "\": " + (max - amount + 5) + "}",
+                String.format(
+                        Locale.US,
+                        "testStorageSet('\"%s\":%.0f')",
+                        type,
+                        max - amount + 5
+                ),
                 ACTOR_STORAGE
         ));
 
@@ -166,8 +164,8 @@ public class TestRequest {
                     SystemConfig.INSTANCE.getHosts().get(hostname),
                     SystemConfig.INSTANCE.getPorts().get(hostname)
             );
-            ColorsOut.outappl("Sending " + msg.toString(), ColorsOut.CYAN);
-            connTcp.forward(msg.toString());
+            ColorsOut.outappl("Sending " + MsgUtilsWs.cleanMessage(msg), ColorsOut.CYAN);
+            connTcp.forward(MsgUtilsWs.cleanMessage(msg));
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -189,7 +187,7 @@ public class TestRequest {
     }
 
     protected void startWsConnection() {
-        wsConn = new WsConnRequestable(String.format(
+        wsConn = new WsConnSpring(String.format(
             "ws://%s:%d/truck",
             "localhost",
             port
