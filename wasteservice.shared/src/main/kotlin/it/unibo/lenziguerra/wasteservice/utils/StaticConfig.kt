@@ -49,7 +49,7 @@ object StaticConfig {
             }
         } catch (e: FileNotFoundException) {
             ColorsOut.outappl("Config file not found, saving default config file to $resourceName", ColorsOut.YELLOW)
-            saveConfigFile(createJSONObject(clazz, beforeSaveHook), resourceName)
+            saveConfigFile(createJSONObject(clazz, obj, beforeSaveHook), resourceName)
         }
     }
 
@@ -103,11 +103,11 @@ object StaticConfig {
         }
     }
 
-    private fun <T: Any> createJSONObject(clazz: KClass<out T>, beforeSaveHook: (KMutableProperty<*>, Any) -> Any?): JSONObject? {
+    private fun <T: Any> createJSONObject(clazz: KClass<out T>, obj: T, beforeSaveHook: (KMutableProperty<*>, Any) -> Any?): JSONObject? {
         return try {
             val jsonObj = JSONObject()
             for (field in getPublicStaticFields(clazz)) {
-                val value = field.getter.call(jsonObj) ?: throw Exception("StaticConfig: field ${field.name} has no value when saving")
+                val value = field.getter.call(obj) ?: throw Exception("StaticConfig: field ${field.name} has no value when saving")
                 jsonObj.put(field.name, beforeSaveHook(field, value)?: value)
             }
             jsonObj
