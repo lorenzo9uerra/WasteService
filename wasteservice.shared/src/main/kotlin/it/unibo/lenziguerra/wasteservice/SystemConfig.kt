@@ -19,14 +19,22 @@ object SystemConfig {
             "storage" to 8021,
             "wasteServiceServer" to 8080,
             "wasteServiceContext" to 8023,
-            "pathexec" to 8020
         )
     var hosts = mutableMapOf(
         "trolley" to "localhost",
         "storage" to "localhost",
         "wasteServiceServer" to "localhost",
         "wasteServiceContext" to "localhost",
-        "pathexec" to "localhost"
+    )
+    var actorNames = mutableMapOf(
+        "trolley" to "trolley",
+        "wasteService" to "wasteservice",
+        "storage" to "storagemanager",
+    )
+    var ctxNames = mutableMapOf(
+        "trolley" to "ctx_wasteservice",
+        "wasteService" to "ctx_wasteservice",
+        "storage" to "ctx_wasteservice",
     )
 
     private var setConf = false

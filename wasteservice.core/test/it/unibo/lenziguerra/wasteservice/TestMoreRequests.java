@@ -23,9 +23,6 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.*;
 
 public class TestMoreRequests {
-    final static String ACTOR_TROLLEY = "trolley";
-    final static String ACTOR_WASTESERVICE = "wasteservice";
-
     private String ctx_wasteservice;
     private String ctx_trolley;
 
@@ -119,7 +116,7 @@ public class TestMoreRequests {
     protected void startDeposit(String type, int amount) {
         String startDepositDispatch = MsgUtil.buildRequest("test", "triggerDeposit",
                 "triggerDeposit(" + type + ", " + amount + ")",
-                ACTOR_WASTESERVICE
+                SystemConfig.INSTANCE.getCtxNames().get("wasteService")
         ).toString();
         try {
             ConnTcp connTcp = new ConnTcp(
@@ -135,15 +132,15 @@ public class TestMoreRequests {
 
     protected void waitForActors() {
         ColorsOut.outappl(this.getClass().getName() + " waits for actors ... ", ColorsOut.GREEN);
-        ActorBasic trolley = QakContext.Companion.getActor(ACTOR_TROLLEY);
+        ActorBasic trolley = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("trolley"));
         while (trolley == null) {
             CommUtils.delay(200);
-            trolley = QakContext.Companion.getActor(ACTOR_TROLLEY);
+            trolley = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("trolley"));
         }
-        ActorBasic wasteservice = QakContext.Companion.getActor(ACTOR_WASTESERVICE);
+        ActorBasic wasteservice = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("wasteService"));
         while (wasteservice == null) {
             CommUtils.delay(200);
-            wasteservice = QakContext.Companion.getActor(ACTOR_WASTESERVICE);
+            wasteservice = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("wasteService"));
         }
 
         ctx_trolley = trolley.getContext().getName();
@@ -158,7 +155,7 @@ public class TestMoreRequests {
         new Thread(() -> {
             CoapConnection conn = new CoapConnection(SystemConfig.INSTANCE.getHosts().get("wasteServiceContext")
                     + ":" + SystemConfig.INSTANCE.getPorts().get("wasteServiceContext"),
-                    ctx_wasteservice + "/" + ACTOR_WASTESERVICE
+                    ctx_wasteservice + "/" + SystemConfig.INSTANCE.getCtxNames().get("wasteService")
             );
             conn.observeResource(wasteServiceObserver);
             ColorsOut.outappl("connected via Coap conn:" + conn , ColorsOut.CYAN);

@@ -36,8 +36,6 @@ import static org.junit.Assert.fail;
 @SpringBootTest(classes = WasteserviceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @RunWith(SpringRunner.class)
 public class TestRequest {
-    final static String ACTOR_STORAGE = "storagemanager";
-
     private String ctx_storage;
     private Interaction2021 wsConn;
 
@@ -82,7 +80,7 @@ public class TestRequest {
                 "test",
                 "testStorageReset",
                 "",
-                ACTOR_STORAGE
+                SystemConfig.INSTANCE.getCtxNames().get("storage")
         ));
 
         String reply = askDeposit("glass", 1);
@@ -98,7 +96,7 @@ public class TestRequest {
         float max = 0;
         int amount = 10;
 
-        String storageStatus = coapRequest("storage", ctx_storage, ACTOR_STORAGE);
+        String storageStatus = coapRequest("storage", ctx_storage, SystemConfig.INSTANCE.getCtxNames().get("storage"));
         List<String> storageLines = PrologUtils.INSTANCE.getFuncLines(storageStatus, "content");
 
         for (String line : storageLines) {
@@ -120,7 +118,7 @@ public class TestRequest {
                         type,
                         max - amount + 5
                 ),
-                ACTOR_STORAGE
+                SystemConfig.INSTANCE.getCtxNames().get("storage")
         ));
 
         String reply = askDeposit(type, amount);
@@ -136,7 +134,7 @@ public class TestRequest {
                 "test",
                 "testStorageReset",
                 "",
-                ACTOR_STORAGE
+                SystemConfig.INSTANCE.getCtxNames().get("storage")
         ));
 
         String reply = askDeposit("glass", 1);
@@ -175,10 +173,10 @@ public class TestRequest {
     protected void waitForActors() {
         ColorsOut.outappl(this.getClass().getName() + " waits for actors ... ", ColorsOut.GREEN);
 
-        ActorBasic storage = QakContext.Companion.getActor(ACTOR_STORAGE);
+        ActorBasic storage = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("storage"));
         while (storage == null) {
             CommUtils.delay(200);
-            storage = QakContext.Companion.getActor(ACTOR_STORAGE);
+            storage = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("storage"));
         }
 
         ctx_storage = storage.getContext().getName();
