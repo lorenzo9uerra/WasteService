@@ -77,7 +77,7 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<String, 
     }
 
     override fun deposit(type: String, depositAmnt: Float): Boolean {
-        if (getAmount(type) + depositAmnt > getMax(type)) {
+        if (getAmount(type) + depositAmnt <= getMax(type)) {
             preChange(type, amount[type]!! + depositAmnt)
             amount[type] = amount[type]!! + depositAmnt
             return true

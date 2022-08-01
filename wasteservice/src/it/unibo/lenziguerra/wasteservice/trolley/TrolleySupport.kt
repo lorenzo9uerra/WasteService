@@ -5,9 +5,10 @@ import unibo.actor22comm.utils.ColorsOut
 interface ITrolleySupport {
     fun init()
     fun preparePath(x: Int, y: Int): String
+    fun prepareRotation(targetDirection: String): String
 
     /**
-     * Confirm last path prepared with preparePath
+     * Confirm last path prepared with preparePath or prepareRotation
      * and apply position and direction changes
      */
     fun applyPath()
@@ -77,13 +78,17 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
      * @return cmd to rotate to target dir
      */
     private fun changeDir(dest: Array<Int>): String {
-        if (dest[0] != stagedPosition[0] && dest[1] != stagedPosition[1]) {
+        if (dest[0] != stagedPosition[0] || dest[1] != stagedPosition[1]) {
+            // Alto a sx
             return if (dest[0] <= stagedPosition[0] && dest[1] <= stagedPosition[1]) {
                 rotateTo("up")
+            // Basse a sx
             } else if (dest[0] <= stagedPosition[0]) {
                 rotateTo("left")
+            // Basso a dx
             } else if (dest[1] >= stagedPosition[1]) {
                 rotateTo("down")
+            // Alto a dx
             } else {
                 rotateTo("right")
             }
@@ -169,7 +174,19 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
             else -> throw java.lang.IllegalStateException("Cannot reach $x, $y from $position")
         }
 
+        // Sostituisci giri con niente
+        command = command.replace("llll", "")
+        // Sostituisci sx di 270° con dx di 90°
+        command = command.replace("lll", "r")
+
         return command
+    }
+
+    override fun prepareRotation(targetDirection: String): String {
+        stagedPosition = position.clone()
+        stagedDirection = direction
+
+        return rotateTo(targetDirection)
     }
 
     override fun applyPath() {

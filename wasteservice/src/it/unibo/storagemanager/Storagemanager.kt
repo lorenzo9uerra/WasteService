@@ -29,10 +29,10 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
-					 transition(edgeName="t018",targetState="handleAsk",cond=whenRequest("storageAsk"))
-					transition(edgeName="t019",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
-					transition(edgeName="t020",targetState="handleTestReset",cond=whenDispatch("testStorageReset"))
-					transition(edgeName="t021",targetState="handleTestSet",cond=whenDispatch("testStorageSet"))
+					 transition(edgeName="t023",targetState="handleAsk",cond=whenRequest("storageAsk"))
+					transition(edgeName="t024",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
+					transition(edgeName="t025",targetState="handleTestReset",cond=whenDispatch("testStorageReset"))
+					transition(edgeName="t026",targetState="handleTestSet",cond=whenDispatch("testStorageSet"))
 				}	 
 				state("handleAsk") { //this:State
 					action { //it:State
@@ -47,12 +47,17 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 				}	 
 				state("handleDeposit") { //this:State
 					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("storageDeposit(MAT,QNT)"), Term.createTerm("storageDeposit(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Support.deposit(payloadArg(0), payloadArg(1).toFloat())  
-								println("$Support")
+								if(  Support.deposit(payloadArg(0), payloadArg(1).toFloat())  
+								 ){println("$Support")
 								updateResourceRep( Support.getPrologContent()  
 								)
+								}
+								else
+								 {println("SM | Errore: tentato di depositare materiale in eccesso, ${payloadArg(0)}: ${payloadArg(1)}")
+								 }
 						}
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )

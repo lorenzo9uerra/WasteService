@@ -38,3 +38,5 @@ in modo indipendente dalla tecnologia.
 
 - Conversione da trolleyDone a trolleyDone/trolleyFail per
 essere più adatto a qak
+- Aggiunto trolleyRotate per pulizia così guarda in basso
+dopo ritorno a home

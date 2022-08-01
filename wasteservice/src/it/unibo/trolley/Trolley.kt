@@ -29,9 +29,10 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						)
 						println("$Support")
 					}
-					 transition(edgeName="t013",targetState="handleMove",cond=whenRequest("trolleyMove"))
-					transition(edgeName="t014",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
-					transition(edgeName="t015",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
+					 transition(edgeName="t015",targetState="handleMove",cond=whenRequest("trolleyMove"))
+					transition(edgeName="t016",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
+					transition(edgeName="t017",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
+					transition(edgeName="t018",targetState="handleRotate",cond=whenRequest("trolleyRotate"))
 				}	 
 				state("handleMove") { //this:State
 					action { //it:State
@@ -44,13 +45,34 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 								request("dopath", "dopath($Path)" ,"pathexec" )  
 						}
 					}
-					 transition(edgeName="t016",targetState="moveSuccess",cond=whenReply("dopathdone"))
-					transition(edgeName="t017",targetState="moveFail",cond=whenReply("dopathfail"))
+					 transition(edgeName="t019",targetState="moveSuccess",cond=whenReply("dopathdone"))
+					transition(edgeName="t020",targetState="moveFail",cond=whenReply("dopathfail"))
+				}	 
+				state("handleRotate") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
+						if( checkMsgContent( Term.createTerm("trolleyRotate(DIR)"), Term.createTerm("trolleyRotate(DIR)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								
+												val Path = Support.prepareRotation(payloadArg(0))
+												println("Doing rotation $Path")
+								request("dopath", "dopath($Path)" ,"pathexec" )  
+						}
+					}
+					 transition(edgeName="t021",targetState="rotateSuccess",cond=whenReply("dopathdone"))
+					transition(edgeName="t022",targetState="moveFail",cond=whenReply("dopathfail"))
 				}	 
 				state("moveSuccess") { //this:State
 					action { //it:State
 						 Support.applyPath()  
 						answer("trolleyMove", "trolleyDone", "trolleyDone(_)"   )  
+					}
+					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
+				}	 
+				state("rotateSuccess") { //this:State
+					action { //it:State
+						 Support.applyPath()  
+						answer("trolleyRotate", "trolleyDone", "trolleyDone(_)"   )  
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 

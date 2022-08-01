@@ -4,6 +4,7 @@ Request storageAsk : storageAsk(MAT)
 Reply storageAt : storageAt(MAT, QNT)
 Dispatch storageDeposit : storageDeposit(MAT, QNT)
 Request trolleyMove : trolleyMove(X,Y)
+Request trolleyRotate : trolleyRotate(DIR)
 Request trolleyCollect : trolleyCollect(MAT,QNT)
 Request trolleyDeposit : trolleyDeposit(_)
 
@@ -107,8 +108,15 @@ QActor wasteservice context ctx_wasteservice {
 		[# Position = Support.getDestination("home", Position) #]
 		request trolley -m trolleyMove : trolleyMove($Position)
 	}
-	Transition t7 whenReply trolleyDone -> home
+	Transition t7 whenReply trolleyDone -> home_rotate
 		          whenReply trolleyFail -> error
+		          
+    State home_rotate {
+		printCurrentMessage
+		request trolley -m trolleyRotate : trolleyRotate(down)
+    }
+	Transition t7 whenReply trolleyDone -> home
+          whenReply trolleyFail -> error
 		          
     State error {
     	onMsg (trolleyFail : trolleyFail(ERR)) {
@@ -139,6 +147,7 @@ QActor trolley context ctx_wasteservice {
 	Transition t0 whenRequest trolleyMove -> handleMove
 				  whenRequest trolleyCollect -> handleCollect
 				  whenRequest trolleyDeposit -> handleDeposit
+				  whenRequest trolleyRotate -> handleRotate
 
 	State handleMove {
 		printCurrentMessage
@@ -152,10 +161,29 @@ QActor trolley context ctx_wasteservice {
 	}
 	Transition t0 whenReply dopathdone -> moveSuccess
 				  whenReply dopathfail -> moveFail
+				  
+	State handleRotate {
+		printCurrentMessage
+		onMsg (trolleyRotate : trolleyRotate(DIR)) {
+			[#
+				val Path = Support.prepareRotation(payloadArg(0))
+				println("Doing rotation $Path")
+			#]
+			request pathexec -m dopath : dopath($Path)
+		}
+	}
+	Transition t0 whenReply dopathdone -> rotateSuccess
+			  whenReply dopathfail -> moveFail
 	
 	State moveSuccess {
 		[# Support.applyPath() #]
 		replyTo trolleyMove with trolleyDone : trolleyDone(_)
+	}
+	Goto idle	
+	
+	State rotateSuccess {
+		[# Support.applyPath() #]
+		replyTo trolleyRotate with trolleyDone : trolleyDone(_)
 	}
 	Goto idle
 	
@@ -224,10 +252,14 @@ QActor storagemanager context ctx_wasteservice {
 	Goto idle
 	
 	State handleDeposit {
+		printCurrentMessage
 		onMsg ( storageDeposit : storageDeposit(MAT, QNT) ){
-			[# Support.deposit(payloadArg(0), payloadArg(1).toFloat()) #]
-			println("$Support")
-			updateResource [# Support.getPrologContent() #]
+			if [# Support.deposit(payloadArg(0), payloadArg(1).toFloat()) #] {
+				println("$Support")
+				updateResource [# Support.getPrologContent() #]
+			} else {
+				println("SM | Errore: tentato di depositare materiale in eccesso, ${payloadArg(0)}: ${payloadArg(1)}")	
+			}
 		}
 	}
 	Goto idle

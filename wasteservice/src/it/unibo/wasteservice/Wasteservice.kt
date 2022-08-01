@@ -100,8 +100,16 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						 Position = Support.getDestination("home", Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
 					}
-					 transition(edgeName="t711",targetState="home",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t711",targetState="home_rotate",cond=whenReply("trolleyDone"))
 					transition(edgeName="t712",targetState="error",cond=whenReply("trolleyFail"))
+				}	 
+				state("home_rotate") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
+						request("trolleyRotate", "trolleyRotate(down)" ,"trolley" )  
+					}
+					 transition(edgeName="t713",targetState="home",cond=whenReply("trolleyDone"))
+					transition(edgeName="t714",targetState="error",cond=whenReply("trolleyFail"))
 				}	 
 				state("error") { //this:State
 					action { //it:State
