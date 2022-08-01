@@ -29,7 +29,13 @@ object SystemConfig {
         "pathexec" to "localhost"
     )
 
-    fun setConfiguration(cfgPath: String = "SystemConfig.json") {
-        StaticConfig.setConfiguration(this::class, cfgPath)
+    private var setConf = false
+
+    fun setConfiguration(cfgPath: String = "SystemConfig.json", force: Boolean = false) {
+        if (!setConf || force) {
+            StaticConfig.setConfiguration(this::class, this, cfgPath)
+            setConf = true
+        }
     }
+
 }

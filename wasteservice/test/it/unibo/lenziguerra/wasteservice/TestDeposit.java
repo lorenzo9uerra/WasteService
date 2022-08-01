@@ -43,7 +43,7 @@ public class TestDeposit {
     public void up() {
         CommSystemConfig.tracing = false;
 
-        SystemConfig.INSTANCE.setConfiguration("SystemConfig.json");
+        SystemConfig.INSTANCE.setConfiguration("SystemConfig.json", false);
         SystemConfig.INSTANCE.getPositions().put("home", List.of(List.of(0, 0),List.of(0, 0)));
         SystemConfig.INSTANCE.getPositions().put("indoor", List.of(List.of(0, 3),List.of(1, 3)));
         SystemConfig.INSTANCE.getPositions().put("plastic_box", List.of(List.of(2, 0),List.of(3, 0)));

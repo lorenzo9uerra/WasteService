@@ -1,39 +1,39 @@
 package it.unibo.lenziguerra.wasteservice.utils
 
+import it.unibo.lenziguerra.wasteservice.SystemConfig
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.JSONTokener
 import unibo.actor22comm.utils.ColorsOut
 import java.io.*
-import java.util.*
 import kotlin.reflect.*
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.full.staticProperties
 
 object StaticConfig {
     private val emptyHook: (KMutableProperty<*>, Any) -> Any? = { _, _ -> null }
 
-    fun setConfiguration(clazz: KClass<*>, resourceName: String) {
-        setConfiguration(clazz, resourceName, emptyHook, emptyHook)
+    fun <T : Any> setConfiguration(clazz: KClass<out T>, obj: T, resourceName: String) {
+        setConfiguration(clazz, obj, resourceName, emptyHook, emptyHook)
     }
 
-    fun setConfiguration(
-        clazz: KClass<*>, resourceName: String,
+    fun <T : Any> setConfiguration(
+        clazz: KClass<out T>, obj: T, resourceName: String,
         beforeSaveHook: (KMutableProperty<*>, Any) -> Any?,
         afterLoadHook: (KMutableProperty<*>, Any) -> Any?
     ) {
         //Nella distribuzione resourceName è in una dir che include la bin
         try {
-            ColorsOut.out("%%% setTheConfiguration from file:$resourceName")
+            ColorsOut.out("Set configuration for class ${clazz.java.name} from file: '$resourceName'\n" +
+                    "\t\tSet config on instance ${obj.hashCode()}, thread ${Thread.currentThread()}"
+            )
             val reader = FileReader(resourceName)
             var writer: FileWriter? = null
             try {
                 val tokener = JSONTokener(reader)
-                val obj = JSONObject(tokener)
-                val changed = setFields(clazz, obj, beforeSaveHook, afterLoadHook)
+                val jsonObj = JSONObject(tokener)
+                val changed = setFields(clazz, obj, jsonObj, beforeSaveHook, afterLoadHook)
                 if (changed) {
                     writer = FileWriter(resourceName)
-                    saveConfigFile(obj, writer)
+                    saveConfigFile(jsonObj, writer)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -56,14 +56,14 @@ object StaticConfig {
 
     // Per testing, se usato con FileWriter sovrascriverà il file di configurazione
     // prima della lettura
-    fun setConfiguration(clazz: KClass<*>, reader: Reader?, writer: Writer) {
+    fun <T: Any> setConfiguration(clazz: KClass<out T>, obj: T, reader: Reader?, writer: Writer) {
         //Nella distribuzione resourceName è in una dir che include la bin
         try {
             val tokener = JSONTokener(reader)
-            val obj = JSONObject(tokener)
-            val changed = setFields(clazz, obj, emptyHook, emptyHook)
+            val jsonObj = JSONObject(tokener)
+            val changed = setFields(clazz, obj, jsonObj, emptyHook, emptyHook)
             if (changed) {
-                saveConfigFile(obj, writer)
+                saveConfigFile(jsonObj, writer)
             }
         } catch (e: JSONException) {
             ColorsOut.outerr("setConfiguration ERROR " + e.message)
@@ -104,14 +104,14 @@ object StaticConfig {
         }
     }
 
-    private fun createJSONObject(clazz: KClass<*>, beforeSaveHook: (KMutableProperty<*>, Any) -> Any?): JSONObject? {
+    private fun <T: Any> createJSONObject(clazz: KClass<out T>, beforeSaveHook: (KMutableProperty<*>, Any) -> Any?): JSONObject? {
         return try {
-            val obj = JSONObject()
+            val jsonObj = JSONObject()
             for (field in getPublicStaticFields(clazz)) {
-                val value = field.getter.call(clazz.objectInstance) ?: throw Exception("StaticConfig: field ${field.name} has no value when saving")
-                obj.put(field.name, beforeSaveHook(field, value)?: value)
+                val value = field.getter.call(jsonObj) ?: throw Exception("StaticConfig: field ${field.name} has no value when saving")
+                jsonObj.put(field.name, beforeSaveHook(field, value)?: value)
             }
-            obj
+            jsonObj
         } catch (e: JSONException) {
             e.printStackTrace()
             null
@@ -125,8 +125,8 @@ object StaticConfig {
     /**
      * @return true if the object was changed due to missing fields
      */
-    private fun setFields(
-        clazz: KClass<*>, loadedObject: JSONObject,
+    private fun <T: Any> setFields(
+        clazz: KClass<out T>, obj: T, loadedObject: JSONObject,
         beforeSaveHook: (KMutableProperty<*>, Any) -> Any?,
         afterLoadHook: (KMutableProperty<*>, Any) -> Any?
     ): Boolean {
@@ -141,16 +141,16 @@ object StaticConfig {
 //                    println("Debug: ${name}, ${clazz.java}, ${field.returnType}, ${value!!.javaClass}, $value")
                     // Sub map
                     if (value is JSONObject) {
-                        field.setter.call(clazz.objectInstance, (value as JSONObject).toMap())
+                        field.setter.call(obj, (value as JSONObject).toMap())
                     } else {
-                        field.setter.call(clazz.objectInstance, value)
+                        field.setter.call(obj, value)
                     }
                 } catch (e: IllegalAccessException) {
                     e.printStackTrace() // shouldn't happen, but jic
                 }
             } else {
                 try {
-                    val defaultValue = field.getter.call(clazz.objectInstance) ?: throw Exception("StaticConfig: field $name needs default value")
+                    val defaultValue = field.getter.call(obj) ?: throw Exception("StaticConfig: field $name needs default value")
                     loadedObject.put(name, beforeSaveHook(field, defaultValue) ?: defaultValue)
                     changed = true
                     ColorsOut.outappl("Field $name not present in config, using default", ColorsOut.ANSI_YELLOW)
@@ -167,6 +167,6 @@ object StaticConfig {
     private fun getPublicStaticFields(clazz: KClass<*>): List<KMutableProperty<*>> {
         return clazz.members.filter{ it.visibility == KVisibility.PUBLIC }
             .filterIsInstance<KMutableProperty<*>>()
-            .map { it as KMutableProperty<*> }
+            .map { it }
     }
 }

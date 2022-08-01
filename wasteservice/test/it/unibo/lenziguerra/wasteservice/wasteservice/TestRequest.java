@@ -49,7 +49,7 @@ public class TestRequest {
     @Before
     public void up() {
 //        CommSystemConfig.tracing = false;
-        SystemConfig.INSTANCE.setConfiguration("SystemConfig.json");
+        SystemConfig.INSTANCE.setConfiguration("SystemConfig.json", false);
         SystemConfig.INSTANCE.getPositions().put("home", List.of(List.of(0, 0),List.of(0, 0)));
         SystemConfig.INSTANCE.getPositions().put("indoor", List.of(List.of(0, 1),List.of(1, 1)));
         SystemConfig.INSTANCE.getPositions().put("plastic_box", List.of(List.of(2, 1),List.of(2, 1)));

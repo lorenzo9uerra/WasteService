@@ -20,7 +20,7 @@ class TestStaticConfig {
         val cfg = "{'intField': $val1, 'stringField': '$val2'}"
         val reader = StringReader(cfg)
         val writer = StringWriter()
-        StaticConfig.setConfiguration(ConfigForTest::class, reader, writer)
+        StaticConfig.setConfiguration(ConfigForTest::class, ConfigForTest, reader, writer)
         Assert.assertEquals(val1.toLong(), ConfigForTest.intField.toLong())
         Assert.assertEquals(val2, ConfigForTest.stringField)
         Assert.assertEquals("", writer.toString())
@@ -33,7 +33,7 @@ class TestStaticConfig {
         val cfg = "{'intField': $val1}"
         val reader = StringReader(cfg)
         val writer = StringWriter()
-        StaticConfig.setConfiguration(ConfigForTest::class, reader, writer)
+        StaticConfig.setConfiguration(ConfigForTest::class, ConfigForTest, reader, writer)
         Assert.assertEquals(val1.toLong(), ConfigForTest.intField.toLong())
         Assert.assertEquals(val2, ConfigForTest.stringField)
         val trimmedOut = writer.toString()
