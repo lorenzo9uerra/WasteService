@@ -128,7 +128,8 @@ public class TestDeposit {
 
 
     protected void positionsTest(List<String> expectedPositions, List<Integer[][]>  expectedCoords, int maxSecondsWait) {
-        for (int i = 0; i < maxSecondsWait; i++) {
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < maxSecondsWait) {
             waitForObserverUpdate(1000);
 
             List<String> posHistory = wasteServiceObserver.getHistory();

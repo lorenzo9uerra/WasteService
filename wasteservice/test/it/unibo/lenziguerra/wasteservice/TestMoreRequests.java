@@ -81,7 +81,8 @@ public class TestMoreRequests {
     }
 
     protected void simplePositionsTest(List<String> expectedPositions, int maxSecondsWait) {
-        for (int i = 0; i < maxSecondsWait; i++) {
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < maxSecondsWait) {
             waitForObserverUpdate(1000);
 
             ColorsOut.outappl("Checking position...", ColorsOut.BLUE);
