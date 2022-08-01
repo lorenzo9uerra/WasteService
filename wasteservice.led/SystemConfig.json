@@ -60,9 +60,9 @@
     },
     "ports": {
         "wasteServiceServer": 8080,
-        "storage": 8021,
+        "storage": 8023,
         "wasteServiceContext": 8023,
-        "trolley": 8022
+        "trolley": 8023
     },
     "DLIMIT": 50
 }

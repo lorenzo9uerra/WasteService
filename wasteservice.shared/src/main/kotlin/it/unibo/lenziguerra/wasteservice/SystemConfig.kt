@@ -15,8 +15,8 @@ object SystemConfig {
 
     var ports =
         mutableMapOf(
-            "trolley" to 8022,
-            "storage" to 8021,
+            "trolley" to 8023,
+            "storage" to 8023,
             "wasteServiceServer" to 8080,
             "wasteServiceContext" to 8023,
         )
