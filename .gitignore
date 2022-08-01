@@ -23,5 +23,5 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
-wasteservice.prototype/.settings/org.eclipse.buildship.core.prefs
-wasteservice/.idea/**
+**/org.eclipse.buildship.core.prefs
+**/.idea/**
