@@ -18,6 +18,8 @@ repositories {
 }
 
 dependencies {
+	implementation(project(":wasteservice.shared"))
+
 	implementation("org.springframework.boot:spring-boot-starter-mustache")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -35,7 +37,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
 	// This dependency is used by the application.
-	implementation("com.google.guava:guava:30.1.1-jre")
+	implementation("com.google.guava:guava:31.1-jre")
 
 	// Use the Kotlin test library.
 //	testImplementation("org.jetbrains.kotlin:kotlin-test")

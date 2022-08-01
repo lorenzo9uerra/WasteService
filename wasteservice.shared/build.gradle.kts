@@ -6,6 +6,7 @@ plugins {
 
 val kotlinVersion = "1.6.21"
 java.sourceCompatibility = JavaVersion.VERSION_11
+version = "1.0"
 
 repositories {
 	mavenCentral()
