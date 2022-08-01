@@ -4,9 +4,11 @@ import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 import org.eclipse.californium.core.CoapHandler
 import org.eclipse.californium.core.CoapResponse
 import unibo.actor22comm.utils.ColorsOut
+import java.util.concurrent.Semaphore
 
 class WasteServiceTrolleyPosObserver : CoapHandler {
     private val history: MutableList<String> = ArrayList()
+    val semaphore: Semaphore = Semaphore(0)
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
@@ -20,6 +22,10 @@ class WasteServiceTrolleyPosObserver : CoapHandler {
         }
         if (add) history.add(newPos)
         ColorsOut.outappl("Obs WSTrolley | tpos history: $history", ColorsOut.GREEN)
+
+        if (semaphore.availablePermits() == 0) {
+            semaphore.release()
+        }
     }
 
     override fun onError() {

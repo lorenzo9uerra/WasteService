@@ -2,6 +2,9 @@ package it.unibo.lenziguerra.wasteservice;
 
 import it.unibo.kactor.*;
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +14,10 @@ import unibo.actor22comm.utils.CommSystemConfig;
 import unibo.actor22comm.utils.CommUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
@@ -38,6 +44,10 @@ public class TestDeposit {
         CommSystemConfig.tracing = false;
 
         SystemConfig.INSTANCE.setConfiguration("SystemConfig.json");
+        SystemConfig.INSTANCE.getPositions().put("home", List.of(List.of(0, 0),List.of(0, 0)));
+        SystemConfig.INSTANCE.getPositions().put("indoor", List.of(List.of(0, 3),List.of(1, 3)));
+        SystemConfig.INSTANCE.getPositions().put("plastic_box", List.of(List.of(2, 0),List.of(3, 0)));
+        SystemConfig.INSTANCE.getPositions().put("glass_box", List.of(List.of(3, 2),List.of(3, 3)));
 
         configCoords();
 
@@ -90,21 +100,24 @@ public class TestDeposit {
         for (int i = 0; i < maxSecondsWait; i++) {
             CommUtils.delay(1000);
             String lastPos = wasteServiceObserver.getHistory().get(wasteServiceObserver.getHistory().size() - 1);
-            if (lastPos.equals("glass_box")) {
+            if (lastPos.equals("error")) {
+                fail("Movement error! Pos history is " + wasteServiceObserver.getHistory());
+            }
+            else if (lastPos.equals("glass_box")) {
                 // Lascia tempo di scaricare pesi nel caso la posizione
                 // sia stata appena raggiunta
                 CommUtils.delay(1000);
 
-                float numGlass = 0, numPlastic = 0;
                 List<String> storageReplyLines = PrologUtils.INSTANCE.getFuncLines(
                         coapRequest("storage", ctx_storage, ACTOR_STORAGE),
                         "content"
                 );
                 for (String line : storageReplyLines) {
                     List<String> args =  PrologUtils.INSTANCE.extractPayload(line);
+                    float value = Float.parseFloat(args.get(1));
                     switch (args.get(0)) {
-                        case "glass": assertEquals(15f, numGlass, 0.0001f);
-                        case "plastic": assertEquals(0f, numPlastic, 0.0001f);
+                        case "glass": assertEquals(15f, value, 0.0001f); break;
+                        case "plastic": assertEquals(0f, value, 0.0001f); break;
                     }
                 }
                 return;
@@ -116,8 +129,12 @@ public class TestDeposit {
 
     protected void positionsTest(List<String> expectedPositions, List<Integer[][]>  expectedCoords, int maxSecondsWait) {
         for (int i = 0; i < maxSecondsWait; i++) {
-            CommUtils.delay(1000);
+            waitForObserverUpdate(1000);
+
             List<String> posHistory = wasteServiceObserver.getHistory();
+            if (posHistory.get(posHistory.size() - 1).equals("error")) {
+                fail("Movement error! Pos history is " + posHistory);
+            }
             for (int j = 0; j < expectedPositions.size(); j++) {
                 if (j >= posHistory.size()) {
                     break;
@@ -147,6 +164,16 @@ public class TestDeposit {
             }
         }
         fail("Too much time to reach final position, pos history was:<" + trolleyPosObserver.getHistory() + ">");
+    }
+
+    private void waitForObserverUpdate(int maxTimeMillis) {
+        try {
+            if (!wasteServiceObserver.getSemaphore().tryAcquire(1, maxTimeMillis, TimeUnit.MILLISECONDS)) {
+                ColorsOut.outappl("Position check timeout", ColorsOut.BLUE);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected boolean matchesOneCoordInRectangle(int[] coord, Integer[][] checkCorners) {
@@ -249,11 +276,17 @@ public class TestDeposit {
         return answer;
     }
 
+    private Integer[][] doubleListToArray(List<List<Integer>> list) {
+        return list.stream().map(l -> l.toArray(new Integer[0]))
+                .toArray(Integer[][]::new);
+    }
+
     protected void configCoords() {
         // Carica da config in futuro
-        homeCoords = SystemConfig.INSTANCE.getPositions().get("home").toArray(new Integer[2][2]);
-        indoorCoords = SystemConfig.INSTANCE.getPositions().get("indoor").toArray(new Integer[2][2]);
-        plasticBoxCoords = SystemConfig.INSTANCE.getPositions().get("plastic_box").toArray(new Integer[2][2]);
-        glassBoxCoords = SystemConfig.INSTANCE.getPositions().get("glass_box").toArray(new Integer[2][2]);
+        Map<String, List<List<Integer>>> positions = SystemConfig.INSTANCE.getPositions();
+        homeCoords = doubleListToArray(positions.get("home"));
+        indoorCoords = doubleListToArray(positions.get("indoor"));
+        plasticBoxCoords = doubleListToArray(positions.get("plastic_box"));
+        glassBoxCoords = doubleListToArray(positions.get("glass_box"));
     }
 }

@@ -13,6 +13,11 @@ import unibo.actor22comm.utils.CommUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
@@ -24,7 +29,6 @@ public class TestMoreRequests {
     private String ctx_wasteservice;
     private String ctx_trolley;
 
-    TrolleyPosObserver trolleyPosObserver;
     WasteServiceTrolleyPosObserver wasteServiceObserver;
 
     int[] homeCoords;
@@ -35,7 +39,13 @@ public class TestMoreRequests {
     @Before
     public void up() {
         CommSystemConfig.tracing = false;
+
         SystemConfig.INSTANCE.setConfiguration("SystemConfig.json");
+        SystemConfig.INSTANCE.setConfiguration("SystemConfig.json");
+        SystemConfig.INSTANCE.getPositions().put("home", List.of(List.of(0, 0),List.of(0, 0)));
+        SystemConfig.INSTANCE.getPositions().put("indoor", List.of(List.of(0, 3),List.of(1, 3)));
+        SystemConfig.INSTANCE.getPositions().put("plastic_box", List.of(List.of(2, 0),List.of(3, 0)));
+        SystemConfig.INSTANCE.getPositions().put("glass_box", List.of(List.of(3, 2),List.of(3, 3)));
 
         new Thread(() -> {
             new RunCtxTestMoreRequests().main();
@@ -72,8 +82,14 @@ public class TestMoreRequests {
 
     protected void simplePositionsTest(List<String> expectedPositions, int maxSecondsWait) {
         for (int i = 0; i < maxSecondsWait; i++) {
-            CommUtils.delay(1000);
+            waitForObserverUpdate(1000);
+
+            ColorsOut.outappl("Checking position...", ColorsOut.BLUE);
+
             List<String> posHistory = wasteServiceObserver.getHistory();
+            if (posHistory.get(posHistory.size() - 1).equals("error")) {
+                fail("Movement error! Pos history is " + posHistory);
+            }
             for (int j = 0; j < expectedPositions.size(); j++) {
                 if (j >= posHistory.size()) {
                     break;
@@ -87,7 +103,17 @@ public class TestMoreRequests {
                 return;
             }
         }
-        fail("Too much time to reach final position, pos history was:<" + trolleyPosObserver.getHistory() + ">");
+        fail("Too much time to reach final position, pos history was:<" + wasteServiceObserver.getHistory() + ">");
+    }
+
+    private void waitForObserverUpdate(int maxTimeMillis) {
+        try {
+            if (!wasteServiceObserver.getSemaphore().tryAcquire(1, maxTimeMillis, TimeUnit.MILLISECONDS)) {
+                ColorsOut.outappl("Position check timeout", ColorsOut.BLUE);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected void startDeposit(String type, int amount) {
@@ -100,7 +126,7 @@ public class TestMoreRequests {
                     SystemConfig.INSTANCE.getHosts().get("wasteServiceContext"),
                     SystemConfig.INSTANCE.getPorts().get("wasteServiceContext")
             );
-            connTcp.request(startDepositDispatch);
+            connTcp.forward(startDepositDispatch);
             ColorsOut.outappl("STARTED DEPOSIT VIA DISPATCH", ColorsOut.GREEN);
         } catch (Exception e) {
             e.printStackTrace();

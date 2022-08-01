@@ -67,7 +67,7 @@ dependencies {
 	//implementation("com.squareup.okhttp3:okhttp:3.14.0")
 	implementation("com.squareup.okhttp3:okhttp:4.9.3")
 	// https://mvnrepository.com/artifact/com.squareup.okhttp3/mockwebserver
-	testImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
+	testImplementation("com.squareup.okhttp3:mockwebserver:4.10.0")
 
 	/* LOG4J *************************************************************************************************************** */
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-reload4j
