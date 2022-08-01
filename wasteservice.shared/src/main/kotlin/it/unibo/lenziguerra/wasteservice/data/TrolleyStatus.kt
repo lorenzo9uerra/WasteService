@@ -6,8 +6,8 @@ import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 data class TrolleyStatus (val status: String, val pos: Array<Int>, val contentType: WasteType?, val contentAmount: Float) {
     companion object {
         fun fromProlog(prolStr: String): TrolleyStatus {
-            val status = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "status")!!)[0]
-            val pos = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "status")!!)
+            val status = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "state")!!)[0]
+            val pos = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "pos")!!)
             val contentLine = PrologUtils.getFuncLine(prolStr, "content")
 
             if (contentLine == null) {
