@@ -1,0 +1,20 @@
+{
+    "sonarVerbose": false,
+    "tracing": false,
+    "radarRemote": false,
+    "simulation": true,
+    "simulateLed": false,
+    "testing": false,
+    "sonarMockDelta": -1,
+    "sonarMockStartDist": 100,
+    "ledAvailable": true,
+    "sonarAvailable": true,
+    "execVerbose": false,
+    "simulateSonar": false,
+    "deviceScriptFolder": "../device-helpers/",
+    "sudoRequired": false,
+    "ledGui": false,
+    "sonarDistanceMax": 150,
+    "sonarDelay": 100,
+    "radarAvailable": false
+}
