@@ -18,7 +18,7 @@ class LedController(val led: BlinkLed) {
         try {
             coapConnection = CoapConnection("$host:$port", uri)
             coapConnection.observeResource(coapHandler)
-            ColorsOut.outappl("connected via Coap conn: $coapConnection", ColorsOut.CYAN)
+            ColorsOut.outappl("connected via Coap conn: $host:$port/$uri", ColorsOut.CYAN)
         } catch (e: Exception) {
             e.printStackTrace()
             ColorsOut.outerr("COaP connection error:" + e.message)
@@ -30,7 +30,7 @@ class LedController(val led: BlinkLed) {
             val respText = response?.responseText ?: throw IOException("LedCoapHandler | Empty response!")
             val respStatus = TrolleyStatus.fromProlog(respText)
 
-            ColorsOut.out("LedCoapHandler | received $respText", ColorsOut.BLACK)
+            ColorsOut.out("LedCoapHandler | received $respText\nData is $respStatus", ColorsOut.BLACK)
 
             if (respStatus.status == "stopped") {
                 led.turnOff()
