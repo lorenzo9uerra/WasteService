@@ -20,13 +20,6 @@ import unibo.actor22comm.coap.CoapConnection
 import unibo.actor22comm.interfaces.Interaction2021
 import unibo.actor22comm.utils.ColorsOut
 
-const val STORAGE_REQ_ID = "storageAsk"
-const val DEPOSIT_TRIGGER_ID = "triggerDeposit"
-
-const val ACTOR_STORAGE_MANAGER = "storagemanager"
-const val ACTOR_WASTESERVICE = "wasteservice"
-const val SENDER_WS_SERVER = "wasteservice_server"
-
 @SpringBootApplication
 class StatusguiApplication
 
@@ -52,7 +45,6 @@ class WasteServiceController {
 @EnableWebSocket
 class WebSocketConfig : WebSocketConfigurer {
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-
         registry.addHandler(StatusGuiWebsocketHandler(), "/statusgui")
     }
 }
@@ -73,7 +65,7 @@ class StatusGuiWebsocketHandler : TextWebSocketHandler() {
         startCoapConnection("trolley", trolleyObserver)
         startCoapConnection("storage", storageObserver)
         startCoapConnection("led", ledObserver)
-        startCoapConnection("wasteservice", wasteServiceObserver)
+        startCoapConnection("wasteServiceContext", wasteServiceObserver)
         ColorsOut.out("Initialized StatusGuiWebsocketHandler!", ColorsOut.BLUE)
     }
 
@@ -82,7 +74,7 @@ class StatusGuiWebsocketHandler : TextWebSocketHandler() {
         wsList.add(session)
     }
 
-    private final fun startCoapConnection(actor: String, observer: CoapHandler) {
+    private fun startCoapConnection(actor: String, observer: CoapHandler) {
         Thread {
             val conn = CoapConnection(
                 SystemConfig.hosts[actor]

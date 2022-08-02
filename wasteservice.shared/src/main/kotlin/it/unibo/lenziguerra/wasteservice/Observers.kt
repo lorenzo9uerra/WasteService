@@ -37,25 +37,52 @@ class TrolleyObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHan
 }
 
 class StorageObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHandler {
-    private val history: MutableList<String> = ArrayList()
+    private val historyGlass: MutableList<String> = ArrayList()
+    private val historyPlastic: MutableList<String> = ArrayList()
+
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
-        val payload: List<String> = PrologUtils.extractPayload(PrologUtils.getFuncLine(content, "content")!!)
-        ColorsOut.outappl("Obs Storage | content: " + payload[0], ColorsOut.GREEN)
-        val newContent = payload[0]
-        var add = history.size == 0
-        if (!add) {
-            val last = history[history.size - 1]
-            add = last != newContent
-        }
-        if (add) {
-            history.add(newContent)
-            for (ws in wsList) {
-                ws.sendMessage(TextMessage("depositedPlastic: $newContent"))
+        for (line in PrologUtils.getFuncLines(content, "content")) {
+            val payload: List<String> = PrologUtils.extractPayload(line)
+            val material = payload[0]
+            val amount = payload[1]
+            ColorsOut.outappl("Obs Storage | content: $material $amount ", ColorsOut.GREEN)
+            when (material) {
+                "plastic" -> {
+                    var add = historyPlastic.size == 0
+                    if (!add) {
+                        val last = historyPlastic[historyPlastic.size - 1]
+                        add = last != amount
+                    }
+                    if (add) {
+                        historyPlastic.add(amount)
+                        for (ws in wsList) {
+                            ws.sendMessage(TextMessage("depositedPlastic: $amount"))
+                        }
+                    }
+                    ColorsOut.outappl("Obs Storage | content historyPlastic: $historyPlastic", ColorsOut.GREEN)
+                }
+
+                "glass" -> {
+                    var add = historyGlass.size == 0
+                    if (!add) {
+                        val last = historyGlass[historyGlass.size - 1]
+                        add = last != amount
+                    }
+                    if (add) {
+                        historyGlass.add(amount)
+                        for (ws in wsList) {
+                            ws.sendMessage(TextMessage("depositedGlass: $amount"))
+                        }
+                    }
+                    ColorsOut.outappl("Obs Storage | content historyGlass: $historyGlass", ColorsOut.GREEN)
+                }
             }
+
         }
-        ColorsOut.outappl("Obs Storage | content history: $history", ColorsOut.GREEN)
+
+
     }
 
     override fun onError() {

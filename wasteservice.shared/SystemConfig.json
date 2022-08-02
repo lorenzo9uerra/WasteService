@@ -1,9 +1,4 @@
 {
-    "ctxNames": {
-        "wasteService": "ctx_wasteservice",
-        "storage": "ctx_wasteservice",
-        "trolley": "ctx_wasteservice"
-    },
     "debugPrint": true,
     "hosts": {
         "wasteServiceServer": "localhost",
@@ -71,8 +66,9 @@
         "trolley": "ctx_wasteservice",
         "storage": "ctx_wasteservice",
         "wasteServiceContext": "ctx_wasteservice",
-        "pathexec": "ctx_basicrobot"
-    }
+        "pathexec": "ctx_basicrobot",
+        "led": "ctx_wasteservice"
+    },
     "ports": {
         "wasteServiceServer": 8080,
         "led": 8030,
