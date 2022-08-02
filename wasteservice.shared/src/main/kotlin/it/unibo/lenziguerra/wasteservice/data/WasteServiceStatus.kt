@@ -8,7 +8,12 @@ data class WasteServiceStatus (val trolleyPos: SystemLocation, val error: String
     companion object {
         fun fromProlog(prolStr: String): WasteServiceStatus {
             val trolleyPosStr = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "tpos")!!)[0]
-            val trolleyPos = SystemLocation.valueOf(trolleyPosStr.uppercase())
+            var trolleyPos = SystemLocation.UNKNOWN
+            trolleyPos = try{
+                SystemLocation.valueOf(trolleyPosStr.uppercase())
+            }catch (_: Exception){
+                trolleyPos
+            }
             val errorLine = PrologUtils.getFuncLine(prolStr, "error")
             val error = errorLine?.let { PrologUtils.extractPayload(it)[0] }
 

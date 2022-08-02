@@ -1,13 +1,5 @@
 {
     "debugPrint": true,
-    "hosts": {
-        "wasteServiceServer": "localhost",
-        "led": "localhost",
-        "storage": "localhost",
-        "wasteServiceContext": "localhost",
-        "pathexec": "localhost",
-        "trolley": "localhost"
-    },
     "positions": {
         "plastic_box": [
             [
@@ -51,7 +43,7 @@
         ]
     },
     "actors": {
-        "wasteService": "wasteservice",
+        "wasteServiceContext": "wasteservice",
         "storage": "storagemanager",
         "trolley": "trolley"
     },
@@ -66,8 +58,7 @@
         "trolley": "ctx_wasteservice",
         "storage": "ctx_wasteservice",
         "wasteServiceContext": "ctx_wasteservice",
-        "pathexec": "ctx_basicrobot",
-        "led": "ctx_wasteservice"
+        "pathexec": "ctx_basicrobot"
     },
     "ports": {
         "wasteServiceServer": 8080,

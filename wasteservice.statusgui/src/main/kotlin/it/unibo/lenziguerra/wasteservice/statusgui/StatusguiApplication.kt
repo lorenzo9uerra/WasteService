@@ -59,7 +59,7 @@ class StatusGuiWebsocketHandler : TextWebSocketHandler() {
     init {
         startCoapConnection("trolley", trolleyObserver)
         startCoapConnection("storage", storageObserver)
-        startCoapConnection("led", ledObserver)
+        startLedConnection(ledObserver)
         startCoapConnection("wasteServiceContext", wasteServiceObserver)
         ColorsOut.out("Initialized StatusGuiWebsocketHandler!", ColorsOut.BLUE)
     }
@@ -69,12 +69,25 @@ class StatusGuiWebsocketHandler : TextWebSocketHandler() {
         wsList.add(session)
     }
 
-    private fun startCoapConnection(actor: String, observer: CoapHandler) {
+    private fun startCoapConnection(id: String, observer: CoapHandler) {
+        Thread {
+            val conn = CoapConnection(
+                SystemConfig.hosts[id]
+                        + ":" + SystemConfig.ports[id],
+                SystemConfig.contexts[id] + "/" + SystemConfig.actors[id]
+            )
+            conn.observeResource(observer)
+            ColorsOut.outappl("connected via Coap conn:$conn", ColorsOut.CYAN)
+        }.start()
+    }
+
+    private fun startLedConnection(observer: CoapHandler) {
+        val actor = "led"
         Thread {
             val conn = CoapConnection(
                 SystemConfig.hosts[actor]
                         + ":" + SystemConfig.ports[actor],
-                SystemConfig.contexts[actor] + "/" + actor
+                actor
             )
             conn.observeResource(observer)
             ColorsOut.outappl("connected via Coap conn:$conn", ColorsOut.CYAN)

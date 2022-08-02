@@ -1,8 +1,12 @@
 package it.unibo.lenziguerra.wasteservice.statusgui
 
+import it.unibo.lenziguerra.wasteservice.BlinkLedState
+import it.unibo.lenziguerra.wasteservice.SystemLocation
 import it.unibo.lenziguerra.wasteservice.WasteType
+import it.unibo.lenziguerra.wasteservice.data.LedStatus
 import it.unibo.lenziguerra.wasteservice.data.StorageStatus
 import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
+import it.unibo.lenziguerra.wasteservice.data.WasteServiceStatus
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 import org.eclipse.californium.core.CoapHandler
 import org.eclipse.californium.core.CoapResponse
@@ -12,7 +16,7 @@ import unibo.actor22comm.utils.ColorsOut
 import java.util.*
 
 class TrolleyObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHandler {
-    private lateinit var lastState : TrolleyStatus.State
+    private var lastState = TrolleyStatus.State.STOPPED
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
         val tState = TrolleyStatus.fromProlog(content)
@@ -26,86 +30,74 @@ class TrolleyObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHan
     }
 
     override fun onError() {
-        ColorsOut.outerr("OBSERVING FAILED (press enter to exit)")
+        ColorsOut.outerr("OBSERVING TROLLEY FAILED")
     }
 }
 
 class StorageObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHandler {
-    private var lastGlass : Float = -1.0f
+    private var lastGlass: Float = -1.0f
     private var lastPlastic = -1.0f
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
         val sStatus = StorageStatus.fromProlog(content)
-        if(sStatus.amounts[WasteType.GLASS] != lastGlass) {
-            lastGlass = sStatus.amounts[WasteType.GLASS]!!
-            for (ws in wsList) {
-                ws.sendMessage(TextMessage("depositedGlass: ${sStatus.amounts[WasteType.GLASS]}"))
+        if(sStatus.amounts.isNotEmpty()) {
+            if (sStatus.amounts[WasteType.GLASS] != lastGlass) {
+                lastGlass = sStatus.amounts[WasteType.GLASS]!!
+                for (ws in wsList) {
+                    ws.sendMessage(TextMessage("depositedGlass: ${sStatus.amounts[WasteType.GLASS]}"))
+                }
             }
-        }
-        if(sStatus.amounts[WasteType.PLASTIC] != lastPlastic) {
-            lastPlastic = sStatus.amounts[WasteType.PLASTIC]!!
-            for (ws in wsList) {
-                ws.sendMessage(TextMessage("depositedPlastic: ${sStatus.amounts[WasteType.PLASTIC]}"))
+            if (sStatus.amounts[WasteType.PLASTIC] != lastPlastic) {
+                lastPlastic = sStatus.amounts[WasteType.PLASTIC]!!
+                for (ws in wsList) {
+                    ws.sendMessage(TextMessage("depositedPlastic: ${sStatus.amounts[WasteType.PLASTIC]}"))
+                }
             }
         }
     }
 
     override fun onError() {
-        ColorsOut.outerr("OBSERVING FAILED (press enter to exit)")
+        ColorsOut.outerr("OBSERVING STORAGE FAILED")
     }
 }
 
 class WasteServiceObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHandler {
-    private val history: MutableList<String> = ArrayList()
+    private var lastPos = SystemLocation.UNKNOWN
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
-        val payload: List<String> = PrologUtils.extractPayload(PrologUtils.getFuncLine(content, "tpos")!!)
-        ColorsOut.outappl("Obs WasteService | tpos: " + payload[0], ColorsOut.GREEN)
-        val newTPos = payload[0]
-        var add = history.size == 0
-        if (!add) {
-            val last = history[history.size - 1]
-            add = last != newTPos
-        }
-        if (add) {
-            history.add(newTPos)
+        val wStatus = WasteServiceStatus.fromProlog(content)
+        ColorsOut.outappl("Obs WasteService | tpos: ${wStatus.trolleyPos}", ColorsOut.GREEN)
+        if (lastPos != wStatus.trolleyPos) {
+            lastPos = wStatus.trolleyPos
             for (ws in wsList) {
-                ws.sendMessage(TextMessage("trolleyPosition: $newTPos"))
+                ws.sendMessage(TextMessage("trolleyPosition: ${wStatus.trolleyPos}"))
             }
         }
-        ColorsOut.outappl("Obs WasteService | tpos history: $history", ColorsOut.GREEN)
     }
 
     override fun onError() {
-        ColorsOut.outerr("OBSERVING FAILED (press enter to exit)")
+        ColorsOut.outerr("OBSERVING WASTESERVICE FAILED")
     }
 }
 
 class LedObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHandler {
-    private val history: MutableList<String> = ArrayList()
+    private var lastState = BlinkLedState.OFF
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
-        val payload: List<String> = PrologUtils.extractPayload(PrologUtils.getFuncLine(content, "state")!!)
-        ColorsOut.outappl("Obs Led | state: " + payload[0], ColorsOut.GREEN)
-        val newState = payload[0]
-        var add = history.size == 0
-        if (!add) {
-            val last = history[history.size - 1]
-            add = last != newState
-        }
-        if (add) {
-            history.add(newState)
+        val lState = LedStatus.fromProlog(content)
+        ColorsOut.outappl("Obs Led | state: ${lState.state}", ColorsOut.GREEN)
+        if (lastState != lState.state) {
+            lastState = lState.state
             for (ws in wsList) {
-                ws.sendMessage(TextMessage("ledState: $newState"))
+                ws.sendMessage(TextMessage("ledState: ${lState.state}"))
             }
         }
-        ColorsOut.outappl("Obs Led | state history: $history", ColorsOut.GREEN)
     }
 
     override fun onError() {
-        ColorsOut.outerr("OBSERVING FAILED (press enter to exit)")
+        ColorsOut.outerr("OBSERVING LED FAILED")
     }
 }
