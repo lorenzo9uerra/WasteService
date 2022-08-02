@@ -12,7 +12,6 @@ object StaticConfig {
 
     fun <T : Any> setConfiguration(clazz: KClass<out T>, obj: T, resourceName: String) {
         setConfiguration(clazz, obj, resourceName, emptyHook, emptyHook)
-
     }
 
     fun <T : Any> setConfiguration(

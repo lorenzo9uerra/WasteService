@@ -35,5 +35,12 @@
         "wasteServiceServer": "localhost",
         "wasteServiceContext": "localhost",
         "pathexec": "localhost"
+    },
+
+    "contexts": {
+        "trolley": "ctx_wasteservice",
+        "storage": "ctx_wasteservice",
+        "wasteServiceContext": "ctx_wasteservice",
+        "pathexec": "ctx_basicrobot"
     }
 }
