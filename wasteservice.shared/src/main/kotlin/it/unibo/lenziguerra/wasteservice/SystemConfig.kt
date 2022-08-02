@@ -8,23 +8,24 @@ object SystemConfig {
     var DLIMIT = 50
     var positions = mutableMapOf(
         "home" to listOf(listOf(0, 0), listOf(0, 0)),
-        "indoor" to listOf(listOf(0, 5), listOf(1, 5)),
-        "plastic_box" to listOf(listOf(4, 0), listOf(5, 0)),
-        "glass_box" to listOf(listOf(4, 5), listOf(5, 5)),
+        "indoor" to listOf(listOf(0, 4), listOf(1, 4)),
+        "plastic_box" to listOf(listOf(4, 1), listOf(4, 2)),
+        "glass_box" to listOf(listOf(3, 4), listOf(4, 4)),
     )
 
-    var ports =
-        mutableMapOf(
-            "trolley" to 8023,
-            "storage" to 8023,
-            "wasteServiceServer" to 8080,
-            "wasteServiceContext" to 8023,
-        )
+    var ports = mutableMapOf(
+        "trolley" to 8023,
+        "storage" to 8023,
+        "wasteServiceServer" to 8080,
+        "wasteServiceContext" to 8023,
+        "led" to 8030,
+    )
     var hosts = mutableMapOf(
         "trolley" to "localhost",
         "storage" to "localhost",
         "wasteServiceServer" to "localhost",
         "wasteServiceContext" to "localhost",
+        "led" to "localhost",
     )
     var actorNames = mutableMapOf(
         "trolley" to "trolley",
