@@ -3,10 +3,15 @@ package it.unibo.lenziguerra.wasteservice.data
 import it.unibo.lenziguerra.wasteservice.WasteType
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 
-data class TrolleyStatus (val status: String, val pos: Array<Int>, val contentType: WasteType?, val contentAmount: Float) {
+data class TrolleyStatus (val status: State, val pos: Array<Int>, val contentType: WasteType?, val contentAmount: Float) {
+    enum class State {
+        WORK, STOPPED
+    }
+
     companion object {
         fun fromProlog(prolStr: String): TrolleyStatus {
-            val status = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "state")!!)[0]
+            val statusStr = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "state")!!)[0]
+            val status = State.valueOf(statusStr.uppercase())
             val pos = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "pos")!!)
             val contentLine = PrologUtils.getFuncLine(prolStr, "content")
 

@@ -32,9 +32,9 @@ class LedController(val led: BlinkLed) {
 
             ColorsOut.out("LedCoapHandler | received $respText\nData is $respStatus", ColorsOut.BLACK)
 
-            if (respStatus.status == "stopped") {
+            if (respStatus.status == TrolleyStatus.State.STOPPED) {
                 led.turnOff()
-            } else if (respStatus.status == "work") {
+            } else if (respStatus.status == TrolleyStatus.State.WORK) {
                 if (isPosInBounds(respStatus.pos, SystemConfig.positions["home"]!!)) {
                     led.turnOn()
                 } else {

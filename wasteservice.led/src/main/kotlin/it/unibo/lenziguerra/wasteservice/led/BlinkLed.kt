@@ -7,6 +7,12 @@ import unibo.actor22comm.utils.CommUtils
 import kotlin.concurrent.thread
 
 class BlinkLed(val led: ILed) {
+    var updateHandler: ((BlinkLedState) -> Unit)? = null
+        set(value) {
+            ColorsOut.out("BlinkLed: set new updateHandler!", ColorsOut.BLACK)
+            field = value
+        }
+
     var status: BlinkLedState = BlinkLedState.ON
         get() = field
         set(value) {
@@ -25,6 +31,7 @@ class BlinkLed(val led: ILed) {
                         }
                     }
                 }
+                updateHandler?.let { it(value) }
             }
         }
 
