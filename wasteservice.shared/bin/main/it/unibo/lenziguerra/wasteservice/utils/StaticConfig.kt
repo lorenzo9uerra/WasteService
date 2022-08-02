@@ -6,17 +6,12 @@ import org.json.JSONTokener
 import unibo.actor22comm.utils.ColorsOut
 import java.io.*
 import kotlin.reflect.*
-import kotlin.reflect.full.createType
-import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.jvm.jvmErasure
 
 object StaticConfig {
     private val emptyHook: (KMutableProperty<*>, Any) -> Any? = { _, _ -> null }
 
     fun <T : Any> setConfiguration(clazz: KClass<out T>, obj: T, resourceName: String) {
         setConfiguration(clazz, obj, resourceName, emptyHook, emptyHook)
-
     }
 
     fun <T : Any> setConfiguration(
@@ -54,7 +49,7 @@ object StaticConfig {
             }
         } catch (e: FileNotFoundException) {
             ColorsOut.outappl("Config file not found, saving default config file to $resourceName", ColorsOut.YELLOW)
-            saveConfigFile(createJSONObject(clazz, obj, beforeSaveHook), resourceName)
+            saveConfigFile(createJSONObject(clazz, beforeSaveHook), resourceName)
         }
     }
 
@@ -108,11 +103,11 @@ object StaticConfig {
         }
     }
 
-    private fun <T: Any> createJSONObject(clazz: KClass<out T>, obj: T, beforeSaveHook: (KMutableProperty<*>, Any) -> Any?): JSONObject? {
+    private fun <T: Any> createJSONObject(clazz: KClass<out T>, beforeSaveHook: (KMutableProperty<*>, Any) -> Any?): JSONObject? {
         return try {
             val jsonObj = JSONObject()
             for (field in getPublicStaticFields(clazz)) {
-                val value = field.getter.call(obj) ?: throw Exception("StaticConfig: field ${field.name} has no value when saving")
+                val value = field.getter.call(jsonObj) ?: throw Exception("StaticConfig: field ${field.name} has no value when saving")
                 jsonObj.put(field.name, beforeSaveHook(field, value)?: value)
             }
             jsonObj
@@ -145,28 +140,8 @@ object StaticConfig {
 //                    println("Debug: ${name}, ${clazz.java}, ${field.returnType}, ${value!!.javaClass}, $value")
                     // Sub map
                     if (value is JSONObject) {
-                        if (! Map::class.java.isAssignableFrom(field.returnType.jvmErasure.java))
-                            throw Exception("Config item $name has wrong type ${value!!::class}")
-
-                        val loadedMap = (value as JSONObject).toMap()
-                        var changedThis = false
-                        @Suppress("UNCHECKED_CAST")
-                        for (entry in (field.getter.call(obj) as Map<String,*>)) {
-                            if (!loadedMap.containsKey(entry.key)) {
-                                loadedMap[entry.key] = entry.value
-                                changed = true
-                                changedThis = true
-                            }
-                        }
-
-                        if (changedThis)
-                            loadedObject.put(name, loadedMap)
-
-                        field.setter.call(obj, loadedMap)
+                        field.setter.call(obj, (value as JSONObject).toMap())
                     } else {
-                        if (! value!!::class.isSubclassOf(field.returnType.jvmErasure))
-                            throw Exception("Config item $name has wrong type ${value!!::class}")
-
                         field.setter.call(obj, value)
                     }
                 } catch (e: IllegalAccessException) {
