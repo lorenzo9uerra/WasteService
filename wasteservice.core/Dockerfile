@@ -1,5 +1,6 @@
 FROM openjdk:12.0.2
 EXPOSE 8080
+EXPOSE 8023
 ADD ./build/distributions/wasteservice-1.0.tar  /
 ADD ./build/distributions/wasteservice-boot-1.0.tar /
 
