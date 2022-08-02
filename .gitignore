@@ -28,3 +28,4 @@ gradle-app.setting
 **/bin
 **/log4jInfo.log
 **/org.eclipse.buildship.core.prefs
+wasteservice.core/.settings/org.eclipse.buildship.core.prefs
