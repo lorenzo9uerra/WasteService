@@ -17,7 +17,6 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import unibo.actor22comm.coap.CoapConnection
-import unibo.actor22comm.interfaces.Interaction2021
 import unibo.actor22comm.utils.ColorsOut
 
 @SpringBootApplication
@@ -54,12 +53,8 @@ class StatusGuiWebsocketHandler : TextWebSocketHandler() {
     private final var wsList = ArrayList<WebSocketSession>()
     private final var trolleyObserver = TrolleyObserver(wsList)
     private final var storageObserver = StorageObserver(wsList)
-    private final var ledObserver= LedObserver(wsList)
-    private final var wasteServiceObserver= WasteServiceObserver(wsList)
-
-
-
-    lateinit var ctxConnection: Interaction2021
+    private final var ledObserver = LedObserver(wsList)
+    private final var wasteServiceObserver = WasteServiceObserver(wsList)
 
     init {
         startCoapConnection("trolley", trolleyObserver)
