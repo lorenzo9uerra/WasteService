@@ -25,6 +25,11 @@ data class TrolleyStatus (val status: State, val pos: Array<Int>, val contentTyp
         }
     }
 
+    override fun toString(): String {
+        return "state(${status.toString().lowercase()})\npos(${pos[0]},${pos[1]})" +
+                (contentType?.let { "\ncontent($contentType,$contentAmount)" } ?: "")
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

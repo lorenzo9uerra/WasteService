@@ -9,8 +9,8 @@ class StorageManagerSupportMock : AbstractStorageManagerVirtual(getMaxAmounts())
     }
 
     companion object {
-        fun getMaxAmounts(): Map<String, Float> {
-            return WasteType.values().associate { it.id to 50f }
+        fun getMaxAmounts(): Map<WasteType, Float> {
+            return WasteType.values().associateWith { 50f }
         }
     }
 }

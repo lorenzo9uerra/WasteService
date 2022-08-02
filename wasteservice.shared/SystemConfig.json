@@ -50,7 +50,7 @@
             ]
         ]
     },
-    "actorNames": {
+    "actors": {
         "wasteService": "wasteservice",
         "storage": "storagemanager",
         "trolley": "trolley"

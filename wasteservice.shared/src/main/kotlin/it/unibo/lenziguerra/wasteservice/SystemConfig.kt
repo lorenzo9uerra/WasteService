@@ -27,18 +27,15 @@ object SystemConfig {
         "wasteServiceContext" to "localhost",
         "led" to "localhost",
     )
-    var actorNames = mutableMapOf(
+    var actors = mutableMapOf(
         "trolley" to "trolley",
         "wasteService" to "wasteservice",
         "storage" to "storagemanager",
     )
-
     var contexts = mutableMapOf(
         "trolley" to "ctx_wasteservice",
         "storage" to "ctx_wasteservice",
         "wasteServiceContext" to "ctx_wasteservice",
-        "pathexec" to "ctx_basicrobot",
-        "led" to "ctx_wasteservice"
     )
 
     private var setConf = false

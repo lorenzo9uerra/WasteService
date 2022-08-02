@@ -1,5 +1,6 @@
 package it.unibo.lenziguerra.wasteservice.led
 
+import it.unibo.lenziguerra.wasteservice.BlinkLedState
 import it.unibo.radarSystem22.domain.DeviceFactory
 import it.unibo.radarSystem22.domain.interfaces.ILed
 import unibo.actor22comm.utils.ColorsOut
@@ -45,9 +46,5 @@ class BlinkLed(val led: ILed) {
 
     fun blink() {
         status = BlinkLedState.BLINKING
-    }
-
-    enum class BlinkLedState {
-        ON, OFF, BLINKING
     }
 }

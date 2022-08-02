@@ -90,7 +90,7 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
             }
 
             val storageReqMessage = MsgUtil.buildRequest(
-                SENDER_WS_SERVER, STORAGE_REQ_ID, PrologUtils.build(STORAGE_REQ_ID, args[0]), SystemConfig.actorNames["storage"]!!
+                SENDER_WS_SERVER, STORAGE_REQ_ID, PrologUtils.build(STORAGE_REQ_ID, args[0]), SystemConfig.actors["storage"]!!
             )
 
             val storageReply: String = try {
@@ -127,7 +127,7 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
             SENDER_WS_SERVER,
             DEPOSIT_TRIGGER_ID,
             PrologUtils.build(DEPOSIT_TRIGGER_ID, depositType, depositAmount.toString()),
-            SystemConfig.actorNames["wasteService"]!!
+            SystemConfig.actors["wasteService"]!!
         )
 
         // Bloccante fino a raccolta da trolley

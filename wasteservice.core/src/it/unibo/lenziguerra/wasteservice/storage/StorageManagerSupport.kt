@@ -1,5 +1,7 @@
 package it.unibo.lenziguerra.wasteservice.storage
 
+import it.unibo.lenziguerra.wasteservice.WasteType
+import it.unibo.lenziguerra.wasteservice.data.StorageStatus
 import org.json.JSONObject
 
 interface IStorageManagerSupport {
@@ -42,13 +44,13 @@ object StorageManagerSupport {
     }
 }
 
-abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<String, Float>) : IStorageManagerSupport {
+abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<WasteType, Float>) : IStorageManagerSupport {
     /**
      * Per uso con classi virtuali/mock di storage manager, dove valori
      * massimi e tipi vengono forniti dall'alto (dove vengono caricati
      * con un metodo di configurazione a seconda)
      */
-    private val amount = mutableMapOf<String, Float>()
+    private val amount = mutableMapOf<WasteType, Float>()
 
     init {
         maxAmount.keys.forEach {
@@ -61,11 +63,11 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<String, 
     protected abstract fun init()
 
     override fun getAmount(type: String): Float {
-        return amount[type]!!
+        return amount[WasteType.valueOf(type.uppercase())]!!
     }
 
     override fun getMax(type: String): Float {
-        return maxAmount[type]!!
+        return maxAmount[WasteType.valueOf(type.uppercase())]!!
     }
 
     override fun getSpace(type: String): Float {
@@ -73,13 +75,17 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<String, 
     }
 
     // Override if needed
-    private fun preChange(type: String, amount: Float) {
+    protected fun preChange(type: WasteType, amount: Float) {
     }
 
     override fun deposit(type: String, depositAmnt: Float): Boolean {
-        if (getAmount(type) + depositAmnt <= getMax(type)) {
-            preChange(type, amount[type]!! + depositAmnt)
-            amount[type] = amount[type]!! + depositAmnt
+        val typeEnum = WasteType.valueOf(type.uppercase())
+        val amnt = amount[typeEnum]!!
+        val maxAmnt = maxAmount[typeEnum]!!
+
+        if (amnt + depositAmnt <= maxAmnt) {
+            preChange(typeEnum, amnt + depositAmnt)
+            amount[typeEnum] = amnt + depositAmnt
             return true
         }
         return false
@@ -89,7 +95,7 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<String, 
         return "=========================\n" +
                "Storage Manager status:\n" +
                 amount.map {
-                    "\t${it.key.replaceFirstChar { c -> c.uppercase() }}: ${it.value} / ${maxAmount[it.key]}"
+                    "\t${it.key.name.replaceFirstChar { c -> c.uppercase() }}: ${it.value} / ${maxAmount[it.key]}"
                 }.joinToString("\n") +
                "\n========================="
     }
@@ -97,7 +103,7 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<String, 
     override fun toString(): String = getStatus()
 
     override fun getPrologContent(): String {
-        return amount.entries.joinToString("\n") { "content(${it.key},${it.value},${maxAmount[it.key]})" }
+        return StorageStatus(amount, maxAmount).toString()
     }
 
     override fun reset() {
@@ -109,7 +115,9 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<String, 
 
     override fun set(contents: String) {
         val jsonContents = "{$contents}"
-        val contentsMap: Map<String, Float> = JSONObject(jsonContents).toMap() as Map<String, Float>
+        @Suppress("UNCHECKED_CAST")
+        val contentsMap: Map<WasteType, Float> = (JSONObject(jsonContents).toMap() as Map<String, Float>)
+            .mapKeys { WasteType.valueOf(it.key.uppercase()) }
 
         contentsMap.forEach {
             preChange(it.key, it.value)

@@ -35,10 +35,10 @@ class WasteServiceContextBean {
 			it.unibo.ctx_wasteservice.main()
 		}
 
-		var tmpQakCtx = sysUtil.getContext(SystemConfig.ctxNames["wasteService"]!!)
+		var tmpQakCtx = sysUtil.getContext(SystemConfig.contexts["wasteServiceContext"]!!)
 		while (tmpQakCtx == null) {
 			CommUtils.delay(200)
-			tmpQakCtx = sysUtil.getContext(SystemConfig.ctxNames["wasteService"]!!)
+			tmpQakCtx = sysUtil.getContext(SystemConfig.contexts["wasteServiceContext"]!!)
 		}
 		qakCtx = tmpQakCtx
 	}

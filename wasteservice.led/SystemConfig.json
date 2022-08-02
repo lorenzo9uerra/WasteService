@@ -1,9 +1,4 @@
 {
-    "ctxNames": {
-        "wasteService": "ctx_wasteservice",
-        "storage": "ctx_wasteservice",
-        "trolley": "ctx_wasteservice"
-    },
     "debugPrint": true,
     "hosts": {
         "wasteServiceServer": "localhost",
@@ -53,11 +48,6 @@
                 0
             ]
         ]
-    },
-    "actorNames": {
-        "wasteService": "wasteservice",
-        "storage": "storagemanager",
-        "trolley": "trolley"
     },
     "ports": {
         "wasteServiceServer": 8080,

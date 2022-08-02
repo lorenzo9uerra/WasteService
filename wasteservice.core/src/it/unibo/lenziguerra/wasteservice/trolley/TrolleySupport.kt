@@ -1,5 +1,6 @@
 package it.unibo.lenziguerra.wasteservice.trolley
 
+import it.unibo.lenziguerra.wasteservice.WasteType
 import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
 import unibo.actor22comm.utils.ColorsOut
 
@@ -34,7 +35,7 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     private var position = arrayOf(0, 0)
     private var direction = "down"
     private var quantity: Float = 0.0f
-    private var material: String? = null
+    private var material: WasteType? = null
 
     private var state = TrolleyStatus.State.WORK
 
@@ -46,7 +47,7 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     }
 
     override fun getMaterial(): String {
-        return material ?: ""
+        return material?.name?.lowercase() ?: ""
     }
 
     override fun getQuantity(): String {
@@ -54,7 +55,7 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     }
 
     override fun collect(material: String, quantity: Float) {
-        this.material = material
+        this.material = WasteType.valueOf(material.uppercase())
         this.quantity = quantity
     }
 
@@ -203,8 +204,7 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     }
 
     override fun getPrologContent(): String {
-        return "state(${state.toString().lowercase()})\npos(${position[0]},${position[1]})" +
-                (material?.let { "\ncontent($material,$quantity)" } ?: "")
+        return TrolleyStatus(state, position, material, quantity).toString()
     }
 
     override fun toString(): String {

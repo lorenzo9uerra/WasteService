@@ -1,5 +1,7 @@
 package it.unibo.lenziguerra.wasteservice.led
 
+import it.unibo.lenziguerra.wasteservice.BlinkLedState
+import it.unibo.lenziguerra.wasteservice.data.LedStatus
 import org.eclipse.californium.core.CoapResource
 import org.eclipse.californium.core.CoapServer
 import org.eclipse.californium.core.server.resources.CoapExchange
@@ -35,7 +37,7 @@ class CoapResourceBlinkLed(name: String, val led: BlinkLed) : CoapResource(name)
 
     override fun handleGET(exchange: CoapExchange) {
         // ledStatus(on|off|blinking)
-        exchange.respond( "ledStatus(${led.status.name.lowercase()})")
+        exchange.respond(LedStatus(led.status).toString())
     }
 
     override fun handlePOST(exchange: CoapExchange) {

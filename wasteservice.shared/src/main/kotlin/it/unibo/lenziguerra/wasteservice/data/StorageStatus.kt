@@ -23,4 +23,8 @@ data class StorageStatus (val amounts: Map<WasteType, Float>, val maxAmounts: Ma
             return StorageStatus(amounts, maxAmounts)
         }
     }
+
+    override fun toString(): String {
+        return amounts.entries.joinToString("\n") { "content(${it.key},${it.value},${maxAmounts[it.key]})" }
+    }
 }

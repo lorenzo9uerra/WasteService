@@ -1,17 +1,29 @@
 package it.unibo.lenziguerra.wasteservice.wasteservice
 
 import it.unibo.lenziguerra.wasteservice.SystemConfig
+import it.unibo.lenziguerra.wasteservice.SystemLocation
+import it.unibo.lenziguerra.wasteservice.data.WasteServiceStatus
 import kotlin.math.abs
-import kotlin.math.min
 import kotlin.math.pow
 
 interface IWasteserviceSupport {
     fun getDestination(location: String, Position: String): String
+    fun updateTrolleyPos(location: String)
+    fun getPrologContent(): String
+
+    var error: String?
 }
 
 open class WasteserviceSupport : IWasteserviceSupport {
     init {
         SystemConfig.setConfiguration()
+    }
+
+    var trolleyPos = SystemLocation.HOME
+    override var error: String? = null
+
+    override fun updateTrolleyPos(location: String) {
+        trolleyPos = SystemLocation.valueOf(location.uppercase())
     }
 
     override fun getDestination(location: String, Position: String): String {
@@ -60,5 +72,9 @@ open class WasteserviceSupport : IWasteserviceSupport {
             }
         }
         return arrayOf(minX!!, minY!!)
+    }
+
+    override fun getPrologContent(): String {
+        return WasteServiceStatus(trolleyPos, error).toString()
     }
 }

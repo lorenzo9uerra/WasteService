@@ -48,7 +48,8 @@ QActor wasteservice context ctx_wasteservice {
 	
 	State home {
 		printCurrentMessage
-		updateResource [# "tpos(home)" #]
+		[# Support.updateTrolleyPos("home") #]
+		updateResource [# Support.getPrologContent() #]
 		println("\tWS | Trolley at home")
 	}
 	Transition t0 whenRequest triggerDeposit -> go_indoor
@@ -71,7 +72,8 @@ QActor wasteservice context ctx_wasteservice {
 	State indoor {
 		printCurrentMessage
 		println("\tWT | Trolley at indoor, picking up $Quantity $Material...")
-		updateResource [# "tpos(indoor)" #]
+		[# Support.updateTrolleyPos("indoor") #]
+		updateResource [# Support.getPrologContent() #]
 		request trolley -m trolleyCollect : trolleyCollect($Material, $Quantity)
 	}
 	Transition t3 whenReply trolleyDone -> go_box
@@ -90,7 +92,8 @@ QActor wasteservice context ctx_wasteservice {
 	State box {
 		printCurrentMessage
 		println("\tWT | Trolley at $Material box, depositing $Quantity $Material...")
-		updateResource [# "tpos(" + Material + "_box)" #]
+		[# Support.updateTrolleyPos(Box) #]
+		updateResource [# Support.getPrologContent() #]
 		request trolley -m trolleyDeposit : trolleyDeposit(_)
 	}
 	Transition t5 whenReply trolleyDone -> done
@@ -120,7 +123,11 @@ QActor wasteservice context ctx_wasteservice {
 		          
     State error {
     	onMsg (trolleyFail : trolleyFail(ERR)) {
-    		updateResource [# "tpos(error)\nerror(${payloadArg(0)})" #]
+			[# 
+				Support.updateTrolleyPos("unknown") 
+				Support.error = payloadArg(0)
+			#]
+			updateResource [# Support.getPrologContent() #]
     	}
     	
     	printCurrentMessage
