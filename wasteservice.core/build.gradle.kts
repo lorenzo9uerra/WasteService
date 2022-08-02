@@ -125,6 +125,10 @@ tasks.bootRun {
 	mainClass.set("it.unibo.lenziguerra.wasteservice.wasteservice.WasteserviceApplicationKt")
 }
 
+tasks.bootJar {
+	mainClass.set("it.unibo.lenziguerra.wasteservice.wasteservice.WasteserviceApplicationKt")
+}
+
 
 task<JavaExec>("storageCtxRun") {
 	group = "qakctx"

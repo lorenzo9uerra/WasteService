@@ -25,3 +25,6 @@ gradle-app.setting
 .classpath
 **/org.eclipse.buildship.core.prefs
 **/.idea/**
+**/bin
+**/log4jInfo.log
+**/org.eclipse.buildship.core.prefs

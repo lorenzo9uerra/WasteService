@@ -27,8 +27,6 @@ import java.net.SocketException
 const val STORAGE_REQ_ID = "storageAsk"
 const val DEPOSIT_TRIGGER_ID = "triggerDeposit"
 
-const val ACTOR_STORAGE_MANAGER = "storagemanager"
-const val ACTOR_WASTESERVICE = "wasteservice"
 const val SENDER_WS_SERVER = "wasteservice_server"
 
 @Controller
@@ -92,7 +90,7 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
             }
 
             val storageReqMessage = MsgUtil.buildRequest(
-                SENDER_WS_SERVER, STORAGE_REQ_ID, PrologUtils.build(STORAGE_REQ_ID, args[0]), ACTOR_STORAGE_MANAGER
+                SENDER_WS_SERVER, STORAGE_REQ_ID, PrologUtils.build(STORAGE_REQ_ID, args[0]), SystemConfig.actorNames["storage"]!!
             )
 
             val storageReply: String = try {
@@ -129,7 +127,7 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
             SENDER_WS_SERVER,
             DEPOSIT_TRIGGER_ID,
             PrologUtils.build(DEPOSIT_TRIGGER_ID, depositType, depositAmount.toString()),
-            ACTOR_WASTESERVICE
+            SystemConfig.actorNames["wasteService"]!!
         )
 
         // Bloccante fino a raccolta da trolley

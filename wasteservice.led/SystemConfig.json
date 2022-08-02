@@ -10,38 +10,37 @@
         "led": "localhost",
         "storage": "localhost",
         "wasteServiceContext": "localhost",
-        "pathexec": "localhost",
         "trolley": "localhost"
     },
     "positions": {
         "plastic_box": [
             [
-                2,
+                4,
                 0
             ],
             [
-                3,
+                5,
                 0
             ]
         ],
         "indoor": [
             [
                 0,
-                4
+                5
             ],
             [
-                2,
-                4
+                1,
+                5
             ]
         ],
         "glass_box": [
             [
                 4,
-                2
+                5
             ],
             [
-                4,
-                3
+                5,
+                5
             ]
         ],
         "home": [
@@ -60,25 +59,11 @@
         "storage": "storagemanager",
         "trolley": "trolley"
     },
-    "hosts": {
-        "trolley": "localhost",
-        "storage": "localhost",
-        "wasteServiceServer": "localhost",
-        "wasteServiceContext": "localhost",
-        "pathexec": "localhost"
-    },
-    "contexts": {
-        "trolley": "ctx_wasteservice",
-        "storage": "ctx_wasteservice",
-        "wasteServiceContext": "ctx_wasteservice",
-        "pathexec": "ctx_basicrobot"
-    }
     "ports": {
         "wasteServiceServer": 8080,
         "led": 8030,
         "storage": 8023,
         "wasteServiceContext": 8023,
-        "pathexec": 8023,
         "trolley": 8023
     },
     "DLIMIT": 50

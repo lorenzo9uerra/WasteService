@@ -1,5 +1,6 @@
 package it.unibo.lenziguerra.wasteservice.trolley
 
+import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
 import unibo.actor22comm.utils.ColorsOut
 
 interface ITrolleySupport {
@@ -17,6 +18,7 @@ interface ITrolleySupport {
     fun deposit()
     fun getMaterial(): String
     fun getQuantity(): String
+    fun updateState(newState: String)
 
 
     fun setPosition(x: Int, y: Int)
@@ -33,6 +35,8 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     private var direction = "down"
     private var quantity: Float = 0.0f
     private var material: String? = null
+
+    private var state = TrolleyStatus.State.WORK
 
     private lateinit var stagedDirection: String
     private lateinit var stagedPosition: Array<Int>
@@ -194,13 +198,17 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
         direction = stagedDirection
     }
 
+    override fun updateState(newState: String) {
+        state = TrolleyStatus.State.valueOf(newState.uppercase())
+    }
+
     override fun getPrologContent(): String {
-        return "state(work)\npos(${position[0]},${position[1]})" +
+        return "state(${state.toString().lowercase()})\npos(${position[0]},${position[1]})" +
                 (material?.let { "\ncontent($material,$quantity)" } ?: "")
     }
 
     override fun toString(): String {
-        return "Trolley | Pos: (${position[0]},${position[1]}), Dir: $direction" +
+        return "Trolley | Pos: (${position[0]},${position[1]}), Dir: $direction, State: $state" +
                 (material?.let { ", Content: $quantity $material" } ?: "")
     }
 }

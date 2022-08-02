@@ -136,6 +136,7 @@ QActor trolley context ctx_wasteservice {
 		val Support = it.unibo.lenziguerra.wasteservice.trolley.TrolleySupport.getSupport()
 	#]
 	State init initial {
+		[# Support.updateState("work") #]
 	}
 	Goto idle
 
@@ -188,6 +189,7 @@ QActor trolley context ctx_wasteservice {
 	Goto idle
 	
 	State moveFail {
+		[# Support.updateState("stopped") #]
 		replyTo trolleyMove with trolleyFail : trolleyFail(move)
     	println("####################################")
     	println("# TROLLEY BLOCCATO! AGGIUSTARE     #")
