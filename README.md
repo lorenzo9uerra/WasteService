@@ -9,3 +9,5 @@ SPRINT 1
 * [Analisi del problema](doc/sprint1_analisi_problema.md)
 
 * [Analisi del problema](doc/sprint1_progetto.md)
+
+* [Recap](doc/sprint1_recap.md)
