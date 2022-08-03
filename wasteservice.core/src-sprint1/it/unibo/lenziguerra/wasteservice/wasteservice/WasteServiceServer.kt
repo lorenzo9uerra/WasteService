@@ -2,9 +2,7 @@ package it.unibo.lenziguerra.wasteservice.wasteservice
 
 import it.unibo.kactor.ApplMessage
 import it.unibo.kactor.MsgUtil
-import it.unibo.lenziguerra.wasteservice.SystemConfig
 import it.unibo.lenziguerra.wasteservice.WasteType
-import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
@@ -18,10 +16,10 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import unibo.actor22comm.coap.CoapConnection
+import unibo.actor22comm.utils.ColorsOut
+import it.unibo.lenziguerra.wasteservice.SystemConfig
 import unibo.actor22comm.interfaces.Interaction2021
 import unibo.actor22comm.tcp.TcpClientSupport
-import unibo.actor22comm.utils.ColorsOut
 import unibo.actor22comm.utils.CommSystemConfig
 import java.net.SocketException
 
@@ -106,10 +104,17 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
             val replyMessage = ApplMessage(storageReply)
             val freeSpace = PrologUtils.extractPayload(replyMessage.msgContent())[1].toFloat()
 
-            val trolleyStatus = TrolleyStatus.fromProlog(coapRequest("trolley"))
-            val trolleyAmount = if (trolleyStatus.contentType == WasteType.valueOf(depositType.uppercase()))
-                trolleyStatus.contentAmount else 0f
-
+            val trolleyStatusString = coapRequest("trolley")
+            val contentLine = PrologUtils.getFuncLine("content", trolleyStatusString)
+            var trolleyAmount = 0f
+            if (contentLine != null) {
+                val trolleyPayload = PrologUtils.extractPayload(contentLine)
+                val contentType = trolleyPayload[0]
+                if (contentType == depositType) {
+                    trolleyAmount = trolleyPayload[1].toFloat()
+                }
+            }
+            
             if (depositAmount + trolleyAmount <= freeSpace) {
                 session.sendMessage(TextMessage("loadaccept"))
                 sendTrolley(session, depositType, depositAmount)

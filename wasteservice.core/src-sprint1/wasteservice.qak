@@ -1,0 +1,288 @@
+System wasteservice
+
+Request storageAsk : storageAsk(MAT)
+Reply storageAt : storageAt(MAT, QNT)
+Dispatch storageDeposit : storageDeposit(MAT, QNT)
+Request trolleyMove : trolleyMove(X,Y)
+Request trolleyRotate : trolleyRotate(DIR)
+Request trolleyCollect : trolleyCollect(MAT,QNT)
+Request trolleyDeposit : trolleyDeposit(_)
+
+Reply trolleyDone: trolleyDone(_)
+Reply trolleyFail: trolleyFail(ERR)
+
+Request triggerDeposit : triggerDeposit(MAT,QNT)
+Reply trolleyPickedUp : trolleyPickedUp(_)
+
+// BasicRobot
+
+Request  dopath    : dopath( PATH  )
+Reply dopathdone   : dopathdone( ARG )
+Reply dopathfail   : dopathfail( ARG )
+
+
+// MESSAGGI PER TEST
+// Impostazione di valori e reset di attori vari
+Dispatch testStorageReset : testStorageReset(_)
+Dispatch testStorageSet : testStorageSet(JSON_DATA)
+
+Context ctx_wasteservice ip [host="localhost" port=8023]
+
+// Esterno
+Context ctx_basicrobot ip [host="127.0.0.1" port=8020]
+
+ExternalQActor pathexec context ctx_basicrobot
+
+QActor wasteservice context ctx_wasteservice {
+	[#
+		val Support = it.unibo.lenziguerra.wasteservice.wasteservice.WasteserviceSupport()
+		var Material = ""
+		var Quantity = 0.0f
+		var Box = ""
+		var Position = "0,0"
+	#]
+	State start initial {
+		println("\tWS | Start")
+	}
+	Goto home
+	
+	State home {
+		printCurrentMessage
+		updateResource [# "tpos(home)" #]
+		println("\tWS | Trolley at home")
+	}
+	Transition t0 whenRequest triggerDeposit -> go_indoor
+	
+	State go_indoor {
+		printCurrentMessage
+		onMsg(triggerDeposit : triggerDeposit(MAT,QNT)){
+			[#
+				Material = payloadArg(0)
+				Quantity = payloadArg(1).toFloat()
+				Box = Material + "_box"
+			#]
+		}
+		[# Position = Support.getDestination("indoor", Position) #]
+		request trolley -m trolleyMove : trolleyMove($Position)
+	}
+	Transition t2 whenReply trolleyDone -> indoor
+		          whenReply trolleyFail -> error
+	
+	State indoor {
+		printCurrentMessage
+		println("\tWT | Trolley at indoor, picking up $Quantity $Material...")
+		updateResource [# "tpos(indoor)" #]
+		request trolley -m trolleyCollect : trolleyCollect($Material, $Quantity)
+	}
+	Transition t3 whenReply trolleyDone -> go_box
+		          whenReply trolleyFail -> error
+	
+	State go_box {
+		printCurrentMessage
+		replyTo triggerDeposit with trolleyPickedUp : trolleyPickedUp(_)
+		// forward wastetruck -m pickedUp : pickedUp(_)
+		[# Position = Support.getDestination(Box, Position) #]
+		request trolley -m trolleyMove : trolleyMove($Position)
+	}
+	Transition t4 whenReply trolleyDone -> box
+		          whenReply trolleyFail -> error
+	
+	State box {
+		printCurrentMessage
+		println("\tWT | Trolley at $Material box, depositing $Quantity $Material...")
+		[# Support.updateTrolleyPos(Box) #]
+		updateResource [# "tpos($Box)" #]
+		request trolley -m trolleyDeposit : trolleyDeposit(_)
+	}
+	Transition t5 whenReply trolleyDone -> done
+		          whenReply trolleyFail -> error
+					
+	State done {
+		printCurrentMessage
+		println("\tWT | Done deposit action")
+	}
+	Transition t0 whenTime 0 -> go_home 
+				  whenRequest triggerDeposit -> go_indoor
+				  
+	State go_home {
+		printCurrentMessage
+		[# Position = Support.getDestination("home", Position) #]
+		request trolley -m trolleyMove : trolleyMove($Position)
+	}
+	Transition t7 whenReply trolleyDone -> home_rotate
+		          whenReply trolleyFail -> error
+		          
+    State home_rotate {
+		printCurrentMessage
+		request trolley -m trolleyRotate : trolleyRotate(down)
+    }
+	Transition t7 whenReply trolleyDone -> home
+          whenReply trolleyFail -> error
+		          
+    State error {
+    	onMsg (trolleyFail : trolleyFail(ERR)) {
+			updateResource [# "tpos(unknown)\nerror(${payloadArg(0)})" #]
+    	}
+    	
+    	printCurrentMessage
+    	println("####################################")
+    	println("# WASTESERVICE: ERRORE! AGGIUSTARE #")
+    	println("# MANUALMENTE E RIAVVIARE!         #")
+    	println("####################################")
+    }
+}
+
+QActor trolley context ctx_wasteservice {
+	[#
+		val Support = it.unibo.lenziguerra.wasteservice.trolley.TrolleySupport.getSupport()
+	#]
+	State init initial {
+	}
+	Goto idle
+
+	State idle {
+		printCurrentMessage
+		updateResource [# Support.getPrologContent() #]
+		println("$Support")
+	}
+	Transition t0 whenRequest trolleyMove -> handleMove
+				  whenRequest trolleyCollect -> handleCollect
+				  whenRequest trolleyDeposit -> handleDeposit
+				  whenRequest trolleyRotate -> handleRotate
+
+	State handleMove {
+		printCurrentMessage
+		onMsg (trolleyMove : trolleyMove(X,Y) ) {
+			[# 
+				val Path = Support.preparePath(payloadArg(0).toInt(), payloadArg(1).toInt()) 
+				println("Doing path $Path")
+			#]
+			request pathexec -m dopath : dopath($Path)
+		}
+	}
+	Transition t0 whenReply dopathdone -> moveSuccess
+				  whenReply dopathfail -> moveFail
+				  
+	State handleRotate {
+		printCurrentMessage
+		onMsg (trolleyRotate : trolleyRotate(DIR)) {
+			[#
+				val Path = Support.prepareRotation(payloadArg(0))
+				println("Doing rotation $Path")
+			#]
+			request pathexec -m dopath : dopath($Path)
+		}
+	}
+	Transition t0 whenReply dopathdone -> rotateSuccess
+			  whenReply dopathfail -> moveFail
+	
+	State moveSuccess {
+		[# Support.applyPath() #]
+		replyTo trolleyMove with trolleyDone : trolleyDone(_)
+	}
+	Goto idle	
+	
+	State rotateSuccess {
+		[# Support.applyPath() #]
+		replyTo trolleyRotate with trolleyDone : trolleyDone(_)
+	}
+	Goto idle
+	
+	State moveFail {
+		replyTo trolleyMove with trolleyFail : trolleyFail(move)
+    	println("####################################")
+    	println("# TROLLEY BLOCCATO! AGGIUSTARE     #")
+    	println("# MANUALMENTE E RIAVVIARE!         #")
+    	println("####################################")
+	}
+	Goto idle
+	
+	
+	State handleCollect{
+		printCurrentMessage
+		onMsg (trolleyCollect: trolleyCollect(MAT,QNT)){
+			[#
+				Support.collect(payloadArg(0), payloadArg(1).toFloat())
+			#]
+			replyTo trolleyCollect with trolleyDone : trolleyDone(_)
+		}
+	}
+	Goto idle
+	
+	State handleDeposit{
+		printCurrentMessage
+		onMsg (trolleyDeposit: trolleyDeposit(_)){
+			[#
+				val Material = Support.getMaterial()
+				val Quantity = Support.getQuantity()
+				Support.deposit()
+			#]
+			forward storagemanager -m storageDeposit : storageDeposit($Material,$Quantity)
+			replyTo trolleyDeposit with trolleyDone : trolleyDone(_)
+		}
+	}
+	Goto idle
+	
+}
+
+QActor storagemanager context ctx_wasteservice {
+	[#
+		var Support = it.unibo.lenziguerra.wasteservice.storage.StorageManagerSupport.getSupport()
+	#]
+	State init initial {
+		println("$Support")
+		updateResource [# Support.getPrologContent() #]
+	}
+	Goto idle
+	
+	State idle {
+		printCurrentMessage
+	}
+	Transition t0 whenRequest storageAsk -> handleAsk
+				  whenMsg storageDeposit -> handleDeposit
+				  whenMsg testStorageReset -> handleTestReset
+				  whenMsg testStorageSet -> handleTestSet
+	
+	State handleAsk {
+		printCurrentMessage
+		onMsg (storageAsk : storageAsk(MAT) ) {
+			[# var SpaceLeft = Support.getSpace(payloadArg(0)) #]
+			replyTo storageAsk with storageAt : storageAt($payloadArg(0), $SpaceLeft)
+		}
+	}
+	Goto idle
+	
+	State handleDeposit {
+		printCurrentMessage
+		onMsg ( storageDeposit : storageDeposit(MAT, QNT) ){
+			if [# Support.deposit(payloadArg(0), payloadArg(1).toFloat()) #] {
+				println("$Support")
+				updateResource [# Support.getPrologContent() #]
+			} else {
+				println("SM | Errore: tentato di depositare materiale in eccesso, ${payloadArg(0)}: ${payloadArg(1)}")	
+			}
+		}
+	}
+	Goto idle
+	
+	
+	State handleTestReset {
+		printCurrentMessage
+		[# Support.reset() #]
+		println("Storage manager: reset contents")
+		println("$Support")
+		updateResource [# Support.getPrologContent() #]
+	}
+	Goto idle
+	
+	State handleTestSet {
+		printCurrentMessage
+		onMsg ( testStorageSet : testStorageSet(JSON_DATA) ){
+			[# Support.set(payloadArg(0)) #]
+			println("Storage manager: set contents ${payloadArg(0)}")
+			println("$Support")
+			updateResource [# Support.getPrologContent() #]
+		}
+	}
+	Goto idle
+}
