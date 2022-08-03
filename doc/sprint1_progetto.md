@@ -55,7 +55,7 @@ I test plan stabiliti in analisi sono stati adattati al sistema finale dello SPR
 
 Note sull'esecuzione: 
 
-* È necessario avviare BasicRobot22 prima di eseguire i test, è incluso un file docker per farlo facilmente, con le impostazioni della mappa che seguono il dominio del problema.
+* È necessario avviare BasicRobot22 prima di eseguire i test, è incluso un [file docker](../wasteservice.core/basicrobot22.yaml) per farlo facilmente, con le impostazioni della mappa che seguono il dominio del problema.
 * I test vanno avviati un metodo alla volta, ed è necessario aggiornare la pagina di VirtualEnv di BasicRobot tra le esecuzioni, a causa di requisiti di VirtualEnv e Qak.
 
 
