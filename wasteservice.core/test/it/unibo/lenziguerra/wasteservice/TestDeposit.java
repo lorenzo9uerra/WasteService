@@ -87,7 +87,7 @@ public class TestDeposit {
             "test",
             "testStorageReset",
             "testStorageReset()",
-                SystemConfig.INSTANCE.getCtxNames().get("storage")
+                SystemConfig.INSTANCE.getContexts().get("storage")
         ));
 
         startDeposit("glass", 15);
@@ -105,7 +105,7 @@ public class TestDeposit {
                 CommUtils.delay(1000);
 
                 List<String> storageReplyLines = PrologUtils.INSTANCE.getFuncLines(
-                        coapRequest("storage", ctx_storage, SystemConfig.INSTANCE.getCtxNames().get("storage")),
+                        coapRequest("storage", ctx_storage, SystemConfig.INSTANCE.getContexts().get("storage")),
                         "content"
                 );
                 for (String line : storageReplyLines) {
@@ -186,7 +186,7 @@ public class TestDeposit {
     protected void startDeposit(String type, int amount) {
         String startDepositDispatch = MsgUtil.buildRequest("test", "triggerDeposit",
                 "triggerDeposit(" + type + ", " + amount + ")",
-                SystemConfig.INSTANCE.getCtxNames().get("wasteService")
+                SystemConfig.INSTANCE.getContexts().get("wasteService")
         ).toString();
         try {
             ConnTcp connTcp = new ConnTcp(
@@ -215,20 +215,20 @@ public class TestDeposit {
 
     protected void waitForActors() {
         ColorsOut.outappl(this.getClass().getName() + " waits for actors ... ", ColorsOut.GREEN);
-        ActorBasic trolley = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("trolley"));
+        ActorBasic trolley = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("trolley"));
         while (trolley == null) {
             CommUtils.delay(200);
-            trolley = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("trolley"));
+            trolley = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("trolley"));
         }
-        ActorBasic wasteservice = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("wasteService"));
+        ActorBasic wasteservice = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("wasteService"));
         while (wasteservice == null) {
             CommUtils.delay(200);
-            wasteservice = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("wasteService"));
+            wasteservice = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("wasteService"));
         }
-        ActorBasic storage = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("storage"));
+        ActorBasic storage = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("storage"));
         while (storage == null) {
             CommUtils.delay(200);
-            storage = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("storage"));
+            storage = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("storage"));
         }
 
         ctx_trolley = trolley.getContext().getName();
@@ -243,7 +243,7 @@ public class TestDeposit {
         new Thread(() -> {
             CoapConnection conn = new CoapConnection(SystemConfig.INSTANCE.getHosts().get("trolley")
                     + ":" + SystemConfig.INSTANCE.getPorts().get("trolley"),
-                    ctx_trolley + "/" + SystemConfig.INSTANCE.getCtxNames().get("trolley")
+                    ctx_trolley + "/" + SystemConfig.INSTANCE.getContexts().get("trolley")
             );
             conn.observeResource(trolleyPosObserver);
             ColorsOut.outappl("connected via Coap conn:" + conn , ColorsOut.CYAN);
@@ -255,7 +255,7 @@ public class TestDeposit {
         new Thread(() -> {
             CoapConnection conn = new CoapConnection(SystemConfig.INSTANCE.getHosts().get("wasteServiceContext")
                     + ":" + SystemConfig.INSTANCE.getPorts().get("wasteServiceContext"),
-                    ctx_wasteservice + "/" + SystemConfig.INSTANCE.getCtxNames().get("wasteService")
+                    ctx_wasteservice + "/" + SystemConfig.INSTANCE.getContexts().get("wasteService")
             );
             conn.observeResource(wasteServiceObserver);
             ColorsOut.outappl("connected via Coap conn:" + conn , ColorsOut.CYAN);

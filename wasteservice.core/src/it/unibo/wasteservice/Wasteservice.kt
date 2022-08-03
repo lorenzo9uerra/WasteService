@@ -30,8 +30,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("home") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 Support.updateTrolleyPos("home")  
-						updateResourceRep( Support.getPrologContent()  
+						updateResourceRep( "tpos(home)"  
 						)
 						println("	WS | Trolley at home")
 					}
@@ -57,8 +56,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WT | Trolley at indoor, picking up $Quantity $Material...")
-						 Support.updateTrolleyPos("indoor")  
-						updateResourceRep( Support.getPrologContent()  
+						updateResourceRep( "tpos(indoor)"  
 						)
 						request("trolleyCollect", "trolleyCollect($Material,$Quantity)" ,"trolley" )  
 					}
@@ -80,7 +78,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WT | Trolley at $Material box, depositing $Quantity $Material...")
 						 Support.updateTrolleyPos(Box)  
-						updateResourceRep( Support.getPrologContent()  
+						updateResourceRep( "tpos($Box)"  
 						)
 						request("trolleyDeposit", "trolleyDeposit(_)" ,"trolley" )  
 					}
@@ -118,10 +116,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("trolleyFail(ERR)"), Term.createTerm("trolleyFail(ERR)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 
-												Support.updateTrolleyPos("unknown") 
-												Support.error = payloadArg(0)
-								updateResourceRep( Support.getPrologContent()  
+								updateResourceRep( "tpos(unknown)\nerror(${payloadArg(0)})"  
 								)
 						}
 						println("$name in ${currentState.stateName} | $currentMsg")
