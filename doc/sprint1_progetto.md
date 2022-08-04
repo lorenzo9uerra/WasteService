@@ -108,9 +108,11 @@ tpos(LOC) // Posizione del trolley in termini di nome ("home", "indoor", ecc.)
 
 In caso di errori, cioè, allo stato virtuale del sistema,collisione del Trolley, il sistema si blocca e necessita di una risoluzione manuale del problema seguita da un riavvio. Questo comportamento è stato deciso data l'impossibilità di risolvere dal lato del sistema problemi di questa natura, che in un caso reale sarebbero dati da incidenti fisici nell'area risolvibili solo da un operatore.
 
-<immagine architettura>
+![architettura di WasteService](img/prog1_wasteservice_arch.jpg)
 
-<immagine interazioni>
+![interazioni WasteService](img/prog1_wasteservice_inter.jpg)
+
+*Diagramma sintetico delle interazioni di WasteService in caso di richiesta, a scopo esplicativo*
 
 ### Trolley
 
@@ -136,7 +138,7 @@ pos(X, Y) // Posizione numerica
 {content(MAT, QNT)} // Opzionale, contenuto trasportato
 ```
 
-<immagine architettura>
+![architettura Trolley](img/prog1_trolley.jpg)
 
 ### StorageManager
 
@@ -153,7 +155,7 @@ content(MAT, QNT, MAX)
 
 La struttura finale del sistema nello SPRINT 1 è riassunta in questo grafico: 
 
-<immagine architettura>
+![architettura progetto](img/architettura1_progetto.jpg)
 
 ### Immagine Docker
 

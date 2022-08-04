@@ -248,6 +248,12 @@
                     <a href="#progetto">Progettazione e sviluppo</a>
                 </li>
                 <li>
+                    <a href="#testing">Testing</a>
+                </li>
+                <li>
+                    <a href="#deploy">Deployment</a>
+                </li>
+                <li>
                     <a href="#sprint1_recap">Riassunto SPRINT 1</a>
                 </li>
             </ul>
@@ -715,23 +721,189 @@
         <h2>Project</h2>
 
 
+        <section id="progetto">
+            <p>La progettazione e lo sviluppo delle componenti software stabilite in fase di analisi è stata divisa in questo modo:</p>
+            <ul>
+            <li>Trolley, e interazione con BasicRobot: L. Guerra</li>
+            <li>Wasteservice (parte relativa a interazione e controllo Trolley): L. Guerra</li>
+            <li>Wasteservice (parte relativa a gestione richieste Wastetruck): F. Lenzi</li>
+            <li>StorageManager: F. Lenzi</li>
+            <li>WasteTruck (ricezione pickUp e GUI): F. Lenzi</li>
+            </ul>
+            <p>È stato possibile dividere facilmente lo sviluppo di WasteService per la struttura che è stata adottata, dettagliata <a href="#wasteservice">in seguito</a>.</p>
+            <h3 id="in-generale">In generale</h3>
+            <p>In fase di progettazione e sviluppo, i vari attori facenti parti del sistema sono stati strutturati come risorsa osservabile COaP, con dati in formato Prolog, sfruttando la libreria QakActor, sia per facilitare l'espansione futura in successivi SPRINT, sia per rendere più facile il testing.</p>
+            <p>Per esempio Trolley, quando osservato, fornisce questi dati in formato Prolog:</p>
+<pre><code>state(work)
+pos(X,Y)
+{content(MAT,QNT)}
+</code></pre>
+            <p>con <code>content</code> opzionale se non trasporta carichi.</p>
+            <p>Inoltre, ad ogni attore Qak è stat associata una classe Kotlin di support, per ridurre il codice nel file Qak e permettere comportamenti di classe più complessi. Ogni classe implementa un'interfaccia che contiene le proprietà e metodi accessibili dall'attore.</p>
+            <h3 id="struttura-del-software">Struttura del software</h3>
+            <p>Il sistema è stato realizzato in linguaggio Kotlin, e parti minori in Java, ed è stato diviso in più progetti:</p>
+            <ul>
+            <li><em>wasteservice.shared</em>: contiene la classe di configurazione <code>SystemConfig</code>, enumerativi, e utilità comuni alle varie parti del sistema.</li>
+            <li><em>wasteservice.core</em>: contiene il core business dell'applicazione, vale a dire WasteService, Trolley, e StorageManager, che è stato implementato in questo SPRINT.</li>
+            </ul>
+            <p>Il software è contenuto nel package <em>it.unibo.lenziguerra.wasteservice</em>, eccetto le classi Kotlin generate da Qak che sono nel percorso attribuito da quel sistema. In particolare i due progetti contengono questi package:</p>
+            <ul>
+            <li><strong>wasteservice.shared</strong>
+            <ul>
+            <li><em>it.unibo.lenziguerra.wasteservice</em> (config e enumerativi)</li>
+            <li><em>it.unibo.lenziguerra.wasteservice.utils</em></li>
+            </ul>
+            </li>
+            <li><strong>wasteservice.core</strong>
+            <ul>
+            <li><em>it.unibo.lenziguerra.wasteservice.wasteservice</em></li>
+            <li><em>it.unibo.lenziguerra.wasteservice.trolley</em></li>
+            <li><em>it.unibo.lenziguerra.wasteservice.storage</em></li>
+            </ul>
+            </li>
+            </ul>
+            <p>Per scopo di documentazione, il codice allo stato della fine dello SPRINT 1 è stato copiato in una cartella <em>src-sprint1</em>.</p>
+            <h3 id="test">Test</h3>
+            <p>I test plan stabiliti in analisi sono stati adattati al sistema finale dello SPRINT 1, sono eseguibili in questi file:</p>
+            <ul>
+            <li><a href="../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/wasteservice/TestRequest.java">TestRequest.java</a></li>
+            <li><a href="../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestDeposit.java">TestDeposit.java</a></li>
+            <li><a href="../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestMoreRequests.java">TestMoreRequests.java</a></li>
+            </ul>
+            <p>Note sull'esecuzione:</p>
+            <ul>
+            <li>È necessario avviare BasicRobot22 prima di eseguire i test, è incluso un <a href="../wasteservice.core/basicrobot22.yaml">file docker</a> per farlo facilmente, con le impostazioni della mappa che seguono il dominio del problema.</li>
+            <li>I test vanno avviati un metodo alla volta, ed è necessario aggiornare la pagina di VirtualEnv di BasicRobot tra le esecuzioni, a causa di requisiti di VirtualEnv e Qak.</li>
+            </ul>
+            <h3 id="wasteservice">WasteService</h3>
+            <h4 id="divisione">Divisione</h4>
+            <p>È stata presa la decisione di implementare WasteService come due entità software distinte ma interagenti nello stesso nodo:</p>
+            <ul>
+            <li><em>WasteServiceServer</em>, un applicazione web realizzata con il framework SpringBoot che espone un interfaccia per i WasteTruck, e gestisce le loro richieste e le relative autorizzazioni.</li>
+            <li><em>WasteService</em> propter, un attore Qak con annessa classe di supporto, che si occupa di gestire l'operazione di deposito coordinando il Trolley che agisce da attuatore come da analisi.</li>
+            </ul>
+            <p>Questo permette di realizzare facilmente l'interazione e l'interfaccia per il WasteTruck, oltre ad avere il vantaggio di disaccoppiare l'operazione di deposito dalla gestione delle richieste: il modello degli stati sviluppato in analisi portava a rispondere a una richiesta arrivata da un WasteTruck solo alla fine di una operazione di deposito. In questo modo, invece, il server è sempre in ascolto di richieste, e in grado di gestirle.</p>
+            <p>Questo ha inoltre, come effetto secondario, permesso agli sviluppatori di lavorare separatamente alle due parti del progetto (gestione richieste e operazione di deposito)</p>
+            <h4 id="richieste">Richieste</h4>
+            <p>La parte di WasteService che da analisi interagisce con WasteTruck viene implementata come server web: la pagina servita fa le veci dell'attore nel modello di analisi WasteTruck.</p>
+            <p>Questa pagina contiene script che comunicano con il server di WasteService tramite WebSocket, permettendo sia di inviare richieste e ricevere risposte, sia di ascoltare sulla connessione per la notifica di carico raccolto. WasteTruck diventa quindi, da attore, una pagina web, che viene aperta dal pilota del Waste Truck.</p>
+            <p>Tramite WebSocket, la pagina del WasteTruck è in grado di rimanere in ascolto per aggiornamenti sulla raccolta del carico, come da analisi (dispatch <code>pickedUp</code>).</p>
+            <p>Il server, per gestire le richieste, deve chiedere come da analisi informazioni a StorageManager: per farlo agisce da &quot;alieno&quot; al contesto Qak, stabilendo una connessione TCP con il contesto di StorageManager (in questa prima versione, ospitato per demo nello stesso nodo). Chiede al Trolley tramite COaP dati sul suo contenuto attuale, per lo stesso motivo.</p>
+            <p>L'inizio dell'operazione di deposito viene fatto inviando da &quot;alieno&quot; una richiesta tramite TCP al contesto di WasteService attore ospitato in locale: viene introdotta una nuova richiesta per coordinare le due &quot;metà&quot; di WasteService:</p>
+<pre><code>Request triggerDeposit : triggerDeposit(MAT,QNT)
+Reply trolleyPickedUp : trolleyPickedUp(_)
+</code></pre>
+            <p>WasteServiceServer invia <code>triggerDeposit</code> all'attore per avviare l'operazione di deposito, e riceve <code>trolleyPickedUp</code> per sapere quando inviare <code>pickedUp</code> al WasteTruck come da analisi.</p>
+            <h4 id="deposit">Deposit</h4>
+            <p>WasteService attore è simile al modello dell'analisi. È in grado di stabilire la coordinata più vicina al trolley tra quelle incluse nel rettangolo della area di destinazione, e coordina il Trolley attraverso le varie fasi della <em>deposit action</em>.</p>
+            <p>Il requisito <strong>indoor-more-requests</strong> è adempiuto in modo semplice: WasteService attore, per comportamento default di Qak, mette in coda eventuali richieste di <code>triggerDeposit</code> arrivate durante una <em>deposit action</em>, e decide se mandare a HOME o a INDOOR il Trolley a operazione finita in base alla presenza o meno di ulteriori richieste in coda.</p>
+            <p>L'attore, come detto, è osservabile tramite COaP: la risorsa espone questi dati:</p>
+<pre><code>tpos(LOC) // Posizione del trolley in termini di nome (&quot;home&quot;, &quot;indoor&quot;, ecc.)
+{error(ERR)} // Errore (opz.), nel caso il sistema abbia errori
+</code></pre>
+            <h4 id="gestione-errori">Gestione errori</h4>
+            <p>In caso di errori, cioè, allo stato virtuale del sistema,collisione del Trolley, il sistema si blocca e necessita di una risoluzione manuale del problema seguita da un riavvio. Questo comportamento è stato deciso data l'impossibilità di risolvere dal lato del sistema problemi di questa natura, che in un caso reale sarebbero dati da incidenti fisici nell'area risolvibili solo da un operatore.</p>
+            <p><img src="img/prog1_wasteservice_arch.jpg" alt="architettura di WasteService" /></p>
+            <p><img src="img/prog1_wasteservice_inter.jpg" alt="interazioni WasteService" /></p>
+            <p><em>Diagramma sintetico delle interazioni di WasteService in caso di richiesta, a scopo esplicativo</em></p>
+            <h3 id="trolley">Trolley</h3>
+            <p>Per lo spostamento del Trolley, come da analisi, si è pensato di utilizzare il componente software <em>BasicRobot</em>. In particolare, il Trolley interagisce con l'attore <em>pathexec</em>, che permette di svolgere percorsi costituiti da una serie di comandi (w: forward, r: gira a destra, l: gira a sinistra) con una singola interazione request-reply.</p>
+            <p>Il Trolley agisce, come da analisi, come semplice attuatore. Espone come &quot;interfaccia&quot; la possibilità di inviare richieste <code>trolleyDeposit</code>, <code>trolleyCollect</code>, e <code>trolleyMove</code>. Le risposte inviate dal robot sono state espanse da una singola risposta <code>trolleyDone(OK)</code> da analisi, a due risposte <code>trolleyDone</code> e <code>trolleyFail(REASON)</code>, per rendere più semplice la distinzione dei casi in Qak.</p>
+            <p>Le prime due richieste sono interamente gestite dalla classe di supporto legata al trolley, <em>ITrolleySupport</em>; al momento è implementata per il caso virtuale, ma è facilmente espandibile per un eventuale caso reale.</p>
+            <p>L'operazione di movimento è come sopra gestita da <em>pathexec</em>: la classe di supporto genera il percorso a partire dalla posizione di partenza e dalle coordinate target, poi Trolley lo invia a <em>pathexec</em> e in caso di successo aggiorna la posizione memorizzata. Essa, infatti, tiene traccia di posizione e direzione attuali del robot.</p>
+            <p>È stata inoltre aggiunta un'operazione <code>trolleyRotate</code>, per permettere la rotazione senza movimento, usata per tornare rivolti nella posizione iniziale una volta tornati a HOME.</p>
+            <p><em>Basicrobot</em> permette di implementare il movimento del robot in modo indipendente dalla tecnologia, il che lo rende un componente utile in fase di testing. Infatti, prima di utilizzare un robot reale, sarà possibile osservare i movimenti del trolley grazie a <em>WEnv</em>.</p>
+            <p>Come per <em>WasteService</em>, un errore blocca il sistema fino alla risoluzione manuale, per le ragioni già indicate.</p>
+            <p>Come detto sopra, inoltre, il Trolley è una risorsa COaP osservabile, esponendo questi dati:</p>
+<pre><code>state(work) // In questo SPRINT costante, espandibile per includere altri stati (stop, ecc.)
+pos(X, Y) // Posizione numerica
+{content(MAT, QNT)} // Opzionale, contenuto trasportato
+</code></pre>
+            <p><img src="img/prog1_trolley.jpg" alt="architettura Trolley" /></p>
+            <h3 id="storagemanager">StorageManager</h3>
+            <p>StorageManager, in modo analogo a Trolley, è rappresentato come classe Qak associata a classe Kotlin di support. Come Trolley rimane aperta all'espansione per un ipotetico caso reale.</p>
+            <p>La risorsa COaP esposta mostra questi dati:</p>
+<pre><code>// Per ogni materiale contenuto:
+content(MAT, QNT, MAX)
+</code></pre>
+            <h3 id="struttura-del-sistema">Struttura del sistema</h3>
+            <p>La struttura finale del sistema nello SPRINT 1 è riassunta in questo grafico:</p>
+            <p><img src="img/architettura1_progetto.jpg" alt="architettura progetto" /></p>
+            <h3 id="immagine-docker">Immagine Docker</h3>
+            <p>Viene fornito <a href="../wasteservice.core/wasteservice.yaml">wasteservice.yaml</a> per eseguire il sistema con Docker. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, e alla porta 8090 per visualizzare l'ambiente virtuale del robot.</p>
+        </section>
+
         <h2>Testing</h2>
 
+        <section id="testing">
+            <p>I test plan stabiliti in analisi sono stati adattati al sistema finale dello SPRINT 1, sono eseguibili in questi file:</p>
+            <ul>
+            <li><a href="../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/wasteservice/TestRequest.java">TestRequest.java</a></li>
+            <li><a href="../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestDeposit.java">TestDeposit.java</a></li>
+            <li><a href="../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestMoreRequests.java">TestMoreRequests.java</a></li>
+            </ul>
+            <p>Note sull'esecuzione:</p>
+            <ul>
+            <li>È necessario avviare BasicRobot22 prima di eseguire i test, è incluso un <a href="../wasteservice.core/basicrobot22.yaml">file docker</a> per farlo facilmente, con le impostazioni della mappa che seguono il dominio del problema.</li>
+            <li>I test vanno avviati un metodo alla volta, ed è necessario aggiornare la pagina di VirtualEnv di BasicRobot tra le esecuzioni, a causa di requisiti di VirtualEnv e Qak.</li>
+            </ul>
+        </section>
 
         <h2>Deployment</h2>
 
+        <section id="deployment">
+            <p>Viene fornito <a href="../wasteservice.core/wasteservice.yaml">wasteservice.yaml</a> per eseguire il sistema con Docker. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, e alla porta 8090 per visualizzare l'ambiente virtuale del robot.</p>
+        </section>
+
+        <h2>Riassunto SPRINT 1</h2>
+
+        <section id="sprint1_recap">
+            <ul>
+                <li><strong>request</strong>: il <em>WasteService</em> accetta richieste di deposito da <em>Waste truck</em> che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare.</li>
+                <li><strong>deposit</strong>: il <em>trolley</em>, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa è una <em>deposit action</em>.</li>
+                <li><strong>indoor-more-requests</strong>: il <em>trolley</em>, terminata una <em>deposit action</em>, torna a HOME solo se non ci sono altre richieste da gestire, altrimenti gestisce subito la richiesta successiva andando a INDOOR.</li>
+                </ul>
+                <h3 id="analisi">Analisi</h3>
+                <p>Dopo la fase di analisi, l'architettura logica del sistema è stata così pensata:</p>
+                <p><img src="img/arch_logica.png" alt="modello architettura logica" /></p>
+                <p><img src="img/arch_fsm_wasteservice.png" alt="diagramma stati WasteService" /></p>
+                <p><a href="../wasteservice.prototype/src/prototype_sprint1.qak"><strong>Prototipo eseguibile</strong></a></p>
+                <p>Il sistema è stato pensato per usare la componente esterna BasicRobot22, per semplificare le interazioni con robot reali e virtuali.</p>
+                <p>Sono stati realizzati, in fase di analisi, dei test plan già eseguibili sfruttando il prototipo in Qak, per ogni requisito. Sono dettagliati nella sezione apposita, e collegati di seguito:</p>
+                <ul>
+                <li><a href="../wasteservice.prototype/test/it/unibo/TestRequest.java">TestRequest.java</a></li>
+                <li><a href="../wasteservice.prototype/test/it/unibo/TestDeposit.java">TestDeposit.java</a></li>
+                <li><a href="../wasteservice.prototype/test/it/unibo/TestMoreRequests.java">TestMoreRequests.java</a></li>
+                </ul>
+                <h3 id="progetto">Progetto</h3>
+                <p>I punti salienti della fase di sviluppo sono i seguenti:</p>
+                <ul>
+                <li><p>L'interfaccia per permettere ai WasteTruck è stata realizzata come applicazione web tramite il framework SpringBoot, che comunica con il sistema tramite WebSocket.</p>
+                </li>
+                <li><p>WasteService è stato realizzato come due componenti distinte e collegate: un server web Spring Boot che fornisce la pagina per fare richieste e le gestisce, e un attore Qak che coordina la <em>deposit action</em> del Trolley.</p>
+                </li>
+                <li><p>Il Trolley realizza il movimento interagendo con BasicRobot22, in particolare l'attore <em>pathexec</em>. Trolley genera il percorso per la destinazione, e lo invia a quest'ultimo attore.</p>
+                </li>
+                <li><p>Ogni attore è una risorsa osservabile COaP con dati utili, permettendo più facile testing e futura espandibilità.</p>
+                </li>
+                </ul>
+                <immagine architettura>
+                <p>I test dell'analisi sono stati adattati all'implementazione:</p>
+                <ul>
+                <li><a href="../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/wasteservice/TestRequest.java">TestRequest.java</a></li>
+                <li><a href="../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestDeposit.java">TestDeposit.java</a></li>
+                <li><a href="../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestMoreRequests.java">TestMoreRequests.java</a></li>
+                </ul>
+                <p>Note sull'esecuzione:</p>
+                <ul>
+                <li>È necessario avviare BasicRobot22 prima di eseguire i test, è incluso un <a href="../wasteservice.core/basicrobot22.yaml">file docker</a> per farlo facilmente, con le impostazioni della mappa che seguono il dominio del problema.</li>
+                <li>I test vanno avviati un metodo alla volta, ed è necessario aggiornare la pagina di VirtualEnv di BasicRobot tra le esecuzioni, a causa di requisiti di VirtualEnv e Qak.</li>
+                </ul>
+                <p>Viene anche fornita un'<strong>immagine Docker</strong> per avviare il sistema in modo semplice: <a href="../wasteservice.core/wasteservice.yaml">wasteservice.yaml</a>.</p>                
+        </section>
 
         <h2>Maintenance</h2>
 
-        <!-- USEFUL
-<table style="width:100%" border="1">
-<tr>
-<td style="width:50%">
-</td>
-<td></td>
-</tr>
-</table>
--->
 
         <br /><br />
     </div>
