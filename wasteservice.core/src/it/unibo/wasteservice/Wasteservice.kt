@@ -30,7 +30,8 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("home") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						updateResourceRep( "tpos(home)"  
+						 Support.updateTrolleyPos("home")  
+						updateResourceRep( Support.getPrologContent()  
 						)
 						println("	WS | Trolley at home")
 					}
@@ -56,7 +57,8 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WT | Trolley at indoor, picking up $Quantity $Material...")
-						updateResourceRep( "tpos(indoor)"  
+						 Support.updateTrolleyPos("indoor")  
+						updateResourceRep( Support.getPrologContent()  
 						)
 						request("trolleyCollect", "trolleyCollect($Material,$Quantity)" ,"trolley" )  
 					}
@@ -78,7 +80,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WT | Trolley at $Material box, depositing $Quantity $Material...")
 						 Support.updateTrolleyPos(Box)  
-						updateResourceRep( "tpos($Box)"  
+						updateResourceRep( Support.getPrologContent()  
 						)
 						request("trolleyDeposit", "trolleyDeposit(_)" ,"trolley" )  
 					}
@@ -116,7 +118,10 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("trolleyFail(ERR)"), Term.createTerm("trolleyFail(ERR)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								updateResourceRep( "tpos(unknown)\nerror(${payloadArg(0)})"  
+								 
+												Support.updateTrolleyPos("unknown") 
+												Support.error = payloadArg(0)
+								updateResourceRep( Support.getPrologContent()  
 								)
 						}
 						println("$name in ${currentState.stateName} | $currentMsg")
@@ -124,7 +129,10 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("# WASTESERVICE: ERRORE! AGGIUSTARE #")
 						println("# MANUALMENTE E RIAVVIARE!         #")
 						println("####################################")
+						stateTimer = TimerActor("timer_error", 
+							scope, context!!, "local_tout_wasteservice_error", 500.toLong() )
 					}
+					 transition(edgeName="t015",targetState="home",cond=whenTimeout("local_tout_wasteservice_error"))   
 				}	 
 			}
 		}

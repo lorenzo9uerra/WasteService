@@ -77,9 +77,11 @@ La natura precisa di questo attore lascia punti aperti che verranno gestiti in f
 Inoltre, il Led deve poter conoscere lo stato del Trolley.
 Anche questo può essere implementato in più modi che rimangono un punto aperto.
 
+[Modello eseguibile Led](../model.requisiti/src/led.qak)
+
 Intanto però, può già essere abbozzato un TestPlan:
 
-<testplan: invia aggiornamenti su stato a led, controlla (con un getState immaginario) che sia giusto>
+[Test plan Led](../model.requisiti/test/it/unibo/TestLed.kt)
 
 ### Analisi **gui**:
 
@@ -90,6 +92,8 @@ Anche in questo caso, dovendo comunicare con il resto del sistema, è opportuno 
 <immagine attore gui>
 
 Come per il Led, il tipo di comunicazione con il resto del sistema rimane un punto aperto.
+
+[Modello eseguibile Gui](../model.requisiti/src/gui.qak)
 
 ## Materiale fornito dal committente
 

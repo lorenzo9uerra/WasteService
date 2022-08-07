@@ -136,6 +136,7 @@ QActor wasteservice context ctx_wasteservice {
     	println("# MANUALMENTE E RIAVVIARE!         #")
     	println("####################################")
     }
+    Transition t0 whenTime 500 -> home // TEMPORANEO, UTILE IN FASE DI SVILUPPO IN CASO DI RESET MANUALE VIRTUALENV
 }
 
 QActor trolley context ctx_wasteservice {
