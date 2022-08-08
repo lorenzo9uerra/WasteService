@@ -1,0 +1,52 @@
+/*
+ * Spostare i file generati da src/* a test/ 
+ * per evitare di includerli nel .jar
+ * e annullare modifiche a settings.json
+ */
+
+System /* -trace */ observerdemo
+
+Dispatch coapUpdate : coapUpdate(VALUE)
+
+Context ctx_observertest ip [host="localhost" port=9000]
+
+QActor observable context ctx_observertest {
+	State s0 initial {
+		printCurrentMessage
+		updateResource [# "start" #]
+	}
+	Goto on
+	
+	State on {
+		printCurrentMessage
+		updateResource [# "on" #]
+	}
+	Transition t0 whenTime 1000 -> off
+	
+	State off {
+		printCurrentMessage
+		updateResource [# "off" #]
+	}
+	Transition t0 whenTime 1000 -> on
+}
+
+QActor observer context ctx_observertest {
+	State s0 initial {
+		qrun coapObserverUtil.startObserving(myself, "observable")
+		/* qrun coapObserverUtil.startObserving(myself, "ctx_observertest", "observable") */
+		/* qrun coapObserverUtil.startObservingHost(myself, "localhost:9000", "ctx_observertest/observable") */
+	}
+	Goto idle
+	
+	State idle {
+	}
+	Transition t0 whenMsg coapUpdate -> handleUpdate
+	
+	State handleUpdate {
+		printCurrentMessage
+		onMsg (coapUpdate : coapUpdate(VALUE)) {
+			println("Received COAP update! Value is: ${payloadArg(0)}")
+		}
+	}
+	Goto idle
+}
