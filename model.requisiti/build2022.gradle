@@ -106,7 +106,7 @@ eclipse {
 
 application {
     // Define the main class for the application.
-    mainClass = 'it.unibo.ctxreq_led.MainCtxreq_ledKt'
+    mainClass = 'it.unibo.ctxreq_deposit.MainCtxreq_depositKt'
 }
 
  jar {

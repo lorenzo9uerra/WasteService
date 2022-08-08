@@ -1,0 +1,81 @@
+System wasteservice_req_led
+
+Dispatch ledSet : ledSet(STATE) // on | off | blinking
+
+Dispatch coapUpdate : coapUpdate(VALUE)
+
+Context ctxpro_led ip [host="localhost" port=8050]
+
+QActor led_trolley context ctxpro_led {
+	State wait initial {
+		delay 1000
+	}
+	Goto randomStatus
+	
+	State randomStatus {
+		if [# kotlin.random.Random.nextFloat() > 0.5 #] {
+			println("\tTrolley working")
+			updateResource [# "work" #]
+		} else {
+			if [# kotlin.random.Random.nextFloat() > 0.5 #] {
+				println("\tTrolley stopped")
+				updateResource [# "stopped" #]
+			}
+			else {
+				println("\tTrolley at home")
+				updateResource [# "home" #]
+			}
+		}
+	}
+	Goto wait
+}
+
+QActor led_ledcontroller context ctxpro_led {
+	State init initial {
+		qrun coapObserverUtil.startObserving(myself, "led_trolley")
+	}
+	Goto observe
+	
+	State observe {
+	}	
+	Transition t0 whenMsg coapUpdate -> handleStatus
+	
+	State handleStatus {
+		// printCurrentMessage
+		onMsg ( coapUpdate : coapUpdate(VALUE) ) {
+			println("Led Controller | Received update ${payloadArg(0)}")
+			[#
+				val Next = when(payloadArg(0)) {
+					"stopped" -> "off"
+					"home" -> "on"
+					else -> "blinking"
+				}
+			#]
+			println("Led Controller | Setting led to $Next")
+			forward led_led -m ledSet : ledSet($Next)
+		}
+	}
+	Goto observe
+}
+
+QActor led_led context ctxpro_led {
+	State start initial {
+		updateResource [# "off" #]
+	}
+	Goto listen
+	
+	State listen {
+		// printCurrentMessage
+	}
+	Transition t0 whenMsg ledSet -> handleSet
+	
+	State handleSet {
+		printCurrentMessage
+		onMsg (ledSet : ledSet(STATE) ) {
+			// inserire controllo valori
+			println("\tLed | ${payloadArg(0).uppercase()}")
+			updateResource [# payloadArg(0) #]
+		}
+	}
+	Goto listen
+}
