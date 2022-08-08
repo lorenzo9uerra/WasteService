@@ -20,10 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
-import unibo.actor22comm.coap.CoapConnection;
-import unibo.actor22comm.interfaces.Interaction2021;
-import unibo.actor22comm.utils.ColorsOut;
-import unibo.actor22comm.utils.CommUtils;
+import unibo.comm22.coap.CoapConnection;
+import unibo.comm22.interfaces.Interaction2021;
+import unibo.comm22.utils.ColorsOut;
+import unibo.comm22.utils.CommUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +80,7 @@ public class TestRequest {
                 "test",
                 "testStorageReset",
                 "",
-                SystemConfig.INSTANCE.getCtxNames().get("storage")
+                SystemConfig.INSTANCE.getContexts().get("storage")
         ));
 
         String reply = askDeposit("glass", 1);
@@ -96,7 +96,7 @@ public class TestRequest {
         float max = 0;
         int amount = 10;
 
-        String storageStatus = coapRequest("storage", ctx_storage, SystemConfig.INSTANCE.getCtxNames().get("storage"));
+        String storageStatus = coapRequest("storage", ctx_storage, SystemConfig.INSTANCE.getContexts().get("storage"));
         List<String> storageLines = PrologUtils.INSTANCE.getFuncLines(storageStatus, "content");
 
         for (String line : storageLines) {
@@ -118,7 +118,7 @@ public class TestRequest {
                         type,
                         max - amount + 5
                 ),
-                SystemConfig.INSTANCE.getCtxNames().get("storage")
+                SystemConfig.INSTANCE.getContexts().get("storage")
         ));
 
         String reply = askDeposit(type, amount);
@@ -134,7 +134,7 @@ public class TestRequest {
                 "test",
                 "testStorageReset",
                 "",
-                SystemConfig.INSTANCE.getCtxNames().get("storage")
+                SystemConfig.INSTANCE.getContexts().get("storage")
         ));
 
         String reply = askDeposit("glass", 1);
@@ -173,10 +173,10 @@ public class TestRequest {
     protected void waitForActors() {
         ColorsOut.outappl(this.getClass().getName() + " waits for actors ... ", ColorsOut.GREEN);
 
-        ActorBasic storage = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("storage"));
+        ActorBasic storage = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("storage"));
         while (storage == null) {
             CommUtils.delay(200);
-            storage = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("storage"));
+            storage = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("storage"));
         }
 
         ctx_storage = storage.getContext().getName();

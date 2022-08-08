@@ -1,6 +1,12 @@
-- Eliminare moreRequests ed inviare doneDeposit immediatamente dopo lo scarico ai cassonetti
+- Correggere implementazione Led per usare WasteService e non Trolley per la posizione
 
-- Aggiungere test per trolley con stop
+
+
+
+
+
+
+
 
 RICEVIMENTO 08/07
 

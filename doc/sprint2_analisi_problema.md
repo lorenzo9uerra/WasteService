@@ -30,28 +30,46 @@ Escludendo di usare comunicazione punto-punto come dispatch e richieste, data la
 
 **Conclusione.** Viene ritenuta come opzione migliore la seconda, l'**osservabilità**, visto che gli attori creati nello SPRINT 1 sono già risorse osservabili con le informazioni necessarie; quindi, non sarebbe necessaria alcuna modifica al software già sviluppato per adempiere a questo requisito, il che sarebbe un grande vantaggio. Inoltre, il fatto che COAP sia un protocollo già definito renderebbe ancora più facile l'estendibilità.
 
+In luce di queste considerazioni, sono quindi aggiornati i modelli eseguibili di Led e Gui:
+
+* [Modello eseguibile Led](../model.problema/src/pro_led.qak)
+* [Modello eseguibile Gui](../model.problema/src/pro_gui.qak)
+
+Per realizzarli, è stata sviluppata una utility per Qak per permettere agli attori di agire da osservatori, oltre che da risorse osservabili. Ulteriori dettagli sono presenti nel file [qakactor.observer.md](qakactor.observer.md).
+
+### Posizione trolley
+
+La posizione del Trolley, come da analisi dello Sprint 1, non è ad esso nota in termini di nomi del dominio ("home", "indoor", ecc.) essendo esso usato come "attuatore", ma solo in termini di coordinate numeriche. La componente che conosce la posizione del Trolley in termini di nomi dei luoghi è WasteService.
+
+Dovendo Gui conoscere la posizione del Trolley in termini di nomi dei luoghi, si pongono due possibilità: 
+
+- Gui potrebbe osservare anche WasteService, che comunque già fornisce questa informazione come risorsa.
+
+- Gui potrebbe continuare a osservare solo Trolley, e decodificare il nome delle posizioni dalla configurazione.
+
+**Conclusioni.** È stato deciso il primo approccio, ritenuto più vicino al principio di singola responsabilità; invece di mettere la logica di rilevazione del luogo dalla posizione in più componenti, la si mette in un componente solo (WasteService) e si chiede ad esso lo stato attuale del dato.
+
+Led ha un problema simile, cioè sapere se Trolley si trovi a HOME o meno: viene usata una soluzione analoga.
 
 ### Architettura Logica
 
 Ecco quindi l'architettura logica finale del sistema in generale per questo SPRINT:
 
-![modello architettura logica]()
-<inserire immagine>
+![modello architettura logica](img/sprint2_pro_arch.jpg)
 
-[**Prototipo eseguibile**]()
-<inserire prototipo>
+[**Modello eseguibile generale / prototipo.**](../wasteservice.prototype/src/prototype_sprint2.qak) Si noti come rispetto al modello eseguibile dello Sprint1, non sia stato necessario modificare niente del codice preesistente ma sia bastato aggiungere gli attori-osservatori.
 
 ### Test Plan
 
 #### TestPlan: led
 
-Test plan in Kotlin: []()
+Test plan in Kotlin: [TestLed.kt](../wasteservice.prototype/test/it/unibo/TestLed.kt)
 
 - **Test Led**: creazione di server COAP "fasullo" allo stesso indirizzo del contesto del sistema principale osservato. Invio di dati che portano ai vari stati del Led, poi verifica che questi stati siano stati raggiunti.
 
 
 #### TestPlan: gui
 
-Test plan in Kotlin: []()
+Test plan in Kotlin: [TestGui.kt](../wasteservice.prototype/test/it/unibo/TestGui.kt)
 
 - **Test Gui**: creazione di server COAP "fasullo" allo stesso indirizzo del contesto del sistema principale osservato. Invio di dati che portano a vari stati della Gui, e verifica che la pagina risultante venga modificata correttamente.

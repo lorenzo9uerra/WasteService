@@ -1,0 +1,135 @@
+System wasteservice_req_gui
+
+Dispatch coapUpdate : coapUpdate(RESOURCE, VALUE)
+
+Context ctxpro_gui ip [host="localhost" port=8050]
+
+QActor gui_gui context ctxpro_gui {
+	[#
+		var TrolleyPos = ""
+		var TrolleyStatus = ""
+		var LedStatus =	""
+		var StoragePlastic = -1f
+		var StorageGlass = -1f
+	#]
+	
+	State init initial {
+		qrun coapObserverUtil.startObserving(myself, "trolley_gui")
+		qrun coapObserverUtil.startObserving(myself, "led_gui")
+		qrun coapObserverUtil.startObserving(myself, "storage_gui")
+	}
+	Goto show
+	
+	State show {
+		println("\tGUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]")
+	}
+	Transition t0 whenMsg coapUpdate -> handleUpdate
+				  
+  	State handleUpdate {
+  		printCurrentMessage
+  		onMsg (coapUpdate : coapUpdate(RESOURCE, VALUE)) {
+  			if [# payloadArg(0) == "trolley_gui" #] {
+  				[#
+  					val split = payloadArg(1).split(",")
+  					TrolleyStatus = split[0].trim()
+  					TrolleyPos = split[1].trim()
+				#]	
+  			} 
+  			if [# payloadArg(0) == "led_gui" #] {
+	  			[# LedStatus = payloadArg(1) #]
+  			}
+  			if [# payloadArg(0) == "storage_gui" #] {
+  				[#
+  					val split = payloadArg(1).split(",")
+  					StoragePlastic = split[0].trim().toFloat()
+  					StorageGlass = split[1].trim().toFloat()
+				#]	
+  			}
+  		}
+  	}
+  	Goto show
+}
+
+QActor trolley_gui context ctxpro_gui {
+	State wait initial {
+		delay 1000
+	}
+	Goto randomStatus
+	
+	State randomStatus {
+		[#
+			var Status = ""
+			var Position = ""	
+
+			var r = kotlin.random.Random.nextFloat() 
+			if (r < 0.25) {
+				Position = "indoor"
+			} else if (r < 0.5) {
+				Position = "room"
+			} else if (r < 0.75) {
+				Position = "glass box"
+			} else {
+				Position = "plastic box"
+			}
+		#]
+		
+		if [# kotlin.random.Random.nextFloat() > 0.5 #] {
+			[# Status = "working" #]
+		} else {
+			if [# kotlin.random.Random.nextFloat() > 0.5 #] {
+				[# Status = "stopped" #]
+			}
+			else {
+				[# 
+					Status = "home"
+					Position = "home"
+				#]
+			}
+		}
+		
+		updateResource [# "$Status, $Position" #]
+	}
+	Goto wait
+}
+
+QActor led_gui context ctxpro_gui {
+	State wait initial {
+		delay 1500
+	}
+	Goto randomStatus
+	
+	State randomStatus {
+		[#
+			var Status = ""
+
+			var r = kotlin.random.Random.nextFloat() 
+			if (r < 0.33) {
+				Status = "off"
+			} else if (r < 0.66) {
+				Status = "on"
+			} else {
+				Status = "blinking"
+			}
+		#]
+		
+		updateResource [# Status #]
+	}
+	Goto wait
+}
+
+QActor storage_gui context ctxpro_gui {
+	State init initial {
+		updateResource [# "30,30" #]	
+	}
+	Goto wait
+	
+	State wait {
+		delay 1500
+	}
+	Goto randomStorage
+	
+	State randomStorage {	
+		updateResource [# "${kotlin.random.Random.nextInt(30)},${kotlin.random.Random.nextInt(30)}" #]
+	}
+	Goto wait
+}

@@ -2,7 +2,8 @@ package it.unibo.lenziguerra.wasteservice.trolley
 
 import it.unibo.lenziguerra.wasteservice.WasteType
 import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.utils.ColorsOut
+import unibo.comm22.utils.CommUtils
 
 interface ITrolleySupport {
     fun init()
@@ -55,14 +56,23 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     }
 
     override fun collect(material: String, quantity: Float) {
-        this.material = WasteType.valueOf(material.uppercase())
-        this.quantity = quantity
+        val enumMaterial = WasteType.valueOf(material.uppercase())
+        if (doCollect(enumMaterial, quantity)) {
+            this.material = enumMaterial
+            this.quantity = quantity
+        }
     }
 
     override fun deposit() {
-        this.material = null
-        this.quantity = 0.0f
+        if (doDeposit(this.material!!, this.quantity)) {
+            this.material = null
+            this.quantity = 0.0f
+        }
     }
+
+    abstract fun doCollect(material: WasteType, quantity: Float): Boolean
+
+    abstract fun doDeposit(material: WasteType, quantity: Float): Boolean
 
     private fun rotateTo(dir: String): String {
         var cmd = ""

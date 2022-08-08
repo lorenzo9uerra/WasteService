@@ -2,7 +2,9 @@ package it.unibo.lenziguerra.wasteservice.wasteservice
 
 import it.unibo.kactor.ApplMessage
 import it.unibo.kactor.MsgUtil
+import it.unibo.lenziguerra.wasteservice.SystemConfig
 import it.unibo.lenziguerra.wasteservice.WasteType
+import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
@@ -16,11 +18,11 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import unibo.actor22comm.utils.ColorsOut
-import it.unibo.lenziguerra.wasteservice.SystemConfig
-import unibo.actor22comm.interfaces.Interaction2021
-import unibo.actor22comm.tcp.TcpClientSupport
-import unibo.actor22comm.utils.CommSystemConfig
+import unibo.comm22.coap.CoapConnection
+import unibo.comm22.interfaces.Interaction2021
+import unibo.comm22.tcp.TcpClientSupport
+import unibo.comm22.utils.ColorsOut
+import unibo.comm22.utils.CommSystemConfig
 import java.net.SocketException
 
 
@@ -104,9 +106,11 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
             val replyMessage = ApplMessage(storageReply)
             val freeSpace = PrologUtils.extractPayload(replyMessage.msgContent())[1].toFloat()
 
-            // TODO: Aggiungi anche la quantità trasportata dal Trolley
+            val trolleyStatus = TrolleyStatus.fromProlog(coapRequest("trolley"))
+            val trolleyAmount = if (trolleyStatus.contentType == WasteType.valueOf(depositType.uppercase()))
+                trolleyStatus.contentAmount else 0f
 
-            if (depositAmount <= freeSpace) {
+            if (depositAmount + trolleyAmount <= freeSpace) {
                 session.sendMessage(TextMessage("loadaccept"))
                 sendTrolley(session, depositType, depositAmount)
             } else {
@@ -127,7 +131,7 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
             SENDER_WS_SERVER,
             DEPOSIT_TRIGGER_ID,
             PrologUtils.build(DEPOSIT_TRIGGER_ID, depositType, depositAmount.toString()),
-            SystemConfig.actors["wasteService"]!!
+            SystemConfig.actors["wasteServiceContext"]!!
         )
 
         // Bloccante fino a raccolta da trolley
@@ -150,5 +154,15 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
 
     private fun ctxConnect() {
         ctxConnection = TcpClientSupport.connect("localhost", SystemConfig.ports["wasteServiceContext"]!!, 5)
+    }
+
+    protected fun coapRequest(target: String): String {
+        val reqConn = CoapConnection(
+            SystemConfig.hosts[target] + ":" + SystemConfig.ports[target],
+            "${SystemConfig.contexts[target]}/${SystemConfig.actors[target]}"
+        )
+        val answer = reqConn.request("")
+        ColorsOut.out("coapRequest answer=$answer", ColorsOut.BLUE)
+        return answer
     }
 }

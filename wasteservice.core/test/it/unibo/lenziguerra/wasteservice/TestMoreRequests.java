@@ -6,10 +6,10 @@ import it.unibo.kactor.QakContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import unibo.actor22comm.coap.CoapConnection;
-import unibo.actor22comm.utils.ColorsOut;
-import unibo.actor22comm.utils.CommSystemConfig;
-import unibo.actor22comm.utils.CommUtils;
+import unibo.comm22.coap.CoapConnection;
+import unibo.comm22.utils.ColorsOut;
+import unibo.comm22.utils.CommSystemConfig;
+import unibo.comm22.utils.CommUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,11 +27,6 @@ public class TestMoreRequests {
     private String ctx_trolley;
 
     WasteServiceTrolleyPosObserver wasteServiceObserver;
-
-    int[] homeCoords;
-    int[] indoorCoords;
-    int[] glassBoxCoords;
-    int[] plasticBoxCoords;
 
     @Before
     public void up() {
@@ -116,7 +111,7 @@ public class TestMoreRequests {
     protected void startDeposit(String type, int amount) {
         String startDepositDispatch = MsgUtil.buildRequest("test", "triggerDeposit",
                 "triggerDeposit(" + type + ", " + amount + ")",
-                SystemConfig.INSTANCE.getCtxNames().get("wasteService")
+                SystemConfig.INSTANCE.getContexts().get("wasteService")
         ).toString();
         try {
             ConnTcp connTcp = new ConnTcp(
@@ -132,15 +127,15 @@ public class TestMoreRequests {
 
     protected void waitForActors() {
         ColorsOut.outappl(this.getClass().getName() + " waits for actors ... ", ColorsOut.GREEN);
-        ActorBasic trolley = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("trolley"));
+        ActorBasic trolley = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("trolley"));
         while (trolley == null) {
             CommUtils.delay(200);
-            trolley = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("trolley"));
+            trolley = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("trolley"));
         }
-        ActorBasic wasteservice = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("wasteService"));
+        ActorBasic wasteservice = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("wasteService"));
         while (wasteservice == null) {
             CommUtils.delay(200);
-            wasteservice = QakContext.Companion.getActor(SystemConfig.INSTANCE.getCtxNames().get("wasteService"));
+            wasteservice = QakContext.Companion.getActor(SystemConfig.INSTANCE.getContexts().get("wasteService"));
         }
 
         ctx_trolley = trolley.getContext().getName();
@@ -155,7 +150,7 @@ public class TestMoreRequests {
         new Thread(() -> {
             CoapConnection conn = new CoapConnection(SystemConfig.INSTANCE.getHosts().get("wasteServiceContext")
                     + ":" + SystemConfig.INSTANCE.getPorts().get("wasteServiceContext"),
-                    ctx_wasteservice + "/" + SystemConfig.INSTANCE.getCtxNames().get("wasteService")
+                    ctx_wasteservice + "/" + SystemConfig.INSTANCE.getContexts().get("wasteService")
             );
             conn.observeResource(wasteServiceObserver);
             ColorsOut.outappl("connected via Coap conn:" + conn , ColorsOut.CYAN);

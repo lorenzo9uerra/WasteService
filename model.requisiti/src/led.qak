@@ -4,7 +4,7 @@ Event trolleyStatus : trolleyStatus(STATUS)
 
 Context ctxreq_led ip [host="localhost" port=8050]
 
-QActor trolley context ctxreq_led {
+QActor led_trolley context ctxreq_led {
 	State wait initial {
 		delay 1000
 	}
@@ -28,7 +28,7 @@ QActor trolley context ctxreq_led {
 	Goto wait
 }
 
-QActor led context ctxreq_led {
+QActor led_led context ctxreq_led {
 	[#
 		var Next = 0 
 	#]
@@ -36,16 +36,19 @@ QActor led context ctxreq_led {
 	// Il Trolley inizialmente è a HOME
 	State on initial {
 		println("\tLed | ON")
+		updateResource [# "on" #]
 	}
 	Transition t0 whenEvent trolleyStatus -> handleStatus
 	
 	State off {
 		println("\tLed | OFF")
+		updateResource [# "off" #]
 	}
 	Transition t0 whenEvent trolleyStatus -> handleStatus
 	
 	State blinking {
 		println("\tLed | BLINKING")
+		updateResource [# "blinking" #]
 	}
 	Transition t0 whenEvent trolleyStatus -> handleStatus
 	

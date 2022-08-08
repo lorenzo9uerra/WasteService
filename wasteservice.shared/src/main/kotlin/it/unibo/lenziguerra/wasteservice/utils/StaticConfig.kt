@@ -3,7 +3,7 @@ package it.unibo.lenziguerra.wasteservice.utils
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.JSONTokener
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.utils.ColorsOut
 import java.io.*
 import kotlin.reflect.*
 import kotlin.reflect.full.createType

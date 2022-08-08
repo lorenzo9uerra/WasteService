@@ -7,8 +7,8 @@ import org.springframework.web.socket.WebSocketMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.client.WebSocketClient
 import org.springframework.web.socket.client.standard.StandardWebSocketClient
-import unibo.actor22comm.interfaces.Interaction2021
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.interfaces.Interaction2021
+import unibo.comm22.utils.ColorsOut
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 

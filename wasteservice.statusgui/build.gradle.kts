@@ -37,9 +37,8 @@ dependencies {
     /* UNIBO *************************************************************************************************************** */
     implementation(":uniboInterfaces")
     implementation(":2p301")
-    implementation(":it.unibo.qakactor-2.7")
-    implementation(":unibonoawtsupports") // required by the old infrastructure
-    implementation(":unibo.actor22-1.1")
+    implementation(":it.unibo.qakactor-2.8")
+    implementation(":unibo.comm22-1.1")
 }
 
 tasks.withType<KotlinCompile> {

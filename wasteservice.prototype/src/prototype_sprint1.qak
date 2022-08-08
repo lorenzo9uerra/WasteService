@@ -1,5 +1,9 @@
 System wasteservice_proto_sprint1
 
+Dispatch ledSet : ledSet(STATE) // on | off | blinking
+
+Dispatch coapUpdate : coapUpdate(RESOURCE, VALUE)
+
 Request loadDeposit : loadDeposit(MAT, QNT)
 Reply loadaccept : loadaccept(_)
 Reply loadrejected : loadrejected(_)
@@ -17,6 +21,130 @@ Reply trolleyDone : trolleyDone(OK)
 Dispatch storageDeposit : storageDeposit(MAT, QNT)
 
 Context ctx_wasteservice_proto_ctx ip [host="localhost" port=8050]
+
+QActor ledcontroller context ctx_wasteservice_proto_ctx {
+	[#
+		var AtHome = false
+		var Stopped = false
+	#]
+	
+	State init initial {
+		qrun coapObserverUtil.startObserving(myself, "trolley")
+		qrun coapObserverUtil.startObserving(myself, "wasteservice")
+	}
+	Goto observe
+	
+	State observe {
+	}	
+	Transition t0 whenMsg coapUpdate -> handleStatus
+	
+	State handleStatus {
+		printCurrentMessage
+		onMsg ( coapUpdate : coapUpdate(RESOURCE, VALUE) ) {
+			println("Led Controller | Received update from ${payloadArg(0)}, is ${payloadArg(1)}")
+			[# var Next = "" #]
+			if [# payloadArg(0) == "trolley" #] {
+				// state(work|stopped)\npos(X, Y)
+				[# Stopped = resourcePrologUtils.resourcePayloadArg(myself, "state", 0) == "stopped" #]
+				if [# Stopped #] {
+					[# 
+						Next = "off"
+					#]
+				} else {
+					if [# !AtHome #] {
+						[# Next = "blinking" #]
+					}
+				}
+			}
+			if [# payloadArg(0) == "wasteservice" #] {
+				// tpos(LOC)
+				[# AtHome = resourcePrologUtils.resourcePayloadArg(myself, "tpos", 0) == "home" #]
+				if [# AtHome && !Stopped #] {
+					[# Next = "on" #]
+				}
+			}
+
+			if [# Next != "" #] {
+				println("Led Controller | Setting led to $Next")
+				forward led -m ledSet : ledSet($Next)			
+			}
+		}
+	}
+	Goto observe
+}
+
+QActor led context ctx_wasteservice_proto_ctx {
+	State start initial {
+		println("\tLed | OFF")
+		updateResource [# "ledState(off)" #]
+	}
+	Goto listen
+	
+	State listen {
+	}
+	Transition t0 whenMsg ledSet -> handleSet
+	
+	State handleSet {
+		onMsg (ledSet : ledSet(STATE) ) {
+			// inserire controllo valori
+			println("\tLed | ${payloadArg(0).uppercase()}")
+			updateResource [# "ledState(${payloadArg(0)})" #]
+		}
+	}
+	Goto listen
+}
+
+QActor gui context ctx_wasteservice_proto_ctx {
+	[#
+		var TrolleyPos = ""
+		var TrolleyStatus = ""
+		var LedStatus =	""
+		var StoragePlastic = -1f
+		var StorageGlass = -1f
+	#]
+	
+	State init initial {
+		qrun coapObserverUtil.startObserving(myself, "trolley")
+		qrun coapObserverUtil.startObserving(myself, "wasteservice")
+		qrun coapObserverUtil.startObserving(myself, "led")
+		qrun coapObserverUtil.startObserving(myself, "storagemanager")
+	}
+	Goto show
+	
+	State show {
+		println("\tGUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]")
+		updateResource [# "GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]" #]
+	}
+	Transition t0 whenMsg coapUpdate -> handleUpdate
+				  
+  	State handleUpdate {
+  		printCurrentMessage
+  		onMsg (coapUpdate : coapUpdate(RESOURCE, VALUE)) {
+  			if [# payloadArg(0) == "trolley" #] {
+  				[# TrolleyStatus = resourcePrologUtils.resourcePayloadArg(myself, "state", 0) #]	
+  			} 
+  			if [# payloadArg(0) == "led" #] {
+  				[# LedStatus = resourcePrologUtils.resourcePayloadArg(myself, "ledState", 0) #]	
+  			}
+  			if [# payloadArg(0) == "wasteservice" #] {
+  				[# TrolleyPos = resourcePrologUtils.resourcePayloadArg(myself, "tpos", 0) #]	
+			}
+  			if [# payloadArg(0) == "storagemanager" #] {
+  				[#
+  					val lines = resourcePrologUtils.resourcePayloadLines(myself, "content")
+  					for (line in lines) {
+  						when (resourcePrologUtils.extractPayload(line, 0)) {
+  							"glass" -> StorageGlass = resourcePrologUtils.extractPayload(line, 1).toFloat()
+  							"plastic" -> StoragePlastic = resourcePrologUtils.extractPayload(line, 1).toFloat()
+  						}
+  					}
+				#]	
+  			}
+  		}
+  	}
+  	Goto show
+}
+
 
 QActor wasteservice context ctx_wasteservice_proto_ctx {
 	[#

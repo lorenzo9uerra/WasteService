@@ -3,7 +3,7 @@ package it.unibo.lenziguerra.wasteservice
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 import org.eclipse.californium.core.CoapHandler
 import org.eclipse.californium.core.CoapResponse
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.utils.ColorsOut
 import java.util.concurrent.Semaphore
 
 class WasteServiceTrolleyPosObserver : CoapHandler {

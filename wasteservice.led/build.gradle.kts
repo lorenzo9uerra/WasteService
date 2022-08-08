@@ -27,9 +27,8 @@ dependencies {
 	implementation("org.eclipse.californium:californium-proxy2:3.5.0")
 
 	/* UNIBO *************************************************************************************************************** */
-	implementation(":uniboInterfaces")
-	implementation(":2p301")
-	implementation(":unibonoawtsupports")  //required by the old infrastructure
+    implementation(":uniboInterfaces")
+    implementation(":2p301")
+    implementation(":unibo.comm22-1.1")
 	implementation(":it.unibo.radarSystem22.domain-1.0")
-	implementation(":unibo.actor22-1.1")
 }

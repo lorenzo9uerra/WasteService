@@ -129,7 +129,10 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("# WASTESERVICE: ERRORE! AGGIUSTARE #")
 						println("# MANUALMENTE E RIAVVIARE!         #")
 						println("####################################")
+						stateTimer = TimerActor("timer_error", 
+							scope, context!!, "local_tout_wasteservice_error", 500.toLong() )
 					}
+					 transition(edgeName="t015",targetState="home",cond=whenTimeout("local_tout_wasteservice_error"))   
 				}	 
 			}
 		}

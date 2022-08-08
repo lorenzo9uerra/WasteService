@@ -60,11 +60,10 @@ dependencies {
 	implementation("commons-io:commons-io:2.11.0")
 
 	/* UNIBO *************************************************************************************************************** */
-	implementation(":uniboInterfaces")
-	implementation(":2p301")
-	implementation(":it.unibo.qakactor-2.7")
-	implementation(":unibonoawtsupports")  //required by the old infrastructure
-	implementation(":unibo.actor22-1.1")
+    implementation(":uniboInterfaces")
+    implementation(":2p301")
+    implementation(":it.unibo.qakactor-2.8")
+    implementation(":unibo.comm22-1.1")
 
 	/* AIMA **************************************************************************************************************** */
 	//PLANNER
