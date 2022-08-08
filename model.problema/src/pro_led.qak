@@ -2,7 +2,7 @@ System wasteservice_req_led
 
 Dispatch ledSet : ledSet(STATE) // on | off | blinking
 
-Dispatch coapUpdate : coapUpdate(VALUE)
+Dispatch coapUpdate : coapUpdate(RESOURCE, VALUE)
 
 Context ctxpro_led ip [host="localhost" port=8050]
 
@@ -42,7 +42,7 @@ QActor led_ledcontroller context ctxpro_led {
 	
 	State handleStatus {
 		// printCurrentMessage
-		onMsg ( coapUpdate : coapUpdate(VALUE) ) {
+		onMsg ( coapUpdate : coapUpdate(RESOURCE, VALUE) ) {
 			println("Led Controller | Received update ${payloadArg(0)}")
 			[#
 				val Next = when(payloadArg(0)) {

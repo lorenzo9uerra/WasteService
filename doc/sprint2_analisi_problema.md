@@ -30,6 +30,12 @@ Escludendo di usare comunicazione punto-punto come dispatch e richieste, data la
 
 **Conclusione.** Viene ritenuta come opzione migliore la seconda, l'**osservabilità**, visto che gli attori creati nello SPRINT 1 sono già risorse osservabili con le informazioni necessarie; quindi, non sarebbe necessaria alcuna modifica al software già sviluppato per adempiere a questo requisito, il che sarebbe un grande vantaggio. Inoltre, il fatto che COAP sia un protocollo già definito renderebbe ancora più facile l'estendibilità.
 
+In luce di queste considerazioni, sono quindi aggiornati i modelli eseguibili di Led e Gui:
+
+* [Modello eseguibile Led](../model.problema/src/pro_led.qak)
+* [Modello eseguibile Gui](../model.problema/src/pro_gui.qak)
+
+Per realizzarli, è stata sviluppata una utility per Qak per permettere agli attori di agire da osservatori, oltre che da risorse osservabili. Ulteriori dettagli sono presenti nel file [qakactor.observer.md](qakactor.observer.md).
 
 ### Architettura Logica
 

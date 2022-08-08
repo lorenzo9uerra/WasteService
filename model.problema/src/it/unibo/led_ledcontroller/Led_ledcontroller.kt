@@ -28,7 +28,7 @@ class Led_ledcontroller ( name: String, scope: CoroutineScope  ) : ActorBasicFsm
 				}	 
 				state("handleStatus") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("coapUpdate(VALUE)"), Term.createTerm("coapUpdate(VALUE)"), 
+						if( checkMsgContent( Term.createTerm("coapUpdate(RESOURCE,VALUE)"), Term.createTerm("coapUpdate(RESOURCE,VALUE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								println("Led Controller | Received update ${payloadArg(0)}")
 								
