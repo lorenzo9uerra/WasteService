@@ -34,9 +34,9 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						updateResourceRep( "state(idle)" + getPosLine() + getContentLine()  
 						)
 					}
-					 transition(edgeName="t010",targetState="handleMove",cond=whenRequest("trolleyMove"))
-					transition(edgeName="t011",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
-					transition(edgeName="t012",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
+					 transition(edgeName="t013",targetState="handleMove",cond=whenRequest("trolleyMove"))
+					transition(edgeName="t014",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
+					transition(edgeName="t015",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
 				}	 
 				state("handleMove") { //this:State
 					action { //it:State

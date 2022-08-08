@@ -106,3 +106,15 @@ QActor led_gui context ctxpro_gui {
 	}
 	Goto wait
 }
+
+QActor storage_gui context ctxpro_gui {
+	State wait initial {
+		delay 3000
+	}
+	Goto randomStorage
+	
+	State randomStorage {	
+		updateResource [# "${kotlin.random.Random.nextInt(30)},${kotlin.random.Random.nextInt(30)}" #]
+	}
+	Goto wait
+}

@@ -14,13 +14,15 @@ class CoapObserverActor(private val resourceName: String, val owner: ActorBasic)
         if (isInitialResponse(response))
             return
 
-        ColorsOut.out("CoapObserverActor | ${owner.name} received update, responseText: ${response?.responseText}", ColorsOut.BLACK)
+        ColorsOut.out("CoapObserverActor | ${owner.name} received update from $resourceName, responseText: ${response?.responseText}", ColorsOut.BLACK)
 
         val responseText = response!!.responseText
+        // Newlines break TuProlog, use arbitrary encoding that can later be replaced with \n in usecases
+        val cleanedResponseText = responseText.replace("\n", "%%&NL%%")
         val actorDispatch = MsgUtil.buildDispatch(
             resourceName,
             "coapUpdate",
-            "coapUpdate('$resourceName', '$responseText')",
+            "coapUpdate('$resourceName', '$cleanedResponseText')",
             owner.name,
         )
         owner.sendMsgToMyself(actorDispatch)
