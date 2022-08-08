@@ -2,7 +2,7 @@ package it.unibo.lenziguerra.wasteservice.trolley
 
 import it.unibo.lenziguerra.wasteservice.WasteType
 import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.utils.ColorsOut
 
 interface ITrolleySupport {
     fun init()

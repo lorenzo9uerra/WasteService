@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.stereotype.Component
-import unibo.actor22comm.utils.CommUtils
+import unibo.comm22.utils.CommUtils
 import javax.annotation.PreDestroy
 import kotlin.concurrent.thread
 

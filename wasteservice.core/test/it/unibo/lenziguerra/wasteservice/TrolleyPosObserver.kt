@@ -4,7 +4,7 @@ import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils.getFuncLine
 import org.eclipse.californium.core.CoapHandler
 import org.eclipse.californium.core.CoapResponse
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.utils.ColorsOut
 import java.util.*
 import java.util.stream.Collectors
 

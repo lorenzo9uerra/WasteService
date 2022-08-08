@@ -18,11 +18,11 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import unibo.actor22comm.coap.CoapConnection
-import unibo.actor22comm.interfaces.Interaction2021
-import unibo.actor22comm.tcp.TcpClientSupport
-import unibo.actor22comm.utils.ColorsOut
-import unibo.actor22comm.utils.CommSystemConfig
+import unibo.comm22.coap.CoapConnection
+import unibo.comm22.interfaces.Interaction2021
+import unibo.comm22.tcp.TcpClientSupport
+import unibo.comm22.utils.ColorsOut
+import unibo.comm22.utils.CommSystemConfig
 import java.net.SocketException
 
 

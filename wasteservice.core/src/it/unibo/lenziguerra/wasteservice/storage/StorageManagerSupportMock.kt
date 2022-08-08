@@ -1,7 +1,7 @@
 package it.unibo.lenziguerra.wasteservice.storage
 
 import it.unibo.lenziguerra.wasteservice.WasteType
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.utils.ColorsOut
 
 class StorageManagerSupportMock : AbstractStorageManagerVirtual(getMaxAmounts()) {
     override fun init() {

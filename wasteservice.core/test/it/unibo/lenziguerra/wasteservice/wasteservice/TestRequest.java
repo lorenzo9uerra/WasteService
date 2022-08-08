@@ -20,10 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
-import unibo.actor22comm.coap.CoapConnection;
-import unibo.actor22comm.interfaces.Interaction2021;
-import unibo.actor22comm.utils.ColorsOut;
-import unibo.actor22comm.utils.CommUtils;
+import unibo.comm22.coap.CoapConnection;
+import unibo.comm22.interfaces.Interaction2021;
+import unibo.comm22.utils.ColorsOut;
+import unibo.comm22.utils.CommUtils;
 
 import java.util.ArrayList;
 import java.util.List;

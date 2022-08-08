@@ -1,8 +1,8 @@
 package it.unibo.lenziguerra.wasteservice.trolley
 
 import it.unibo.lenziguerra.wasteservice.WasteType
-import unibo.actor22comm.utils.ColorsOut
-import unibo.actor22comm.utils.CommUtils
+import unibo.comm22.utils.ColorsOut
+import unibo.comm22.utils.CommUtils
 
 class TrolleySupportMock : AbstractTrolleyVirtual() {
     var collectDepositDelay = 1000

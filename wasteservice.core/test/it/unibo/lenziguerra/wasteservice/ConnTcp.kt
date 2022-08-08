@@ -1,8 +1,8 @@
 package it.unibo.lenziguerra.wasteservice
 
-import unibo.actor22comm.interfaces.Interaction2021
-import unibo.actor22comm.tcp.TcpClientSupport
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.interfaces.Interaction2021
+import unibo.comm22.tcp.TcpClientSupport
+import unibo.comm22.utils.ColorsOut
 
 class ConnTcp(hostAddr: String?, port: Int) : Interaction2021 {
     private val conn: Interaction2021

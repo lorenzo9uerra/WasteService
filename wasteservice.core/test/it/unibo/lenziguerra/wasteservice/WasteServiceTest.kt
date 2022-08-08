@@ -7,9 +7,9 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.test.util.AssertionErrors
-import unibo.actor22comm.coap.CoapConnection
-import unibo.actor22comm.utils.ColorsOut
-import unibo.actor22comm.utils.CommUtils
+import unibo.comm22.coap.CoapConnection
+import unibo.comm22.utils.ColorsOut
+import unibo.comm22.utils.CommUtils
 import kotlin.concurrent.thread
 
 class WasteServiceTest {

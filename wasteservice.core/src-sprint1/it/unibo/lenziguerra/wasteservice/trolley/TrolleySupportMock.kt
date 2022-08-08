@@ -1,6 +1,6 @@
 package it.unibo.lenziguerra.wasteservice.trolley
 
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.utils.ColorsOut
 
 class TrolleySupportMock : AbstractTrolleyVirtual() {
     override fun init() {
