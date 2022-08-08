@@ -13,19 +13,20 @@ object coapObserverUtil {
     /**
      * Run inside qak file, passing myself as first argument
      * and target context and actor name after.
-     * Will pass dispatches to the actor formatted like coapUpdate(VALUE),
-     * where VALUE is what the observed resource returns.
-     * Needs to define `dispatch coapUpdate : coapUpdate(VALUE)` inside the
+     * Will pass dispatches to the actor formatted like coapUpdate(RESOURCE, VALUE),
+     * where RESOURCE is the resource name, and VALUE is what the observed resource returns.
+     * Needs to define `dispatch coapUpdate : coapUpdate(RESOURCE, VALUE)` inside the
      * qak file.
      */
     fun startObserving(actor: ActorBasic, contextName: String, actorName: String) {
         val context = sysUtil.getContext(contextName) ?:
             throw IllegalArgumentException("Unknown context $contextName")
 
-        startObservingHost(
+        startObservingBase(
             actor,
             "${context.hostAddr}:${context.portNum}",
             "$contextName/$actorName",
+            actorName
         )
     }
 
@@ -37,10 +38,11 @@ object coapObserverUtil {
         val context = actor.context ?:
         throw IllegalArgumentException("Actor doesn't have a context")
 
-        startObservingHost(
+        startObservingBase(
             actor,
             "${context.hostAddr}:${context.portNum}",
             "${context.name}/$actorName",
+            actorName
         )
     }
 
@@ -49,13 +51,17 @@ object coapObserverUtil {
      * manually.
      */
     fun startObservingHost(actor: ActorBasic, resourceHost: String, resourceUri: String) {
+        startObservingBase(actor, resourceHost, resourceUri, resourceUri.replace("/", "_"))
+    }
+
+    private fun startObservingBase(actor: ActorBasic, resourceHost: String, resourceUri: String, resourceName: String) {
         val key = Pair(actor, "$resourceHost/$resourceUri")
         if (actorResourceConnections.containsKey(key)) {
             throw IllegalArgumentException("Connection for $key already exists")
         }
 
         val connection = CoapConnection(resourceHost, resourceUri)
-        connection.observeResource(CoapObserverActor(resourceUri.replace("/", "."), actor))
+        connection.observeResource(CoapObserverActor(resourceName, actor))
         actorResourceConnections[key] = connection
     }
 

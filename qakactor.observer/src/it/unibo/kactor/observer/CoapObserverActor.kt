@@ -16,7 +16,7 @@ class CoapObserverActor(private val resourceName: String, val owner: ActorBasic)
         val actorDispatch = MsgUtil.buildDispatch(
             resourceName,
             "coapUpdate",
-            "coapUpdate('$responseText')",
+            "coapUpdate('$resourceName', '$responseText')",
             owner.name,
         )
         owner.sendMsgToMyself(actorDispatch)

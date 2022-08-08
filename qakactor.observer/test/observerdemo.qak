@@ -6,7 +6,7 @@
 
 System /* -trace */ observerdemo
 
-Dispatch coapUpdate : coapUpdate(VALUE)
+Dispatch coapUpdate : coapUpdate(RESOURCE, VALUE)
 
 Context ctx_observertest ip [host="localhost" port=9000]
 
@@ -44,8 +44,8 @@ QActor observer context ctx_observertest {
 	
 	State handleUpdate {
 		printCurrentMessage
-		onMsg (coapUpdate : coapUpdate(VALUE)) {
-			println("Received COAP update! Value is: ${payloadArg(0)}")
+		onMsg (coapUpdate : coapUpdate(RESOURCE, VALUE)) {
+			println("Received COAP update from ${payloadArg(0)}! Value is: ${payloadArg(1)}")
 		}
 	}
 	Goto idle
