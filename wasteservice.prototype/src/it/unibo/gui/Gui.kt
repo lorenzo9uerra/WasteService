@@ -18,18 +18,23 @@ class Gui ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				var TrolleyPos = ""
 				var TrolleyStatus = ""
 				var LedStatus =	""
+				var StoragePlastic = -1f
+				var StorageGlass = -1f
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
 						coapObserverUtil.startObserving(myself ,"trolley" )
-						coapObserverUtil.startObserving(myself ,"led" )
 						coapObserverUtil.startObserving(myself ,"wasteservice" )
+						coapObserverUtil.startObserving(myself ,"led" )
+						coapObserverUtil.startObserving(myself ,"storagemanager" )
 					}
 					 transition( edgeName="goto",targetState="show", cond=doswitch() )
 				}	 
 				state("show") { //this:State
 					action { //it:State
-						println("	GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus]")
+						println("	GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]")
+						updateResourceRep( "GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]"  
+						)
 					}
 					 transition(edgeName="t02",targetState="handleUpdate",cond=whenDispatch("coapUpdate"))
 				}	 
@@ -46,6 +51,16 @@ class Gui ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 								}
 								if(  payloadArg(0) == "wasteservice"  
 								 ){ TrolleyPos = resourcePrologUtils.resourcePayloadArg(myself, "tpos", 0)  
+								}
+								if(  payloadArg(0) == "storagemanager"  
+								 ){
+								  					val lines = resourcePrologUtils.resourcePayloadLines(myself, "content")
+								  					for (line in lines) {
+								  						when (resourcePrologUtils.extractPayload(line, 0)) {
+								  							"glass" -> StorageGlass = resourcePrologUtils.extractPayload(line, 1).toFloat()
+								  							"plastic" -> StoragePlastic = resourcePrologUtils.extractPayload(line, 1).toFloat()
+								  						}
+								  					}
 								}
 						}
 					}

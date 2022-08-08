@@ -11,13 +11,20 @@ import kotlinx.coroutines.runBlocking
 class Storage_gui ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope ){
 
 	override fun getInitialState() : String{
-		return "wait"
+		return "init"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		return { //this:ActionBasciFsm
+				state("init") { //this:State
+					action { //it:State
+						updateResourceRep( "30,30"  
+						)
+					}
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+				}	 
 				state("wait") { //this:State
 					action { //it:State
-						delay(3000) 
+						delay(1500) 
 					}
 					 transition( edgeName="goto",targetState="randomStorage", cond=doswitch() )
 				}	 

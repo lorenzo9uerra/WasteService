@@ -99,17 +99,21 @@ QActor gui context ctx_wasteservice_proto_ctx {
 		var TrolleyPos = ""
 		var TrolleyStatus = ""
 		var LedStatus =	""
+		var StoragePlastic = -1f
+		var StorageGlass = -1f
 	#]
 	
 	State init initial {
 		qrun coapObserverUtil.startObserving(myself, "trolley")
-		qrun coapObserverUtil.startObserving(myself, "led")
 		qrun coapObserverUtil.startObserving(myself, "wasteservice")
+		qrun coapObserverUtil.startObserving(myself, "led")
+		qrun coapObserverUtil.startObserving(myself, "storagemanager")
 	}
 	Goto show
 	
 	State show {
-		println("\tGUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus]")
+		println("\tGUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]")
+		updateResource [# "GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]" #]
 	}
 	Transition t0 whenMsg coapUpdate -> handleUpdate
 				  
@@ -124,6 +128,17 @@ QActor gui context ctx_wasteservice_proto_ctx {
   			}
   			if [# payloadArg(0) == "wasteservice" #] {
   				[# TrolleyPos = resourcePrologUtils.resourcePayloadArg(myself, "tpos", 0) #]	
+			}
+  			if [# payloadArg(0) == "storagemanager" #] {
+  				[#
+  					val lines = resourcePrologUtils.resourcePayloadLines(myself, "content")
+  					for (line in lines) {
+  						when (resourcePrologUtils.extractPayload(line, 0)) {
+  							"glass" -> StorageGlass = resourcePrologUtils.extractPayload(line, 1).toFloat()
+  							"plastic" -> StoragePlastic = resourcePrologUtils.extractPayload(line, 1).toFloat()
+  						}
+  					}
+				#]	
   			}
   		}
   	}

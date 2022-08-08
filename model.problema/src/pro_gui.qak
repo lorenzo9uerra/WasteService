@@ -9,16 +9,19 @@ QActor gui_gui context ctxpro_gui {
 		var TrolleyPos = ""
 		var TrolleyStatus = ""
 		var LedStatus =	""
+		var StoragePlastic = -1f
+		var StorageGlass = -1f
 	#]
 	
 	State init initial {
 		qrun coapObserverUtil.startObserving(myself, "trolley_gui")
 		qrun coapObserverUtil.startObserving(myself, "led_gui")
+		qrun coapObserverUtil.startObserving(myself, "storage_gui")
 	}
 	Goto show
 	
 	State show {
-		println("\tGUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus]")
+		println("\tGUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]")
 	}
 	Transition t0 whenMsg coapUpdate -> handleUpdate
 				  
@@ -34,6 +37,13 @@ QActor gui_gui context ctxpro_gui {
   			} 
   			if [# payloadArg(0) == "led_gui" #] {
 	  			[# LedStatus = payloadArg(1) #]
+  			}
+  			if [# payloadArg(0) == "storage_gui" #] {
+  				[#
+  					val split = payloadArg(1).split(",")
+  					StoragePlastic = split[0].trim().toFloat()
+  					StorageGlass = split[1].trim().toFloat()
+				#]	
   			}
   		}
   	}
@@ -108,8 +118,13 @@ QActor led_gui context ctxpro_gui {
 }
 
 QActor storage_gui context ctxpro_gui {
-	State wait initial {
-		delay 3000
+	State init initial {
+		updateResource [# "30,30" #]	
+	}
+	Goto wait
+	
+	State wait {
+		delay 1500
 	}
 	Goto randomStorage
 	

@@ -70,6 +70,6 @@ Test plan in Kotlin: [TestLed.kt](../wasteservice.prototype/test/it/unibo/TestLe
 
 #### TestPlan: gui
 
-Test plan in Kotlin (non eseguibile, dipendendo dallo specifico frontend nel passaggio finale): []()
+Test plan in Kotlin: [TestGui.kt](../wasteservice.prototype/test/it/unibo/TestGui.kt)
 
 - **Test Gui**: creazione di server COAP "fasullo" allo stesso indirizzo del contesto del sistema principale osservato. Invio di dati che portano a vari stati della Gui, e verifica che la pagina risultante venga modificata correttamente.

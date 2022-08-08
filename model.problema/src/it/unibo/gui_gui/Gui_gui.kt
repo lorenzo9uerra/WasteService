@@ -18,17 +18,20 @@ class Gui_gui ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				var TrolleyPos = ""
 				var TrolleyStatus = ""
 				var LedStatus =	""
+				var StoragePlastic = -1f
+				var StorageGlass = -1f
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
 						coapObserverUtil.startObserving(myself ,"trolley_gui" )
 						coapObserverUtil.startObserving(myself ,"led_gui" )
+						coapObserverUtil.startObserving(myself ,"storage_gui" )
 					}
 					 transition( edgeName="goto",targetState="show", cond=doswitch() )
 				}	 
 				state("show") { //this:State
 					action { //it:State
-						println("	GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus]")
+						println("	GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]")
 					}
 					 transition(edgeName="t00",targetState="handleUpdate",cond=whenDispatch("coapUpdate"))
 				}	 
@@ -45,6 +48,12 @@ class Gui_gui ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 								}
 								if(  payloadArg(0) == "led_gui"  
 								 ){ LedStatus = payloadArg(1)  
+								}
+								if(  payloadArg(0) == "storage_gui"  
+								 ){
+								  					val split = payloadArg(1).split(",")
+								  					StoragePlastic = split[0].trim().toFloat()
+								  					StorageGlass = split[1].trim().toFloat()
 								}
 						}
 					}

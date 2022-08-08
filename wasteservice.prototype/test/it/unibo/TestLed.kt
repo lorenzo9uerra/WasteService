@@ -70,7 +70,7 @@ class TestLed {
             wasteserviceDummyActor.updateResourceRep("tpos(indoor)")
 
             trolleyDummyActor.updateResourceRep("state($info)\npos(-1,-1)")
-            ColorsOut.outappl("Faked trolley update: state($info)\npos(-1,-1) time: ${System.currentTimeMillis()}", ColorsOut.CYAN)
+            ColorsOut.outappl("Faked trolley update: state($info)\npos(-1,-1)", ColorsOut.CYAN)
         }
     }
 
@@ -115,7 +115,7 @@ class TestLed {
     private fun coapRequest(actor: String): String? {
         val reqConn = CoapConnection("$LED_HOST:$LED_PORT", "$LED_CONTEXT_NAME/$actor")
         val answer = reqConn.request("")
-        ColorsOut.outappl("coapRequest answer=$answer time: ${System.currentTimeMillis()}", ColorsOut.CYAN)
+        ColorsOut.outappl("coapRequest answer=$answer", ColorsOut.CYAN)
         return answer
     }
 

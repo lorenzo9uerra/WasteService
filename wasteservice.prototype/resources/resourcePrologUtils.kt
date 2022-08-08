@@ -12,4 +12,11 @@ object resourcePrologUtils {
         val line = PrologUtils.getFuncLine(resourceValue, id)!!
         return PrologUtils.extractPayload(line)[num]
     }
+
+    fun resourcePayloadLines(myself: ActorBasicFsm, id: String): List<String> {
+        val resourceValue = myself.payloadArg(1).replace("%%&NL%%", "\n")
+        return PrologUtils.getFuncLines(resourceValue, id)
+    }
+
+    fun extractPayload(line: String, num: Int): String = PrologUtils.extractPayload(line)[num]
 }
