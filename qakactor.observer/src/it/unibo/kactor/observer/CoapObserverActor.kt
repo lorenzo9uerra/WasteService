@@ -10,6 +10,10 @@ import unibo.comm22.utils.ColorsOut
 
 class CoapObserverActor(private val resourceName: String, val owner: ActorBasic) : CoapHandler {
     override fun onLoad(response: CoapResponse?) {
+        // Ignore initial response
+        if (isInitialResponse(response))
+            return
+
         ColorsOut.out("CoapObserverActor | ${owner.name} received update, responseText: ${response?.responseText}", ColorsOut.BLACK)
 
         val responseText = response!!.responseText
@@ -24,5 +28,11 @@ class CoapObserverActor(private val resourceName: String, val owner: ActorBasic)
 
     override fun onError() {
         ColorsOut.outerr("CoapObserverActor | Communication error!")
+    }
+
+    private fun isInitialResponse(response: CoapResponse?): Boolean {
+        return response != null &&
+                response.responseText.trim().startsWith("ActorBasic(Resource)") &&
+                response.responseText.lowercase().contains("created")
     }
 }
