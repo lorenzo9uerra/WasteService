@@ -70,7 +70,7 @@ La gestione del Led verrà fatta tramite il software fornito dal committente, gl
 
 Inoltre, il Led deve comunicare con il resto del sistema, quindi è sicuramente modellabile come attore:
 
-<immagine attore led>
+![](img/sprint2_req_led.png)
 
 La natura precisa di questo attore lascia punti aperti che verranno gestiti in fase di analisi del problema.
 
@@ -89,7 +89,7 @@ Date le risorse pre-esistenti dell'azienda e il lavoro molto ridotto rispetto al
 
 Anche in questo caso, dovendo comunicare con il resto del sistema, è opportuno modellarla come attore:
 
-<immagine attore gui>
+![](img/sprint2_req_gui.png)
 
 Come per il Led, il tipo di comunicazione con il resto del sistema rimane un punto aperto.
 
