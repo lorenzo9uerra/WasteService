@@ -3,6 +3,7 @@ package it.unibo
 import alice.tuprolog.Prolog
 import it.unibo.kactor.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -22,8 +23,11 @@ class TestGui {
         const val WASTESERVICE_ACTOR_NAME = "wasteservice"
         const val STORAGE_ACTOR_NAME = "storagemanager"
         const val LED_ACTOR_NAME = "led"
-        const val LEDCONTROLLER_ACTOR_NAME = "ledcontroller"
         const val TEST_CONTEXT_NAME = "ctx_wasteservice_proto_ctx"
+
+        const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "localhost",  "TCP", "8050").
+            qactor( gui, ctx_wasteservice_proto_ctx, "it.unibo.gui.Gui").
+            """
 
         const val GUI_ACTOR = "gui"
         const val GUI_CONTEXT_NAME = "ctx_wasteservice_proto_ctx"
@@ -41,7 +45,9 @@ class TestGui {
     fun up() {
         CommSystemConfig.tracing = false
 
-        thread{ it.unibo.ctx_wasteservice_proto_ctx.main() }
+        thread { runBlocking {
+            ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl")
+        } }
 
         waitForContexts()
 
@@ -139,12 +145,7 @@ class TestGui {
 
     private fun waitForContexts() {
         ColorsOut.outappl(this.javaClass.name + " waits for WasteService ... ", ColorsOut.GREEN)
-        waitForActor(WASTESERVICE_ACTOR_NAME)
-        waitForActor(TRIGGER_ACTOR_NAME)
-        waitForActor(TROLLEY_ACTOR_NAME)
-        waitForActor(STORAGE_ACTOR_NAME)
-        waitForActor(LEDCONTROLLER_ACTOR_NAME)
-        waitForActor(LED_ACTOR_NAME)
+        waitForActor(GUI_ACTOR)
         ColorsOut.outappl("WasteService loaded", ColorsOut.GREEN)
 
         wasteserviceCtx = sysUtil.getContext(TEST_CONTEXT_NAME)!!
@@ -161,12 +162,6 @@ class TestGui {
     private fun replaceWatchedComponent() {
         // Rimuovi attori emettitori/osservati, crea falsi attori
         // o componenti software controllati da noi
-        wasteserviceCtx.removeInternalActor(QakContext.getActor(TRIGGER_ACTOR_NAME)!!)
-        wasteserviceCtx.removeInternalActor(QakContext.getActor(TROLLEY_ACTOR_NAME)!!)
-        wasteserviceCtx.removeInternalActor(QakContext.getActor(WASTESERVICE_ACTOR_NAME)!!)
-        wasteserviceCtx.removeInternalActor(QakContext.getActor(STORAGE_ACTOR_NAME)!!)
-        wasteserviceCtx.removeInternalActor(QakContext.getActor(LEDCONTROLLER_ACTOR_NAME)!!)
-
         trolleyDummyActor = DummyActor(TROLLEY_ACTOR_NAME)
         wasteserviceDummyActor = DummyActor(WASTESERVICE_ACTOR_NAME)
         storageDummyActor = DummyActor(STORAGE_ACTOR_NAME)

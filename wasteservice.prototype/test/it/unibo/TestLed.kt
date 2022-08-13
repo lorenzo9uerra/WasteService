@@ -25,7 +25,7 @@ class TestLed {
         const val WASTESERVICE_ACTOR_NAME = "wasteservice"
         const val TEST_CONTEXT_NAME = "ctx_wasteservice_proto_ctx"
 
-        const val TEST_CONTEXT_DESC = """context(ctx_wasteservice_proto_ctx, "localhost",  "TCP", "8050").
+        const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "localhost",  "TCP", "8050").
             qactor( ledcontroller, ctx_wasteservice_proto_ctx, "it.unibo.ledcontroller.Ledcontroller").
             qactor( led, ctx_wasteservice_proto_ctx, "it.unibo.led.Led").
             """
