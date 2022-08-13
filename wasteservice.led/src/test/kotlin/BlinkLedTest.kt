@@ -5,7 +5,7 @@ import it.unibo.radarSystem22.domain.utils.DomainSystemConfig
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import unibo.actor22comm.utils.CommUtils
+import unibo.comm22.utils.CommUtils
 
 class BlinkLedTest {
     lateinit var led: BlinkLed

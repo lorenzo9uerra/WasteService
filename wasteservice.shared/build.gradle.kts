@@ -2,6 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	kotlin("jvm") version "1.6.21"
+	`java-library`
+	`java-test-fixtures` // Used to share test utilities to other projects
 }
 
 val kotlinVersion = "1.6.21"
@@ -18,7 +20,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
 
-	implementation("org.springframework:spring-websocket:5.3.20")
+	implementation("org.springframework:spring-websocket:5.3.22")
 
 	// Align versions of all Kotlin components
 	implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
@@ -39,9 +41,9 @@ dependencies {
 
 	/* COAP **************************************************************************************************************** */
 	// https://mvnrepository.com/artifact/org.eclipse.californium/californium-core
-	implementation("org.eclipse.californium:californium-core:3.5.0")
+	implementation("org.eclipse.californium:californium-core:3.6.0")
 	// https://mvnrepository.com/artifact/org.eclipse.californium/californium-proxy2
-	implementation("org.eclipse.californium:californium-proxy2:3.5.0")
+	implementation("org.eclipse.californium:californium-proxy2:3.6.0")
 
 //OkHttp library for websockets with Kotlin
 	//implementation("com.squareup.okhttp3:okhttp:3.14.0")
@@ -62,14 +64,21 @@ dependencies {
 	/* UNIBO *************************************************************************************************************** */
     implementation(":uniboInterfaces")
     implementation(":2p301")
-    implementation(":it.unibo.qakactor-2.8")
     implementation(":unibo.comm22-1.1")
+	// Necessario per utilità messaggi
+	implementation(":unibo.qakactor22-2.8")
 
 	/* AIMA **************************************************************************************************************** */
 	//PLANNER
 	implementation(":unibo.planner22-1.0")
 	// https://mvnrepository.com/artifact/com.googlecode.aima-java/aima-core
 	implementation("com.googlecode.aima-java:aima-core:3.0.0")
+
+	// Actors for test utilities
+	// https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
+	testFixturesImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+	testFixturesImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
+	testFixturesImplementation(":unibo.qakactor22-2.8")
 }
 
 tasks.withType<KotlinCompile> {

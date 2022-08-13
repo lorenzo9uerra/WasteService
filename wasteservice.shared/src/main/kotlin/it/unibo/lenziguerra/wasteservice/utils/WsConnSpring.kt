@@ -59,13 +59,5 @@ class WsConnSpring(val uri: String) : Interaction2021 {
 
     override fun receiveMsg(): String = msgQueue.take()
 
-    override fun sendALine(msg: String) = forward(msg)
-
-    override fun sendALine(msg: String, isAnswer: Boolean) = sendALine(msg)
-
-    override fun receiveALine(): String = receiveMsg()
-
     override fun close() = session.close()
-
-    override fun closeConnection() = close()
 }

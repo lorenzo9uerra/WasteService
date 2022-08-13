@@ -7,3 +7,4 @@ La progettazione e lo sviluppo delle componenti software stabilite in fase di an
 
 Punti vari
 - Aggiunto updateState a Trolley per fare stopped in caso di errore
+- testFixtures in shared per condividere utils di test

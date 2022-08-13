@@ -41,24 +41,4 @@ class ConnTcp(hostAddr: String?, port: Int) : Interaction2021 {
     override fun close() {
         conn.close()
     }
-
-    @Throws(Exception::class)
-    override fun sendALine(s: String) {
-        conn.sendALine(s)
-    }
-
-    @Throws(Exception::class)
-    override fun sendALine(s: String, b: Boolean) {
-        conn.sendALine(s, b)
-    }
-
-    @Throws(Exception::class)
-    override fun receiveALine(): String {
-        return conn.receiveALine()
-    }
-
-    @Throws(Exception::class)
-    override fun closeConnection() {
-        conn.closeConnection()
-    }
 }
