@@ -1,4 +1,4 @@
-rootProject.name = "statusgui"
+rootProject.name = "wasteservice.statusgui"
 
 include(":wasteservice.shared")
 

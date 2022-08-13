@@ -30,15 +30,22 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     /* COAP **************************************************************************************************************** */
     // https://mvnrepository.com/artifact/org.eclipse.californium/californium-core
-    implementation("org.eclipse.californium:californium-core:3.5.0")
+    implementation("org.eclipse.californium:californium-core:3.6.0")
     // https://mvnrepository.com/artifact/org.eclipse.californium/californium-proxy2
-    implementation("org.eclipse.californium:californium-proxy2:3.5.0")
+    implementation("org.eclipse.californium:californium-proxy2:3.6.0")
 
     /* UNIBO *************************************************************************************************************** */
     implementation(":uniboInterfaces")
     implementation(":2p301")
-    implementation(":it.unibo.qakactor-2.8")
     implementation(":unibo.comm22-1.1")
+
+    // Actors for test
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
+    testImplementation(":unibo.qakactor22-2.8")
+    testImplementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
+    testImplementation(testFixtures(project(":wasteservice.shared")))
 }
 
 tasks.withType<KotlinCompile> {
