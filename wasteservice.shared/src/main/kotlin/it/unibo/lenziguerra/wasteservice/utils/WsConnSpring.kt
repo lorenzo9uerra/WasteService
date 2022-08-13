@@ -60,4 +60,6 @@ class WsConnSpring(val uri: String) : Interaction2021 {
     override fun receiveMsg(): String = msgQueue.take()
 
     override fun close() = session.close()
+
+    fun hasMessages() = !msgQueue.isEmpty()
 }

@@ -2,69 +2,138 @@ package it.unibo.lenziguerra.wasteservice.statusgui
 
 import it.unibo.kactor.*
 import it.unibo.lenziguerra.wasteservice.ContextTestUtils
+import it.unibo.lenziguerra.wasteservice.SystemConfig
 import it.unibo.lenziguerra.wasteservice.utils.WsConnSpring
 import kotlinx.coroutines.runBlocking
-import org.junit.AfterClass
+import org.assertj.core.api.Assertions.*
+import org.eclipse.californium.core.CoapResource
+import org.eclipse.californium.core.CoapServer
+import org.eclipse.californium.core.server.resources.CoapExchange
 import org.junit.Assert.assertEquals
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.test.context.junit4.SpringRunner
 import unibo.comm22.coap.CoapConnection
 import unibo.comm22.interfaces.Interaction2021
 import unibo.comm22.utils.ColorsOut
 import unibo.comm22.utils.CommSystemConfig
 import unibo.comm22.utils.CommUtils
 import kotlin.concurrent.thread
-import kotlin.properties.Delegates
+import org.springframework.beans.factory.annotation.Autowired
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 
-
-@SpringBootTest
+@SpringBootTest(classes = [StatusguiApplication::class], webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@RunWith(SpringRunner::class)
 class TestGui {
 	companion object {
 		const val TROLLEY_ACTOR_NAME = "trolley"
 		const val WASTESERVICE_ACTOR_NAME = "wasteservice"
 		const val STORAGE_ACTOR_NAME = "storagemanager"
-		const val LED_ACTOR_NAME = "led"
 
 		const val TEST_CONTEXT_NAME = "ctx_wasteservice_test"
 		const val TEST_CONTEXT_HOST = "localhost"
-		const val TEST_CONTEXT_PORT = 8050
+		const val TEST_CONTEXT_PORT = 9654
 		const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "$TEST_CONTEXT_HOST",  "TCP", "$TEST_CONTEXT_PORT")."""
-	}
 
-	lateinit var wasteserviceCtx: QakContext
-	lateinit var wasteserviceDummyActor: ActorBasic
-	lateinit var trolleyDummyActor: ActorBasic
-	lateinit var storageDummyActor: ActorBasic
-	lateinit var ledDummyActor: ActorBasic
+		const val FAKE_LED_PORT = 9655
+		const val FAKE_LED_HOST = "localhost"
+
+		lateinit var wasteserviceCtx: QakContext
+
+		private lateinit var wasteserviceDummyActor: DummyActor
+		private lateinit var trolleyDummyActor: DummyActor
+		private lateinit var storageDummyActor: DummyActor
+		private lateinit var ledCoapResource: DummyCoapResource
+
+		@BeforeAll
+		@JvmStatic
+		fun beforeAll() {
+			thread { runBlocking {
+				val sysRulesResource = javaClass.classLoader.getResource("sysRules.pl")!!
+				ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, sysRulesResource.file)
+			} }
+
+			waitForContexts()
+
+			replaceWatchedComponent()
+
+			for (id in arrayOf("trolley", "wasteServiceContext", "storage")) {
+				SystemConfig.hosts[id] = TEST_CONTEXT_HOST
+				SystemConfig.ports[id] = TEST_CONTEXT_PORT
+				SystemConfig.contexts[id] = TEST_CONTEXT_NAME
+			}
+
+			SystemConfig.hosts["led"] = FAKE_LED_HOST
+			SystemConfig.ports["led"] = FAKE_LED_PORT
+
+			ColorsOut.outappl("Gui tests ready!", ColorsOut.GREEN)
+		}
+
+		@AfterAll
+		@JvmStatic
+		fun afterAll() {
+			wasteserviceCtx.terminateTheContext()
+
+			ColorsOut.outappl("Gui tests done!", ColorsOut.GREEN)
+		}
+
+		private fun waitForContexts() {
+			// Context starts empty, wait for it instead of actors
+			var ctx = sysUtil.getContext(TEST_CONTEXT_NAME)
+			while (ctx == null) {
+				CommUtils.delay(200)
+				ctx = sysUtil.getContext(TEST_CONTEXT_NAME)
+			}
+			wasteserviceCtx = ctx
+			ColorsOut.outappl("WasteService loaded", ColorsOut.GREEN)
+		}
+
+		private fun replaceWatchedComponent() {
+			// Rimuovi attori emettitori/osservati, crea falsi attori
+			// o componenti software controllati da noi
+			trolleyDummyActor = DummyActor(TROLLEY_ACTOR_NAME)
+			wasteserviceDummyActor = DummyActor(WASTESERVICE_ACTOR_NAME)
+			storageDummyActor = DummyActor(STORAGE_ACTOR_NAME)
+
+			wasteserviceCtx.addActor(trolleyDummyActor)
+			wasteserviceCtx.addActor(wasteserviceDummyActor)
+			wasteserviceCtx.addActor(storageDummyActor)
+			ColorsOut.outappl("WasteService: added fake actors <${trolleyDummyActor.name}> <${wasteserviceDummyActor.name}> <${storageDummyActor.name}>", ColorsOut.GREEN)
+
+			val ledCoapServer = DummyCoapServer(FAKE_LED_PORT, "led")
+			ledCoapResource = ledCoapServer.resource
+			ledCoapServer.start()
+			ColorsOut.outappl("WasteService: started fake led coap server $ledCoapServer", ColorsOut.GREEN)
+		}
+	}
 
 	lateinit var wsConn: Interaction2021
 
+	@Autowired
+	private var controller: StatusGUIController? = null
 	@LocalServerPort
 	private var port: Int = 0
 
-	@BeforeClass
+	@BeforeEach
 	fun up() {
-		CommSystemConfig.tracing = false
+		CommSystemConfig.tracing = true
 
-		thread { runBlocking {
-			val sysRulesResource = javaClass.classLoader.getResource("sysRules.pl")!!
-			ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, sysRulesResource.file)
-		} }
-
-		waitForContexts()
-
-		replaceWatchedComponent()
+		// Verifica corretto avvio della webapp
+		assertThat(controller).isNotNull();
 
 		startWsConnection()
-
-		ColorsOut.outappl("Gui tests ready to run!", ColorsOut.GREEN)
 	}
 
-	@AfterClass
+	@AfterEach
 	fun down() {
-		ColorsOut.outappl("Gui tests complete!", ColorsOut.GREEN)
+		ColorsOut.outappl("Gui test complete!", ColorsOut.GREEN)
 	}
 
 	@Test
@@ -104,7 +173,7 @@ class TestGui {
 	protected fun startWsConnection() {
 		wsConn = WsConnSpring(
 			java.lang.String.format(
-				"ws://%s:%d/truck",
+				"ws://%s:%d/statusgui",
 				"localhost",
 				port
 			)
@@ -112,91 +181,113 @@ class TestGui {
 	}
 
 	private fun checkGuiResponsePosition(input: String, expectedContent: String) {
-		wasteserviceDummyActor.updateResourceRep("tpos($input)")
-		ColorsOut.outappl("Sent wasteservice resource update tpos($input)", ColorsOut.ANSI_PURPLE)
+		wasteserviceDummyActor.fakeResourceUpdate("tpos($input)")
 
 		CommUtils.delay(500)
 		val guiContent = getGuiContent()
-		val tposPattern = Regex("(?<=Position:\\s)[^,]+")
+		val tposPattern = Regex("(?<=trolleyPosition:).+", RegexOption.MULTILINE)
 		val tposSegment = tposPattern.find(guiContent)?.value ?: throw IllegalStateException("Wrong response $guiContent")
-		assertEquals(expectedContent, tposSegment.lowercase())
+		assertEquals(expectedContent, tposSegment.lowercase().trim())
 	}
 
 	private fun checkGuiResponseState(input: String, expectedContent: String) {
-		wasteserviceDummyActor.updateResourceRep("tpos(indoor)")
-		trolleyDummyActor.updateResourceRep("state($input)\npos(-1,-1)")
-		ColorsOut.outappl("Sent trolley resource update state($input)\\npos(-1,-1)", ColorsOut.ANSI_PURPLE)
+		wasteserviceDummyActor.fakeResourceUpdate("tpos(indoor)")
+		trolleyDummyActor.fakeResourceUpdate("state($input)\npos(-1,-1)")
 
 		CommUtils.delay(500)
 		val guiContent = getGuiContent()
-		val tstatePattern = Regex("(?<=Status:\\s)[^]]+")
+		val tstatePattern = Regex("(?<=trolleyState:).+", RegexOption.MULTILINE)
 		val tstateSegment = tstatePattern.find(guiContent)!!.value
-		assertEquals(expectedContent, tstateSegment.lowercase())
+		assertEquals(expectedContent, tstateSegment.lowercase().trim())
 	}
 
 	private fun checkGuiResponseLed(input: String, expectedContent: String) {
-		ledDummyActor.updateResourceRep("ledState($input)")
-		ColorsOut.outappl("Sent led resource update ledState($input)", ColorsOut.ANSI_PURPLE)
+		ledCoapResource.sendUpdates("ledState($input)")
 
 		CommUtils.delay(500)
 		val guiContent = getGuiContent()
-		val ledPattern = Regex("(?<=Led\\s\\[)[^]]+")
+		val ledPattern = Regex("(?<=ledState:).+", RegexOption.MULTILINE)
 		val ledSegment = ledPattern.find(guiContent)!!.value
-		assertEquals(expectedContent, ledSegment.lowercase())
+		assertEquals(expectedContent, ledSegment.lowercase().trim())
 	}
 
 	private fun checkGuiResponseStorage(input: Int, expectedContent: Int) {
 		// Checks against glass, for simplicity
-		storageDummyActor.updateResourceRep("content(glass,$input)\ncontent(plastic,0)")
-		ColorsOut.outappl("Sent storage resource update content(glass,$input)\\ncontent(plastic,0)", ColorsOut.ANSI_PURPLE)
+		storageDummyActor.fakeResourceUpdate("content(glass,$input,50)\ncontent(plastic,0,50)")
 
 		CommUtils.delay(500)
 		val guiContent = getGuiContent()
-		val glassPattern = Regex("(?<=Glass:\\s)[^,]+")
+		val glassPattern = Regex("(?<=depositedGlass:).+", RegexOption.MULTILINE)
 		val glassSegment = glassPattern.find(guiContent)!!.value
-		assertEquals(expectedContent, glassSegment.toFloat().toInt())
-	}
-
-
-	private fun waitForContexts() {
-		// Context starts empty, wait for it instead of actors
-		var ctx = sysUtil.getContext(TEST_CONTEXT_NAME)
-		while (ctx == null) {
-			CommUtils.delay(200)
-			ctx = sysUtil.getContext(TEST_CONTEXT_NAME)
-		}
-		wasteserviceCtx = ctx
-		ColorsOut.outappl("WasteService loaded", ColorsOut.GREEN)
-	}
-
-	private fun replaceWatchedComponent() {
-		// Rimuovi attori emettitori/osservati, crea falsi attori
-		// o componenti software controllati da noi
-		trolleyDummyActor = DummyActor(TROLLEY_ACTOR_NAME)
-		wasteserviceDummyActor = DummyActor(WASTESERVICE_ACTOR_NAME)
-		storageDummyActor = DummyActor(STORAGE_ACTOR_NAME)
-		ledDummyActor = DummyActor(LED_ACTOR_NAME)
-
-		wasteserviceCtx.addActor(trolleyDummyActor)
-		wasteserviceCtx.addActor(wasteserviceDummyActor)
-		wasteserviceCtx.addActor(storageDummyActor)
-		wasteserviceCtx.addActor(ledDummyActor)
-		ColorsOut.outappl("WasteService: added fake actors <${trolleyDummyActor.name}> <${wasteserviceDummyActor.name}> <${storageDummyActor.name}> <${ledDummyActor.name}>", ColorsOut.GREEN)
-	}
-
-	private fun coapRequest(actor: String): String? {
-		val reqConn = CoapConnection("$GUI_HOST:$GUI_PORT", "$GUI_CONTEXT_NAME/$actor")
-		val answer = reqConn.request("")
-		ColorsOut.outappl("coapRequest answer=$answer", ColorsOut.CYAN)
-		return answer
+		assertEquals(expectedContent, glassSegment.trim().toFloat().toInt())
 	}
 
 	private fun getGuiContent(): String {
-		return wsConn.receiveMsg()
+		// Clean queue
+		while ((wsConn as WsConnSpring).hasMessages()) {
+			wsConn.receiveMsg()
+		}
+
+		// Returns updates from all
+		wsConn.forward("get")
+		// Repeat 5 times to get all 5 updates, chain them for elaboration
+		var sb = StringBuilder()
+		repeat(5) {
+			sb.append(wsConn.receiveMsg())
+			sb.append("\n")
+		}
+		val msg = sb.toString()
+		ColorsOut.out("Received $msg from websocket", ColorsOut.BLUE)
+		return msg
 	}
 
 	internal class DummyActor(name: String) : ActorBasic(name) {
 		override suspend fun actorBody(msg: IApplMessage) {
 		}
+
+		fun fakeResourceUpdate(data: String) {
+			updateResourceRep(data)
+			ColorsOut.outappl("DummyActor | ${DateTimeFormatter.ISO_INSTANT.format(Instant.now())} Faked $name update: $data", ColorsOut.ANSI_PURPLE)
+		}
+	}
+
+	internal class DummyCoapServer(val port: Int, val resourceName: String) {
+		val server = CoapServer(port)
+		val resource = DummyCoapResource(resourceName)
+
+		init {
+			server.add(resource)
+		}
+
+		fun start() {
+			server.start()
+			ColorsOut.out("Started DummyCoapServer $resourceName, port $port", ColorsOut.BLUE)
+		}
+
+		fun stop() {
+			server.stop()
+			ColorsOut.out("Stopped DummyCoapServer $resourceName, port $port", ColorsOut.BLUE)
+		}
+	}
+
+	internal class DummyCoapResource(name: String) : CoapResource(name) {
+		init {
+			isObservable = true
+		}
+		var value = ""
+
+		fun sendUpdates(value: String) {
+			this.value = value
+			changed()
+			ColorsOut.outappl("DummyCoapResource | ${DateTimeFormatter.ISO_INSTANT.format(Instant.now())} Faked $name update: $value", ColorsOut.ANSI_PURPLE)
+		}
+
+		override fun handleGET(exchange: CoapExchange) {
+			exchange.respond(value)
+		}
+
+		override fun handlePOST(exchange: CoapExchange) = exchange.respond( "POST not implemented")
+		override fun handlePUT(exchange: CoapExchange) = exchange.respond( "PUT not implemented")
+		override fun handleDELETE(exchange: CoapExchange) = exchange.respond( "DELETE not allowed")
 	}
 }
