@@ -105,4 +105,11 @@ application {
     manifest {
         attributes 'Main-Class': "$mainClassName"
     }
+     doLast {
+         println("copying jar to unibolibs")
+         copy {
+             from 'build/libs'
+             into "../unibolibs"
+         }
+     }
 }

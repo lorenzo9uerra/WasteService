@@ -1,6 +1,8 @@
 import it.unibo.kactor.ActorBasic
 import it.unibo.kactor.ActorBasicFsm
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
+import unibo.comm22.utils.ColorsOut
+import java.time.LocalTime
 
 object resourcePrologUtils {
     /**
@@ -9,6 +11,7 @@ object resourcePrologUtils {
      */
     fun resourcePayloadArg(myself: ActorBasicFsm, id: String, num: Int): String {
         val resourceValue = myself.payloadArg(1).replace("%%&NL%%", "\n")
+        ColorsOut.outappl("${LocalTime.now()} - ARGH ${PrologUtils.getFuncLine(resourceValue, id)}", ColorsOut.ANSI_YELLOW)
         val line = PrologUtils.getFuncLine(resourceValue, id)!!
         return PrologUtils.extractPayload(line)[num]
     }

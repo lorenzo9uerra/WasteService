@@ -1,8 +1,10 @@
 package it.unibo
 
 import alice.tuprolog.Prolog
+import coapObserverUtil
 import it.unibo.kactor.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -11,15 +13,22 @@ import unibo.comm22.utils.CommSystemConfig
 import unibo.comm22.utils.CommUtils
 import unibo.comm22.coap.CoapConnection
 import java.awt.Color
+import java.time.Instant
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import kotlin.concurrent.thread
 
 
 class TestLed {
     companion object {
-        const val TRIGGER_ACTOR_NAME = "wastetruck"
         const val TROLLEY_ACTOR_NAME = "trolley"
         const val WASTESERVICE_ACTOR_NAME = "wasteservice"
         const val TEST_CONTEXT_NAME = "ctx_wasteservice_proto_ctx"
+
+        const val TEST_CONTEXT_DESC = """context(ctx_wasteservice_proto_ctx, "localhost",  "TCP", "8050").
+            qactor( ledcontroller, ctx_wasteservice_proto_ctx, "it.unibo.ledcontroller.Ledcontroller").
+            qactor( led, ctx_wasteservice_proto_ctx, "it.unibo.led.Led").
+            """
 
         const val LED_CONTEXT_NAME = "ctx_wasteservice_proto_ctx"
         const val LED_ACTOR_NAME = "led"
@@ -28,14 +37,16 @@ class TestLed {
     }
 
     lateinit var wasteserviceCtx: QakContext
-    lateinit var wasteserviceDummyActor: ActorBasic
-    lateinit var trolleyDummyActor: ActorBasic
+    private lateinit var wasteserviceDummyActor: DummyActor
+    private lateinit var trolleyDummyActor: DummyActor
 
     @Before
     fun up() {
         CommSystemConfig.tracing = false
 
-        thread { it.unibo.ctx_wasteservice_proto_ctx.main() }
+        thread { runBlocking {
+            ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl")
+        } }
 
         waitForContexts()
 
@@ -46,14 +57,22 @@ class TestLed {
     fun ledTest() {
         ColorsOut.outappl("Starting led test", ColorsOut.CYAN)
 
-        checkLedResponse("home", "on")
+        // Controlla alcuni stati più volte, per verificare
+        // che l'ordine non influisca
+
         checkLedResponse("work", "blinking")
         checkLedResponse("stopped", "off")
+        // Home/on stato iniziale, controlla alla fine per evitare
+        // che sembri funzionare solo perchè è così alla partenza
+        checkLedResponse("home", "on")
+        checkLedResponse("stopped", "off")
+        checkLedResponse("work", "blinking")
     }
 
     private fun checkLedResponse(input: String, expectedLedState: String) {
         sendTrolleyInfo(input)
         CommUtils.delay(500)
+
         val reply = coapRequest(LED_ACTOR_NAME)!!
         val state = getLedStateFromReply(reply)
         assertEquals(expectedLedState, state)
@@ -63,47 +82,34 @@ class TestLed {
     // info: home | work | stopped
     private fun sendTrolleyInfo(info: String) {
         if (info == "home") {
-            wasteserviceDummyActor.updateResourceRep("tpos(home)")
-            ColorsOut.outappl("Faked wasteservice update: tpos(home)", ColorsOut.CYAN)
+            wasteserviceDummyActor.fakeResourceUpdate("tpos(home)")
+            // Make stopped false else it would take priority
+            trolleyDummyActor.fakeResourceUpdate("state(work)\npos(-1,-1)")
         } else {
             // Make "trolley" not at home so the status it not replaced by home
-            wasteserviceDummyActor.updateResourceRep("tpos(indoor)")
-
-            trolleyDummyActor.updateResourceRep("state($info)\npos(-1,-1)")
-            ColorsOut.outappl("Faked trolley update: state($info)\npos(-1,-1)", ColorsOut.CYAN)
+            wasteserviceDummyActor.fakeResourceUpdate("tpos(indoor)")
+            trolleyDummyActor.fakeResourceUpdate("state($info)\npos(-1,-1)")
         }
     }
 
     private fun waitForContexts() {
         ColorsOut.outappl(this.javaClass.name + " waits for WasteService ... ", ColorsOut.GREEN)
-        var waitingActor = QakContext.getActor(WASTESERVICE_ACTOR_NAME)
-        while (waitingActor == null) {
-            CommUtils.delay(200)
-            waitingActor = QakContext.getActor(WASTESERVICE_ACTOR_NAME)
-        }
-        waitingActor = QakContext.getActor(TRIGGER_ACTOR_NAME)
-        while (waitingActor == null) {
-            CommUtils.delay(200)
-            waitingActor = QakContext.getActor(TRIGGER_ACTOR_NAME)
-        }
-        waitingActor = QakContext.getActor(TROLLEY_ACTOR_NAME)
-        while (waitingActor == null) {
-            CommUtils.delay(200)
-            waitingActor = QakContext.getActor(TROLLEY_ACTOR_NAME)
-        }
+        waitForActor(LED_ACTOR_NAME)
         ColorsOut.outappl("WasteService loaded", ColorsOut.GREEN)
 
         wasteserviceCtx = sysUtil.getContext(TEST_CONTEXT_NAME)!!
     }
 
+    private fun waitForActor(actor: String) {
+        var waitingActor = QakContext.getActor(actor)
+        while (waitingActor == null) {
+            CommUtils.delay(200)
+            waitingActor = QakContext.getActor(actor)
+        }
+    }
+
     @OptIn(ObsoleteCoroutinesApi::class)
     private fun replaceWatchedComponent() {
-        // Rimuovi attori emettitori/osservati, crea falsi attori
-        // o componenti software controllati da noi
-        wasteserviceCtx.removeInternalActor(QakContext.getActor(TRIGGER_ACTOR_NAME)!!)
-        wasteserviceCtx.removeInternalActor(QakContext.getActor(TROLLEY_ACTOR_NAME)!!)
-        wasteserviceCtx.removeInternalActor(QakContext.getActor(WASTESERVICE_ACTOR_NAME)!!)
-
         trolleyDummyActor = DummyActor(TROLLEY_ACTOR_NAME)
         wasteserviceDummyActor = DummyActor(WASTESERVICE_ACTOR_NAME)
 
@@ -125,6 +131,11 @@ class TestLed {
 
     internal class DummyActor(name: String) : ActorBasic(name) {
         override suspend fun actorBody(msg: IApplMessage) {
+        }
+
+        fun fakeResourceUpdate(data: String) {
+            updateResourceRep(data)
+            ColorsOut.outappl("DummyActor | ${DateTimeFormatter.ISO_INSTANT.format(Instant.now())} Faked $name update: $data", ColorsOut.ANSI_PURPLE)
         }
     }
 }

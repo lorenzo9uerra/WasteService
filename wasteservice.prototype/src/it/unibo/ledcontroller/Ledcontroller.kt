@@ -22,6 +22,7 @@ class Ledcontroller ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						coapObserverUtil.startObserving(myself ,"trolley" )
 						coapObserverUtil.startObserving(myself ,"wasteservice" )
+						forward("ledSet", "ledSet(on)" ,"led" ) 
 					}
 					 transition( edgeName="goto",targetState="observe", cond=doswitch() )
 				}	 
@@ -35,7 +36,7 @@ class Ledcontroller ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("coapUpdate(RESOURCE,VALUE)"), Term.createTerm("coapUpdate(RESOURCE,VALUE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("Led Controller | Received update from ${payloadArg(0)}, is ${payloadArg(1)}")
+								println("Led Controller | Received update from ${payloadArg(0)}, is ${payloadArg(1)} ; currently AtHome $AtHome Stopped $Stopped")
 								 var Next = ""  
 								if(  payloadArg(0) == "trolley"  
 								 ){ Stopped = resourcePrologUtils.resourcePayloadArg(myself, "state", 0) == "stopped"  
@@ -47,12 +48,20 @@ class Ledcontroller ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								 {if(  !AtHome  
 								  ){ Next = "blinking"  
 								 }
+								 else
+								  { Next = "on"  
+								  }
 								 }
 								}
 								if(  payloadArg(0) == "wasteservice"  
 								 ){ AtHome = resourcePrologUtils.resourcePayloadArg(myself, "tpos", 0) == "home"  
-								if(  AtHome && !Stopped  
+								if(  !Stopped  
+								 ){if(  AtHome  
 								 ){ Next = "on"  
+								}
+								else
+								 { Next = "blinking"  
+								 }
 								}
 								}
 								if(  Next != ""  

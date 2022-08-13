@@ -65,7 +65,38 @@ object coapObserverUtil {
         actorResourceConnections[key] = connection
     }
 
-    fun stopObserving(actor: ActorBasic, resourceHost: String, resourceUri: String) {
+    fun stopAllObserving(actor: ActorBasic) {
+        actorResourceConnections.keys.removeIf { key ->
+            val out = key.first == actor
+            if (out) {
+                actorResourceConnections[key]!!.close()
+            }
+            out
+        }
+    }
+
+    fun stopObserving(actor: ActorBasic, contextName: String, actorName: String) {
+        val context = sysUtil.getContext(contextName) ?:
+            throw IllegalArgumentException("Unknown context $contextName")
+
+        stopObservingHost(
+            actor,
+            "${context.hostAddr}:${context.portNum}",
+            "${context.name}/$actorName",
+        )
+    }
+    fun stopObserving(actor: ActorBasic, actorName: String) {
+        val context = actor.context ?:
+            throw IllegalArgumentException("Actor doesn't have a context")
+
+        stopObservingHost(
+            actor,
+            "${context.hostAddr}:${context.portNum}",
+            "${context.name}/$actorName",
+        )
+    }
+
+    fun stopObservingHost(actor: ActorBasic, resourceHost: String, resourceUri: String) {
         val key = Pair(actor, "$resourceHost/$resourceUri")
         actorResourceConnections[key]?.close()
         actorResourceConnections.remove(key)

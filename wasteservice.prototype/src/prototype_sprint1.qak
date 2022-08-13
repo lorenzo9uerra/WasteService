@@ -31,6 +31,7 @@ QActor ledcontroller context ctx_wasteservice_proto_ctx {
 	State init initial {
 		qrun coapObserverUtil.startObserving(myself, "trolley")
 		qrun coapObserverUtil.startObserving(myself, "wasteservice")
+		forward led -m ledSet : ledSet(on)
 	}
 	Goto observe
 	
@@ -41,7 +42,7 @@ QActor ledcontroller context ctx_wasteservice_proto_ctx {
 	State handleStatus {
 		printCurrentMessage
 		onMsg ( coapUpdate : coapUpdate(RESOURCE, VALUE) ) {
-			println("Led Controller | Received update from ${payloadArg(0)}, is ${payloadArg(1)}")
+			println("Led Controller | Received update from ${payloadArg(0)}, is ${payloadArg(1)} ; currently AtHome $AtHome Stopped $Stopped")
 			[# var Next = "" #]
 			if [# payloadArg(0) == "trolley" #] {
 				// state(work|stopped)\npos(X, Y)
@@ -53,14 +54,20 @@ QActor ledcontroller context ctx_wasteservice_proto_ctx {
 				} else {
 					if [# !AtHome #] {
 						[# Next = "blinking" #]
+					} else {
+						[# Next = "on" #]
 					}
 				}
 			}
 			if [# payloadArg(0) == "wasteservice" #] {
 				// tpos(LOC)
 				[# AtHome = resourcePrologUtils.resourcePayloadArg(myself, "tpos", 0) == "home" #]
-				if [# AtHome && !Stopped #] {
-					[# Next = "on" #]
+				if [# !Stopped #] {
+					if [# AtHome #] {
+						[# Next = "on" #]
+					} else {
+						[# Next = "blinking" #]
+					}
 				}
 			}
 
