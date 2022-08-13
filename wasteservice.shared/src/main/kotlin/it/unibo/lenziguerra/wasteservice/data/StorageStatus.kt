@@ -9,6 +9,9 @@ data class StorageStatus (val amounts: Map<WasteType, Float>, val maxAmounts: Ma
             val amounts = mutableMapOf<WasteType, Float>()
             val maxAmounts = mutableMapOf<WasteType, Float>()
             val contentLines = PrologUtils.getFuncLines(prolStr, "content")
+            if (contentLines.isEmpty()) {
+                throw IllegalArgumentException("Wrong string for StorageStatus: $prolStr")
+            }
 
             for (line in contentLines) {
                 val payloadArgs = PrologUtils.extractPayload(line)

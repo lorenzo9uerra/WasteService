@@ -18,8 +18,11 @@ import java.util.*
 class TrolleyObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHandler {
     var lastState = TrolleyStatus.State.STOPPED
         private set
+
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
+        if (isSkippableResponse(content)) return
+
         val tState = TrolleyStatus.fromProlog(content)
         ColorsOut.outappl("Obs Trolley | state: ${tState.status}", ColorsOut.GREEN)
         if (lastState != tState.status) {
@@ -43,6 +46,8 @@ class StorageObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHan
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
+        if (isSkippableResponse(content)) return
+
         val sStatus = StorageStatus.fromProlog(content)
         if(sStatus.amounts.isNotEmpty()) {
             if (sStatus.amounts[WasteType.GLASS] != lastGlass) {
@@ -71,6 +76,8 @@ class WasteServiceObserver(private val wsList: ArrayList<WebSocketSession>) : Co
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
+        if (isSkippableResponse(content)) return
+
         val wStatus = WasteServiceStatus.fromProlog(content)
         ColorsOut.outappl("Obs WasteService | tpos: ${wStatus.trolleyPos}", ColorsOut.GREEN)
         if (lastPos != wStatus.trolleyPos) {
@@ -92,6 +99,8 @@ class LedObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHandler
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
+        if (isSkippableResponse(content)) return
+
         val lState = LedStatus.fromProlog(content)
         ColorsOut.outappl("Obs Led | state: ${lState.state}", ColorsOut.GREEN)
         if (lastState != lState.state) {
@@ -105,4 +114,13 @@ class LedObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHandler
     override fun onError() {
         ColorsOut.outerr("OBSERVING LED FAILED")
     }
+}
+
+// Initial or blank response
+fun isSkippableResponse(content: String): Boolean {
+    return content.isBlank() ||
+        (
+            content.contains("ActorBasic(Resource)")
+            && content.contains("created")
+        )
 }

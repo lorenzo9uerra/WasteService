@@ -79,6 +79,7 @@ dependencies {
 	testFixturesImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 	testFixturesImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
 	testFixturesImplementation(":unibo.qakactor22-2.8")
+	testFixturesImplementation(":unibo.comm22-1.1")
 }
 
 tasks.withType<KotlinCompile> {

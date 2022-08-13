@@ -8,13 +8,15 @@ import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 data class LedStatus (val state: BlinkLedState) {
     companion object {
         fun fromProlog(prolStr: String): LedStatus {
-            val stateStr = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "ledStatus")!!)[0]
+            val stateStr = PrologUtils.getFuncLine(prolStr, "ledState")?.let {
+                PrologUtils.extractPayload(it)[0]
+            } ?: throw IllegalArgumentException("Wrong string for LedStatus: $prolStr")
 
             return LedStatus(BlinkLedState.valueOf(stateStr.uppercase()))
         }
     }
 
     override fun toString(): String {
-        return "ledStatus(${state.name.lowercase()})"
+        return "ledState(${state.name.lowercase()})"
     }
 }

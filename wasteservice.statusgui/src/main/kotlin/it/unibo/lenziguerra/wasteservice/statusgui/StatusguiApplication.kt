@@ -2,6 +2,7 @@ package it.unibo.lenziguerra.wasteservice.statusgui
 
 import it.unibo.lenziguerra.wasteservice.*
 import org.eclipse.californium.core.CoapHandler
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Configuration
@@ -50,8 +51,11 @@ class StatusGUIController {
 @Configuration
 @EnableWebSocket
 class WebSocketConfig : WebSocketConfigurer {
+    @Autowired
+    var websocketHandler: StatusGuiWebsocketHandler? = null
+
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(StatusGuiWebsocketHandler(), "/statusgui")
+        registry.addHandler(websocketHandler!!, "/statusgui")
     }
 }
 
@@ -86,13 +90,13 @@ class StatusGuiWebsocketHandler : TextWebSocketHandler() {
     override fun afterConnectionEstablished(session: WebSocketSession) {
         super.afterConnectionEstablished(session)
         wsList.add(session)
-        ColorsOut.out("New session started: $session", ColorsOut.ANSI_PURPLE)
+        ColorsOut.out("New session started: $session, has: ${wsList.size}", ColorsOut.ANSI_PURPLE)
     }
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
         super.afterConnectionClosed(session, status)
         wsList.remove(session)
-        ColorsOut.out("Session closed: $session, status: $status", ColorsOut.ANSI_PURPLE)
+        ColorsOut.out("Session closed: $session, has: ${wsList.size}, status: $status", ColorsOut.ANSI_PURPLE)
     }
 
     private fun startCoapConnection(id: String, observer: CoapHandler) {
@@ -103,20 +107,23 @@ class StatusGuiWebsocketHandler : TextWebSocketHandler() {
                 SystemConfig.contexts[id] + "/" + SystemConfig.actors[id]
             )
             conn.observeResource(observer)
-            ColorsOut.outappl("connected via Coap conn:$conn", ColorsOut.CYAN)
+            ColorsOut.outappl("connected via Coap conn: ${SystemConfig.hosts[id]
+                    + ":" + SystemConfig.ports[id]}/${SystemConfig.contexts[id] 
+                    + "/" + SystemConfig.actors[id]}",
+                ColorsOut.CYAN)
         }.start()
     }
 
     private fun startLedCoapConnection(observer: CoapHandler) {
-        val actor = "led"
         Thread {
             val conn = CoapConnection(
-                SystemConfig.hosts[actor]
-                        + ":" + SystemConfig.ports[actor],
-                actor
+                SystemConfig.hosts["led"]
+                        + ":" + SystemConfig.ports["led"],
+                "led"
             )
             conn.observeResource(observer)
-            ColorsOut.outappl("connected via Coap conn:$conn", ColorsOut.CYAN)
+            ColorsOut.outappl("connected via Coap conn: ${SystemConfig.hosts["led"]
+                    + ":" + SystemConfig.ports["led"]}/led", ColorsOut.CYAN)
         }.start()
     }
 }

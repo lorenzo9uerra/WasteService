@@ -6,6 +6,7 @@ import it.unibo.lenziguerra.wasteservice.SystemConfig
 import it.unibo.lenziguerra.wasteservice.WasteType
 import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Controller
@@ -55,8 +56,11 @@ class WasteServiceController {
 @Configuration
 @EnableWebSocket
 class WebSocketConfig : WebSocketConfigurer {
+    @Autowired
+    var websocketHandler: TruckWebsocketHandler? = null
+
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(TruckWebsocketHandler(), "/truck")
+        registry.addHandler(websocketHandler!!, "/truck")
     }
 }
 

@@ -6,9 +6,7 @@ plugins {
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
     distribution
-    eclipse
     application
-    java
 }
 
 val kotlinVersion = "1.6.21"
@@ -32,8 +30,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.springframework:spring-websocket:5.3.20")
-    implementation("org.springframework:spring-messaging:5.3.20")
+    implementation("org.springframework:spring-websocket:5.3.22")
+    implementation("org.springframework:spring-messaging:5.3.22")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -68,9 +66,9 @@ dependencies {
 
     /* COAP **************************************************************************************************************** */
     // https://mvnrepository.com/artifact/org.eclipse.californium/californium-core
-    implementation("org.eclipse.californium:californium-core:3.5.0")
+    implementation("org.eclipse.californium:californium-core:3.6.0")
     // https://mvnrepository.com/artifact/org.eclipse.californium/californium-proxy2
-    implementation("org.eclipse.californium:californium-proxy2:3.5.0")
+    implementation("org.eclipse.californium:californium-proxy2:3.6.0")
 
     // OkHttp library for websockets with Kotlin
     // implementation("com.squareup.okhttp3:okhttp:3.14.0")
@@ -91,7 +89,7 @@ dependencies {
     /* UNIBO *************************************************************************************************************** */
     implementation(":uniboInterfaces")
     implementation(":2p301")
-    implementation(":it.unibo.qakactor-2.8")
+    implementation(":unibo.qakactor22-2.8")
     implementation(":unibo.comm22-1.1")
 
     /* AIMA **************************************************************************************************************** */

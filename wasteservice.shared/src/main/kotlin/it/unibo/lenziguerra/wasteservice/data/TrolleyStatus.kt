@@ -10,9 +10,15 @@ data class TrolleyStatus (val status: State, val pos: Array<Int>, val contentTyp
 
     companion object {
         fun fromProlog(prolStr: String): TrolleyStatus {
-            val statusStr = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "state")!!)[0]
+            val statusStr = PrologUtils.getFuncLine(prolStr, "state")?.let {
+                PrologUtils.extractPayload(it)[0]
+            } ?: throw IllegalArgumentException("Wrong string for TrolleyStatus: $prolStr")
+
             val status = State.valueOf(statusStr.uppercase())
-            val pos = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "pos")!!)
+            val pos = PrologUtils.getFuncLine(prolStr, "pos")?.let {
+                PrologUtils.extractPayload(it)
+            } ?: throw IllegalArgumentException("Wrong string for TrolleyStatus: $prolStr")
+
             val contentLine = PrologUtils.getFuncLine(prolStr, "content")
 
             if (contentLine == null) {

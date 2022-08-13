@@ -7,7 +7,10 @@ import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 data class WasteServiceStatus (val trolleyPos: SystemLocation, val error: String?) {
     companion object {
         fun fromProlog(prolStr: String): WasteServiceStatus {
-            val trolleyPosStr = PrologUtils.extractPayload(PrologUtils.getFuncLine(prolStr, "tpos")!!)[0]
+            val trolleyPosStr = PrologUtils.getFuncLine(prolStr, "tpos")?.let {
+                PrologUtils.extractPayload(it)[0]
+            } ?: throw IllegalArgumentException("Wrong string for WasteServiceStatus: $prolStr")
+
             var trolleyPos = SystemLocation.UNKNOWN
             trolleyPos = try{
                 SystemLocation.valueOf(trolleyPosStr.uppercase())
