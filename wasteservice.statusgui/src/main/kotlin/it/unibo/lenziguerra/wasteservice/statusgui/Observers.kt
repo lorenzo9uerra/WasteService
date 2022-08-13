@@ -12,7 +12,7 @@ import org.eclipse.californium.core.CoapHandler
 import org.eclipse.californium.core.CoapResponse
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.utils.ColorsOut
 import java.util.*
 
 class TrolleyObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHandler {

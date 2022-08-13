@@ -16,8 +16,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import unibo.actor22comm.coap.CoapConnection
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.coap.CoapConnection
+import unibo.comm22.utils.ColorsOut
 
 @SpringBootApplication
 class StatusguiApplication

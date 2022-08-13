@@ -5,7 +5,7 @@ import it.unibo.lenziguerra.wasteservice.data.LedStatus
 import org.eclipse.californium.core.CoapResource
 import org.eclipse.californium.core.CoapServer
 import org.eclipse.californium.core.server.resources.CoapExchange
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.utils.ColorsOut
 
 class BlinkLedCoapServer(val port: Int, val led: BlinkLed) {
     val server = CoapServer(port)

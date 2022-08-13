@@ -4,8 +4,8 @@ import it.unibo.lenziguerra.wasteservice.SystemConfig
 import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
 import org.eclipse.californium.core.CoapHandler
 import org.eclipse.californium.core.CoapResponse
-import unibo.actor22comm.coap.CoapConnection
-import unibo.actor22comm.utils.ColorsOut
+import unibo.comm22.coap.CoapConnection
+import unibo.comm22.utils.ColorsOut
 import java.io.IOException
 import kotlin.concurrent.thread
 

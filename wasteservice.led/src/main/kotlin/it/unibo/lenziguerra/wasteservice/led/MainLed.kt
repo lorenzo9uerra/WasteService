@@ -3,7 +3,7 @@ package it.unibo.lenziguerra.wasteservice.led
 import it.unibo.lenziguerra.wasteservice.SystemConfig
 import it.unibo.radarSystem22.domain.DeviceFactory
 import it.unibo.radarSystem22.domain.utils.DomainSystemConfig
-import unibo.actor22comm.utils.CommSystemConfig
+import unibo.comm22.utils.CommSystemConfig
 
 fun main() {
     // Config

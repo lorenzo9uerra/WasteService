@@ -3,8 +3,8 @@ package it.unibo.lenziguerra.wasteservice.led
 import it.unibo.lenziguerra.wasteservice.BlinkLedState
 import it.unibo.radarSystem22.domain.DeviceFactory
 import it.unibo.radarSystem22.domain.interfaces.ILed
-import unibo.actor22comm.utils.ColorsOut
-import unibo.actor22comm.utils.CommUtils
+import unibo.comm22.utils.ColorsOut
+import unibo.comm22.utils.CommUtils
 import kotlin.concurrent.thread
 
 class BlinkLed(val led: ILed) {
