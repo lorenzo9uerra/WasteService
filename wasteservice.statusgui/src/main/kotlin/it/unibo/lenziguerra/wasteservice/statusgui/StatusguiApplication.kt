@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.config.annotation.EnableWebSocket
@@ -18,9 +20,14 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import unibo.comm22.coap.CoapConnection
 import unibo.comm22.utils.ColorsOut
+import unibo.comm22.utils.CommSystemConfig
 
 @SpringBootApplication
-class StatusguiApplication
+class StatusguiApplication {
+    init {
+        CommSystemConfig.tracing = true
+    }
+}
 
 
 fun main(args: Array<String>) {
@@ -28,15 +35,15 @@ fun main(args: Array<String>) {
 }
 
 @Controller
-class WasteServiceController {
+class StatusGUIController {
     @GetMapping("/")
-    fun truckGui(model: Model): String {
+    fun statusGUI(model: Model): String {
         model["title"] = "WasteServiceStatusGUI"
         model["scripts"] = arrayOf(
             "/jquery-3.6.0.min.js",
             "/statusgui.js",
         )
-        return "statusgui"
+        return "status_gui"
     }
 }
 
@@ -59,14 +66,33 @@ class StatusGuiWebsocketHandler : TextWebSocketHandler() {
     init {
         startCoapConnection("trolley", trolleyObserver)
         startCoapConnection("storage", storageObserver)
-        startLedConnection(ledObserver)
+        startLedCoapConnection(ledObserver)
         startCoapConnection("wasteServiceContext", wasteServiceObserver)
         ColorsOut.out("Initialized StatusGuiWebsocketHandler!", ColorsOut.BLUE)
     }
 
 
     public override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
+        // Manual update, first time
+        if (message.payload == "get") {
+            session.sendMessage(TextMessage("trolleyState: ${trolleyObserver.lastState}"))
+            session.sendMessage(TextMessage("depositedGlass: ${storageObserver.lastGlass}"))
+            session.sendMessage(TextMessage("depositedPlastic: ${storageObserver.lastPlastic}"))
+            session.sendMessage(TextMessage("trolleyPosition: ${wasteServiceObserver.lastPos}"))
+            session.sendMessage(TextMessage("ledState: ${ledObserver.lastState}"))
+        }
+    }
+
+    override fun afterConnectionEstablished(session: WebSocketSession) {
+        super.afterConnectionEstablished(session)
         wsList.add(session)
+        ColorsOut.out("New session started: $session", ColorsOut.ANSI_PURPLE)
+    }
+
+    override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
+        super.afterConnectionClosed(session, status)
+        wsList.remove(session)
+        ColorsOut.out("Session closed: $session, status: $status", ColorsOut.ANSI_PURPLE)
     }
 
     private fun startCoapConnection(id: String, observer: CoapHandler) {
@@ -81,7 +107,7 @@ class StatusGuiWebsocketHandler : TextWebSocketHandler() {
         }.start()
     }
 
-    private fun startLedConnection(observer: CoapHandler) {
+    private fun startLedCoapConnection(observer: CoapHandler) {
         val actor = "led"
         Thread {
             val conn = CoapConnection(

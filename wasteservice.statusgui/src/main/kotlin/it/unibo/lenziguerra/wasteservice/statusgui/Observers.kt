@@ -15,8 +15,9 @@ import org.springframework.web.socket.WebSocketSession
 import unibo.comm22.utils.ColorsOut
 import java.util.*
 
-class TrolleyObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHandler {
-    private var lastState = TrolleyStatus.State.STOPPED
+class TrolleyObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHandler {
+    var lastState = TrolleyStatus.State.STOPPED
+        private set
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
         val tState = TrolleyStatus.fromProlog(content)
@@ -34,9 +35,11 @@ class TrolleyObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHan
     }
 }
 
-class StorageObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHandler {
-    private var lastGlass: Float = -1.0f
-    private var lastPlastic = -1.0f
+class StorageObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHandler {
+    var lastGlass: Float = -1.0f
+        private set
+    var lastPlastic = -1.0f
+        private set
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
@@ -62,8 +65,9 @@ class StorageObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHan
     }
 }
 
-class WasteServiceObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHandler {
-    private var lastPos = SystemLocation.UNKNOWN
+class WasteServiceObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHandler {
+    var lastPos = SystemLocation.UNKNOWN
+        private set
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
@@ -82,8 +86,9 @@ class WasteServiceObserver(private var wsList: ArrayList<WebSocketSession>) : Co
     }
 }
 
-class LedObserver(private var wsList: ArrayList<WebSocketSession>) : CoapHandler {
-    private var lastState = BlinkLedState.OFF
+class LedObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHandler {
+    var lastState = BlinkLedState.OFF
+        private set
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText

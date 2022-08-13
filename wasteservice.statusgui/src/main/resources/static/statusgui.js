@@ -11,22 +11,32 @@ function setConnected(connected) {
 }
 
 function connect() {
-	ws = new WebSocket('ws://localhost:8080/statusgui');
+	ws = new WebSocket(`ws://${window.location.host}/statusgui`);
 	ws.onmessage = function(data) {
-		if (data.data.startsWith("trolleyState") ) {
-			$("#trolleyState").text(data.data.split(": ")[1])
-		} else if (data.data.startsWith("depositedPlastic")) {
-			$("#depositedPlastic").text(data.data.split(": ")[1])
-		} else if (data.data.startsWith("depositedGlass")) {
-			$("#depositedGlass").text(data.data.split(": ")[1])
-		} else if (data.data.startsWith("trolleyPosition")) {
-			$("#trolleyPosition").text(data.data.split(": ")[1])
-		} else if (data.data.startsWith("ledState")) {
-			$("#ledState").text(data.data.split(": ")[1])
+		console.log("received", data.data)
+		const dataType = data.data.split(": ")[0]
+		const dataContent = data.data.split(": ")[1]
+		if (dataType.startsWith("trolleyState") ) {
+			$("#trolleyState").text(dataContent)
+		} else if (dataType.startsWith("depositedPlastic")) {
+			$("#depositedPlastic").text(dataContent)
+		} else if (dataType.startsWith("depositedGlass")) {
+			$("#depositedGlass").text(dataContent)
+		} else if (dataType.startsWith("trolleyPosition")) {
+			$("#trolleyPosition").text(dataContent)
+		} else if (dataType.startsWith("ledState")) {
+			$("#ledState").text(dataContent)
 		}
 	}
-	setConnected(true);
-    console.log("WebSocket connected")
+	ws.onopen = function(ev) {
+		setConnected(true);
+		ws.send("get")
+		console.log("WebSocket connected")	
+	}
+	ws.onclose = function(ev) {
+		setConnected(false);
+		console.log("WebSocket disconnected");	
+	}
 }
 
 function disconnect() {

@@ -19,7 +19,7 @@ function setConnected(connected) {
 }
 
 function connect() {
-	ws = new WebSocket('ws://localhost:8080/truck');
+	ws = new WebSocket(`ws://${window.location.host}/statusgui`);
 	ws.onmessage = function(data) {
 		if (data.data === MSG_LOADACCEPT) {
 			$("#loadreply").text(`Carico accettato, in attesa del Trolley...`)
@@ -33,16 +33,20 @@ function connect() {
 			$("#loadreply").text(`Risposta sconosciuta o inaspettata! È: ${data.data}`)
 		}
 	}
-	setConnected(true);
-    console.log("WebSocket connected")
+	ws.onopen = function(ev) {
+		setConnected(true);
+		console.log("WebSocket connected")	
+	}
+	ws.onclose = function(ev) {
+		setConnected(false);
+		console.log("WebSocket disconnected");	
+	}
 }
 
 function disconnect() {
 	if (ws != null) {
 		ws.close();
 	}
-	setConnected(false);
-	console.log("WebSocket disconnected");
 }
 
 // function sendData() {

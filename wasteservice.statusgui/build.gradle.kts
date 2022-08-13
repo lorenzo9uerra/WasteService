@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.7.2"
     id("io.spring.dependency-management") version "1.0.12.RELEASE"
-    war
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
+    distribution
 }
 
 group = "it.unibo.lenziguerra.wasteservice"
@@ -22,12 +22,17 @@ repositories {
 dependencies {
     implementation(project(":wasteservice.shared"))
 
+    implementation("org.springframework.boot:spring-boot-starter-mustache")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    implementation("org.springframework:spring-websocket:5.3.22")
+    implementation("org.springframework:spring-messaging:5.3.22")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    
     /* COAP **************************************************************************************************************** */
     // https://mvnrepository.com/artifact/org.eclipse.californium/californium-core
     implementation("org.eclipse.californium:californium-core:3.6.0")
@@ -46,6 +51,10 @@ dependencies {
     testImplementation(":unibo.qakactor22-2.8")
     testImplementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
     testImplementation(testFixtures(project(":wasteservice.shared")))
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude("com.vaadin.external.google", "android-json")
+    }
 }
 
 tasks.withType<KotlinCompile> {
