@@ -1,6 +1,5 @@
 - Rinominare Led analisi in BlinkLed.
 - Doc progetto Gui
-- Riassunto Sprint 2
 
 
 

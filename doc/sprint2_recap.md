@@ -2,52 +2,52 @@
 
 Il secondo SPRINT riguardava questi requisiti:
 
-- **request**: il *WasteService* accetta richieste di deposito da *Waste truck* che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare.
-- **deposit**: il *trolley*, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa è una *deposit action*.
-- **indoor-more-requests**: il *trolley*, terminata una *deposit action*, torna a HOME solo se non ci sono altre richieste da gestire, altrimenti gestisce subito la richiesta successiva andando a INDOOR.
+- **led**: nel sistema è presente un led che:
+    - è *acceso* se il *trolley* è a HOME
+    - *lampeggia* se il *trolley* è in attività
+    - è *spento* se il trolley è in stato di *stop*
+- **gui**: è presente una gui (*WasteServiceStatusGUI*) che mostra i seguenti dati:
+    - Stato del *trolley* e sua posizione
 
 ### Analisi
 
+In fase di analisi, è stato deciso di realizzare i due nuovi componenti sfruttando il pattern Observer, rendendoli Observer delle risorse osservabili realizzate nello SPRINT 1.
+
 Dopo la fase di analisi, l'architettura logica del sistema è stata così pensata:
 
-![modello architettura logica](img/arch_logica.png)
+![modello architettura logica](img/sprint2_pro_arch.jpg)
 
-![diagramma stati WasteService](img/arch_fsm_wasteservice.png)
+[**Modello eseguibile generale / prototipo.**](../wasteservice.prototype/src/prototype_sprint2.qak) Si noti come rispetto al modello eseguibile dello SPRINT 1, non sia stato necessario modificare niente del codice preesistente ma sia bastato aggiungere gli attori-osservatori.
 
-[**Prototipo eseguibile**](../wasteservice.prototype/src/prototype_sprint1.qak)
+È stato realizzato un supporto a Qak per rendere un attore Observer di altri attori o risorse Coap, [qakactor.observer](qakactor.observer.md).
 
-Il sistema è stato pensato per usare la componente esterna BasicRobot22, per semplificare le interazioni con robot reali e virtuali.
+Sono usati per interagire con il led i componenti forniti dal committente, *led25GpioTurnOn.sh* e *led25GpioTurnOff.sh*, controllati con la libreria *it.unibo.radarSystem22.domain* realizzata per progetti precedenti.
 
 Sono stati realizzati, in fase di analisi, dei test plan già eseguibili sfruttando il prototipo in Qak, per ogni requisito. Sono dettagliati nella sezione apposita, e collegati di seguito:
 
-- [TestRequest.java](../wasteservice.prototype/test/it/unibo/TestRequest.java)
-- [TestDeposit.java](../wasteservice.prototype/test/it/unibo/TestDeposit.java)
-- [TestMoreRequests.java](../wasteservice.prototype/test/it/unibo/TestMoreRequests.java)
+- [TestLed.kt](../wasteservice.prototype/test/it/unibo/TestLed.kt)
+- [TestGui.kt](../wasteservice.prototype/test/it/unibo/TestGui.kt). Nota: lanciare un test alla volta, a causa di interazioni tra Qak e JUnit.
 
 
 ### Progetto
 
 I punti salienti della fase di sviluppo sono i seguenti:
 
-- L'interfaccia per permettere ai WasteTruck è stata realizzata come applicazione web tramite il framework SpringBoot, che comunica con il sistema tramite WebSocket.
+- Sono state realizzate *data class* per standardizzare i dati contenuti nelle risorse osservabili Coap.
 
-- WasteService è stato realizzato come due componenti distinte e collegate: un server web Spring Boot che fornisce la pagina per fare richieste e le gestisce, e un attore Qak che coordina la *deposit action* del Trolley.
+- Sia il sotto-sistema di *wasteservice.led* che quello di *wasteservice.gui* sono realizzati non usando il framework Qak, dato che l'interazione con il sistema centrale è limitata all'osservazione tramite connessioni Coap, il che semplifica la realizzazione dei due sotto-sistemi.
 
-- Il Trolley realizza il movimento interagendo con BasicRobot22, in particolare l'attore *pathexec*. Trolley genera il percorso per la destinazione, e lo invia a quest'ultimo attore.
+- *wasteservice.led* è un componente passivo, costituito da vari POJO, che osserva le risorse Trolley e WasteService e gestisce il led di conseguenza.
 
-- Ogni attore è una risorsa osservabile COaP con dati utili, permettendo più facile testing e futura espandibilità.
+- *wasteservice.gui* è realizzato come webserver Spring Boot che serve una webapp, che viene aggiornata tramite WebSocket dagli Observer delle varie risorse osservate.
 
-<immagine architettura>
+![architettura progetto](img/sprint2_prog_architettura.jpg)
 
 I test dell'analisi sono stati adattati all'implementazione:
 
-- [TestRequest.java](../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/wasteservice/TestRequest.java)
-- [TestDeposit.java](../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestDeposit.java)
-- [TestMoreRequests.java](../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestMoreRequests.java)
+- [TestGui.kt](../wasteservice.statusgui/src/test/kotlin/it/unibo/lenziguerra/wasteservice/statusgui/TestGui.kt)
+- [TestLed.kt](../wasteservice.led/src/test/kotlin/TestLed.kt)
 
-Note sull'esecuzione: 
+Possono essere eseguiti senza lanciare programmi esterni, a differenza dei test dello SPRINT 1.
 
-* È necessario avviare BasicRobot22 prima di eseguire i test, è incluso un [file docker](../wasteservice.core/basicrobot22.yaml) per farlo facilmente, con le impostazioni della mappa che seguono il dominio del problema.
-* I test vanno avviati un metodo alla volta, ed è necessario aggiornare la pagina di VirtualEnv di BasicRobot tra le esecuzioni, a causa di requisiti di VirtualEnv e Qak.
-
-Viene anche fornita un'**immagine Docker** per avviare il sistema in modo semplice: [wasteservice.yaml](../wasteservice.core/wasteservice.yaml).
+Viene fornito [wasteservice2.yaml](../wasteservice.core/wasteservice2.yaml) per eseguire il sistema con Docker. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, alla porta 8090 per visualizzare l'ambiente virtuale del robot, e alla porta 8085 per visualizzare WasteServiceStatusGUI:

@@ -155,5 +155,5 @@ La struttura finale del sistema nello SPRINT 1 è riassunta in questo grafico:
 
 ### Immagine Docker
 
-Viene fornito [wasteservice2.yaml](../wasteservice.core/wasteservice2.yaml) per eseguire il sistema con Docker. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, e alla porta 8090 per visualizzare l'ambiente virtuale del robot.
+Viene fornito [wasteservice2.yaml](../wasteservice.core/wasteservice2.yaml) per eseguire il sistema con Docker. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, alla porta 8090 per visualizzare l'ambiente virtuale del robot, e alla porta 8085 per visualizzare WasteServiceStatusGUI:
 

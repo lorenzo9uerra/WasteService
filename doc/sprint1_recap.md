@@ -37,7 +37,7 @@ I punti salienti della fase di sviluppo sono i seguenti:
 
 - Ogni attore è una risorsa osservabile COaP con dati utili, permettendo più facile testing e futura espandibilità.
 
-<immagine architettura>
+![architettura progetto](img/architettura1_progetto.jpg)
 
 I test dell'analisi sono stati adattati all'implementazione:
 
