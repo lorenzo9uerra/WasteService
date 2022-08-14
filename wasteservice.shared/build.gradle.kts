@@ -66,7 +66,7 @@ dependencies {
     implementation(":2p301")
     implementation(":unibo.comm22-1.1")
 	// Necessario per utilità messaggi
-	implementation(":unibo.qakactor22-2.8")
+	implementation(":unibo.qakactor22-3.0")
 
 	/* AIMA **************************************************************************************************************** */
 	//PLANNER
@@ -78,7 +78,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
 	testFixturesImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 	testFixturesImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
-	testFixturesImplementation(":unibo.qakactor22-2.8")
+	testFixturesImplementation(":unibo.qakactor22-3.0")
 	testFixturesImplementation(":unibo.comm22-1.1")
 }
 

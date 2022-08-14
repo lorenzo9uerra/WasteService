@@ -12,7 +12,7 @@ import unibo.comm22.utils.ColorsOut
 import java.io.IOException
 
 
-class LedController(val led: BlinkLed) {
+class LedController(val led: IBlinkLed) {
     private val trolleyCoapHandler = TrolleyCoapHandler()
     private val wsCoapHandler = WsCoapHandler()
     private lateinit var coapConnection: CoapConnection

@@ -21,7 +21,7 @@ fun main() {
 }
 
 class LedContainer(serverPort: Int = SystemConfig.ports["led"]!!) {
-    val led: BlinkLed
+    val led: IBlinkLed
     val ledController: LedController
     val ledServer: BlinkLedCoapServer
 

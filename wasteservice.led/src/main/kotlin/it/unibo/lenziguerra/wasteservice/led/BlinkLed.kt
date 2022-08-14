@@ -7,14 +7,24 @@ import unibo.comm22.utils.ColorsOut
 import unibo.comm22.utils.CommUtils
 import kotlin.concurrent.thread
 
-class BlinkLed(val led: ILed) {
-    var updateHandler: ((BlinkLedState) -> Unit)? = null
+interface IBlinkLed {
+    fun turnOn()
+    fun turnOff()
+    fun blink()
+
+    val status: BlinkLedState
+    var updateHandler: ((BlinkLedState) -> Unit)?
+}
+
+
+class BlinkLed(val led: ILed) : IBlinkLed {
+    override var updateHandler: ((BlinkLedState) -> Unit)? = null
         set(value) {
             ColorsOut.out("BlinkLed: set new updateHandler!", ColorsOut.BLACK)
             field = value
         }
 
-    var status: BlinkLedState = BlinkLedState.ON
+    override var status: BlinkLedState = BlinkLedState.ON
         get() = field
         set(value) {
             if (value != field) {
@@ -36,15 +46,15 @@ class BlinkLed(val led: ILed) {
             }
         }
 
-    fun turnOn() {
+    override fun turnOn() {
         status = BlinkLedState.ON
     }
 
-    fun turnOff() {
+    override fun turnOff() {
         status = BlinkLedState.OFF
     }
 
-    fun blink() {
+    override fun blink() {
         status = BlinkLedState.BLINKING
     }
 }

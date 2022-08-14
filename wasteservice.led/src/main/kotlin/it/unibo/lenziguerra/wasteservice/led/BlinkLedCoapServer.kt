@@ -7,7 +7,7 @@ import org.eclipse.californium.core.CoapServer
 import org.eclipse.californium.core.server.resources.CoapExchange
 import unibo.comm22.utils.ColorsOut
 
-class BlinkLedCoapServer(val port: Int, val led: BlinkLed) {
+class BlinkLedCoapServer(val port: Int, val led: IBlinkLed) {
     val server = CoapServer(port)
     private val resource = CoapResourceBlinkLed("led", led)
 
@@ -30,7 +30,7 @@ class BlinkLedCoapServer(val port: Int, val led: BlinkLed) {
     }
 }
 
-class CoapResourceBlinkLed(name: String, val led: BlinkLed) : CoapResource(name) {
+class CoapResourceBlinkLed(name: String, val led: IBlinkLed) : CoapResource(name) {
     init {
         isObservable = true
     }

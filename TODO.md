@@ -1,4 +1,6 @@
-- Correggere implementazione Led per usare WasteService e non Trolley per la posizione
+- Rinominare Led analisi in BlinkLed.
+- Doc progetto Gui
+- Riassunto Sprint 2
 
 
 
