@@ -2,7 +2,7 @@
 
 La progettazione e lo sviluppo delle componenti software stabilite in fase di analisi è stata divisa in questo modo:
 
-- Led, LedController: F. Lenzi
+- BlinkLed, LedController: F. Lenzi
 - WasteServiceStatusGUI: L. Guerra
 
 ### Struttura del software
@@ -13,7 +13,7 @@ Questo permette di semplificare abbastanza la struttura, non richiedendo contest
 
 I componenti sono stati contenuti in due nuovi progetti:
 
-- *wasteservice.led*: contiene le classi corrispondenti a Led e LedController.
+- *wasteservice.led*: contiene le classi corrispondenti a BlinkLed e LedController.
 - *wasteservice.statusgui*: contiene il server Spring Boot che gestisce la WasteServiceGUI.
 
 La struttura dei package diventa la seguente (evidenziati solo i cambiamenti importanti):
@@ -62,19 +62,19 @@ La stringa restituita da queste classi è quella che viene passata a `updateReso
 
 Il led, come da analisi, viene gestito tramite la libreria già realizzata *it.unibo.radarSystem22.domain*, che a sua volta interagisce con il software del committente (*led25GpioTurnOn.sh* e *led25GpioTurnOff.sh*).
 
-Come sopra i due componenti da analisi (Led e LedController) sono realizzati non come attori Qak, ma come POJO. In particolare, vengono realizate queste classi:
+Come sopra i due componenti da analisi (BlinkLed e LedController) sono realizzati non come attori Qak, ma come POJO. In particolare, vengono realizate queste classi:
 
 - **BlinkLed**: wrapper per le classi di *radarSystem22.domain*, che permette di impostare il led, oltre che ad acceso o spento, a uno stato di lampeggiamento, ed è osservabile. Analogo all'attore BlinkLed in analisi.
 
 - **LedController**: analogo a LedController in analisi, controlla un BlinkLed e osserva Trolley e WasteService.
 
-- **LedContainer**: integra il sotto-sistema, istanziando e collegando i vari componenti.
-
 - **BlinkLedCoapServer**: un server COaP standalone, per rendere osservabile il BlinkLed come risorsa.
+
+- **LedContainer**: integra il sotto-sistema, istanziando e collegando i vari componenti.
 
 #### BlinkLed
 
-Da requisiti, il led deve poter essere impostato in stato di lampeggiamento, acceso, o spento. L'interfaccia della classe BlinkLed, `IBlinkLed`, è la seguente:
+Da requisiti, il led deve poter essere impostato in stato di lampeggiamento, acceso, o spento, realizzando le primitive *turnOn*, *turnOff*, e *blink*. L'interfaccia della classe BlinkLed, `IBlinkLed`, è quindi la seguente:
 
 ```Kotlin
 interface IBlinkLed {
@@ -149,11 +149,11 @@ I test possono inoltre essere eseguiti senza avviare nessun software oltre al te
 
 ### Struttura del sistema
 
-La struttura finale del sistema nello SPRINT 1 è riassunta in questo grafico: 
+La struttura finale del sistema nello SPRINT 2 è riassunta in questo grafico: 
 
 ![architettura progetto](img/sprint2_prog_architettura.jpg)
 
 ### Immagine Docker
 
-Viene fornito [wasteservice2.yaml](../wasteservice.core/wasteservice2.yaml) per eseguire il sistema con Docker. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, alla porta 8090 per visualizzare l'ambiente virtuale del robot, e alla porta 8085 per visualizzare WasteServiceStatusGUI:
+Viene fornito [wasteservice2.yaml](../wasteservice.core/wasteservice2.yaml) per eseguire il sistema (con WasteServiceStatusGUI) con Docker. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, alla porta 8090 per visualizzare l'ambiente virtuale del robot, e alla porta 8085 per visualizzare WasteServiceStatusGUI. Viene fornito inoltre [wasteservice2-led.yaml](../wasteservice.led/wasteservice2-led.yaml), da eseguire su Raspberry PI con un Led installato, per eseguire la componente Led.
 

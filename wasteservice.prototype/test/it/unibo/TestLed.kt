@@ -1,7 +1,5 @@
 package it.unibo
 
-import alice.tuprolog.Prolog
-import coapObserverUtil
 import it.unibo.kactor.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -12,9 +10,7 @@ import unibo.comm22.utils.ColorsOut
 import unibo.comm22.utils.CommSystemConfig
 import unibo.comm22.utils.CommUtils
 import unibo.comm22.coap.CoapConnection
-import java.awt.Color
 import java.time.Instant
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.concurrent.thread
 
@@ -27,11 +23,11 @@ class TestLed {
 
         const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "localhost",  "TCP", "8050").
             qactor( ledcontroller, ctx_wasteservice_proto_ctx, "it.unibo.ledcontroller.Ledcontroller").
-            qactor( led, ctx_wasteservice_proto_ctx, "it.unibo.led.Led").
+            qactor( blinkled, ctx_wasteservice_proto_ctx, "it.unibo.blinkled.Blinkled").
             """
 
         const val LED_CONTEXT_NAME = "ctx_wasteservice_proto_ctx"
-        const val LED_ACTOR_NAME = "led"
+        const val LED_ACTOR_NAME = "blinkled"
         const val LED_HOST = "localhost"
         const val LED_PORT = 8050
     }

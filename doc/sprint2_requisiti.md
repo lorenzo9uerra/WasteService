@@ -68,7 +68,7 @@ In questo secondo SPRINT verranno analizzati i requisiti **led** e **gui**, data
 
 La gestione del Led verrà fatta tramite il software fornito dal committente, gli script *led25GpioTurnOn.sh* e *led25GpioTurnOff.sh*. L'azienda dispone già di una libreria per gestire tramite Java il Led con questi script, cioè *it.unibo.radarSystem22.domain*, quindi sarà opportuno utilizzarla.
 
-Inoltre, il Led deve comunicare con il resto del sistema, quindi è sicuramente modellabile come attore:
+Dai requisiti, si evincono tre primitive che il led deve poter eseguire: accendersi, spegnersi, e lampeggiare, che verranno chiamate *turnOn*, *turnOff*, *blink*. Il software fornito e la libreria che lo controlla implementano solo le prime due, quindi questo *abstraction gap* va colmato realizzando un componente intermedio, che chiameremo **BlinkLed**, che implementa la terza primitiva. Questo componente deve comunicare con il resto del sistema, quindi viene modellato come attore.
 
 ![](img/sprint2_req_led.png)
 
@@ -90,6 +90,8 @@ Date le risorse pre-esistenti dell'azienda e il lavoro molto ridotto rispetto al
 Anche in questo caso, dovendo comunicare con il resto del sistema, è opportuno modellarla come attore:
 
 ![](img/sprint2_req_gui.png)
+
+In questo documento, il nome *StatusGUI* verrà usato come sinonimo di *WasteServiceStatusGUI* per comodità.
 
 Come per il Led, il tipo di comunicazione con il resto del sistema rimane un punto aperto.
 

@@ -22,7 +22,7 @@ class Ledcontroller ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						coapObserverUtil.startObserving(myself ,"trolley" )
 						coapObserverUtil.startObserving(myself ,"wasteservice" )
-						forward("ledSet", "ledSet(on)" ,"led" ) 
+						forward("ledSet", "ledSet(on)" ,"blinkled" ) 
 					}
 					 transition( edgeName="goto",targetState="observe", cond=doswitch() )
 				}	 
@@ -66,7 +66,7 @@ class Ledcontroller ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								}
 								if(  Next != ""  
 								 ){println("Led Controller | Setting led to $Next")
-								forward("ledSet", "ledSet($Next)" ,"led" ) 
+								forward("ledSet", "ledSet($Next)" ,"blinkled" ) 
 								}
 						}
 					}

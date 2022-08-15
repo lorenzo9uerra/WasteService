@@ -11,8 +11,7 @@ object resourcePrologUtils {
      */
     fun resourcePayloadArg(myself: ActorBasicFsm, id: String, num: Int): String {
         val resourceValue = myself.payloadArg(1).replace("%%&NL%%", "\n")
-        ColorsOut.outappl("${LocalTime.now()} - ARGH ${PrologUtils.getFuncLine(resourceValue, id)}", ColorsOut.ANSI_YELLOW)
-        val line = PrologUtils.getFuncLine(resourceValue, id)!!
+        val line = PrologUtils.getFuncLine(resourceValue, id) ?: throw IllegalStateException("Wrong payload <$resourceValue>")
         return PrologUtils.extractPayload(line)[num]
     }
 

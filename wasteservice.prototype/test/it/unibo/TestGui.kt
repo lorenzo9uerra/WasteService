@@ -13,6 +13,8 @@ import unibo.comm22.utils.CommSystemConfig
 import unibo.comm22.utils.CommUtils
 import unibo.comm22.coap.CoapConnection
 import java.awt.Color
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import kotlin.concurrent.thread
 
 
@@ -22,24 +24,24 @@ class TestGui {
         const val TROLLEY_ACTOR_NAME = "trolley"
         const val WASTESERVICE_ACTOR_NAME = "wasteservice"
         const val STORAGE_ACTOR_NAME = "storagemanager"
-        const val LED_ACTOR_NAME = "led"
+        const val LED_ACTOR_NAME = "blinkled"
         const val TEST_CONTEXT_NAME = "ctx_wasteservice_proto_ctx"
 
         const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "localhost",  "TCP", "8050").
-            qactor( gui, ctx_wasteservice_proto_ctx, "it.unibo.gui.Gui").
+            qactor( wasteservicestatusgui, ctx_wasteservice_proto_ctx, "it.unibo.wasteservicestatusgui.Wasteservicestatusgui").
             """
 
-        const val GUI_ACTOR = "gui"
+        const val GUI_ACTOR = "wasteservicestatusgui"
         const val GUI_CONTEXT_NAME = "ctx_wasteservice_proto_ctx"
         const val GUI_HOST = "localhost"
         const val GUI_PORT = 8050
     }
 
     lateinit var wasteserviceCtx: QakContext
-    lateinit var wasteserviceDummyActor: ActorBasic
-    lateinit var trolleyDummyActor: ActorBasic
-    lateinit var storageDummyActor: ActorBasic
-    lateinit var ledDummyActor: ActorBasic
+    private lateinit var wasteserviceDummyActor: DummyActor
+    private lateinit var trolleyDummyActor: DummyActor
+    private lateinit var storageDummyActor: DummyActor
+    private lateinit var ledDummyActor: DummyActor
 
     @Before
     fun up() {
@@ -98,8 +100,7 @@ class TestGui {
     // GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]
 
     private fun checkGuiResponsePosition(input: String, expectedContent: String) {
-        wasteserviceDummyActor.updateResourceRep("tpos($input)")
-        ColorsOut.outappl("Sent wasteservice resource update tpos($input)", ColorsOut.ANSI_PURPLE)
+        wasteserviceDummyActor.fakeResourceUpdate("tpos($input)")
 
         CommUtils.delay(500)
         val guiContent = getGuiContent()
@@ -109,9 +110,8 @@ class TestGui {
     }
 
     private fun checkGuiResponseState(input: String, expectedContent: String) {
-        wasteserviceDummyActor.updateResourceRep("tpos(indoor)")
-        trolleyDummyActor.updateResourceRep("state($input)\npos(-1,-1)")
-        ColorsOut.outappl("Sent trolley resource update state($input)\\npos(-1,-1)", ColorsOut.ANSI_PURPLE)
+        wasteserviceDummyActor.fakeResourceUpdate("tpos(indoor)")
+        trolleyDummyActor.fakeResourceUpdate("state($input)\npos(-1,-1)")
 
         CommUtils.delay(500)
         val guiContent = getGuiContent()
@@ -121,8 +121,7 @@ class TestGui {
     }
 
     private fun checkGuiResponseLed(input: String, expectedContent: String) {
-        ledDummyActor.updateResourceRep("ledState($input)")
-        ColorsOut.outappl("Sent led resource update ledState($input)", ColorsOut.ANSI_PURPLE)
+        ledDummyActor.fakeResourceUpdate("ledState($input)")
 
         CommUtils.delay(500)
         val guiContent = getGuiContent()
@@ -133,8 +132,7 @@ class TestGui {
 
     private fun checkGuiResponseStorage(input: Int, expectedContent: Int) {
         // Checks against glass, for simplicity
-        storageDummyActor.updateResourceRep("content(glass,$input)\ncontent(plastic,0)")
-        ColorsOut.outappl("Sent storage resource update content(glass,$input)\\ncontent(plastic,0)", ColorsOut.ANSI_PURPLE)
+        storageDummyActor.fakeResourceUpdate("content(glass,$input)\ncontent(plastic,0)")
 
         CommUtils.delay(500)
         val guiContent = getGuiContent()
@@ -187,6 +185,11 @@ class TestGui {
 
     internal class DummyActor(name: String) : ActorBasic(name) {
         override suspend fun actorBody(msg: IApplMessage) {
+        }
+
+        fun fakeResourceUpdate(data: String) {
+            updateResourceRep(data)
+            ColorsOut.outappl("DummyActor | ${DateTimeFormatter.ISO_INSTANT.format(Instant.now())} Faked $name update: $data", ColorsOut.ANSI_PURPLE)
         }
     }
 }

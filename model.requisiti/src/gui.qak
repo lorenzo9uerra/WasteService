@@ -5,7 +5,7 @@ Event ledStatus : ledStatus(STATUS)
 
 Context ctxreq_gui ip [host="localhost" port=8050]
 
-QActor gui_gui context ctxreq_gui {
+QActor wasteservicestatusgui_gui context ctxreq_gui {
 	[#
 		var TrolleyPos = ""
 		var TrolleyStatus = ""
@@ -76,7 +76,7 @@ QActor trolley_gui context ctxreq_gui {
 	Goto wait
 }
 
-QActor led_gui context ctxreq_gui {
+QActor blinkled_gui context ctxreq_gui {
 	State wait initial {
 		delay 1500
 	}

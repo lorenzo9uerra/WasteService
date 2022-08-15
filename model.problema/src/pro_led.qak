@@ -52,13 +52,13 @@ QActor led_ledcontroller context ctxpro_led {
 				}
 			#]
 			println("Led Controller | Setting led to $Next")
-			forward led_led -m ledSet : ledSet($Next)
+			forward led_blinkled -m ledSet : ledSet($Next)
 		}
 	}
 	Goto observe
 }
 
-QActor led_led context ctxpro_led {
+QActor led_blinkled context ctxpro_led {
 	State start initial {
 		updateResource [# "off" #]
 	}

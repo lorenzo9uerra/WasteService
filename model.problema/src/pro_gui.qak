@@ -4,7 +4,7 @@ Dispatch coapUpdate : coapUpdate(RESOURCE, VALUE)
 
 Context ctxpro_gui ip [host="localhost" port=8050]
 
-QActor gui_gui context ctxpro_gui {
+QActor gui_wasteservicestatusgui context ctxpro_gui {
 	[#
 		var TrolleyPos = ""
 		var TrolleyStatus = ""
@@ -15,7 +15,7 @@ QActor gui_gui context ctxpro_gui {
 	
 	State init initial {
 		qrun coapObserverUtil.startObserving(myself, "trolley_gui")
-		qrun coapObserverUtil.startObserving(myself, "led_gui")
+		qrun coapObserverUtil.startObserving(myself, "blinkled_gui")
 		qrun coapObserverUtil.startObserving(myself, "storage_gui")
 	}
 	Goto show
@@ -35,7 +35,7 @@ QActor gui_gui context ctxpro_gui {
   					TrolleyPos = split[1].trim()
 				#]	
   			} 
-  			if [# payloadArg(0) == "led_gui" #] {
+  			if [# payloadArg(0) == "blinkled_gui" #] {
 	  			[# LedStatus = payloadArg(1) #]
   			}
   			if [# payloadArg(0) == "storage_gui" #] {
@@ -92,7 +92,7 @@ QActor trolley_gui context ctxpro_gui {
 	Goto wait
 }
 
-QActor led_gui context ctxpro_gui {
+QActor blinkled_gui context ctxpro_gui {
 	State wait initial {
 		delay 1500
 	}

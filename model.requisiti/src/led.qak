@@ -28,7 +28,7 @@ QActor led_trolley context ctxreq_led {
 	Goto wait
 }
 
-QActor led_led context ctxreq_led {
+QActor led_blinkled context ctxreq_led {
 	[#
 		var Next = 0 
 	#]

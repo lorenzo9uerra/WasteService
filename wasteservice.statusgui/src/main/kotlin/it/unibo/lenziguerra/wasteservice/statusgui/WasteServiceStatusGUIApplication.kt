@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
@@ -24,7 +23,7 @@ import unibo.comm22.utils.ColorsOut
 import unibo.comm22.utils.CommSystemConfig
 
 @SpringBootApplication
-class StatusguiApplication {
+class WasteServiceStatusGUIApplication {
     init {
         CommSystemConfig.tracing = true
     }
@@ -32,7 +31,7 @@ class StatusguiApplication {
 
 
 fun main(args: Array<String>) {
-    runApplication<StatusguiApplication>(*args)
+    runApplication<WasteServiceStatusGUIApplication>(*args)
 }
 
 @Controller

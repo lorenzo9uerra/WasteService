@@ -38,7 +38,7 @@ class Led_ledcontroller ( name: String, scope: CoroutineScope  ) : ActorBasicFsm
 													else -> "blinking"
 												}
 								println("Led Controller | Setting led to $Next")
-								forward("ledSet", "ledSet($Next)" ,"led_led" ) 
+								forward("ledSet", "ledSet($Next)" ,"led_blinkled" ) 
 						}
 					}
 					 transition( edgeName="goto",targetState="observe", cond=doswitch() )

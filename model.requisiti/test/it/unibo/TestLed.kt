@@ -21,7 +21,7 @@ class TestLed {
         const val TROLLEY_CONTEXT_NAME = "ctxreq_led"
 
         const val LED_CONTEXT_NAME = "ctxreq_led"
-        const val LED_ACTOR_NAME = "led_led"
+        const val LED_ACTOR_NAME = "led_blinkled"
         const val LED_HOST = "localhost"
         const val LED_PORT = 8050
     }
