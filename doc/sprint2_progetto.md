@@ -122,9 +122,21 @@ Inoltre, rende il led osservabile impostando il callback per lanciare *sendUpdat
 led.updateHandler = { ledServer.sendUpdates() }
 ```
 
-### StatusGUI
+### WasteServiceStatusGUI
 
-TODO
+Come da analisi, WasteServiceStatusGUI è stata implementata come web application. Il server web è realizzato, come per WasteService, tramite il framework Spring Boot. In particolare, la pagina web rimane connessa al server tramite *WebSocket*, per permettere aggiornamenti in diretta dei dati da monitorare senza aggiornare la pagina.
+
+L'osservazione dei dati è svolta dal `WebSocketHandler` Spring che gestisce le connessioni, implementato nella classe `StatusGuiWebsocketHandler`.
+
+#### StatusGuiWebsocketHandler
+
+`StatusGuiWebsocketHandler` tiene traccia di ogni sessione di WebSocket attualmente attiva, e contiene le 4 `CoapConnection` ai componenti del sistema osservati (gli attori *wasteservice*, *trolley*, *storagemanager* e il `BlinkLedCoapServer`), ciascuna gestita da un Observer. Gli Observer inviano a ogni sessione WebSocket attiva aggiornamenti sui dati ogni volta che la risorsa osservata cambia.
+
+L'handler in sè accetta un unico input da parte delle sessioni di WebSocket, vale a dire la stringa *get*, alla quale risponde con aggiornamenti su tutti i dati. Questa viene usata al caricamento della pagina per inizializzare la StatusGUI.
+
+#### Observer
+
+Gli observer sono estensioni di `CoapHandler` della libreria Californium, una classe per ogni risorsa osservata. Le classi sono presenti nel file [Observers.kt](../wasteservice.statusgui/src/main/kotlin/it/unibo/lenziguerra/wasteservice/statusgui/Observers.kt). Ogni observer contiene un riferimento alla lista di sessioni WebSocket attive, e invia aggiornamenti alla ricezione dei dati.
 
 ### Altro
 
@@ -151,7 +163,9 @@ I test possono inoltre essere eseguiti senza avviare nessun software oltre al te
 
 La struttura finale del sistema nello SPRINT 2 è riassunta in questo grafico: 
 
-![architettura progetto](img/sprint2_prog_architettura.jpg)
+![modello architettura progetto](img/architettura2_progetto.jpg)
+
+Le connessioni di WasteServiceStatusGUI sono riassunte per testo per semplificare il grafico.
 
 ### Immagine Docker
 

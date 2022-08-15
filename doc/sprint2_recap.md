@@ -41,7 +41,7 @@ I punti salienti della fase di sviluppo sono i seguenti:
 
 - *wasteservice.gui* è realizzato come webserver Spring Boot che serve una webapp, che viene aggiornata tramite WebSocket dagli Observer delle varie risorse osservate.
 
-![architettura progetto](img/sprint2_prog_architettura.jpg)
+![modello architettura logica](img/architettura2_progetto.jpg)
 
 I test dell'analisi sono stati adattati all'implementazione:
 

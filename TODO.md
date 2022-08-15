@@ -1,5 +1,3 @@
-- Doc progetto Gui
-
 
 
 
