@@ -22,8 +22,9 @@ interface ITrolleySupport {
     fun getQuantity(): String
     fun updateState(newState: String)
 
-
+    // Debug / init
     fun setPosition(x: Int, y: Int)
+    fun setRotation(direction: String)
 }
 
 object TrolleySupport {
@@ -45,6 +46,10 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
 
     override fun setPosition(x: Int, y: Int) {
         position = arrayOf(x, y)
+    }
+
+    override fun setRotation(direction: String) {
+        this.direction = direction
     }
 
     override fun getMaterial(): String {

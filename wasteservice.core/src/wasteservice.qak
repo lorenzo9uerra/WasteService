@@ -203,6 +203,11 @@ QActor trolley context ctx_wasteservice {
     	println("# TROLLEY BLOCCATO! AGGIUSTARE     #")
     	println("# MANUALMENTE E RIAVVIARE!         #")
     	println("####################################")
+    	// Temporaneo: resetta posizione per non dover riavviare tutto in sviluppo
+    	[#  
+    		Support.setPosition(0,0)
+    		Support.setRotation("down")
+		#] 
 	}
 	Goto idle
 	

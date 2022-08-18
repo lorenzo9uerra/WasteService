@@ -19,7 +19,7 @@ function setConnected(connected) {
 }
 
 function connect() {
-	ws = new WebSocket(`ws://${window.location.host}/statusgui`);
+	ws = new WebSocket(`ws://${window.location.host}/truck`);
 	ws.onmessage = function(data) {
 		if (data.data === MSG_LOADACCEPT) {
 			$("#loadreply").text(`Carico accettato, in attesa del Trolley...`)

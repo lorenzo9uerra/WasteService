@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
-@SpringBootTest(classes = [StatusguiApplication::class], webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = [WasteServiceStatusGUIApplication::class], webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @RunWith(SpringRunner::class)
 class TestGui {
 	companion object {

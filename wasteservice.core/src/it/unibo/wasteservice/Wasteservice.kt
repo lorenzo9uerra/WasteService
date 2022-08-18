@@ -14,6 +14,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 		return "start"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 				val Support = it.unibo.lenziguerra.wasteservice.wasteservice.WasteserviceSupport()
 				var Material = ""
