@@ -1,0 +1,7 @@
+version: '3' # optional since v1.27.0
+services:
+  wasteservice.led:
+    image: docker.io/filloax/wasteservice.led.real:0.2
+    ports:
+      - 8030:8030/tcp
+      - 8030:8030/udp

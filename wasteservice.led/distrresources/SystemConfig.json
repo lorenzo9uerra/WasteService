@@ -1,0 +1,49 @@
+{
+    "debugPrint": true,
+    "positions": {
+        "plastic_box": [
+            [2,0],
+            [3,0]
+        ],
+        "indoor": [
+            [0,4],
+            [2,4]
+        ],
+        "glass_box": [
+            [4,2],
+            [4,3]
+        ],
+        "home": [
+            [0,0],
+            [0,0]
+        ]
+    },
+    "actors": {
+        "wasteServiceContext": "wasteservice",
+        "storage": "storagemanager",
+        "trolley": "trolley"
+    },
+    "hosts": {
+        "trolley": "192.168.1.12",
+        "storage": "192.168.1.12",
+        "wasteServiceServer": "192.168.1.12",
+        "wasteServiceContext": "192.168.1.12",
+        "pathexec": "192.168.1.12",
+        "led": "localhost"
+    },
+    "contexts": {
+        "trolley": "ctx_wasteservice",
+        "storage": "ctx_wasteservice",
+        "wasteServiceContext": "ctx_wasteservice",
+        "pathexec": "ctx_basicrobot"
+    },
+    "ports": {
+        "wasteServiceServer": 8080,
+        "led": 8030,
+        "storage": 8023,
+        "wasteServiceContext": 8023,
+        "pathexec": 8023,
+        "trolley": 8023
+    },
+    "DLIMIT": 50
+}

@@ -9,7 +9,9 @@ import org.eclipse.californium.core.CoapHandler
 import org.eclipse.californium.core.CoapResponse
 import unibo.comm22.coap.CoapConnection
 import unibo.comm22.utils.ColorsOut
+import unibo.comm22.utils.CommUtils
 import java.io.IOException
+import kotlin.concurrent.thread
 
 
 class LedController(val led: IBlinkLed) {
@@ -20,6 +22,8 @@ class LedController(val led: IBlinkLed) {
     // Assume initial state: home true, stopped false
     private var atHome = true
     private var stopped = false
+
+    private var doErrorBlink = false
 
     fun connect(trolleyCoapEndpoint: CoapConnectionEndpoint, wasteserviceCoapEndpoint: CoapConnectionEndpoint) {
         trolleyCoapEndpoint.let {
@@ -61,9 +65,28 @@ class LedController(val led: IBlinkLed) {
                 } else {
                     led.blink()
                 }
+            } else if (respStatus.status == TrolleyStatus.State.ERROR) {
+                if (!doErrorBlink) {
+                    doErrorBlink = true
+                    thread {
+                        while(doErrorBlink) {
+                            repeat (2) {
+                                if (doErrorBlink)
+                                    led.turnOn()
+                                CommUtils.delay(100)
+                                if (doErrorBlink)
+                                    led.turnOff()
+                                CommUtils.delay(100)
+                            }
+                            CommUtils.delay(800)
+                        }
+                    }
+                }
             } else {
                 ColorsOut.outerr("LedController.TrolleyCoapHandler | Unknown status ${respStatus.status}")
             }
+
+            doErrorBlink = respStatus.status == TrolleyStatus.State.ERROR
         }
 
         override fun onError() {

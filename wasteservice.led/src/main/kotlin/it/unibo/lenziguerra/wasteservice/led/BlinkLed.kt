@@ -24,7 +24,7 @@ class BlinkLed(val led: ILed) : IBlinkLed {
             field = value
         }
 
-    override var status: BlinkLedState = BlinkLedState.ON
+    override var status: BlinkLedState = BlinkLedState.OFF
         get() = field
         set(value) {
             if (value != field) {
@@ -37,7 +37,8 @@ class BlinkLed(val led: ILed) : IBlinkLed {
                         while (status == BlinkLedState.BLINKING) {
                             led.turnOn()
                             CommUtils.delay(500)
-                            led.turnOff()
+                            if (status == BlinkLedState.BLINKING)
+                                led.turnOff()
                             CommUtils.delay(500)
                         }
                     }
