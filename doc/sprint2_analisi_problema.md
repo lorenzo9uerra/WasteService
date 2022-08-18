@@ -6,17 +6,19 @@
 
 Emergono due opzioni principali su come gestire il Led:
 
-- Usare un solo attore BlinkLed, che gestisce sia i dati di dominio, e interagisce direttamente con il dispositivo tramite la libreria esistente e il software fornito. Quindi, questo singolo componente riceverebbe i dati dello stato del Trolley, e si occuperebbe di accensione e spegnimento del Led.
+- Usare un solo attore BlinkLed che gestisce i dati di dominio e interagisce direttamente con il dispositivo tramite la libreria esistente e il software fornito. Quindi, questo singolo componente riceverebbe i dati dello stato del Trolley e si occuperebbe di accensione e spegnimento del Led.
 
-- Dividere gli incarichi tra due componenti: BlinkLed, che interagirebbe con il dispositivo tramite la libreria in base a istruzioni ricevute dall'esterno, e realizzerebbe le tre primitive di *turnOn*, *turnOff*, *blink*; e LedController, che riceverebbe i dati dello stato del trolley e interagirebbe con BlinkLed.
+- Dividere gli incarichi tra due componenti:
+    - BlinkLed, che realizzerebbe le tre primitive di *turnOn*, *turnOff*, *blink* e interagirebbe con il dispositivo tramite la libreria, attraverso istruzioni ricevute dall'esterno.
+    - LedController, che riceverebbe i dati dello stato del trolley e interagirebbe con BlinkLed.
 
-**Conclusione.** Si ritiene migliore la seconda opzione, vale a dire **dividere gli incarichi**, visto che rispetta il principio di singola responsabilità. Inoltre, permetterebbe il riutilizzo dell'attore BlinkLed in altri contesti, essendo agnostico al dominio.
+**Conclusione.** Si ritiene migliore la seconda opzione, vale a dire **dividere gli incarichi**, visto che rispetta il principio di singola responsabilità. Inoltre, questo permetterebbe il riutilizzo dell'attore BlinkLed in altri contesti, essendo agnostico al dominio.
 
 ### Interazione
 
 Il problema della comunicazione per **led** e **gui** è analogo, quindi verranno analizzati insieme.
 
-Escludendo di usare comunicazione punto-punto come dispatch e richieste, data la scarsa espandibilità, e la complicazione nella necessità di modificare ogni attore da analizzare, le opzioni attuali sono due:
+Escludendo di usare comunicazione punto-punto come dispatch e richieste, data la scarsa espandibilità e la complicazione nella necessità di modificare ogni attore da analizzare, le opzioni attuali sono due:
 
 - Usare eventi: si potrebbero aggiungere emissioni di eventi contenenti i dati di stato attuale dei vari attori di interesse per Led e WasteServiceStatusGui, incluso il Led i cui dati sono visualizzati dalla Gui.
 
@@ -26,7 +28,7 @@ Escludendo di usare comunicazione punto-punto come dispatch e richieste, data la
     Event ledStatus : ledStatus(STATUS) //on|blink|off
     ```
 
-- Osservabilità: come detto nel progetto dello SPRINT 1, i vari attori sono osservabili tramite COAP. Quindi un'opzione sarebbe rendere LedController e StatusGUI osservatori degli attori rilevanti (e rendere osservabile il Led), e aggiungere alle informazioni osservabili degli attori di interesse eventuali dati mancanti.
+- Osservabilità: come detto nel progetto dello SPRINT 1, i vari attori sono osservabili tramite COAP. Quindi un'opzione sarebbe rendere LedController e StatusGUI osservatori degli attori rilevanti (e rendere osservabile il Led) e aggiungere alle informazioni osservabili degli attori di interesse eventuali dati mancanti.
 
 **Conclusione.** Viene ritenuta come opzione migliore la seconda, l'uso di **observer**, visto che gli attori creati nello SPRINT 1 sono già risorse osservabili con le informazioni necessarie; quindi, non sarebbe necessaria alcuna modifica al software già sviluppato per adempiere a questo requisito, il che sarebbe un grande vantaggio. Inoltre, il fatto che COAP sia un protocollo già definito renderebbe ancora più facile l'estendibilità.
 
@@ -45,7 +47,7 @@ Dovendo StatusGUI conoscere la posizione del Trolley in termini di nomi dei luog
 
 - StatusGUI potrebbe osservare anche WasteService, che comunque già fornisce questa informazione come risorsa.
 
-- StatusGUI potrebbe continuare a osservare solo Trolley, e decodificare il nome delle posizioni dalla configurazione.
+- StatusGUI potrebbe continuare ad osservare solo il Trolley e a decodificare il nome delle posizioni dalla configurazione.
 
 **Conclusioni.** È stato deciso il primo approccio, ritenuto più vicino al principio di singola responsabilità; invece di mettere la logica di rilevazione del luogo dalla posizione in più componenti, la si mette in un componente solo (WasteService) e si chiede ad esso lo stato attuale del dato.
 
