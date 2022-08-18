@@ -160,6 +160,7 @@ QActor trolley context ctx_wasteservice {
 
 	State handleMove {
 		printCurrentMessage
+		[# Support.updateState("work") #]
 		onMsg (trolleyMove : trolleyMove(X,Y) ) {
 			[# 
 				val Path = Support.preparePath(payloadArg(0).toInt(), payloadArg(1).toInt()) 
@@ -172,6 +173,7 @@ QActor trolley context ctx_wasteservice {
 				  whenReply dopathfail -> moveFail
 				  
 	State handleRotate {
+		[# Support.updateState("work") #]
 		printCurrentMessage
 		onMsg (trolleyRotate : trolleyRotate(DIR)) {
 			[#
@@ -197,7 +199,7 @@ QActor trolley context ctx_wasteservice {
 	Goto idle
 	
 	State moveFail {
-		[# Support.updateState("stopped") #]
+		[# Support.updateState("error") #]
 		replyTo trolleyMove with trolleyFail : trolleyFail(move)
     	println("####################################")
     	println("# TROLLEY BLOCCATO! AGGIUSTARE     #")
@@ -213,6 +215,7 @@ QActor trolley context ctx_wasteservice {
 	
 	
 	State handleCollect{
+		[# Support.updateState("work") #]
 		printCurrentMessage
 		onMsg (trolleyCollect: trolleyCollect(MAT,QNT)){
 			[#
@@ -224,6 +227,7 @@ QActor trolley context ctx_wasteservice {
 	Goto idle
 	
 	State handleDeposit{
+		[# Support.updateState("work") #]
 		printCurrentMessage
 		onMsg (trolleyDeposit: trolleyDeposit(_)){
 			[#

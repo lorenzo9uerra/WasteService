@@ -5,7 +5,7 @@ import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 
 data class TrolleyStatus (val status: State, val pos: Array<Int>, val contentType: WasteType?, val contentAmount: Float) {
     enum class State {
-        WORK, STOPPED
+        WORK, STOPPED, ERROR
     }
 
     companion object {

@@ -26,6 +26,8 @@ import unibo.comm22.utils.CommSystemConfig
 class WasteServiceStatusGUIApplication {
     init {
         CommSystemConfig.tracing = true
+
+        SystemConfig.setConfiguration()
     }
 }
 

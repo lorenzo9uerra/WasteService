@@ -1,6 +1,12 @@
 plugins {
 	kotlin("jvm") version "1.6.21"
+	distribution
+	application
 }
+
+version = "1.0"
+
+java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
 	mavenCentral()
@@ -34,7 +40,11 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
-	testImplementation(":unibo.qakactor22-2.8")
+	testImplementation(":unibo.qakactor22-3.0")
 	testImplementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
 	testImplementation(testFixtures(project(":wasteservice.shared")))
+}
+
+application {
+	mainClass.set("it.unibo.lenziguerra.wasteservice.led.LedContainerKt")
 }

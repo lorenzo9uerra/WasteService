@@ -18,7 +18,8 @@ data class StorageStatus (val amounts: Map<WasteType, Float>, val maxAmounts: Ma
                 val typeStr = payloadArgs[0]
                 val amount = payloadArgs[1].toFloat()
                 val maxAmount = payloadArgs[2].toFloat()
-                val type = WasteType.values().find { it.id == typeStr } ?: throw IllegalArgumentException("No such waste type $typeStr")
+                val type = WasteType.values().find { it.id.lowercase() == typeStr.lowercase() }
+                    ?: throw IllegalArgumentException("No such waste type $typeStr")
                 amounts[type] = amount
                 maxAmounts[type] = maxAmount
             }

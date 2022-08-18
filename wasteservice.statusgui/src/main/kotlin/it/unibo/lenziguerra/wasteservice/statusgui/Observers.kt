@@ -49,6 +49,8 @@ class StorageObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHan
         if (isSkippableResponse(content)) return
 
         val sStatus = StorageStatus.fromProlog(content)
+        ColorsOut.outappl("Obs Storage | contents: ${sStatus.amounts}", ColorsOut.GREEN)
+
         if(sStatus.amounts.isNotEmpty()) {
             if (sStatus.amounts[WasteType.GLASS] != lastGlass) {
                 lastGlass = sStatus.amounts[WasteType.GLASS]!!
