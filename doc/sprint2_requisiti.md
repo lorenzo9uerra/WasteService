@@ -1,10 +1,10 @@
 [Ritorna all'inizio](../README.md)
 
-# WasteService - Analisi dei Requisiti
+## Analisi dei Requisiti
 
 Per ogni requisito analizzato in questo SPRINT è stato incluso un modello eseguibile in [Qak](#scelta-del-linguaggio-di-modellazione). 
 
-## Requisiti e chiarimenti
+### Requisiti e chiarimenti
 
 - **request**: il *WasteService* accetta richieste di deposito da *Waste truck* che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare
     - il sistema può controllare se c'è spazio per un certo materiale: accetta (risposta *loadaccept*), e rifiuta (risposta *loadrejected*) le richieste di deposito in caso contrario
@@ -43,7 +43,7 @@ Per ogni requisito analizzato in questo SPRINT è stato incluso un modello esegu
 
 In questo secondo SPRINT verranno analizzati i requisiti **led** e **gui**, data la natura simile di interfaccia sullo stato del sistema e sviluppato il software annesso.
 
-## Glossario
+### Glossario
 
 - *WasteService*: il servizio centrale che risponde alle richieste dei *waste truck*
 
@@ -62,9 +62,9 @@ In questo secondo SPRINT verranno analizzati i requisiti **led** e **gui**, data
 
 - *Led*: spia luminosa
 
-## Analisi dei requisiti
+### Analisi dei requisiti
 
-### Analisi **led**:
+#### Analisi **led**:
 
 La gestione del Led verrà fatta tramite il software fornito dal committente, gli script *led25GpioTurnOn.sh* e *led25GpioTurnOff.sh*. L'azienda dispone già di una libreria per gestire tramite Java il Led con questi script, cioè *it.unibo.radarSystem22.domain*, quindi sarà opportuno utilizzarla.
 
@@ -83,7 +83,7 @@ Intanto però, può già essere abbozzato un TestPlan:
 
 [Test plan Led](../model.requisiti/test/it/unibo/TestLed.kt)
 
-### Analisi **gui**:
+#### Analisi **gui**:
 
 Date le risorse pre-esistenti dell'azienda e il lavoro molto ridotto rispetto alle alternative, è opportuno implementare *WasteServiceStatusGUI* come web-app.
 
@@ -97,7 +97,7 @@ Come per il Led, il tipo di comunicazione con il resto del sistema rimane un pun
 
 [Modello eseguibile Gui](../model.requisiti/src/gui.qak)
 
-## Materiale fornito dal committente
+### Materiale fornito dal committente
 
 - Robot DDR: viene fornita una componente software, *BasicRobot22*, che implementa comandi primitivi *MOVE = w | s | l | r | h*, e permette di fare *step* in avanti per un certo tempo.
 - Sonar: viene fornito un programma in C, *SonarAlone.c*, che stampa su standard output la distanza attualmente rilevata dal sonar, configurando le porte GPIO in questo modo:
