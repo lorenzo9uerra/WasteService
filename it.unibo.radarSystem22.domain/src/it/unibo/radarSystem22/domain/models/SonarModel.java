@@ -1,27 +1,27 @@
 package it.unibo.radarSystem22.domain.models;
 
 import it.unibo.radarSystem22.domain.Distance;
-import it.unibo.radarSystem22.domain.SafeUpdateSet;
+import it.unibo.radarSystem22.domain.observable.DistanceObservableSimple;
 import it.unibo.radarSystem22.domain.concrete.SonarConcrete;
-import it.unibo.radarSystem22.domain.interfaces.IDistance;
-import it.unibo.radarSystem22.domain.interfaces.ISonar;
-import it.unibo.radarSystem22.domain.interfaces.ISonarObservable;
-import it.unibo.radarSystem22.domain.interfaces.ISonarObserver;
+import it.unibo.radarSystem22.domain.interfaces.*;
 import it.unibo.radarSystem22.domain.mock.SonarMock;
 import it.unibo.radarSystem22.domain.utils.ColorsOut;
 import it.unibo.radarSystem22.domain.utils.DomainSystemConfig;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Consumer;
-
 public abstract class SonarModel implements ISonar {
     protected boolean stopped = true; //se true il sonar si ferma
-    protected IDistance curVal = new Distance(90);
+    protected final IDistanceMutable distance;
+    protected ISonarEventHandler eventHandler;
 
-    protected SonarModel() {
+    protected SonarModel(IDistanceMutable distance, ISonarEventHandler eventHandler) {
+        this.distance = distance;
+        this.eventHandler = eventHandler;
         sonarSetUp();
     }
+
+    protected SonarModel(IDistanceMutable distance) { this(distance, null); }
+
+    protected SonarModel() { this(new DistanceObservableSimple(new Distance(90)), null); }
 
     public static ISonar create() {
         if (DomainSystemConfig.simulation || DomainSystemConfig.simulateSonar) {
@@ -34,20 +34,37 @@ public abstract class SonarModel implements ISonar {
     public static ISonar createSonarMock() {
         return new SonarMock();
     }
+    
     public static ISonar createSonarConcrete() {
         return new SonarConcrete();
     }
 
     protected abstract void sonarSetUp();
-    protected abstract void sonarProduce(); // invia echo del sonar, modifica curVal
+    protected abstract void sonarProduce(); // invia echo del sonar, modifica distance
 
     protected void updateDistance(IDistance dist) {
-        curVal = dist;
+        distance.set(dist);
 
         if (DomainSystemConfig.sonarVerbose)
-            ColorsOut.out("\tCurrent distance: " + curVal.getVal());
+            ColorsOut.out("\tCurrent distance: " + distance.get());
     }
     protected void updateDistance(int val) { updateDistance(new Distance(val)); }
+
+    public void addSonarEventHandler(ISonarEventHandler eventHandler) {
+        if (this.eventHandler == null) {
+            this.eventHandler = eventHandler;
+        } else {
+            throw new IllegalStateException("Cannot add sonar observable component, already set");
+        }
+    }
+
+    public ISonarEventHandler getSonarEventHandler() {
+        return eventHandler;
+    }
+
+    public IDistanceMutable getMutableDistance() {
+        return distance;
+    }
 
     @Override
     public void activate() {
@@ -59,12 +76,16 @@ public abstract class SonarModel implements ISonar {
                 sonarProduce();
             }
         }).start();
+        if (eventHandler != null)
+            eventHandler.onActivate();
     }
 
     @Override
     public void deactivate() {
         if (!stopped) {
             stopped = true;
+            if (eventHandler != null)
+                eventHandler.onDeactivate();
             if (DomainSystemConfig.sonarVerbose)
                 ColorsOut.out("\tDeactivated sonar", ColorsOut.YELLOW);
         }
@@ -72,7 +93,7 @@ public abstract class SonarModel implements ISonar {
 
     @Override
     public IDistance getDistance() {
-        return curVal;
+        return distance.get();
     }
 
     @Override

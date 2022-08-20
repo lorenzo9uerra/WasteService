@@ -12,7 +12,7 @@ public class DomainSystemConfig {
 
 	public static String deviceScriptFolder = "../device-helpers/";
 
- 	public static boolean ledGui         = false;
+// 	public static boolean ledGui         = false;
 	public static boolean radarRemote    = false;
 	public static boolean sudoRequired   = false;
 

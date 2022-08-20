@@ -11,7 +11,7 @@ public class SonarMock extends SonarModel {
 
     @Override
     protected void sonarSetUp() {
-        curVal = new Distance(DomainSystemConfig.sonarMockStartDist);
+        distance.set(new Distance(DomainSystemConfig.sonarMockStartDist));
         distUpdateDelta = DomainSystemConfig.sonarMockDelta;
         ColorsOut.outappl("[Sonar mock] set up, delta = " + distUpdateDelta, ColorsOut.CYAN);
     }

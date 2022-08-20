@@ -18,7 +18,7 @@ public class SonarConcrete extends SonarModel {
 
     @Override
     protected void sonarSetUp() {
-        curVal = new Distance(DomainSystemConfig.sonarDistanceMax);
+        distance.set(new Distance(DomainSystemConfig.sonarDistanceMax));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class SonarConcrete extends SonarModel {
         if (distanceLine == null)
             return;
         int val = Integer.parseInt(distanceLine);
-        int lastVal = curVal.getVal();
+        int lastVal = distance.get().getVal();
         if (lastVal != val && val < DomainSystemConfig.sonarDistanceMax) {
             updateDistance(val);
         }
@@ -62,12 +62,12 @@ public class SonarConcrete extends SonarModel {
 
     @Override
     public void deactivate() {
-        curVal = new Distance(DomainSystemConfig.sonarDistanceMax);
         if (proc != null) {
             proc.destroy();
             proc = null;
         }
         super.deactivate();
+        distance.set(new Distance(DomainSystemConfig.sonarDistanceMax));
     }
 
 }
