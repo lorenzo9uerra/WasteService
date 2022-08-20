@@ -1,0 +1,90 @@
+System wasteservice_pro_sonar
+
+Event sonarStop : sonarStop(_)
+Event sonarResume : sonarResume(_)
+Dispatch trolleyStop : trolleyStop(_)
+Dispatch trolleyResume : trolleyResume(_)
+
+Context ctxpro_sonar ip [host="localhost" port=8050]
+
+QActor sonar_sonar context ctxpro_sonar {
+	[#
+		var DLIMIT = 100
+		var Val = 200
+	#]
+
+	State scanWait initial {
+		delay 200
+	}
+	Goto scan
+	
+	State scan {
+		[# 
+			var PrevVal = Val
+			Val = kotlin.random.Random.nextInt(0, 200) 
+		#]
+		println("\tSonar: detected distance $Val")
+		if [# Val <= DLIMIT && PrevVal > DLIMIT #] {
+			emit sonarStop : sonarStop(_)
+		}
+		if [# Val > DLIMIT && PrevVal <= DLIMIT #] {
+			emit sonarResume : sonarResume(_)
+		}
+	}
+	Goto scanWait
+}
+
+QActor sonar_controller context ctxpro_sonar {
+	State init initial {
+	}
+	Transition t0 whenEvent sonarStop -> stopped
+				  whenEvent sonarResume -> resume
+	
+	State stopped {
+		println("INVIO STOP")
+		forward trolley -m trolleyStop : trolleyStop(_)
+	}
+	Goto init
+	
+	State resume {
+		println("INVIO RESUME")
+		forward trolley -m trolleyResume : trolleyResume(_)
+	}
+	Goto init
+}
+
+QActor trolley context ctxpro_sonar {
+	State init initial{}
+	Transition t0 whenTime 0 -> goingIndoor
+				  whenInterrupt trolleyStop -> handleStop
+ 
+	State goingIndoor{
+		println("Going INDOOR")
+		delay 2000
+	}	
+	Goto goingBox
+
+  	State goingBox{
+  		println("Going BOX")
+		delay 2000
+  	}
+  	Goto goingHome
+  	
+  	State goingHome{
+  		println("Going HOME")
+		delay 2000
+  	}
+  	Goto goingIndoor
+  	
+  	State exitFromStop{
+   		updateResource [# "resumed" #]
+  		returnFromInterrupt
+  	}
+  	
+  	State handleStop{
+  		updateResource [# "stopped" #]
+  	}
+  	Transition t0 whenMsg trolleyResume -> exitFromStop
+	
+}
+
