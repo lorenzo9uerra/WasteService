@@ -1,0 +1,58 @@
+package it.unibo.radarSystem22.domain;
+
+import it.unibo.radarSystem22.domain.interfaces.IDistance;
+import it.unibo.radarSystem22.domain.interfaces.IDistanceObserver;
+import it.unibo.radarSystem22.domain.interfaces.ISonarObserver;
+
+import java.util.function.Consumer;
+
+public class SonarObserverLambda implements ISonarObserver, IDistanceObserver {
+    private Consumer<IDistance> updateFun = null;
+    private Runnable deactivatedFun = null;
+    private Runnable activatedFun = null;
+
+    private SonarObserverLambda() {}
+
+    /**
+     * Example usage:
+     * SonarObserverLambda.make()
+     *     .setUpdate( d -> { System.out.println(d); } )
+     *     .setDeactivated( () -> { System.out.println("off"); } );
+     */
+    public static SonarObserverLambda make() {
+        return new SonarObserverLambda();
+    }
+
+    public SonarObserverLambda setUpdate(Consumer<IDistance> updateFun) {
+        this.updateFun = updateFun;
+        return this;
+    }
+
+    public SonarObserverLambda setActivated(Runnable activatedFun) {
+        this.activatedFun = activatedFun;
+        return this;
+    }
+
+    public SonarObserverLambda setDeactivated(Runnable deactivatedFun) {
+        this.deactivatedFun = deactivatedFun;
+        return this;
+    }
+
+    @Override
+    public void update(IDistance dist) {
+        if (updateFun != null)
+            updateFun.accept(dist);
+    }
+
+    @Override
+    public void activated() {
+        if (activatedFun != null)
+            activatedFun.run();
+    }
+
+    @Override
+    public void deactivated() {
+        if (deactivatedFun != null)
+            deactivatedFun.run();
+    }
+}
