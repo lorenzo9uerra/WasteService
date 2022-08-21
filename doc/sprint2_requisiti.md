@@ -18,7 +18,7 @@ Per ogni requisito analizzato in questo SPRINT è stato incluso un modello esegu
 
 - **deposit**: il *trolley*, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa è una *deposit action*:
     1. Raccolta di rifiuti da *Waste truck* in INDOOR
-    2. Andare da INDOOR a contenitore rifiuti (* BOX)
+    2. Andare da INDOOR a contenitore rifiuti (\* BOX)
     3. Depositare rifiuti nel contenitore
 
 - **indoor-more-requests**: il *trolley*, terminata una *deposit action*, torna a HOME solo se non ci sono altre richieste da gestire, sennò gestisce subito la richiesta successiva andando a INDOOR

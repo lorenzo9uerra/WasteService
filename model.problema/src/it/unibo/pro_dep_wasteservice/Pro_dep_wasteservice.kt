@@ -14,6 +14,7 @@ class Pro_dep_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 		return "home"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 				// Semplificato, usando singola coordinata invece che area
 				var POS_HOME = arrayOf(0,0)

@@ -14,6 +14,7 @@ class Pro_req_wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 		return "req"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 				var Times = 5	
 		return { //this:ActionBasciFsm

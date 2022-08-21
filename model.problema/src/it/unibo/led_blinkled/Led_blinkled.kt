@@ -14,6 +14,7 @@ class Led_blinkled ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 		return "start"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		return { //this:ActionBasciFsm
 				state("start") { //this:State
 					action { //it:State

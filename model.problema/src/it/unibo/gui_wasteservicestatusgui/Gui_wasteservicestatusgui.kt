@@ -14,6 +14,7 @@ class Gui_wasteservicestatusgui ( name: String, scope: CoroutineScope  ) : Actor
 		return "init"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 				var TrolleyPos = ""
 				var TrolleyStatus = ""

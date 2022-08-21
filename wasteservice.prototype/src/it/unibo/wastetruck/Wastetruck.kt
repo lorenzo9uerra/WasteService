@@ -14,6 +14,7 @@ class Wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 		return "req"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 				var Times = 5	
 		return { //this:ActionBasciFsm
@@ -26,8 +27,8 @@ class Wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						println("	Truck with $Material in amount $Quantity arrived")
 						request("loadDeposit", "loadDeposit($Material,$Quantity)" ,"wasteservice" )  
 					}
-					 transition(edgeName="t115",targetState="handleAccepted",cond=whenReply("loadaccept"))
-					transition(edgeName="t116",targetState="handleRejected",cond=whenReply("loadrejected"))
+					 transition(edgeName="t120",targetState="handleAccepted",cond=whenReply("loadaccept"))
+					transition(edgeName="t121",targetState="handleRejected",cond=whenReply("loadrejected"))
 				}	 
 				state("handleRejected") { //this:State
 					action { //it:State
@@ -41,7 +42,7 @@ class Wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	Truck accepted")
 					}
-					 transition(edgeName="t017",targetState="waitArrival",cond=whenDispatch("pickedUp"))
+					 transition(edgeName="t022",targetState="waitArrival",cond=whenDispatch("pickedUp"))
 				}	 
 				state("waitArrival") { //this:State
 					action { //it:State

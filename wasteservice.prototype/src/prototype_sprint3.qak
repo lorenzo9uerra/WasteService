@@ -1,0 +1,499 @@
+System wasteservice_proto_sprint3
+
+Dispatch ledSet : ledSet(STATE) // on | off | blinking
+
+Dispatch coapUpdate : coapUpdate(RESOURCE, VALUE)
+
+Request loadDeposit : loadDeposit(MAT, QNT)
+Reply loadaccept : loadaccept(_)
+Reply loadrejected : loadrejected(_)
+
+Dispatch pickedUp : pickedUp(_)
+
+Request storageAsk : storageAsk(MAT)
+Reply storageAt : storageAt(MAT, QNT)
+
+Request trolleyMove : trolleyMove(X, Y)
+Request trolleyCollect : trolleyCollect(MAT, QNT)
+Request trolleyDeposit : trolleyDeposit(_)
+Reply trolleyDone : trolleyDone(OK)
+
+Dispatch storageDeposit : storageDeposit(MAT, QNT)
+
+Event sonarStop : sonarStop(_)
+Event sonarResume : sonarResume(_)
+
+Dispatch trolleyStop : trolleyStop(_)
+Dispatch trolleyResume : trolleyResume(_)
+
+Context ctx_wasteservice_proto_ctx ip [host="localhost" port=8050]
+
+QActor ledcontroller context ctx_wasteservice_proto_ctx {
+	[#
+		var AtHome = false
+		var Stopped = false
+	#]
+	
+	State init initial {
+		qrun coapObserverUtil.startObserving(myself, "trolley")
+		qrun coapObserverUtil.startObserving(myself, "wasteservice")
+		forward blinkled -m ledSet : ledSet(on)
+	}
+	Goto observe
+	
+	State observe {
+	}	
+	Transition t0 whenMsg coapUpdate -> handleStatus
+	
+	State handleStatus {
+		printCurrentMessage
+		onMsg ( coapUpdate : coapUpdate(RESOURCE, VALUE) ) {
+			println("Led Controller | Received update from ${payloadArg(0)}, is ${payloadArg(1)} ; currently AtHome $AtHome Stopped $Stopped")
+			[# var Next = "" #]
+			if [# payloadArg(0) == "trolley" #] {
+				// state(work|stopped)\npos(X, Y)
+				[# Stopped = resourcePrologUtils.resourcePayloadArg(myself, "state", 0) == "stopped" #]
+				if [# Stopped #] {
+					[# 
+						Next = "off"
+					#]
+				} else {
+					if [# !AtHome #] {
+						[# Next = "blinking" #]
+					} else {
+						[# Next = "on" #]
+					}
+				}
+			}
+			if [# payloadArg(0) == "wasteservice" #] {
+				// tpos(LOC)
+				[# AtHome = resourcePrologUtils.resourcePayloadArg(myself, "tpos", 0) == "home" #]
+				if [# !Stopped #] {
+					if [# AtHome #] {
+						[# Next = "on" #]
+					} else {
+						[# Next = "blinking" #]
+					}
+				}
+			}
+
+			if [# Next != "" #] {
+				println("Led Controller | Setting led to $Next")
+				forward blinkled -m ledSet : ledSet($Next)			
+			}
+		}
+	}
+	Goto observe
+}
+
+QActor blinkled context ctx_wasteservice_proto_ctx {
+	State start initial {
+		println("\tLed | OFF")
+		updateResource [# "ledState(off)" #]
+	}
+	Goto listen
+	
+	State listen {
+	}
+	Transition t0 whenMsg ledSet -> handleSet
+	
+	State handleSet {
+		onMsg (ledSet : ledSet(STATE) ) {
+			// inserire controllo valori
+			println("\tLed | ${payloadArg(0).uppercase()}")
+			updateResource [# "ledState(${payloadArg(0)})" #]
+		}
+	}
+	Goto listen
+}
+
+QActor wasteservicestatusgui context ctx_wasteservice_proto_ctx {
+	[#
+		var TrolleyPos = ""
+		var TrolleyStatus = ""
+		var LedStatus =	""
+		var StoragePlastic = -1f
+		var StorageGlass = -1f
+	#]
+	
+	State init initial {
+		qrun coapObserverUtil.startObserving(myself, "trolley")
+		qrun coapObserverUtil.startObserving(myself, "wasteservice")
+		qrun coapObserverUtil.startObserving(myself, "blinkled")
+		qrun coapObserverUtil.startObserving(myself, "storagemanager")
+	}
+	Goto show
+	
+	State show {
+		println("\tGUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]")
+		updateResource [# "GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]" #]
+	}
+	Transition t0 whenMsg coapUpdate -> handleUpdate
+				  
+  	State handleUpdate {
+  		printCurrentMessage
+  		onMsg (coapUpdate : coapUpdate(RESOURCE, VALUE)) {
+  			if [# payloadArg(0) == "trolley" #] {
+  				[# TrolleyStatus = resourcePrologUtils.resourcePayloadArg(myself, "state", 0) #]	
+  			} 
+  			if [# payloadArg(0) == "blinkled" #] {
+  				[# LedStatus = resourcePrologUtils.resourcePayloadArg(myself, "ledState", 0) #]	
+  			}
+  			if [# payloadArg(0) == "wasteservice" #] {
+  				[# TrolleyPos = resourcePrologUtils.resourcePayloadArg(myself, "tpos", 0) #]	
+			}
+  			if [# payloadArg(0) == "storagemanager" #] {
+  				[#
+  					val lines = resourcePrologUtils.resourcePayloadLines(myself, "content")
+  					for (line in lines) {
+  						when (resourcePrologUtils.extractPayload(line, 0)) {
+  							"glass" -> StorageGlass = resourcePrologUtils.extractPayload(line, 1).toFloat()
+  							"plastic" -> StoragePlastic = resourcePrologUtils.extractPayload(line, 1).toFloat()
+  						}
+  					}
+				#]	
+  			}
+  		}
+  	}
+  	Goto show
+}
+
+
+QActor wasteservice context ctx_wasteservice_proto_ctx {
+	[#
+	// Semplificato, usando singola coordinata invece che area
+	var POS_HOME = arrayOf(0,0)
+	var POS_INDOOR = arrayOf(0,5)
+	var POS_PLASTIC_BOX = arrayOf(5,2)
+	var POS_GLASS_BOX = arrayOf(3,0)
+	
+	var CurrentType = ""
+	var CurrentAmount = 0.0
+  	var CurrentRequestPass = false
+	#]  
+	State start initial {
+		updateResource [# "tpos(home)" #]
+		println("\tWS | Start, trolley at home")
+	}
+	Goto waitRequest
+	
+	State waitRequest {
+		printCurrentMessage
+	}
+	Transition tIdle whenRequest loadDeposit -> handleRequest
+	
+	State handleRequest {
+		printCurrentMessage
+		onMsg( loadDeposit : loadDeposit(MAT, QNT) ){
+  			[# 
+  				CurrentType = payloadArg(0)
+  				CurrentAmount = payloadArg(1).toDouble()
+			#]
+  			
+  			println("\tWS | Request received $CurrentType $CurrentAmount")
+  			request storagemanager -m storageAsk : storageAsk($CurrentType)
+		}
+	}
+	Transition t0 whenReply storageAt -> handleStorageReply
+	
+	State handleStorageReply {
+		printCurrentMessage
+		[# CurrentRequestPass = false #]
+		onMsg( storageAt : storageAt(MAT, QNT) ){
+			println("\tWS | Has space: ${payloadArg(1)} for ${payloadArg(0)}")
+			[# CurrentRequestPass = CurrentAmount <= payloadArg(1).toDouble() #]
+		}
+	}
+	Goto go_indoor if [# CurrentRequestPass #] else rejectRequest
+	
+	State rejectRequest {
+		printCurrentMessage
+		println("\tWS | rejected")
+		replyTo loadDeposit with loadrejected : loadrejected(_)
+	}
+	Goto waitRequest
+	
+	State go_indoor {
+		printCurrentMessage
+		println("\tWS | Enough space, sending trolley...")
+		[#var X = POS_INDOOR[0]; var Y = POS_INDOOR[1]#]
+		request trolley -m trolleyMove : trolleyMove($X, $Y)
+		replyTo loadDeposit with loadaccept : loadaccept(_)
+	}
+	Transition t0 whenReply trolleyDone -> indoor
+	
+	State indoor {
+		printCurrentMessage
+		updateResource [# "tpos(indoor)" #]
+		println("\tWT | Trolley at indoor, picking up $CurrentAmount $CurrentType...")
+		request trolley -m trolleyCollect : trolleyCollect($CurrentType, $CurrentAmount)
+	}
+	Transition t0 whenReply trolleyDone -> go_box
+	
+	State go_box {
+		printCurrentMessage
+		forward wastetruck -m pickedUp : pickedUp(_)
+		[#var X = POS_GLASS_BOX[0]; var Y = POS_GLASS_BOX[1]#]
+		if [# CurrentType == "plastic" #] {
+			[#X = POS_PLASTIC_BOX[0]; Y = POS_PLASTIC_BOX[1]#]
+		}
+		request trolley -m trolleyMove : trolleyMove($X, $Y)
+	}
+	Transition t0 whenReply trolleyDone -> box
+	
+	State box {
+		printCurrentMessage
+		println("\tWT | Trolley at $CurrentType box, depositing $CurrentAmount $CurrentType...")
+		updateResource [# "tpos(" + CurrentType + "_box)" #]
+		request trolley -m trolleyDeposit : trolleyDeposit(_)
+	}
+	Transition t0 whenReply trolleyDone -> done
+	
+	State done {
+		printCurrentMessage
+		println("\tWT | Done deposit action")
+	}
+	Transition t0 whenTime 0 -> go_home 
+				  whenRequest loadDeposit -> handleSecondRequest
+				  
+	State handleSecondRequest {
+		printCurrentMessage
+		onMsg( loadDeposit : loadDeposit(MAT, QNT) ){
+  			[# 
+  				CurrentType = payloadArg(0)
+  				CurrentAmount = payloadArg(1).toDouble()
+			#]
+  			
+  			println("\tWS | Another request received $CurrentType $CurrentAmount")
+  			request storagemanager -m storageAsk : storageAsk($CurrentType)
+		}
+	}
+	Transition t0 whenReply storageAt -> handleSecondStorageReply
+	
+	State handleSecondStorageReply {
+		printCurrentMessage
+		[# CurrentRequestPass = false #]
+		onMsg( storageAt : storageAt(MAT, QNT) ){
+			println("\tWS | Has space: ${payloadArg(1)} for ${payloadArg(0)}")
+			[# CurrentRequestPass = CurrentAmount <= payloadArg(1).toDouble() #]
+		}
+	}
+	Goto go_indoor if [# CurrentRequestPass #] else rejectSecondRequest
+	
+	State rejectSecondRequest {
+		printCurrentMessage
+		replyTo loadDeposit with loadrejected : loadrejected(_)
+	}
+	Goto go_home
+				  
+	State go_home {
+		printCurrentMessage
+		[#var X = POS_HOME[0]; var Y = POS_HOME[1]#]
+		request trolley -m trolleyMove : trolleyMove($X, $Y)
+	}
+	Transition t0 whenReply trolleyDone -> home
+	
+	State home {
+		printCurrentMessage
+		updateResource [# "tpos(home)" #]
+		println("\tWS | Trolley at home")
+	}
+	Goto waitRequest
+}
+
+QActor trolley context ctx_wasteservice_proto_ctx {
+	[#
+		var CarryingType = ""
+		var CarryingAmount = 0.0
+		var Pos = arrayOf(0,0)
+		fun getContentLine(): String {
+			if (CarryingAmount > 0)
+				return "\ncontent($CarryingType,$CarryingAmount)"
+			else
+				return ""
+		}
+		fun getPosLine(): String {
+			return "\npos(${Pos[0]},${Pos[1]})"
+		}
+	#]
+	State idle initial {
+		printCurrentMessage
+		updateResource [# "state(idle)" + getPosLine() + getContentLine() #]
+	}
+	Transition t0 whenRequest trolleyMove -> handleMove
+				  whenRequest trolleyCollect -> handleCollect
+				  whenRequest trolleyDeposit -> handleDeposit
+				  whenInterrupt trolleyStop -> handleStop
+		
+	State handleMove {
+		printCurrentMessage
+		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
+		delay 1000
+		// <interazione con BasicRobot22>
+		onMsg (trolleyMove : trolleyMove(X,Y)) {
+			[# Pos[0] = payloadArg(0).toInt() #]
+			[# Pos[1] = payloadArg(1).toInt() #]
+			replyTo trolleyMove with trolleyDone : trolleyDone(true)
+		}
+	}
+	Goto idle
+				  
+	State handleCollect {
+		printCurrentMessage
+		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
+		delay 500
+		onMsg ( trolleyCollect : trolleyCollect(MAT, QNT) ) {
+			[# CarryingType = payloadArg(0) #]
+			[# CarryingAmount = payloadArg(1).toDouble() #]
+			replyTo trolleyCollect with trolleyDone : trolleyDone(true)
+		}
+	}
+	Goto idle
+	
+	State handleDeposit {
+		printCurrentMessage
+		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
+		delay 500
+		forward storagemanager -m storageDeposit : storageDeposit($CarryingType,$CarryingAmount)
+		[# CarryingType = "" #]
+		[# CarryingAmount = 0.0 #]
+		replyTo trolleyDeposit with trolleyDone : trolleyDone(true)
+	}
+	Goto idle
+	
+	State exitFromStop{
+   		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
+  		returnFromInterrupt
+  	}
+	
+	State handleStop{
+  		updateResource [# "state(stopped)" + getPosLine() + getContentLine() #]
+  	}
+  	Transition t0 whenMsg trolleyResume -> exitFromStop
+}
+
+QActor storagemanager context ctx_wasteservice_proto_ctx {
+	[#
+		var Content = mutableMapOf("glass" to 0.0, "plastic" to 0.0)
+		var MaxContent = mapOf("glass" to 50.0, "plastic" to 50.0)
+	#]
+	State init initial {
+		println("STORAGE: Glass ${Content[\"glass\"]}/${MaxContent[\"glass\"]}, Plastic ${Content[\"plastic\"]}/${MaxContent[\"plastic\"]}")
+		updateResource [# Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n") #]
+	}
+	Goto idle
+	
+	State idle {
+		printCurrentMessage
+	}
+	Transition t0 whenRequest storageAsk -> handleAsk
+				  whenMsg storageDeposit -> handleDeposit
+	
+	State handleAsk {
+		printCurrentMessage
+		onMsg (storageAsk : storageAsk(MAT) ) {
+			[# var SpaceLeft = MaxContent.getOrDefault(payloadArg(0), 0.0) - Content.getOrDefault(payloadArg(0), 0.0) #]
+			replyTo storageAsk with storageAt : storageAt($payloadArg(0), $SpaceLeft)
+		}
+	}
+	Goto idle
+	
+	State handleDeposit {
+		onMsg ( storageDeposit : storageDeposit(MAT, QNT) ){
+			[# Content[payloadArg(0)] = Content.getOrDefault(payloadArg(0), 0.0) + payloadArg(1).toDouble() #]
+			println("STORAGE: Glass ${Content[\"glass\"]}/${MaxContent[\"glass\"]}, Plastic ${Content[\"plastic\"]}/${MaxContent[\"plastic\"]}")
+			updateResource [# Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n") #]
+		}
+	}
+	Goto idle
+}
+
+
+// Sostituire con controllo manuale per test
+QActor wastetruck context ctx_wasteservice_proto_ctx {
+	[#
+		var Times = 5	
+	#]
+	State req initial {
+		printCurrentMessage
+		[#
+			var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
+			var Quantity = kotlin.random.Random.nextInt(10, 30)	
+		#]
+		println ("\tTruck with $Material in amount $Quantity arrived")
+		request wasteservice -m loadDeposit : loadDeposit($Material, $Quantity)
+	}
+	Transition t1 whenReply loadaccept -> handleAccepted
+				  whenReply loadrejected -> handleRejected
+	
+	State handleRejected {
+		printCurrentMessage
+		println("\tTruck denied")
+	}
+	Goto waitArrival
+	
+	State handleAccepted {
+		printCurrentMessage
+		println("\tTruck accepted")
+	} 
+	Transition t0 whenMsg pickedUp -> waitArrival
+	
+	State waitArrival {
+		printCurrentMessage
+		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(500, 10000) #]
+		delayVar DelayTime
+		[# Times-- #]
+	}
+	Goto req if [# Times > 0 #] else finish
+	
+	State finish {
+		println("\tTermine simulazione Qak")
+	}
+}
+
+
+QActor sonar_interaction context ctx_wasteservice_proto_ctx {
+	[#
+		var DLIMIT = 100
+		var Val = 200
+	#]
+
+	State scanWait initial {
+		delay 200
+	}
+	Goto scan
+	
+	State scan {
+		[# 
+			var PrevVal = Val
+			Val = kotlin.random.Random.nextInt(0, 200) 
+		#]
+		println("\tSonar: detected distance $Val")
+		if [# Val <= DLIMIT && PrevVal > DLIMIT #] {
+			emit sonarStop : sonarStop(_)
+		}
+		if [# Val > DLIMIT && PrevVal <= DLIMIT #] {
+			emit sonarResume : sonarResume(_)
+		}
+	}
+	Goto scanWait
+}
+
+QActor sonar_interrupt context ctx_wasteservice_proto_ctx {
+	State init initial {
+	}
+	Transition t0 whenEvent sonarStop -> stopped
+				  whenEvent sonarResume -> resume
+	
+	State stopped {
+		println("INVIO STOP")
+		forward trolley -m trolleyStop : trolleyStop(_)
+	}
+	Goto init
+	
+	State resume {
+		println("INVIO RESUME")
+		forward trolley -m trolleyResume : trolleyResume(_)
+	}
+	Goto init
+}

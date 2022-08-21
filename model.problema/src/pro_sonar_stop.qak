@@ -1,13 +1,13 @@
-System wasteservice_pro_sonar
+System wasteservice_pro_sonar_stop
 
 Event sonarStop : sonarStop(_)
 Event sonarResume : sonarResume(_)
 Dispatch trolleyStop : trolleyStop(_)
 Dispatch trolleyResume : trolleyResume(_)
 
-Context ctxpro_sonar ip [host="localhost" port=8050]
+Context ctxpro_sonar_stop ip [host="localhost" port=8050]
 
-QActor sonar_sonar context ctxpro_sonar {
+QActor sonar_sonar context ctxpro_sonar_stop {
 	[#
 		var DLIMIT = 100
 		var Val = 200
@@ -34,7 +34,7 @@ QActor sonar_sonar context ctxpro_sonar {
 	Goto scanWait
 }
 
-QActor sonar_controller context ctxpro_sonar {
+QActor sonar_controller context ctxpro_sonar_stop {
 	State init initial {
 	}
 	Transition t0 whenEvent sonarStop -> stopped
@@ -53,7 +53,7 @@ QActor sonar_controller context ctxpro_sonar {
 	Goto init
 }
 
-QActor trolley context ctxpro_sonar {
+QActor trolley context ctxpro_sonar_stop {
 	State init initial{}
 	Transition t0 whenTime 0 -> goingIndoor
 				  whenInterrupt trolleyStop -> handleStop
@@ -87,4 +87,3 @@ QActor trolley context ctxpro_sonar {
   	Transition t0 whenMsg trolleyResume -> exitFromStop
 	
 }
-

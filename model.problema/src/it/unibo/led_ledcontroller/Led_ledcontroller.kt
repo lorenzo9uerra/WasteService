@@ -14,6 +14,7 @@ class Led_ledcontroller ( name: String, scope: CoroutineScope  ) : ActorBasicFsm
 		return "init"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State

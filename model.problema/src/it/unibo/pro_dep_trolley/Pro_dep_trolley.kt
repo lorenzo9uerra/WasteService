@@ -14,6 +14,7 @@ class Pro_dep_trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 		return "idle"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 				var CarryingType = ""
 				var CarryingAmount = 0.0

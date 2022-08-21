@@ -14,6 +14,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 		return "idle"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 				var CarryingType = ""
 				var CarryingAmount = 0.0
@@ -34,16 +35,17 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						updateResourceRep( "state(idle)" + getPosLine() + getContentLine()  
 						)
 					}
-					 transition(edgeName="t010",targetState="handleMove",cond=whenRequest("trolleyMove"))
-					transition(edgeName="t011",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
-					transition(edgeName="t012",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
+					 transition(edgeName="t013",targetState="handleMove",cond=whenRequest("trolleyMove"))
+					transition(edgeName="t014",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
+					transition(edgeName="t015",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
+					interrupthandle(edgeName="t016",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
 				}	 
 				state("handleMove") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						updateResourceRep( "state(work)" + getPosLine() + getContentLine()  
 						)
-						delay(700) 
+						delay(1000) 
 						if( checkMsgContent( Term.createTerm("trolleyMove(X,Y)"), Term.createTerm("trolleyMove(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Pos[0] = payloadArg(0).toInt()  
@@ -80,6 +82,20 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						answer("trolleyDeposit", "trolleyDone", "trolleyDone(true)"   )  
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
+				}	 
+				state("exitFromStop") { //this:State
+					action { //it:State
+						updateResourceRep( "state(work)" + getPosLine() + getContentLine()  
+						)
+						returnFromInterrupt(interruptedStateTransitions)
+					}
+				}	 
+				state("handleStop") { //this:State
+					action { //it:State
+						updateResourceRep( "state(stopped)" + getPosLine() + getContentLine()  
+						)
+					}
+					 transition(edgeName="t017",targetState="exitFromStop",cond=whenDispatch("trolleyResume"))
 				}	 
 			}
 		}

@@ -14,6 +14,7 @@ class Pro_req_storagemanager ( name: String, scope: CoroutineScope  ) : ActorBas
 		return "idle"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 				var Content = mutableMapOf("glass" to 0.0, "plastic" to 0.0)
 		return { //this:ActionBasciFsm

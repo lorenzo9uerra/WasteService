@@ -14,6 +14,7 @@ class Dep_init ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 		return "send"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		return { //this:ActionBasciFsm
 				state("send") { //this:State
 					action { //it:State

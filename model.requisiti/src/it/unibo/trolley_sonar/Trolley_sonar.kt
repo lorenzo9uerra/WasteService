@@ -14,6 +14,7 @@ class Trolley_sonar ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 		return "work"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		return { //this:ActionBasciFsm
 				state("work") { //this:State
 					action { //it:State

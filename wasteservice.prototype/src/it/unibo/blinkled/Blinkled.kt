@@ -14,6 +14,7 @@ class Blinkled ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 		return "start"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		return { //this:ActionBasciFsm
 				state("start") { //this:State
 					action { //it:State

@@ -14,6 +14,7 @@ class Pro_req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 		return "idle"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 			  var CurrentType = ""
 			  var CurrentAmount = 0.0

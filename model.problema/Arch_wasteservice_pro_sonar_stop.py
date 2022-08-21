@@ -16,10 +16,10 @@ eventedgeattr = {
     'color': 'red',
     'style': 'dotted'
 }
-with Diagram('wasteservice_pro_sonarArch', show=False, outformat='png', graph_attr=graphattr) as diag:
+with Diagram('wasteservice_pro_sonar_stopArch', show=False, outformat='png', graph_attr=graphattr) as diag:
   with Cluster('env'):
      sys = Custom('','./qakicons/system.png')
-     with Cluster('ctxpro_sonar', graph_attr=nodeattr):
+     with Cluster('ctxpro_sonar_stop', graph_attr=nodeattr):
           sonar_sonar=Custom('sonar_sonar','./qakicons/symActorSmall.png')
           sonar_controller=Custom('sonar_controller','./qakicons/symActorSmall.png')
           trolley=Custom('trolley','./qakicons/symActorSmall.png')
