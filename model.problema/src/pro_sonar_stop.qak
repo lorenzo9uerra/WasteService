@@ -7,7 +7,7 @@ Dispatch trolleyResume : trolleyResume(_)
 
 Context ctxpro_sonar_stop ip [host="localhost" port=8050]
 
-QActor sonar_sonar context ctxpro_sonar_stop {
+QActor sonar_shim context ctxpro_sonar_stop {
 	[#
 		var DLIMIT = 100
 		var Val = 200
@@ -34,7 +34,7 @@ QActor sonar_sonar context ctxpro_sonar_stop {
 	Goto scanWait
 }
 
-QActor sonar_controller context ctxpro_sonar_stop {
+QActor sonar_interrupter context ctxpro_sonar_stop {
 	State init initial {
 	}
 	Transition t0 whenEvent sonarStop -> stopped
@@ -87,3 +87,4 @@ QActor trolley context ctxpro_sonar_stop {
   	Transition t0 whenMsg trolleyResume -> exitFromStop
 	
 }
+

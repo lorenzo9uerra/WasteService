@@ -452,7 +452,7 @@ QActor wastetruck context ctx_wasteservice_proto_ctx {
 }
 
 
-QActor sonar_interaction context ctx_wasteservice_proto_ctx {
+QActor sonar_shim context ctx_wasteservice_proto_ctx {
 	[#
 		var DLIMIT = 100
 		var Val = 200
@@ -479,7 +479,7 @@ QActor sonar_interaction context ctx_wasteservice_proto_ctx {
 	Goto scanWait
 }
 
-QActor sonar_interrupt context ctx_wasteservice_proto_ctx {
+QActor sonar_interrupter context ctx_wasteservice_proto_ctx {
 	State init initial {
 	}
 	Transition t0 whenEvent sonarStop -> stopped

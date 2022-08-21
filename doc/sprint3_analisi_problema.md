@@ -9,17 +9,17 @@ Emergono due opzioni principali su come gestire il Led:
 - Usare un solo attore Sonar che interagisce direttamente con il dispositivo sonar tramite la libreria e il software fornito e comunica al trolley i messaggi di stop e resume.
 
 - Dividere gli incarichi tra due componenti:
-    - SonarInteraction, che interagirebbe con il sonar tramite la libreria o il
+    - SonarShim, che interagirebbe con il sonar tramite la libreria o il
     software fornito, così da rilevare quando la distanza misurata dal sonar è
     minore di DLIMIT e invii degli eventi
-    - SonarInterrupt, che rileverebbe gli eventi emessi da SonarInteraction e li
+    - SonarInterrupter, che rileverebbe gli eventi emessi da SonarShim e li
     tradurrebbe in interrupt, ossia dispatch, da inviare direttamente al trolley
 
-**Conclusione.** Si ritiene migliore la seconda opzione, vale a dire **dividere gli incarichi**, visto che rispetta il principio di singola responsabilità. Inoltre, questo permetterebbe il riutilizzo dell'attore SonarInteraction in altri contesti, essendo agnostico al dominio.
+**Conclusione.** Si ritiene migliore la seconda opzione, vale a dire **dividere gli incarichi**, visto che rispetta il principio di singola responsabilità. Inoltre, questo permetterebbe il riutilizzo dell'attore SonarShim in altri contesti, essendo agnostico al dominio.
 
 ### Interazione
 
-Per SonarInteraction sarà preferibile utilizzare eventi per trasmettere le
+Per SonarShim sarà preferibile utilizzare eventi per trasmettere le
 informazioni, in quanto questi miglioreranno l'estendibilità.
 
 ```
@@ -27,7 +27,7 @@ Event sonarStop : sonatStop(_)
 Event sonarResume : sonatResume(_)
 ```
 
-L'attore SonarInterrupt invece dovrà usare dei dispatch affinchè siano ricevuti
+L'attore SonarInterrupter invece dovrà usare dei dispatch affinchè siano ricevuti
 come interrupt da Trolley, sfruttando il linguaggio Qak.
 
 ### Architettura Logica

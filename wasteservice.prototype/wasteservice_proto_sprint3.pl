@@ -9,5 +9,5 @@ context(ctx_wasteservice_proto_ctx, "localhost",  "TCP", "8050").
   qactor( trolley, ctx_wasteservice_proto_ctx, "it.unibo.trolley.Trolley").
   qactor( storagemanager, ctx_wasteservice_proto_ctx, "it.unibo.storagemanager.Storagemanager").
   qactor( wastetruck, ctx_wasteservice_proto_ctx, "it.unibo.wastetruck.Wastetruck").
-  qactor( sonar_interaction, ctx_wasteservice_proto_ctx, "it.unibo.sonar_interaction.Sonar_interaction").
-  qactor( sonar_interrupt, ctx_wasteservice_proto_ctx, "it.unibo.sonar_interrupt.Sonar_interrupt").
+  qactor( sonar_shim, ctx_wasteservice_proto_ctx, "it.unibo.sonar_shim.Sonar_shim").
+  qactor( sonar_interrupter, ctx_wasteservice_proto_ctx, "it.unibo.sonar_interrupter.Sonar_interrupter").
