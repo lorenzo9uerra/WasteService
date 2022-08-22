@@ -36,7 +36,8 @@ object SystemConfig {
         "trolley" to "ctx_wasteservice",
         "storage" to "ctx_wasteservice",
         "wasteServiceContext" to "ctx_wasteservice",
-        "pathexec" to "ctx_basicrobot"
+        "pathexec" to "ctx_basicrobot",
+        "sonar" to "ctx_wasteservice"
     )
 
     private var setConf = false

@@ -58,7 +58,8 @@
         "trolley": "ctx_wasteservice",
         "storage": "ctx_wasteservice",
         "wasteServiceContext": "ctx_wasteservice",
-        "pathexec": "ctx_basicrobot"
+        "pathexec": "ctx_basicrobot",
+        "sonar": "ctx_wasteservice"
     },
     "ports": {
         "wasteServiceServer": 8080,

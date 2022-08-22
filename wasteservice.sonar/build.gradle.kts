@@ -30,10 +30,14 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.eclipse.californium/californium-proxy2
 	implementation("org.eclipse.californium:californium-proxy2:3.6.0")
 
+	implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
+
+
 	/* UNIBO *************************************************************************************************************** */
     implementation(":uniboInterfaces")
     implementation(":2p301")
-    implementation(":unibo.comm22-1.1")
+	implementation(":unibo.qakactor22-3.0")
+	implementation(":unibo.comm22-1.1")
 	implementation(":it.unibo.radarSystem22.domain-1.0")
 
 	// Actors for test

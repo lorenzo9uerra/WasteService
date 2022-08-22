@@ -319,34 +319,7 @@ QActor storagemanager context ctx_wasteservice {
 	Goto idle
 }
 
-QActor sonar_shim context ctx_wasteservice {
-	// INITIAL MOCK
-	// TODO
-	[#
-		var DLIMIT = 100
-		var Val = 200
-	#]
-
-	State scanWait initial {
-		delay 200
-	}
-	Goto scan
-	
-	State scan {
-		[# 
-			var PrevVal = Val
-			Val = kotlin.random.Random.nextInt(0, 200) 
-		#]
-		println("\tSonar: detected distance $Val")
-		if [# Val <= DLIMIT && PrevVal > DLIMIT #] {
-			emit sonarStop : sonarStop(_)
-		}
-		if [# Val > DLIMIT && PrevVal <= DLIMIT #] {
-			emit sonarResume : sonarResume(_)
-		}
-	}
-	Goto scanWait
-}
+CodedQActor sonar_shim context ctx_wasteservice className "SonarShim"
 
 QActor sonar_interrupter context ctx_wasteservice {
 	State init initial {
