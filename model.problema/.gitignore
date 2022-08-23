@@ -22,3 +22,9 @@ package-lock.json
 docker/
 /.metadata/
 /src-gen/
+/Arch_wasteservice_pro_deposit.py
+/Arch_wasteservice_pro_request.py
+/Arch_wasteservice_pro_sonar_stop.py
+/Arch_wasteservice_req_gui.py
+/Arch_wasteservice_req_led.py
+/wasteservice_pro_sonar_stop.pl

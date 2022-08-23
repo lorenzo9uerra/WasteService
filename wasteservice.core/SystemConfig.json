@@ -1,5 +1,18 @@
 {
+    "actors": {
+        "wasteServiceContext": "wasteservice",
+        "storage": "storagemanager",
+        "trolley": "trolley"
+    },
     "debugPrint": true,
+    "hosts": {
+        "wasteServiceServer": "localhost",
+        "led": "localhost",
+        "storage": "localhost",
+        "wasteServiceContext": "localhost",
+        "pathexec": "localhost",
+        "trolley": "localhost"
+    },
     "positions": {
         "plastic_box": [
             [
@@ -42,24 +55,12 @@
             ]
         ]
     },
-    "actors": {
-        "wasteServiceContext": "wasteservice",
-        "storage": "storagemanager",
-        "trolley": "trolley"
-    },
-    "hosts": {
-        "trolley": "localhost",
-        "storage": "localhost",
-        "wasteServiceServer": "localhost",
-        "wasteServiceContext": "localhost",
-        "pathexec": "localhost",
-        "led": "localhost"
-    },
     "contexts": {
-        "trolley": "ctx_wasteservice",
         "storage": "ctx_wasteservice",
         "wasteServiceContext": "ctx_wasteservice",
-        "pathexec": "ctx_basicrobot"
+        "sonar": "ctx_wasteservice",
+        "pathexec": "ctx_basicrobot",
+        "trolley": "ctx_wasteservice"
     },
     "ports": {
         "wasteServiceServer": 8080,

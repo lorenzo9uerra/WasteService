@@ -67,6 +67,7 @@ dependencies {
     implementation(":unibo.comm22-1.1")
 	// Necessario per utilità messaggi
 	implementation(":unibo.qakactor22-3.0")
+	implementation(":it.unibo.radarSystem22.domain-1.0")
 
 	/* AIMA **************************************************************************************************************** */
 	//PLANNER

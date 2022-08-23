@@ -319,7 +319,7 @@ QActor storagemanager context ctx_wasteservice {
 	Goto idle
 }
 
-CodedQActor sonar_shim context ctx_wasteservice className "SonarShim"
+CodedQActor sonar_shim context ctx_wasteservice className "it.unibo.lenziguerra.wasteservice.sonar.SonarShim"
 
 QActor sonar_interrupter context ctx_wasteservice {
 	State init initial {
@@ -339,4 +339,3 @@ QActor sonar_interrupter context ctx_wasteservice {
 	}
 	Goto init
 }
-
