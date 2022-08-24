@@ -37,7 +37,7 @@ class Pathexec ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 						println("pathexec | Move progress: ${5 - Counter}")
 						 Counter--  
 						stateTimer = TimerActor("timer_nextMove", 
-							scope, context!!, "local_tout_pathexec_nextMove", 250.toLong() )
+							scope, context!!, "local_tout_pathexec_nextMove", 500.toLong() )
 					}
 					 transition(edgeName="t23",targetState="checkWorkEnded",cond=whenTimeout("local_tout_pathexec_nextMove"))   
 					interrupthandle(edgeName="t24",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)

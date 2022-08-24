@@ -11,17 +11,22 @@ import kotlinx.coroutines.runBlocking
 class Wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope ){
 
 	override fun getInitialState() : String{
-		return "start"
+		return "init"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		val interruptedStateTransitions = mutableListOf<Transition>()
 		return { //this:ActionBasciFsm
+				state("init") { //this:State
+					action { //it:State
+						delay(1000) 
+					}
+					 transition( edgeName="goto",targetState="start", cond=doswitch() )
+				}	 
 				state("start") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(500, 10000)  
-						delay(DelayTime)
 						request("dopath", "dopath(_)" ,"pathexec" )  
+						delay(4000) 
 					}
 					 transition( edgeName="goto",targetState="start", cond=doswitch() )
 				}	 
