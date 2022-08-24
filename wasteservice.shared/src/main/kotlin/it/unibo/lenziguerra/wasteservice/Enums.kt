@@ -10,6 +10,7 @@ enum class SystemLocation (val isTrashBox: Boolean = false) {
     INDOOR,
     GLASS_BOX(true),
     PLASTIC_BOX(true),
+    TRAVEL,
     UNKNOWN,
 }
 

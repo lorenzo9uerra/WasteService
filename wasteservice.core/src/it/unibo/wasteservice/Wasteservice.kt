@@ -50,6 +50,9 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						}
 						 Position = Support.getDestination("indoor", Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
+						 Support.updateTrolleyPos("travel")  
+						updateResourceRep( Support.getPrologContent()  
+						)
 					}
 					 transition(edgeName="t21",targetState="indoor",cond=whenReply("trolleyDone"))
 					transition(edgeName="t22",targetState="error",cond=whenReply("trolleyFail"))
@@ -72,6 +75,9 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						answer("triggerDeposit", "trolleyPickedUp", "trolleyPickedUp(_)"   )  
 						 Position = Support.getDestination(Box, Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
+						 Support.updateTrolleyPos("travel")  
+						updateResourceRep( Support.getPrologContent()  
+						)
 					}
 					 transition(edgeName="t45",targetState="box",cond=whenReply("trolleyDone"))
 					transition(edgeName="t46",targetState="error",cond=whenReply("trolleyFail"))
@@ -103,6 +109,9 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("$name in ${currentState.stateName} | $currentMsg")
 						 Position = Support.getDestination("home", Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
+						 Support.updateTrolleyPos("travel")  
+						updateResourceRep( Support.getPrologContent()  
+						)
 					}
 					 transition(edgeName="t711",targetState="home_rotate",cond=whenReply("trolleyDone"))
 					transition(edgeName="t712",targetState="error",cond=whenReply("trolleyFail"))

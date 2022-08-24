@@ -22,17 +22,3 @@ package-lock.json
 docker/
 /.metadata/
 /src-gen/
-/.gitignore
-/Arch_wasteservice_pro_deposit.py
-/Arch_wasteservice_pro_request.py
-/Arch_wasteservice_pro_sonar_stop.py
-/Arch_wasteservice_req_gui.py
-/Arch_wasteservice_req_led.py
-/build2022.gradle
-/settings.gradle
-/sysRules.pl
-/wasteservice_pro_deposit.pl
-/wasteservice_pro_request.pl
-/wasteservice_pro_sonar_stop.pl
-/wasteservice_req_gui.pl
-/wasteservice_req_led.pl

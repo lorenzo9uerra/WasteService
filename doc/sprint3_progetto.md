@@ -10,6 +10,7 @@ Cose da aggiungere:
 - Modifiche a wasteservice.core
 - Aggiunte a cose di altri sprint
     - truck gui resettabile
+    - Posizione TRAVEL per meglio gestire posizioni e blinkaggio
 
 
 ### Struttura del software

@@ -67,6 +67,8 @@ QActor wasteservice context ctx_wasteservice {
 		}
 		[# Position = Support.getDestination("indoor", Position) #]
 		request trolley -m trolleyMove : trolleyMove($Position)
+		[# Support.updateTrolleyPos("travel") #]
+		updateResource [# Support.getPrologContent() #]
 	}
 	Transition t2 whenReply trolleyDone -> indoor
 		          whenReply trolleyFail -> error
@@ -87,6 +89,8 @@ QActor wasteservice context ctx_wasteservice {
 		// forward wastetruck -m pickedUp : pickedUp(_)
 		[# Position = Support.getDestination(Box, Position) #]
 		request trolley -m trolleyMove : trolleyMove($Position)
+		[# Support.updateTrolleyPos("travel") #]
+		updateResource [# Support.getPrologContent() #]
 	}
 	Transition t4 whenReply trolleyDone -> box
 		          whenReply trolleyFail -> error
@@ -112,6 +116,8 @@ QActor wasteservice context ctx_wasteservice {
 		printCurrentMessage
 		[# Position = Support.getDestination("home", Position) #]
 		request trolley -m trolleyMove : trolleyMove($Position)
+		[# Support.updateTrolleyPos("travel") #]
+		updateResource [# Support.getPrologContent() #]
 	}
 	Transition t7 whenReply trolleyDone -> home_rotate
 		          whenReply trolleyFail -> error
