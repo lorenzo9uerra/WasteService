@@ -5,6 +5,13 @@ La progettazione e lo sviluppo delle componenti software stabilite in fase di an
 - SonarShim, SonarInterrupter : L. Guerra
 - Sistemare Pathexec: F. Lenzi
 
+
+Cose da aggiungere: 
+- Modifiche a wasteservice.core
+- Aggiunte a cose di altri sprint
+    - truck gui resettabile
+
+
 ### Struttura del software
 
 Dato che entrambi i componenti interagiscono con il sistema Qak, verranno

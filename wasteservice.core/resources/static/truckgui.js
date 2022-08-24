@@ -26,11 +26,14 @@ function connect() {
 			waitingForPickup = true;
 		} else if (data.data === MSG_LOADREJECTED) {
 			$("#loadreply").text(`Carico rifiutato, i cassonetti sono pieni. Torna più tardi.`)
+			$("#reset").prop("disabled", false)
 		} else if (data.data === MSG_PICKUP && waitingForPickup) {
 			$("#loadreply").text(`Carico accettato e caricato dal Trolley!`)
 			waitingForPickup = false;
+			$("#reset").prop("disabled", false)
 		} else {
 			$("#loadreply").text(`Risposta sconosciuta o inaspettata! È: ${data.data}`)
+			$("#reset").prop("disabled", false)
 		}
 	}
 	ws.onopen = function(ev) {
@@ -76,6 +79,20 @@ function checkRequestButton() {
 	$("#request").prop("disabled", !hasValue && !sentRequest)
 }
 
+function reset() {
+	console.log("Resetting...")
+	
+	$("#reset").prop("disabled", true)
+
+	disconnect()
+	connect()
+	sentRequest = false
+	waitingForPickup = false
+	$("#loadreply").text(``)
+
+	console.log("Reset request UI")
+}
+
 $(function() {
     connect();
 
@@ -95,4 +112,7 @@ $(function() {
 	$("#request").on("click", function() {
 		request();
 	});
+
+	$("#reset").prop("disabled", true)
+	$("#reset").on("click", reset)
 });
