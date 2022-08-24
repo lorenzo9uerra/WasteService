@@ -14,6 +14,7 @@ class Observer ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 		return "s0"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -29,9 +30,9 @@ class Observer ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 				state("handleUpdate") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						if( checkMsgContent( Term.createTerm("coapUpdate(VALUE)"), Term.createTerm("coapUpdate(VALUE)"), 
+						if( checkMsgContent( Term.createTerm("coapUpdate(RESOURCE,VALUE)"), Term.createTerm("coapUpdate(RESOURCE,VALUE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("Received COAP update! Value is: ${payloadArg(0)}")
+								println("Received COAP update from ${payloadArg(0)}! Value is: ${payloadArg(1)}")
 						}
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )

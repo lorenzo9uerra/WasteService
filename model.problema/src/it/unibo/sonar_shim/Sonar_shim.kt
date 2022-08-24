@@ -16,12 +16,11 @@ class Sonar_shim ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		val interruptedStateTransitions = mutableListOf<Transition>()
 		
-				var DLIMIT = 100
 				var Val = 200
 		return { //this:ActionBasciFsm
 				state("scanWait") { //this:State
 					action { //it:State
-						delay(200) 
+						delay(500) 
 					}
 					 transition( edgeName="goto",targetState="scan", cond=doswitch() )
 				}	 
@@ -29,13 +28,12 @@ class Sonar_shim ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 					action { //it:State
 						 
 									var PrevVal = Val
-									Val = kotlin.random.Random.nextInt(0, 200) 
-						println("	Sonar: detected distance $Val")
-						if(  Val <= DLIMIT && PrevVal > DLIMIT  
-						 ){emit("sonarStop", "sonarStop(_)" ) 
-						}
-						if(  Val > DLIMIT && PrevVal <= DLIMIT  
-						 ){emit("sonarResume", "sonarResume(_)" ) 
+									Val = (Val + kotlin.random.Random.nextInt(-60, 50)).coerceIn(0, 200) 
+						if(  PrevVal != Val  
+						 ){println("	Sonar: detected distance $Val")
+						emit("sonarDistance", "sonarDistance($Val)" ) 
+						updateResourceRep( "$Val"  
+						)
 						}
 					}
 					 transition( edgeName="goto",targetState="scanWait", cond=doswitch() )

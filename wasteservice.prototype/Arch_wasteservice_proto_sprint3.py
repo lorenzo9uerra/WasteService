@@ -37,10 +37,8 @@ with Diagram('wasteservice_proto_sprint3Arch', show=False, outformat='png', grap
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyDeposit') >> trolley
      trolley >> Edge(color='blue', style='solid', xlabel='storageDeposit') >> storagemanager
      wastetruck >> Edge(color='magenta', style='solid', xlabel='loadDeposit') >> wasteservice
-     sonar_shim >> Edge( xlabel='sonarStop', **eventedgeattr) >> sys
-     sonar_shim >> Edge( xlabel='sonarResume', **eventedgeattr) >> sys
-     sys >> Edge(color='red', style='dashed', xlabel='sonarStop') >> sonar_interrupter
-     sys >> Edge(color='red', style='dashed', xlabel='sonarResume') >> sonar_interrupter
+     sonar_shim >> Edge( xlabel='sonarDistance', **eventedgeattr) >> sys
+     sys >> Edge(color='red', style='dashed', xlabel='sonarDistance') >> sonar_interrupter
      sonar_interrupter >> Edge(color='blue', style='solid', xlabel='trolleyStop') >> trolley
      sonar_interrupter >> Edge(color='blue', style='solid', xlabel='trolleyResume') >> trolley
 diag

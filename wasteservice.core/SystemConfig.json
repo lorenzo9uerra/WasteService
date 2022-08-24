@@ -10,6 +10,7 @@
         "led": "localhost",
         "storage": "localhost",
         "wasteServiceContext": "localhost",
+        "sonar": "localhost",
         "pathexec": "localhost",
         "trolley": "localhost"
     },
@@ -67,6 +68,7 @@
         "led": 8030,
         "storage": 8023,
         "wasteServiceContext": 8023,
+        "sonar": 8031,
         "pathexec": 8023,
         "trolley": 8023
     },

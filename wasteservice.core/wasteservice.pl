@@ -7,5 +7,4 @@ context(ctx_basicrobot, "127.0.0.1",  "TCP", "8020").
   qactor( wasteservice, ctx_wasteservice, "it.unibo.wasteservice.Wasteservice").
   qactor( trolley, ctx_wasteservice, "it.unibo.trolley.Trolley").
   qactor( storagemanager, ctx_wasteservice, "it.unibo.storagemanager.Storagemanager").
-  qactor( sonar_shim, ctx_wasteservice, "it.unibo.lenziguerra.wasteservice.sonar.SonarShim").
   qactor( sonar_interrupter, ctx_wasteservice, "it.unibo.sonar_interrupter.Sonar_interrupter").

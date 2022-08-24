@@ -23,10 +23,8 @@ with Diagram('wasteservice_pro_sonar_stopArch', show=False, outformat='png', gra
           sonar_shim=Custom('sonar_shim','./qakicons/symActorSmall.png')
           sonar_interrupter=Custom('sonar_interrupter','./qakicons/symActorSmall.png')
           trolley=Custom('trolley','./qakicons/symActorSmall.png')
-     sonar_shim >> Edge( xlabel='sonarStop', **eventedgeattr) >> sys
-     sonar_shim >> Edge( xlabel='sonarResume', **eventedgeattr) >> sys
-     sys >> Edge(color='red', style='dashed', xlabel='sonarStop') >> sonar_interrupter
-     sys >> Edge(color='red', style='dashed', xlabel='sonarResume') >> sonar_interrupter
+     sonar_shim >> Edge( xlabel='sonarDistance', **eventedgeattr) >> sys
+     sys >> Edge(color='red', style='dashed', xlabel='sonarDistance') >> sonar_interrupter
      sonar_interrupter >> Edge(color='blue', style='solid', xlabel='trolleyStop') >> trolley
      sonar_interrupter >> Edge(color='blue', style='solid', xlabel='trolleyResume') >> trolley
 diag

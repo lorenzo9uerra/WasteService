@@ -14,6 +14,7 @@ class Waste_boxes ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 		return "idle"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 				var ContentGlass = 0.0
 				var ContentPlastic = 0.0	

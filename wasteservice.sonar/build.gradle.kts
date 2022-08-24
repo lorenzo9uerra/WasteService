@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
 	kotlin("jvm") version "1.6.21"
 	distribution
@@ -19,7 +21,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
-    
+
 	/* JSON **************************************************************************************************************** */
 	// https://mvnrepository.com/artifact/org.json/json
 	implementation("org.json:json:20220320")
@@ -31,6 +33,12 @@ dependencies {
 	implementation("org.eclipse.californium:californium-proxy2:3.6.0")
 
 	implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
+
+	/* COROUTINES ********************************************************************************************************** */
+	// https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+	// https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
 
 
 	/* UNIBO *************************************************************************************************************** */
@@ -49,6 +57,24 @@ dependencies {
 	testImplementation(testFixtures(project(":wasteservice.shared")))
 }
 
-// application {
-// 	mainClass.set("it.unibo.lenziguerra.wasteservice.led.LedContainerKt")
-// }
+sourceSets["main"].java {
+	srcDir("src")
+	srcDir("resources")
+}
+
+sourceSets["main"].resources { srcDir("resources") }
+
+sourceSets["test"].java { srcDir("test") }
+
+tasks.withType<KotlinCompile> {
+	kotlinOptions {
+		freeCompilerArgs = listOf("-Xjsr305=strict")
+		jvmTarget = "11"
+	}
+}
+
+tasks.withType<Test> { useJUnitPlatform() }
+
+ application {
+ 	mainClass.set("it.unibo.lenziguerra.wasteservice.sonar.SonarMainKt")
+ }

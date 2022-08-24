@@ -21,32 +21,42 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						stateTimer = TimerActor("timer_init", 
 							scope, context!!, "local_tout_trolley_init", 0.toLong() )
 					}
-					 transition(edgeName="t02",targetState="goingIndoor",cond=whenTimeout("local_tout_trolley_init"))   
-					interrupthandle(edgeName="t03",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
+					 transition(edgeName="t01",targetState="goingIndoor",cond=whenTimeout("local_tout_trolley_init"))   
+					interrupthandle(edgeName="t02",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
 				}	 
 				state("goingIndoor") { //this:State
 					action { //it:State
 						println("Going INDOOR")
 						delay(2000) 
+						stateTimer = TimerActor("timer_goingIndoor", 
+							scope, context!!, "local_tout_trolley_goingIndoor", 0.toLong() )
 					}
-					 transition( edgeName="goto",targetState="goingBox", cond=doswitch() )
+					 transition(edgeName="t03",targetState="goingBox",cond=whenTimeout("local_tout_trolley_goingIndoor"))   
+					interrupthandle(edgeName="t04",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
 				}	 
 				state("goingBox") { //this:State
 					action { //it:State
 						println("Going BOX")
 						delay(2000) 
+						stateTimer = TimerActor("timer_goingBox", 
+							scope, context!!, "local_tout_trolley_goingBox", 0.toLong() )
 					}
-					 transition( edgeName="goto",targetState="goingHome", cond=doswitch() )
+					 transition(edgeName="t05",targetState="goingHome",cond=whenTimeout("local_tout_trolley_goingBox"))   
+					interrupthandle(edgeName="t06",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
 				}	 
 				state("goingHome") { //this:State
 					action { //it:State
 						println("Going HOME")
 						delay(2000) 
+						stateTimer = TimerActor("timer_goingHome", 
+							scope, context!!, "local_tout_trolley_goingHome", 0.toLong() )
 					}
-					 transition( edgeName="goto",targetState="goingIndoor", cond=doswitch() )
+					 transition(edgeName="t07",targetState="goingIndoor",cond=whenTimeout("local_tout_trolley_goingHome"))   
+					interrupthandle(edgeName="t08",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
 				}	 
 				state("exitFromStop") { //this:State
 					action { //it:State
+						println("Trolley resumed!")
 						updateResourceRep( "resumed"  
 						)
 						returnFromInterrupt(interruptedStateTransitions)
@@ -54,10 +64,11 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				}	 
 				state("handleStop") { //this:State
 					action { //it:State
+						println("Trolley stopped!")
 						updateResourceRep( "stopped"  
 						)
 					}
-					 transition(edgeName="t04",targetState="exitFromStop",cond=whenDispatch("trolleyResume"))
+					 transition(edgeName="t09",targetState="exitFromStop",cond=whenDispatch("trolleyResume"))
 				}	 
 			}
 		}

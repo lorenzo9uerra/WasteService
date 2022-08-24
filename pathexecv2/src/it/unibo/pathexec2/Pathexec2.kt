@@ -14,6 +14,7 @@ class Pathexec2 ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 		return "s0"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		 var CurMoveTodo = ""    //Upcase, since var to be used in guards
 		   var StepTime    = "300"
 		return { //this:ActionBasciFsm

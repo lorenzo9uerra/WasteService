@@ -14,6 +14,7 @@ class Trolley_dep ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 		return "home"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 				var CarryingType = ""
 				var CarryingAmount = 0.0

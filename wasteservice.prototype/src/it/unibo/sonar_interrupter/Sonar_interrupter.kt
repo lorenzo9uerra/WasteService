@@ -11,30 +11,38 @@ import kotlinx.coroutines.runBlocking
 class Sonar_interrupter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope ){
 
 	override fun getInitialState() : String{
-		return "init"
+		return "idle"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		val interruptedStateTransitions = mutableListOf<Transition>()
+		 
+			var prevDist: Float? = null
+			var DLIMIT = 100
 		return { //this:ActionBasciFsm
-				state("init") { //this:State
+				state("idle") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t023",targetState="stopped",cond=whenEvent("sonarStop"))
-					transition(edgeName="t024",targetState="resume",cond=whenEvent("sonarResume"))
+					 transition(edgeName="t023",targetState="handleDistance",cond=whenEvent("sonarDistance"))
 				}	 
-				state("stopped") { //this:State
+				state("handleDistance") { //this:State
 					action { //it:State
-						println("INVIO STOP")
-						forward("trolleyStop", "trolleyStop(_)" ,"trolley" ) 
+						println("$name in ${currentState.stateName} | $currentMsg")
+						if( checkMsgContent( Term.createTerm("sonarDistance(DIST)"), Term.createTerm("sonarDistance(DIST)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 val dLimit = DLIMIT  
+								 val dist = payloadArg(0).toFloat()  
+								if(  dist <= dLimit && prevDist?.let {it > dLimit } != false  
+								 ){println("INVIO STOP")
+								forward("trolleyStop", "trolleyStop(_)" ,"trolley" ) 
+								}
+								if(  dist > dLimit && prevDist?.let {it > dLimit } == false  
+								 ){println("INVIO RESUME")
+								forward("trolleyResume", "trolleyResume(_)" ,"trolley" ) 
+								}
+								 prevDist = dist  
+						}
 					}
-					 transition( edgeName="goto",targetState="init", cond=doswitch() )
-				}	 
-				state("resume") { //this:State
-					action { //it:State
-						println("INVIO RESUME")
-						forward("trolleyResume", "trolleyResume(_)" ,"trolley" ) 
-					}
-					 transition( edgeName="goto",targetState="init", cond=doswitch() )
+					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}
 		}

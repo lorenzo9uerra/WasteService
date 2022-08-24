@@ -1,7 +1,6 @@
 System wasteservice_pro_sonar_stop
 
-Event sonarStop : sonarStop(_)
-Event sonarResume : sonarResume(_)
+Event sonarDistance : sonarDistance(DIST)
 Dispatch trolleyStop : trolleyStop(_)
 Dispatch trolleyResume : trolleyResume(_)
 
@@ -9,48 +8,56 @@ Context ctxpro_sonar_stop ip [host="localhost" port=8050]
 
 QActor sonar_shim context ctxpro_sonar_stop {
 	[#
-		var DLIMIT = 100
 		var Val = 200
 	#]
 
 	State scanWait initial {
-		delay 200
+		delay 500
 	}
 	Goto scan
 	
 	State scan {
 		[# 
 			var PrevVal = Val
-			Val = kotlin.random.Random.nextInt(0, 200) 
+			Val = (Val + kotlin.random.Random.nextInt(-60, 50)).coerceIn(0, 200) 
 		#]
-		println("\tSonar: detected distance $Val")
-		if [# Val <= DLIMIT && PrevVal > DLIMIT #] {
-			emit sonarStop : sonarStop(_)
-		}
-		if [# Val > DLIMIT && PrevVal <= DLIMIT #] {
-			emit sonarResume : sonarResume(_)
+		if [# PrevVal != Val #] {
+			println("\tSonar: detected distance $Val")
+			emit sonarDistance : sonarDistance($Val)
+			updateResource [# "$Val" #]			
 		}
 	}
 	Goto scanWait
 }
 
 QActor sonar_interrupter context ctxpro_sonar_stop {
-	State init initial {
+	[# 
+	var prevDist: Float? = null
+	var DLIMIT = 100
+	#]
+	State idle initial {
 	}
-	Transition t0 whenEvent sonarStop -> stopped
-				  whenEvent sonarResume -> resume
+	Transition t0 whenEvent sonarDistance -> handleDistance
 	
-	State stopped {
-		println("INVIO STOP")
-		forward trolley -m trolleyStop : trolleyStop(_)
+	State handleDistance {
+		printCurrentMessage
+		onMsg ( sonarDistance : sonarDistance(DIST) ) {
+			[# val dLimit = DLIMIT #]
+			[# val dist = payloadArg(0).toFloat() #]
+			// != e == false avendo anche null come possibile valore di let
+			// non mandare resume all'inizio quando è null
+			if [# dist <= dLimit && prevDist?.let {it > dLimit } != false #] {
+				println("INVIO STOP")
+				forward trolley -m trolleyStop : trolleyStop(_)
+			}
+			if [# dist > dLimit && prevDist?.let {it > dLimit } == false #] {
+				println("INVIO RESUME")
+				forward trolley -m trolleyResume : trolleyResume(_)
+			}
+			[# prevDist = dist #]
+		}
 	}
-	Goto init
-	
-	State resume {
-		println("INVIO RESUME")
-		forward trolley -m trolleyResume : trolleyResume(_)
-	}
-	Goto init
+	Goto idle
 }
 
 QActor trolley context ctxpro_sonar_stop {
@@ -62,29 +69,33 @@ QActor trolley context ctxpro_sonar_stop {
 		println("Going INDOOR")
 		delay 2000
 	}	
-	Goto goingBox
+	Transition t0 whenTime 0 -> goingBox
+				  whenInterrupt trolleyStop -> handleStop
 
   	State goingBox{
   		println("Going BOX")
 		delay 2000
   	}
-  	Goto goingHome
+	Transition t0 whenTime 0 -> goingHome
+				  whenInterrupt trolleyStop -> handleStop
   	
   	State goingHome{
   		println("Going HOME")
 		delay 2000
   	}
-  	Goto goingIndoor
+	Transition t0 whenTime 0 -> goingIndoor
+				  whenInterrupt trolleyStop -> handleStop
   	
   	State exitFromStop{
+  		println("Trolley resumed!")
    		updateResource [# "resumed" #]
   		returnFromInterrupt
   	}
   	
   	State handleStop{
+  		println("Trolley stopped!")
   		updateResource [# "stopped" #]
   	}
   	Transition t0 whenMsg trolleyResume -> exitFromStop
-	
 }
 
