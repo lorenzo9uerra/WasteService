@@ -17,8 +17,7 @@ Emergono due opzioni principali su come gestire il Led:
 
 ### Modifiche
 
-In questo caso è necessario modificare *pathexec* per permettere a basicrobot di
-accettare gli interrupt langiati da SonarInterrupter.
+Trolley, come da SPRINT precedenti, usa l'attore *pathexec* di BasicRobot22 per gestire il movimento. Se si usasse l'attore così com'è, anche se si inviasse un messaggio *trolleyStop* il trolley finirebbe il movimento attuale prima di fermarsi, non essendo pathexec a conoscenza del segnale di stop. Si è deciso di modificare *pathexec* per permettergli di accettare gli interrupt lanciati da SonarInterrupter. Verrà incluso nel modello finale dell'architettura logica un semplice esempio di questa interazione.
 
 ### Interazione
 
@@ -28,7 +27,6 @@ Per questo scopo, è opportuno far sì che *trolleyStop* attivi un **interrupt**
 Dispatch trolleyStop : trolleyStop(_)
 Dispatch trolleyResume : trolleyResume(_)
 ```
-
 
 Per il modo in cui SonarShim invia i dati sulla distanza, si aprono come per Led e Gui due metodi possibili:
 
@@ -41,6 +39,8 @@ Per il modo in cui SonarShim invia i dati sulla distanza, si aprono come per Led
 ```
 Event sonarDistance : sonarDistance(DIST).
 ```
+
+![Modello eseguibile di questa analisi](../model.problema/src/pro_sonar_stop.qak)
 
 ### Architettura Logica
 

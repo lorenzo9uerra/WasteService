@@ -27,8 +27,8 @@ class Wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						println("	Truck with $Material in amount $Quantity arrived")
 						request("loadDeposit", "loadDeposit($Material,$Quantity)" ,"wasteservice" )  
 					}
-					 transition(edgeName="t120",targetState="handleAccepted",cond=whenReply("loadaccept"))
-					transition(edgeName="t121",targetState="handleRejected",cond=whenReply("loadrejected"))
+					 transition(edgeName="t122",targetState="handleAccepted",cond=whenReply("loadaccept"))
+					transition(edgeName="t123",targetState="handleRejected",cond=whenReply("loadrejected"))
 				}	 
 				state("handleRejected") { //this:State
 					action { //it:State
@@ -42,7 +42,7 @@ class Wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	Truck accepted")
 					}
-					 transition(edgeName="t022",targetState="waitArrival",cond=whenDispatch("pickedUp"))
+					 transition(edgeName="t024",targetState="waitArrival",cond=whenDispatch("pickedUp"))
 				}	 
 				state("waitArrival") { //this:State
 					action { //it:State

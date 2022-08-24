@@ -27,18 +27,23 @@ with Diagram('wasteservice_proto_sprint3Arch', show=False, outformat='png', grap
           trolley=Custom('trolley','./qakicons/symActorSmall.png')
           storagemanager=Custom('storagemanager','./qakicons/symActorSmall.png')
           wastetruck=Custom('wastetruck','./qakicons/symActorSmall.png')
-          sonar_shim=Custom('sonar_shim','./qakicons/symActorSmall.png')
-          sonar_interrupter=Custom('sonar_interrupter','./qakicons/symActorSmall.png')
+          pathexec=Custom('pathexec','./qakicons/symActorSmall.png')
+     with Cluster('ctx_wasteservice_proto_sonar', graph_attr=nodeattr):
+          sonarshim=Custom('sonarshim','./qakicons/symActorSmall.png')
+          sonarinterrupter=Custom('sonarinterrupter','./qakicons/symActorSmall.png')
      ledcontroller >> Edge(color='blue', style='solid', xlabel='ledSet') >> blinkled
      wasteservice >> Edge(color='magenta', style='solid', xlabel='storageAsk') >> storagemanager
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyMove') >> trolley
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyCollect') >> trolley
      wasteservice >> Edge(color='blue', style='solid', xlabel='pickedUp') >> wastetruck
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyDeposit') >> trolley
+     trolley >> Edge(color='magenta', style='solid', xlabel='dopath') >> pathexec
      trolley >> Edge(color='blue', style='solid', xlabel='storageDeposit') >> storagemanager
+     trolley >> Edge(color='blue', style='solid', xlabel='resumePath') >> pathexec
+     trolley >> Edge(color='blue', style='solid', xlabel='stopPath') >> pathexec
      wastetruck >> Edge(color='magenta', style='solid', xlabel='loadDeposit') >> wasteservice
-     sonar_shim >> Edge( xlabel='sonarDistance', **eventedgeattr) >> sys
-     sys >> Edge(color='red', style='dashed', xlabel='sonarDistance') >> sonar_interrupter
-     sonar_interrupter >> Edge(color='blue', style='solid', xlabel='trolleyStop') >> trolley
-     sonar_interrupter >> Edge(color='blue', style='solid', xlabel='trolleyResume') >> trolley
+     sonarshim >> Edge( xlabel='local_sonarDistance', **eventedgeattr) >> sys
+     sys >> Edge(color='red', style='dashed', xlabel='local_sonarDistance') >> sonarinterrupter
+     sonarinterrupter >> Edge(color='blue', style='solid', xlabel='trolleyStop') >> trolley
+     sonarinterrupter >> Edge(color='blue', style='solid', xlabel='trolleyResume') >> trolley
 diag

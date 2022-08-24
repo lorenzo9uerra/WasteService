@@ -22,7 +22,7 @@ class Sonar_interrupter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm
 				state("idle") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t023",targetState="handleDistance",cond=whenEvent("sonarDistance"))
+					 transition(edgeName="t031",targetState="handleDistance",cond=whenEvent("local_sonarDistance"))
 				}	 
 				state("handleDistance") { //this:State
 					action { //it:State

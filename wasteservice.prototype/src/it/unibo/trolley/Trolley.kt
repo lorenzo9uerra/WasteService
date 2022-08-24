@@ -19,6 +19,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				var CarryingType = ""
 				var CarryingAmount = 0.0
 				var Pos = arrayOf(0,0)
+				var WaitingPath = false
 				fun getContentLine(): String {
 					if (CarryingAmount > 0)
 						return "\ncontent($CarryingType,$CarryingAmount)"
@@ -45,13 +46,22 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						println("$name in ${currentState.stateName} | $currentMsg")
 						updateResourceRep( "state(work)" + getPosLine() + getContentLine()  
 						)
-						delay(1000) 
 						if( checkMsgContent( Term.createTerm("trolleyMove(X,Y)"), Term.createTerm("trolleyMove(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Pos[0] = payloadArg(0).toInt()  
 								 Pos[1] = payloadArg(1).toInt()  
-								answer("trolleyMove", "trolleyDone", "trolleyDone(true)"   )  
+								 WaitingPath = true  
+								request("dopath", "dopath(sample)" ,"pathexec" )  
 						}
+					}
+					 transition(edgeName="t017",targetState="moveSuccess",cond=whenReply("dopathdone"))
+					interrupthandle(edgeName="t018",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
+				}	 
+				state("moveSuccess") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
+						 WaitingPath = false  
+						answer("trolleyMove", "trolleyDone", "trolleyDone(true)"   )  
 					}
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
@@ -85,17 +95,25 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				}	 
 				state("exitFromStop") { //this:State
 					action { //it:State
+						println("trolley resumed")
 						updateResourceRep( "state(work)" + getPosLine() + getContentLine()  
 						)
+						if(  WaitingPath  
+						 ){forward("resumePath", "resumePath(_)" ,"pathexec" ) 
+						}
 						returnFromInterrupt(interruptedStateTransitions)
 					}
 				}	 
 				state("handleStop") { //this:State
 					action { //it:State
+						println("trolley stopped")
 						updateResourceRep( "state(stopped)" + getPosLine() + getContentLine()  
 						)
+						if(  WaitingPath  
+						 ){forward("stopPath", "stopPath(_)" ,"pathexec" ) 
+						}
 					}
-					 transition(edgeName="t017",targetState="exitFromStop",cond=whenDispatch("trolleyResume"))
+					 transition(edgeName="t019",targetState="exitFromStop",cond=whenDispatch("trolleyResume"))
 				}	 
 			}
 		}

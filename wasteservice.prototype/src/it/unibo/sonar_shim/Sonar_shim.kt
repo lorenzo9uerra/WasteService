@@ -17,21 +17,24 @@ class Sonar_shim ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 		val interruptedStateTransitions = mutableListOf<Transition>()
 		
 				var Val = 200
+				var Wait = 2000L
 		return { //this:ActionBasciFsm
 				state("scanWait") { //this:State
 					action { //it:State
-						delay(500) 
+						 Wait = kotlin.random.Random.nextLong(2000, 3500)  
+						stateTimer = TimerActor("timer_scanWait", 
+							scope, context!!, "local_tout_sonar_shim_scanWait", Wait )
 					}
-					 transition( edgeName="goto",targetState="scan", cond=doswitch() )
+					 transition(edgeName="t030",targetState="scan",cond=whenTimeout("local_tout_sonar_shim_scanWait"))   
 				}	 
 				state("scan") { //this:State
 					action { //it:State
 						 
 									var PrevVal = Val
-									Val = (Val + kotlin.random.Random.nextInt(-60, 50)).coerceIn(0, 200) 
+									Val = 200 - Val
 						if(  PrevVal != Val  
 						 ){println("	Sonar: detected distance $Val")
-						emit("sonarDistance", "sonarDistance($Val)" ) 
+						emit("local_sonarDistance", "sonarDistance($Val)" ) 
 						updateResourceRep( "$Val"  
 						)
 						}
