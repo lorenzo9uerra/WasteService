@@ -42,14 +42,13 @@ Per ottenere un riferimento a `ISonarObservable` e `IDistanceObservable`, è pos
 
 Può essere poi creato un observer ad-hoc per il caso d'uso per il quale si vuole osservare la risorsa in questione.
 
-TODO: Coap
-
 ### Analisi e progetto
 
 È stato scelto di realizzare le nuove funzionalità seguendo questi principi:
 
-* Ridurre quanto possibile le modifiche alle classi pre-esistenti, prediligendo composizione e estensione
-* Rendere flessibile il sistema, non legando le classi di basso livello a specifiche implementazioni o "opinioni"
+* Ridurre quanto possibile le modifiche alle classi pre-esistenti, prediligendo composizione e estensione.
+* Rendere flessibile il sistema, non legando le classi di basso livello a specifiche implementazioni o "opinioni".
+* Di conseguenza ai primi due punti, cercare quanto possibile di rendere le classi esistenti (quindi `SonarModel` e sottoclassi) *ignare* del concetto di osservabilità, che avviene in modo "indiretto".
 
 Quindi, sono state realizzate diverse interfaccie, le principali riassunte di seguito:
 

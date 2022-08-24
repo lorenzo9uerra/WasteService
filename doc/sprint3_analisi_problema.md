@@ -42,6 +42,16 @@ Event sonarDistance : sonarDistance(DIST).
 
 ![Modello eseguibile di questa analisi](../model.problema/src/pro_sonar_stop.qak)
 
+### Lettura dal sonar
+
+Riguardo al metodo di lettura della distanza rilevata dal sonar, sono possibili due metodi principali:
+
+- Polling dei dati: SonarShim dovrebbe avere un thread che periodicamente (e rapidamente) controlla la distanza attuale rilevata.
+
+- Osservazione: SonarShim osserva passivamente la distanza del sonar, e viene aggiornato sulle sue modifiche.
+
+**Conclusione.** Ovviamente la seconda opzione, **l'osservazione**, migliora la performance ed è più pulita. Il problema principale è che allo stato attuale la libreria *radarsystem.domain* non supporta questa operazione, e non è possibile estenderla dall'esterno per farlo senza riprogrammare diverse classi fondamentali, perdendo lo scopo dell'usare una libreria. È stato quindi deciso di estendere la libreria per supportare l'osservabilità (almeno da pochi osservatori come per questo caso): per documentazione, analisi e progetto si consulti [il documento apposito](./radarSystem.domain_edits.md).
+
 ### Architettura Logica
 
 Ecco quindi l'architettura logica finale del sistema in generale per questo SPRINT:
