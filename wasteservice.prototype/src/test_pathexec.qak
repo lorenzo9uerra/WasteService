@@ -1,0 +1,95 @@
+System wasteservice_proto_pathexec_test
+
+Request  dopath    : dopath( PATH  )
+Reply dopathdone   : dopathdone( ARG )
+Reply dopathfail   : dopathfail( ARG )
+Dispatch stopPath : stopPath(_)
+Dispatch resumePath : resumePath(_)
+
+Context ctx_wasteservice_proto_ctx ip [host="localhost" port=8050]
+
+QActor wastetruck context ctx_wasteservice_proto_ctx {
+	
+	State start initial{
+		printCurrentMessage
+		[# var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(500, 10000) #]
+		delayVar DelayTime
+		request pathexec -m dopath : dopath(_)
+	}
+	Goto start
+}
+
+QActor sonarshim context ctx_wasteservice_proto_ctx {
+	[#
+		var Val = 200
+		var Wait = 2000L
+	#]
+
+	State scanWait initial {
+	}
+	Transition t0 whenTimeVar Wait -> scan
+	
+	State scan {
+		[# 
+			var PrevVal = Val
+			Val = 200 - Val
+		#]
+		if [# PrevVal != Val #] {
+			println("\tSonar: detected distance $Val")
+			if [# PrevVal > 100 #]{
+				forward pathexec -m stopPath : stopPath(_)
+			}
+			else {
+				forward pathexec -m resumePath : resumePath(_)
+			}
+			updateResource [# "$Val" #]			
+		}
+	}
+	Goto scanWait
+}
+
+QActor pathexec context ctx_wasteservice_proto_ctx {
+	[# var Counter = 0 #]
+	State s0 initial{  	
+		printCurrentMessage
+	}	
+	Transition t1 whenRequest dopath -> doThePath
+				  whenInterrupt stopPath -> stopped
+	
+	State doThePath{
+		printCurrentMessage
+		[# Counter = 4 #]
+ 	}
+	Goto nextMove
+	
+	State nextMove {
+		printCurrentMessage
+		println("pathexec | Move progress: ${5 - Counter}")
+		[# Counter-- #]
+	}
+	Transition t2 whenTime 250 -> checkWorkEnded
+				  whenInterrupt stopPath -> stopped
+	
+	State checkWorkEnded {		
+	}
+	Goto endWorkOk if [# Counter <= 0 #] else nextMove 
+	
+	State endWorkOk {
+		printCurrentMessage
+		println("endWorkOk: PATH DONE")
+		replyTo dopath with dopathdone : dopathdone( ok )
+	}
+	Goto s0 
+	
+	State stopped {
+		printCurrentMessage
+		println("pathexec stopped")
+	}
+	Transition t3 whenMsg resumePath -> resumeFromStop
+	
+	State resumeFromStop {
+		printCurrentMessage
+		println("pathexec resumed")
+		returnFromInterrupt
+	}
+}

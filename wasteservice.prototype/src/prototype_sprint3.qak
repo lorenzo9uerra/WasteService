@@ -482,7 +482,7 @@ QActor pathexec context ctx_wasteservice_proto_ctx {
 	State s0 initial{  	
 		printCurrentMessage
 	}	
-	Transition t0 whenRequest dopath -> doThePath
+	Transition t1 whenRequest dopath -> doThePath
 				  whenInterrupt stopPath -> stopped 
 	
 	State doThePath{
@@ -496,7 +496,7 @@ QActor pathexec context ctx_wasteservice_proto_ctx {
 		println("pathexec | Move progress: ${5 - Counter}")
 		[# Counter-- #]
 	}
-	Transition t0 whenTime 250 -> checkWorkEnded
+	Transition t2 whenTime 250 -> checkWorkEnded
 				  whenInterrupt stopPath -> stopped 
 	
 	State checkWorkEnded {		
@@ -514,7 +514,7 @@ QActor pathexec context ctx_wasteservice_proto_ctx {
 		printCurrentMessage
 		println("pathexec stopped")
 	}
-	Transition t0 whenMsg resumePath -> resumeFromStop
+	Transition t3 whenMsg resumePath -> resumeFromStop
 	
 	State resumeFromStop {
 		printCurrentMessage
@@ -563,7 +563,7 @@ QActor sonarinterrupter context ctx_wasteservice_proto_sonar {
 			[# val dLimit = DLIMIT #]
 			[# val dist = payloadArg(0).toFloat() #]
 			// != e == false avendo anche null come possibile valore di let
-			// non mandare resume all'inizio quando è null
+			// non mandare resume all'inizio quando ï¿½ null
 			if [# dist <= dLimit && prevDist?.let {it > dLimit } != false #] {
 				println("INVIO STOP")
 				forward trolley -m trolleyStop : trolleyStop(_)

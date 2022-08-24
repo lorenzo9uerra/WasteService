@@ -21,8 +21,8 @@ class Pathexec ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
-					 transition(edgeName="t025",targetState="doThePath",cond=whenRequest("dopath"))
-					interrupthandle(edgeName="t026",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
+					 transition(edgeName="t11",targetState="doThePath",cond=whenRequest("dopath"))
+					interrupthandle(edgeName="t12",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
 				}	 
 				state("doThePath") { //this:State
 					action { //it:State
@@ -39,8 +39,8 @@ class Pathexec ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 						stateTimer = TimerActor("timer_nextMove", 
 							scope, context!!, "local_tout_pathexec_nextMove", 250.toLong() )
 					}
-					 transition(edgeName="t027",targetState="checkWorkEnded",cond=whenTimeout("local_tout_pathexec_nextMove"))   
-					interrupthandle(edgeName="t028",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
+					 transition(edgeName="t23",targetState="checkWorkEnded",cond=whenTimeout("local_tout_pathexec_nextMove"))   
+					interrupthandle(edgeName="t24",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
 				}	 
 				state("checkWorkEnded") { //this:State
 					action { //it:State
@@ -63,7 +63,7 @@ class Pathexec ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("pathexec stopped")
 					}
-					 transition(edgeName="t029",targetState="resumeFromStop",cond=whenDispatch("resumePath"))
+					 transition(edgeName="t35",targetState="resumeFromStop",cond=whenDispatch("resumePath"))
 				}	 
 				state("resumeFromStop") { //this:State
 					action { //it:State
