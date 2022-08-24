@@ -32,8 +32,7 @@ dependencies {
     implementation("org.springframework:spring-messaging:5.3.22")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    
+
     /* COAP **************************************************************************************************************** */
     // https://mvnrepository.com/artifact/org.eclipse.californium/californium-core
     implementation("org.eclipse.californium:californium-core:3.6.0")

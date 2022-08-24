@@ -1,8 +1,8 @@
 {
     "actors": {
-        "trolley": "trolley",
         "storage": "storagemanager",
-        "wasteServiceContext": "wasteservice"
+        "wasteServiceContext": "wasteservice",
+        "trolley": "trolley"
     },
     "debugPrint": true,
     "hosts": {
@@ -10,62 +10,40 @@
         "led": "localhost",
         "storage": "localhost",
         "wasteServiceContext": "localhost",
+        "sonar": "localhost",
         "trolley": "localhost"
     },
     "positions": {
-        "indoor": [
-            [
-                0,
-                4
-            ],
-            [
-                1,
-                4
-            ]
-        ],
         "plastic_box": [
-            [
-                4,
-                1
-            ],
-            [
-                4,
-                2
-            ]
+            [4, 1],
+            [4, 2]
+        ],
+        "indoor": [
+            [0, 4],
+            [1, 4]
         ],
         "glass_box": [
-            [
-                3,
-                4
-            ],
-            [
-                4,
-                4
-            ]
+            [3, 4],
+            [4, 4]
         ],
         "home": [
-            [
-                0,
-                0
-            ],
-            [
-                0,
-                0
-            ]
+            [0, 0],
+            [0, 0]
         ]
     },
     "contexts": {
-        "storage": "ctx_wasteservice_test",
-        "wasteServiceContext": "ctx_wasteservice_test",
+        "storage": "ctx_wasteservice",
+        "wasteServiceContext": "ctx_wasteservice",
         "pathexec": "ctx_basicrobot",
-        "trolley": "ctx_wasteservice_test"
+        "trolley": "ctx_wasteservice"
     },
     "ports": {
         "wasteServiceServer": 8080,
-        "led": 9655,
-        "storage": 9654,
-        "wasteServiceContext": 9654,
-        "trolley": 9654
+        "led": 8030,
+        "storage": 8023,
+        "wasteServiceContext": 8023,
+        "sonar": 8031,
+        "trolley": 8023
     },
     "DLIMIT": 50
 }

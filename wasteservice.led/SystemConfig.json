@@ -1,10 +1,16 @@
 {
+    "actors": {
+        "trolley": "trolley",
+        "storage": "storagemanager",
+        "wasteServiceContext": "wasteservice"
+    },
     "debugPrint": true,
     "hosts": {
         "wasteServiceServer": "localhost",
         "led": "localhost",
         "storage": "localhost",
         "wasteServiceContext": "localhost",
+        "sonar": "localhost",
         "trolley": "localhost"
     },
     "positions": {
@@ -49,11 +55,18 @@
             ]
         ]
     },
+    "contexts": {
+        "storage": "ctx_wasteservice",
+        "wasteServiceContext": "ctx_wasteservice",
+        "pathexec": "ctx_basicrobot",
+        "trolley": "ctx_wasteservice"
+    },
     "ports": {
         "wasteServiceServer": 8080,
         "led": 8030,
         "storage": 8023,
         "wasteServiceContext": 8023,
+        "sonar": 8031,
         "trolley": 8023
     },
     "DLIMIT": 50

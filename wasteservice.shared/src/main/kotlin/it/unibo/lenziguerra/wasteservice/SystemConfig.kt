@@ -42,12 +42,27 @@ object SystemConfig {
     )
 
     private var setConf = false
+    private var noWrite = false
+    private var noRead = false
 
     fun setConfiguration(cfgPath: String = "SystemConfig.json", force: Boolean = false) {
-        if (!setConf || force) {
-            StaticConfig.setConfiguration(this::class, this, cfgPath)
+        if ((!setConf || force) && !noRead) {
+            StaticConfig.setConfiguration(this::class, this, cfgPath, noWrite)
             setConf = true
         }
     }
 
+    // For testing
+    fun disableWrite() {
+        noWrite = true
+    }
+    fun enableWrite() {
+        noWrite = false
+    }
+    fun disableRead() {
+        noRead = true
+    }
+    fun enableRead() {
+        noRead = false
+    }
 }

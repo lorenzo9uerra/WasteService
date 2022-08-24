@@ -64,6 +64,9 @@ class TestGui {
 
 			replaceWatchedComponent()
 
+			SystemConfig.disableRead()
+			SystemConfig.disableWrite()
+
 			for (id in arrayOf("trolley", "wasteServiceContext", "storage")) {
 				SystemConfig.hosts[id] = TEST_CONTEXT_HOST
 				SystemConfig.ports[id] = TEST_CONTEXT_PORT

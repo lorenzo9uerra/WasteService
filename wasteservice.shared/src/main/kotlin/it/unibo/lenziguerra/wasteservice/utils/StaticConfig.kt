@@ -6,23 +6,22 @@ import org.json.JSONTokener
 import unibo.comm22.utils.ColorsOut
 import java.io.*
 import kotlin.reflect.*
-import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.jvm.jvmErasure
 
 object StaticConfig {
     private val emptyHook: (KMutableProperty<*>, Any) -> Any? = { _, _ -> null }
 
-    fun <T : Any> setConfiguration(clazz: KClass<out T>, obj: T, resourceName: String) {
-        setConfiguration(clazz, obj, resourceName, emptyHook, emptyHook)
+    fun <T : Any> setConfiguration(clazz: KClass<out T>, obj: T, resourceName: String, noWrite: Boolean = false) {
+        setConfiguration(clazz, obj, resourceName, emptyHook, emptyHook, noWrite)
 
     }
 
     fun <T : Any> setConfiguration(
         clazz: KClass<out T>, obj: T, resourceName: String,
         beforeSaveHook: (KMutableProperty<*>, Any) -> Any?,
-        afterLoadHook: (KMutableProperty<*>, Any) -> Any?
+        afterLoadHook: (KMutableProperty<*>, Any) -> Any?,
+        noWrite: Boolean = false
     ) {
         //Nella distribuzione resourceName è in una dir che include la bin
         try {
@@ -35,9 +34,8 @@ object StaticConfig {
                 val tokener = JSONTokener(reader)
                 val jsonObj = JSONObject(tokener)
                 val changed = setFields(clazz, obj, jsonObj, beforeSaveHook, afterLoadHook)
-                if (changed) {
-                    writer = FileWriter(resourceName)
-                    saveConfigFile(jsonObj, writer)
+                if (changed && !noWrite) {
+                    saveConfigFile(jsonObj, resourceName)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -53,20 +51,31 @@ object StaticConfig {
                 }
             }
         } catch (e: FileNotFoundException) {
-            ColorsOut.outappl("Config file not found, saving default config file to $resourceName", ColorsOut.YELLOW)
-            saveConfigFile(createJSONObject(clazz, obj, beforeSaveHook), resourceName)
+            if (noWrite) {
+                ColorsOut.outappl(
+                    "Config file not found, but noWrite enabled",
+                    ColorsOut.YELLOW
+                )
+            } else {
+                ColorsOut.outappl(
+                    "Config file not found, saving default config file to $resourceName",
+                    ColorsOut.YELLOW
+                )
+                saveConfigFile(createJSONObject(clazz, obj, beforeSaveHook)!!, resourceName)
+            }
         }
     }
 
     // Per testing, se usato con FileWriter sovrascriverà il file di configurazione
     // prima della lettura
-    fun <T: Any> setConfiguration(clazz: KClass<out T>, obj: T, reader: Reader?, writer: Writer) {
+    fun <T: Any> setConfiguration(clazz: KClass<out T>, obj: T, reader: Reader?, writer: Writer, noWrite: Boolean = false) {
         //Nella distribuzione resourceName è in una dir che include la bin
         try {
             val tokener = JSONTokener(reader)
             val jsonObj = JSONObject(tokener)
             val changed = setFields(clazz, obj, jsonObj, emptyHook, emptyHook)
-            if (changed) {
+            if (changed && !noWrite) {
+                ColorsOut.outappl("\tTesting: saving config file for class $clazz", ColorsOut.BLUE)
                 saveConfigFile(jsonObj, writer)
             }
         } catch (e: JSONException) {
@@ -74,27 +83,14 @@ object StaticConfig {
         }
     }
 
-    fun saveConfigFile(obj: JSONObject?, resourceName: String?) {
-        var fw: FileWriter? = null
-        try {
-            fw = FileWriter(resourceName)
-            saveConfigFile(obj, fw)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } finally {
-            if (fw != null) {
-                try {
-                    fw.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
+    fun saveConfigFile(obj: JSONObject, resourceName: String) {
+        ColorsOut.outappl("\tSaving changed configuration file to $resourceName", ColorsOut.BLUE)
+        saveConfigFile(obj, FileWriter(resourceName))
     }
 
-    fun saveConfigFile(obj: JSONObject?, writer: Writer) {
+    fun saveConfigFile(obj: JSONObject, writer: Writer) {
         try {
-            writer.write(obj!!.toString(4))
+            writer.write(obj.toString(4))
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: JSONException) {
