@@ -17,6 +17,11 @@ Emergono due opzioni principali su come gestire il Led:
 
 **Conclusione.** Si ritiene migliore la seconda opzione, vale a dire **dividere gli incarichi**, visto che rispetta il principio di singola responsabilità. Inoltre, questo permetterebbe il riutilizzo dell'attore SonarShim in altri contesti, essendo agnostico al dominio.
 
+### Modifiche
+
+In questo caso è necessario modificare *pathexec* per permettere a basicrobot di
+accettare gli interrupt langiati da SonarInterrupter.
+
 ### Interazione
 
 Per SonarShim è possibile utilizzare un pattern ad eventi o observer, ma sarà
