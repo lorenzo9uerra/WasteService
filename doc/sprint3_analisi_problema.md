@@ -19,8 +19,10 @@ Emergono due opzioni principali su come gestire il Led:
 
 ### Interazione
 
-Per SonarShim sarà preferibile utilizzare eventi per trasmettere le
-informazioni, in quanto questi miglioreranno l'estendibilità.
+Per SonarShim è possibile utilizzare un pattern ad eventi o observer, ma sarà
+preferibile utilizzare eventi per trasmettere le informazioni, in quanto i
+componenti sono attori in un sistema distribuito, il che permette anche di
+migliorare l'estendibilità.
 
 ```
 Event sonarStop : sonatStop(_)
