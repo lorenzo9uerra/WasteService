@@ -78,7 +78,7 @@ stop.
 Il componente avrà bisogno di comunicare con il resto del sistema, quindi dovrà
 essere un attore.
 
-Il tipo di comunicazione con il resto del sistema deve essere definito.
+Il tipo di comunicazione con il resto del sistema deve essere definito, incluso il tipo di messaggio costituito da *trolleyStop* e *trolleyResume*.
 
 [Modello eseguibile Sonar](../model.requisiti/src/sonar-stop.qak)
 
