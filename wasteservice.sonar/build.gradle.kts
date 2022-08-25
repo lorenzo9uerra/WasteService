@@ -73,7 +73,7 @@ tasks.withType<KotlinCompile> {
 	}
 }
 
-tasks.withType<Test> { useJUnitPlatform() }
+//tasks.withType<Test> { useJUnitPlatform() }
 
  application {
  	mainClass.set("it.unibo.lenziguerra.wasteservice.sonar.SonarMainKt")

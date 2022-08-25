@@ -16,8 +16,8 @@ class Sonar_interrupter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		val interruptedStateTransitions = mutableListOf<Transition>()
 		 
-			// gira intorno a impossibilit‡ di usare it.[...] dentro a stato
-			// perchË it Ë gi‡ keyword
+			// gira intorno a impossibilit√† di usare it.[...] dentro a stato
+			// perch√® it √® gi√† keyword
 			val SystemConfig = it.unibo.lenziguerra.wasteservice.SystemConfig
 			var prevDist: Float? = null
 		return { //this:ActionBasciFsm

@@ -2,7 +2,6 @@ package it.unibo.lenziguerra.wasteservice.sonar
 
 import it.unibo.kactor.QakContext
 import it.unibo.lenziguerra.wasteservice.SystemConfig
-import it.unibo.lenziguerra.wasteservice.utils.PrefixPrintStream
 import it.unibo.radarSystem22.domain.utils.DomainSystemConfig
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
