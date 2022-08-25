@@ -42,6 +42,10 @@ Per ottenere un riferimento a `ISonarObservable` e `IDistanceObservable`, è pos
 
 Può essere poi creato un observer ad-hoc per il caso d'uso per il quale si vuole osservare la risorsa in questione.
 
+### Test
+
+Sono inclusi dei test per verificare il funzionamento della nuova classe observable: [TestSonarMockObserver.java](../it.unibo.radarSystem22.domain/test/it/unibo/radarSystem22/domain/TestSonarMockObserver.java)
+
 ### Analisi e progetto
 
 È stato scelto di realizzare le nuove funzionalità seguendo questi principi:

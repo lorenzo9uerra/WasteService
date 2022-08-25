@@ -82,18 +82,5 @@ public class TestSonarMockObserver {
         assertFalse(testObserver.isSuccess());
     }
 
-    private static final int LAMBDA_STATUS_START = -100;
-    private static final int LAMBDA_STATUS_FIRST_UPDATE = -1;
-    private static final int LAMBDA_STATUS_SUCCESS = -200;
-    private static final int LAMBDA_STATUS_FAIL = -600;
-
     private void setDidTerm(boolean didTerm) { this.didTerm = didTerm; }
-
-    public int getLambdaStatus() {
-        return lambdaStatus;
-    }
-
-    public void setLambdaStatus(int lambdaStatus) {
-        this.lambdaStatus = lambdaStatus;
-    }
 }
