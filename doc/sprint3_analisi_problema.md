@@ -40,7 +40,7 @@ Event sonarDistance : sonarDistance(DIST).
 
 ### Modifiche
 
-Trolley, come da SPRINT precedenti, usa l'attore *pathexec* di BasicRobot22 per gestire il movimento. Se si usasse l'attore così com'è, anche se si inviasse un messaggio *trolleyStop* il trolley finirebbe il movimento attuale prima di fermarsi, non essendo pathexec a conoscenza del segnale di stop. Si è deciso di modificare *pathexec* creando una nuova versione, *pathexecws*, per permettergli di accettare gli interrupt lanciati da SonarInterrupter. Viene incluso nel modello finale dell'architettura logica un semplice esempio di questa interazione.
+Trolley, come da SPRINT precedenti, usa l'attore *pathexec* di BasicRobot22 per gestire il movimento. Se si usasse l'attore così com'è, anche se si inviasse un messaggio *trolleyStop* il trolley finirebbe il movimento attuale prima di fermarsi, non essendo pathexec a conoscenza del segnale di stop. Si è deciso di modificare *pathexec* creando una nuova versione, **pathexecws**, per permettergli di accettare gli interrupt lanciati da SonarInterrupter. Viene incluso nel modello finale dell'architettura logica un semplice esempio di questa interazione.
 
 ### Lettura dal sonar
 
@@ -58,7 +58,13 @@ Ecco quindi l'architettura logica finale del sistema in generale per questo SPRI
 
 ![modello architettura logica](img/sprint3_pro_arch.jpg)
 
+Inclusa anche la versione generata tramite Qak 3.0.
+
+![modello architettura logica qak](../wasteservice.prototype/wasteservice_proto_sprint3arch.png)
+
 [**Modello eseguibile generale / prototipo.**](../wasteservice.prototype/src/prototype_sprint3.qak)
+
+(Nota: l'attore timer non è un effettivo prodotto di analisi, ma solo un workaround a una limitazione attuale del framework Qak: non sarà presente nel progetto necessariamente.)
 
 ### Test Plan
 
