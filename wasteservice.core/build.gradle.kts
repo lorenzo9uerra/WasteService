@@ -89,7 +89,7 @@ dependencies {
     /* UNIBO *************************************************************************************************************** */
     implementation(":uniboInterfaces")
     implementation(":2p301")
-    implementation(":unibo.qakactor22-3.0")
+    implementation(":unibo.qakactor22-3.1.1")
     implementation(":it.unibo.radarSystem22.domain-1.0")
     implementation(":unibo.comm22-1.1")
 
