@@ -4,9 +4,9 @@ import it.unibo.ctxreq_deposit.MainCtxreq_depositKt;
 import it.unibo.kactor.ActorBasic;
 import it.unibo.kactor.MsgUtil;
 import it.unibo.kactor.QakContext;
-import unibo.actor22comm.coap.CoapConnection;
-import unibo.actor22comm.utils.ColorsOut;
-import unibo.actor22comm.utils.CommUtils;
+import unibo.comm22.coap.CoapConnection;
+import unibo.comm22.utils.ColorsOut;
+import unibo.comm22.utils.CommUtils;
 
 public class CoapObserverDemo {
     public static final String CTX = "ctxreq_deposit";

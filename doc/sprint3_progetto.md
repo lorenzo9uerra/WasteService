@@ -8,6 +8,7 @@ La progettazione e lo sviluppo delle componenti software stabilite in fase di an
 
 Cose da aggiungere: 
 - Modifiche a wasteservice.core
+- SonarInterrupter in wasteservice.core, SonarShim in contesto (e quindi progetto) a parte su raspi così è ignaro degli attori di wasteservice.core
 - Aggiunte a cose di altri sprint
     - truck gui resettabile
     - Posizione TRAVEL per meglio gestire posizioni e blinkaggio
@@ -30,10 +31,11 @@ La struttura dei package diventa la seguente (evidenziati solo i cambiamenti imp
     - it.unibo.lenziguerra.wasteservice.wasteservice
     - it.unibo.lenziguerra.wasteservice.trolley
     - it.unibo.lenziguerra.wasteservice.storage
+    - *wasteservice.qak* (Aggiunta di sonarinterrupter e pathexecws, modifica di trolley)
 - wasteservice.led
-    - *it.unibo.lenziguerra.wasteservice.led*
+    - it.unibo.lenziguerra.wasteservice.led
 - wasteservice.statusgui
-    - *it.unibo.lenziguerra.wasteservice.statusgui*
+    - it.unibo.lenziguerra.wasteservice.statusgui
 - **wasteservice.sonar**
     - *it.unibo.lenziguerra.wasteservice.sonar*
 
@@ -49,6 +51,13 @@ Il Sonar, come da analisi, viene gestito tramite la libreria già realizzata *it
 Come sopra i due componenti da analisi (SonarShim e SonarInterrupter) sono realizzati come attori Qak. In particolare, vengono realizate queste classi:
 
 ### Test
+
+Sono stati aggiornati i test plan formalizzati in analisi del problema.
+
+- **Test sonar-stop**: [TestSonarStop.kt](../wasteservice.prototype/test/it/unibo/TestSonarStop.kt). Funzionamento analogo all'analisi del problema.
+
+- **Test sonarshim**: [TestSonarShim.kt](../wasteservice.prototype/test-disabled/TestSonarShim.kt). Ora eseguibile, sfrutta la modalità testing del SonarMock di radarsystem.domain per controllare gli output del Sonar.
+
 
 ### Struttura del sistema
 
