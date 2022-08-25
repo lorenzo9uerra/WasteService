@@ -95,7 +95,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				}	 
 				state("exitFromStop") { //this:State
 					action { //it:State
-						println("trolley resumed")
+						 MsgUtil.outgreen("Trolley resumed!")  
 						updateResourceRep( "state(work)" + getPosLine() + getContentLine()  
 						)
 						if(  WaitingPath  
@@ -106,7 +106,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				}	 
 				state("handleStop") { //this:State
 					action { //it:State
-						println("trolley stopped")
+						 MsgUtil.outred("Trolley stopped!")  
 						updateResourceRep( "state(stopped)" + getPosLine() + getContentLine()  
 						)
 						if(  WaitingPath  

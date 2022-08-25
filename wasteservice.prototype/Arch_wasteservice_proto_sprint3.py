@@ -28,7 +28,7 @@ with Diagram('wasteservice_proto_sprint3Arch', show=False, outformat='png', grap
           storagemanager=Custom('storagemanager','./qakicons/symActorSmall.png')
           wastetruck=Custom('wastetruck','./qakicons/symActorSmall.png')
           pathexec=Custom('pathexec','./qakicons/symActorSmall.png')
-     with Cluster('ctx_wasteservice_proto_sonar', graph_attr=nodeattr):
+          timer=Custom('timer','./qakicons/symActorSmall.png')
           sonarshim=Custom('sonarshim','./qakicons/symActorSmall.png')
           sonarinterrupter=Custom('sonarinterrupter','./qakicons/symActorSmall.png')
      ledcontroller >> Edge(color='blue', style='solid', xlabel='ledSet') >> blinkled
@@ -42,8 +42,9 @@ with Diagram('wasteservice_proto_sprint3Arch', show=False, outformat='png', grap
      trolley >> Edge(color='blue', style='solid', xlabel='resumePath') >> pathexec
      trolley >> Edge(color='blue', style='solid', xlabel='stopPath') >> pathexec
      wastetruck >> Edge(color='magenta', style='solid', xlabel='loadDeposit') >> wasteservice
-     sonarshim >> Edge( xlabel='local_sonarDistance', **eventedgeattr) >> sys
-     sys >> Edge(color='red', style='dashed', xlabel='local_sonarDistance') >> sonarinterrupter
+     pathexec >> Edge(color='magenta', style='solid', xlabel='setAlarm') >> timer
+     sonarshim >> Edge( xlabel='sonarDistance', **eventedgeattr) >> sys
+     sys >> Edge(color='red', style='dashed', xlabel='sonarDistance') >> sonarinterrupter
      sonarinterrupter >> Edge(color='blue', style='solid', xlabel='trolleyStop') >> trolley
      sonarinterrupter >> Edge(color='blue', style='solid', xlabel='trolleyResume') >> trolley
 diag

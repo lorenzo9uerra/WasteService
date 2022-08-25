@@ -20,7 +20,7 @@ Reply trolleyDone : trolleyDone(OK)
 
 Dispatch storageDeposit : storageDeposit(MAT, QNT)
 
-Event local_sonarDistance : sonarDistance(DIST)
+Event sonarDistance : sonarDistance(DIST)
 Dispatch trolleyStop : trolleyStop(_)
 Dispatch trolleyResume : trolleyResume(_)
 
@@ -30,8 +30,11 @@ Reply dopathfail   : dopathfail( ARG )
 Dispatch stopPath : stopPath(_)
 Dispatch resumePath : resumePath(_)
 
+// whenTime + interrupt workaround
+Request setAlarm : setAlarm(TIME)
+Reply triggerAlarm : triggerAlarm(_)
+
 Context ctx_wasteservice_proto_ctx ip [host="localhost" port=8050]
-Context ctx_wasteservice_proto_sonar ip [host="localhost" port=8051]
 
 QActor ledcontroller context ctx_wasteservice_proto_ctx {
 	[#
@@ -377,7 +380,7 @@ QActor trolley context ctx_wasteservice_proto_ctx {
 	Goto idle
 	
 	State exitFromStop{
-		println("trolley resumed")
+  		[# MsgUtil.outgreen("Trolley resumed!") #]
    		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
    			
   		if [# WaitingPath #] {
@@ -388,7 +391,7 @@ QActor trolley context ctx_wasteservice_proto_ctx {
   	}
 	
 	State handleStop{
-  		println("trolley stopped")
+  		[# MsgUtil.outred("Trolley stopped!") #]
   		updateResource [# "state(stopped)" + getPosLine() + getContentLine() #]
   		
   		if [# WaitingPath #] {
@@ -495,8 +498,9 @@ QActor pathexec context ctx_wasteservice_proto_ctx {
 		printCurrentMessage
 		println("pathexec | Move progress: ${5 - Counter}")
 		[# Counter-- #]
+		request timer -m setAlarm : setAlarm(250)
 	}
-	Transition t2 whenTime 250 -> checkWorkEnded
+	Transition t2 whenReply triggerAlarm -> checkWorkEnded
 				  whenInterrupt stopPath -> stopped 
 	
 	State checkWorkEnded {		
@@ -523,7 +527,24 @@ QActor pathexec context ctx_wasteservice_proto_ctx {
 	}
 }
 
-QActor sonarshim context ctx_wasteservice_proto_sonar {
+// Workaround per whenTime + interrupt, usabile da
+// un attore alla volta
+QActor timer context ctx_wasteservice_proto_ctx {
+	State wait initial {
+	}
+	Transition t6 whenRequest setAlarm -> handleAlarm
+	
+	State handleAlarm {
+		onMsg (setAlarm : setAlarm(TIME)) {
+			[# val Time = payloadArg(0).toLong() #]
+			delayVar Time
+			replyTo setAlarm with triggerAlarm : triggerAlarm(_)
+		}
+	}
+	Goto wait
+}
+
+QActor sonarshim context ctx_wasteservice_proto_ctx {
 	[#
 		var Val = 200
 		var Wait = 2000L
@@ -541,25 +562,25 @@ QActor sonarshim context ctx_wasteservice_proto_sonar {
 		#]
 		if [# PrevVal != Val #] {
 			println("\tSonar: detected distance $Val")
-			emit local_sonarDistance : sonarDistance($Val)
+			emit sonarDistance : sonarDistance($Val)
 			updateResource [# "$Val" #]			
 		}
 	}
 	Goto scanWait
 }
 
-QActor sonarinterrupter context ctx_wasteservice_proto_sonar {
+QActor sonarinterrupter context ctx_wasteservice_proto_ctx {
 	[# 
 	var prevDist: Float? = null
 	var DLIMIT = 100
 	#]
 	State idle initial {
 	}
-	Transition t0 whenEvent local_sonarDistance -> handleDistance
+	Transition t0 whenEvent sonarDistance -> handleDistance
 	
 	State handleDistance {
 		printCurrentMessage
-		onMsg ( local_sonarDistance : sonarDistance(DIST) ) {
+		onMsg ( sonarDistance : sonarDistance(DIST) ) {
 			[# val dLimit = DLIMIT #]
 			[# val dist = payloadArg(0).toFloat() #]
 			// != e == false avendo anche null come possibile valore di let
