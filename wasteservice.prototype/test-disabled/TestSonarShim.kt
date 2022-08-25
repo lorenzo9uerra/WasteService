@@ -1,5 +1,3 @@
-package it.unibo.lenziguerra.wasteservice.sonar
-
 import it.unibo.kactor.*
 import it.unibo.lenziguerra.wasteservice.BlinkLedState
 import it.unibo.lenziguerra.wasteservice.ContextTestUtils
@@ -7,7 +5,6 @@ import it.unibo.lenziguerra.wasteservice.SystemConfig
 import it.unibo.lenziguerra.wasteservice.data.LedStatus
 import it.unibo.lenziguerra.wasteservice.sonar.SonarShim
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
-import it.unibo.radarSystem22.domain.utils.DomainSystemConfig
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -41,9 +38,6 @@ class TestSonarShim {
     @Before
     fun up() {
         CommSystemConfig.tracing = false
-        DomainSystemConfig.tracing = true
-        DomainSystemConfig.simulation = true
-        DomainSystemConfig.testing = true
 
         thread { runBlocking {
             ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl")
@@ -72,19 +66,14 @@ class TestSonarShim {
     }
 
     private fun forceSonarUpdate(input: Int) {
-        // Attiva sonar, che essendo in modalità testing manda un singolo update
-        // a valore impostato e poi si disattiva
-
-        // Single update sent while in testing mode
-        DomainSystemConfig.sonarMockStartDist = input
-        sonarShim.sonar.activate()
+        // Forza il sonar (opportunamente creato tramite mock)
+        // a inviare un certo valore così che sonarshim lo riceva
     }
 
     private fun activateShim(firstInput: Int) {
-        DomainSystemConfig.sonarMockStartDist = firstInput
-        val tcpConn = TcpClientSupport.connect(TEST_CONTEXT_HOST, TEST_CONTEXT_PORT, 5)
-        val activateMsg = MsgUtil.buildDispatch("test", "sonarStart", "sonarStart(_)", sonarShim.name)
-        tcpConn.forward(activateMsg.toString())
+        // Attiva SonarShim e inizia a osservare
+        // la distanza del sonar, e invia come per forceSonarUpdate
+        // il primo dato
     }
 
     private fun waitForContexts() {

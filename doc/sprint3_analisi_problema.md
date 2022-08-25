@@ -64,6 +64,6 @@ Ecco quindi l'architettura logica finale del sistema in generale per questo SPRI
 
 #### TestPlan: sonar-stop
 
-Test plan in Kotlin: [TestSonarStop.kt](../wasteservice.prototype/test/it/unibo/TestSonarStop.kt)
+- **Test sonar-stop**: [TestSonarStop.kt](../wasteservice.prototype/test/it/unibo/TestSonarStop.kt). Invio di *trolleyMove* e durante il percorso inviare *sonarUpdate* sotto e sopra DLIMIT, controllando che il trolley si fermi e riprenda correttamente. Questo è di fatto un test per l'attore *sonarinterrupter*, per *sonarshim* vedi sotto.
 
-- **Test sonar-stop**: invio di *trolleyMove* e durante il percorso inviare *sonarStop* e *sonarResume*, controllando che il trolley si fermi e riprenda correttamente.
+- **Test sonarshim**: [TestSonarShim.kt](../wasteservice.prototype/test-disabled/TestSonarShim.kt). Non eseguibile data l'assenza di un effettivo sonar da controllare nel prototipo di analisi. Forza l'invio di certi dati da parte del sonar, e controlla la corretta emissione dell'evento da parte di *sonarshim*.
