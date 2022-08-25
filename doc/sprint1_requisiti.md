@@ -112,7 +112,7 @@ Viene definito un primo test plan, eseguibile con le classi generate dal modello
 
 Dal requisito in sè non è possibile formalizzare con più precisione l'interazione precisa interna al sistema che lo adempie, rimanendo punti aperti diversi elementi fondamentali (i tipi di interazione tra componenti del sistema). Viene definito un test plan primitivo in seguito:
 
-[Test plan Indoor-More-Requests](../model.requisiti/test/it/unibo/TestIndoorMoreRequests.java.disabled)
+[Test plan Indoor-More-Requests](../model.requisiti/test-disabled/TestIndoorMoreRequests.java)
 
 ## Materiale fornito dal committente
 
