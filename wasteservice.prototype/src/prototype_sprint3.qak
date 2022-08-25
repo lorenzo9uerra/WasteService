@@ -343,7 +343,7 @@ QActor trolley context ctx_wasteservice_proto_ctx {
 			[# Pos[0] = payloadArg(0).toInt() #]
 			[# Pos[1] = payloadArg(1).toInt() #]
 			[# WaitingPath = true #]
-			request pathexec -m dopath : dopath(sample)
+			request pathexecws -m dopath : dopath(sample)
 		}
 	}
 	Transition t0 whenReply dopathdone -> moveSuccess
@@ -384,7 +384,7 @@ QActor trolley context ctx_wasteservice_proto_ctx {
    		updateResource [# "state(work)" + getPosLine() + getContentLine() #]
    			
   		if [# WaitingPath #] {
-  			forward pathexec -m resumePath : resumePath(_)
+  			forward pathexecws -m resumePath : resumePath(_)
   		}
    		
   		returnFromInterrupt
@@ -395,7 +395,7 @@ QActor trolley context ctx_wasteservice_proto_ctx {
   		updateResource [# "state(stopped)" + getPosLine() + getContentLine() #]
   		
   		if [# WaitingPath #] {
-  			forward pathexec -m stopPath : stopPath(_)
+  			forward pathexecws -m stopPath : stopPath(_)
   		}
   	}
   	Transition t0 whenMsg trolleyResume -> exitFromStop
@@ -480,7 +480,7 @@ QActor wastetruck context ctx_wasteservice_proto_ctx {
 	}
 }
 
-QActor pathexec context ctx_wasteservice_proto_ctx {
+QActor pathexecws context ctx_wasteservice_proto_ctx {
 	[# var Counter = 0 #]
 	State s0 initial{  	
 		printCurrentMessage
@@ -496,7 +496,7 @@ QActor pathexec context ctx_wasteservice_proto_ctx {
 	
 	State nextMove {
 		printCurrentMessage
-		println("pathexec | Move progress: ${5 - Counter}")
+		println("pathexecws | Move progress: ${5 - Counter}")
 		[# Counter-- #]
 		request timer -m setAlarm : setAlarm(250)
 	}
@@ -516,13 +516,13 @@ QActor pathexec context ctx_wasteservice_proto_ctx {
 	
 	State stopped {
 		printCurrentMessage
-		println("pathexec stopped")
+		println("pathexecws stopped")
 	}
 	Transition t3 whenMsg resumePath -> resumeFromStop
 	
 	State resumeFromStop {
 		printCurrentMessage
-		println("pathexec resumed")
+		println("pathexecws resumed")
 		returnFromInterrupt
 	}
 }

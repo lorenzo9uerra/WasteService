@@ -26,7 +26,7 @@ class TestSonarStop {
         const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "localhost",  "TCP", "8050").
             qactor( sonarinterrupter, $TEST_CONTEXT_NAME, "it.unibo.sonarinterrupter.Sonarinterrupter").
             qactor( trolley, $TEST_CONTEXT_NAME, "it.unibo.trolley.Trolley").
-            qactor( pathexec, $TEST_CONTEXT_NAME, "it.unibo.pathexec.Pathexec").
+            qactor( pathexecws, $TEST_CONTEXT_NAME, "it.unibo.pathexecws.Pathexecws").
             qactor( timer, $TEST_CONTEXT_NAME, "it.unibo.timer.Timer").
             """
 
