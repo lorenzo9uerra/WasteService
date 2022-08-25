@@ -68,12 +68,14 @@ class TestSonarShim {
     private fun forceSonarUpdate(input: Int) {
         // Forza il sonar (opportunamente creato tramite mock)
         // a inviare un certo valore così che sonarshim lo riceva
+        TODO("Aggiungere funzionalità con Sonar")
     }
 
     private fun activateShim(firstInput: Int) {
         // Attiva SonarShim e inizia a osservare
         // la distanza del sonar, e invia come per forceSonarUpdate
         // il primo dato
+        TODO("Aggiungere funzionalità con Sonar")
     }
 
     private fun waitForContexts() {
