@@ -335,8 +335,8 @@ QActor storagemanager context ctx_wasteservice {
 
 QActor sonar_interrupter context ctx_wasteservice {
 	[# 
-	// gira intorno a impossibilit‡ di usare it.[...] dentro a stato
-	// perchË it Ë gi‡ keyword
+	// gira intorno a impossibilit√† di usare it.[...] dentro a stato
+	// perch√® it √® gi√† keyword
 	val SystemConfig = it.unibo.lenziguerra.wasteservice.SystemConfig
 	var prevDist: Float? = null
 	#]
@@ -349,7 +349,7 @@ QActor sonar_interrupter context ctx_wasteservice {
 			[# val dLimit = SystemConfig.DLIMIT #]
 			[# val dist = payloadArg(0).toFloat() #]
 			// != e == false avendo anche null come possibile valore di let
-			// non mandare resume all'inizio quando Ë null
+			// non mandare resume all'inizio quando ÔøΩ null
 			if [# dist <= dLimit && prevDist?.let {it > dLimit } != false #] {
 				println("INVIO STOP")
 				forward trolley -m trolleyStop : trolleyStop(_)
