@@ -82,6 +82,8 @@ Il tipo di comunicazione con il resto del sistema deve essere definito, incluso 
 
 [Modello eseguibile Sonar](../model.requisiti/src/sonar-stop.qak)
 
+[Test plan sonar-stop](../model.requisiti/test-disabled/TestSonarStop.kt). Viene incluso un test plan in Kotlin con JUnit, attualmente non eseguibile mancando un sonar pilotabile.
+
 ### Materiale fornito dal committente
 
 - Robot DDR: viene fornita una componente software, *BasicRobot22*, che implementa comandi primitivi *MOVE = w | s | l | r | h*, e permette di fare *step* in avanti per un certo tempo.

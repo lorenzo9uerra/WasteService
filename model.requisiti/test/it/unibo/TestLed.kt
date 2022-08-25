@@ -7,10 +7,10 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import unibo.actor22comm.coap.CoapConnection
-import unibo.actor22comm.utils.ColorsOut
-import unibo.actor22comm.utils.CommSystemConfig
-import unibo.actor22comm.utils.CommUtils
+import unibo.comm22.coap.CoapConnection
+import unibo.comm22.utils.ColorsOut
+import unibo.comm22.utils.CommSystemConfig
+import unibo.comm22.utils.CommUtils
 import java.awt.Color
 import kotlin.concurrent.thread
 
