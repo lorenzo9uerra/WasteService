@@ -21,7 +21,7 @@ class Sonarshim ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 		return { //this:ActionBasciFsm
 				state("scanWait") { //this:State
 					action { //it:State
-						 Wait = kotlin.random.Random.nextLong(2000, 3500)  
+						 Wait = kotlin.random.Random.nextLong(1000, 3500)  
 						stateTimer = TimerActor("timer_scanWait", 
 							scope, context!!, "local_tout_sonarshim_scanWait", Wait )
 					}

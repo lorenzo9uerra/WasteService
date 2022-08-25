@@ -44,7 +44,7 @@ dependencies {
 	/* UNIBO *************************************************************************************************************** */
     implementation(":uniboInterfaces")
     implementation(":2p301")
-	implementation(":unibo.qakactor22-3.0")
+	implementation(":unibo.qakactor22-3.1.1")
 	implementation(":unibo.comm22-1.1")
 	implementation(":it.unibo.radarSystem22.domain-1.0")
 
@@ -52,7 +52,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
-	testImplementation(":unibo.qakactor22-3.0")
+	testImplementation(":unibo.qakactor22-3.1.1")
 	testImplementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
 	testImplementation(testFixtures(project(":wasteservice.shared")))
 }

@@ -4,6 +4,10 @@ Event sonarDistance : sonarDistance(DIST)
 Dispatch trolleyStop : trolleyStop(_)
 Dispatch trolleyResume : trolleyResume(_)
 
+// Usato al posto di whenTime 0, vedi sotto
+Request ping : ping(_)
+Reply pong : pong(_)
+
 Context ctxpro_sonar_stop ip [host="localhost" port=8050]
 
 QActor sonarshim context ctxpro_sonar_stop {
@@ -13,7 +17,7 @@ QActor sonarshim context ctxpro_sonar_stop {
 	#]
 
 	State scanWait initial {
-		[# Wait = kotlin.random.Random.nextLong(2000, 3500) #]
+		[# Wait = kotlin.random.Random.nextLong(1000, 3500) #]
 	}
 	Transition t0 whenTimeVar Wait -> scan
 	
@@ -62,41 +66,56 @@ QActor sonarinterrupter context ctxpro_sonar_stop {
 }
 
 QActor trolley context ctxpro_sonar_stop {
-	State init initial{}
-	Transition t0 whenTime 0 -> goingIndoor
-				  whenInterrupt trolleyStop -> handleStop
- 
-	State goingIndoor{
+	State goingIndoor initial {
 		println("Going INDOOR")
-		delay 2000
+		delay 1000
+		println("At INDOOR")
+		request echo -m ping : ping(_)
 	}	
-	Transition t0 whenTime 0 -> goingBox
+	Transition t0 whenReply pong -> goingBox
 				  whenInterrupt trolleyStop -> handleStop
 
   	State goingBox{
   		println("Going BOX")
-		delay 2000
+		delay 1000
+		println("At BOX")
+		request echo -m ping : ping(_)
   	}
-	Transition t0 whenTime 0 -> goingHome
+	Transition t1 whenReply pong -> goingHome
 				  whenInterrupt trolleyStop -> handleStop
   	
   	State goingHome{
   		println("Going HOME")
-		delay 2000
+		delay 1000
+ 		println("At HOME")
+ 		request echo -m ping : ping(_)
   	}
-	Transition t0 whenTime 0 -> goingIndoor
+	Transition t2 whenReply pong -> goingIndoor
 				  whenInterrupt trolleyStop -> handleStop
   	
   	State exitFromStop{
-  		println("Trolley resumed!")
+  		[# MsgUtil.outgreen("Trolley resumed!") #]
    		updateResource [# "resumed" #]
   		returnFromInterrupt
   	}
   	
   	State handleStop{
-  		println("Trolley stopped!")
+  		[# MsgUtil.outred("Trolley stopped!") #]
   		updateResource [# "stopped" #]
   	}
-  	Transition t0 whenMsg trolleyResume -> exitFromStop
+  	Transition t3 whenMsg trolleyResume -> exitFromStop
+}
+
+// usato al posto di whenTime 0
+// dati i problemi di whenTime con whenInterrupt
+QActor echo context ctxpro_sonar_stop {
+	State wait initial {
+	}
+	Transition t1 whenRequest ping -> reply
+	
+	State reply {
+		replyTo ping with pong : pong(_)
+	}
+	Goto wait
 }
 

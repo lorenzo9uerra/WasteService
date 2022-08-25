@@ -11,52 +11,44 @@ import kotlinx.coroutines.runBlocking
 class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope ){
 
 	override fun getInitialState() : String{
-		return "init"
+		return "goingIndoor"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		val interruptedStateTransitions = mutableListOf<Transition>()
 		return { //this:ActionBasciFsm
-				state("init") { //this:State
-					action { //it:State
-						stateTimer = TimerActor("timer_init", 
-							scope, context!!, "local_tout_trolley_init", 0.toLong() )
-					}
-					 transition(edgeName="t02",targetState="goingIndoor",cond=whenTimeout("local_tout_trolley_init"))   
-					interrupthandle(edgeName="t03",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
-				}	 
 				state("goingIndoor") { //this:State
 					action { //it:State
 						println("Going INDOOR")
-						delay(2000) 
-						stateTimer = TimerActor("timer_goingIndoor", 
-							scope, context!!, "local_tout_trolley_goingIndoor", 0.toLong() )
+						delay(1000) 
+						println("At INDOOR")
+						request("ping", "ping(_)" ,"echo" )  
 					}
-					 transition(edgeName="t04",targetState="goingBox",cond=whenTimeout("local_tout_trolley_goingIndoor"))   
-					interrupthandle(edgeName="t05",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
+					 transition(edgeName="t02",targetState="goingBox",cond=whenReply("pong"))
+					interrupthandle(edgeName="t03",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
 				}	 
 				state("goingBox") { //this:State
 					action { //it:State
 						println("Going BOX")
-						delay(2000) 
-						stateTimer = TimerActor("timer_goingBox", 
-							scope, context!!, "local_tout_trolley_goingBox", 0.toLong() )
+						delay(1000) 
+						println("At BOX")
+						request("ping", "ping(_)" ,"echo" )  
 					}
-					 transition(edgeName="t06",targetState="goingHome",cond=whenTimeout("local_tout_trolley_goingBox"))   
-					interrupthandle(edgeName="t07",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
+					 transition(edgeName="t14",targetState="goingHome",cond=whenReply("pong"))
+					interrupthandle(edgeName="t15",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
 				}	 
 				state("goingHome") { //this:State
 					action { //it:State
 						println("Going HOME")
-						delay(2000) 
-						stateTimer = TimerActor("timer_goingHome", 
-							scope, context!!, "local_tout_trolley_goingHome", 0.toLong() )
+						delay(1000) 
+						println("At HOME")
+						request("ping", "ping(_)" ,"echo" )  
 					}
-					 transition(edgeName="t08",targetState="goingIndoor",cond=whenTimeout("local_tout_trolley_goingHome"))   
-					interrupthandle(edgeName="t09",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
+					 transition(edgeName="t26",targetState="goingIndoor",cond=whenReply("pong"))
+					interrupthandle(edgeName="t27",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
 				}	 
 				state("exitFromStop") { //this:State
 					action { //it:State
-						println("Trolley resumed!")
+						 MsgUtil.outgreen("Trolley resumed!")  
 						updateResourceRep( "resumed"  
 						)
 						returnFromInterrupt(interruptedStateTransitions)
@@ -64,11 +56,11 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				}	 
 				state("handleStop") { //this:State
 					action { //it:State
-						println("Trolley stopped!")
+						 MsgUtil.outred("Trolley stopped!")  
 						updateResourceRep( "stopped"  
 						)
 					}
-					 transition(edgeName="t010",targetState="exitFromStop",cond=whenDispatch("trolleyResume"))
+					 transition(edgeName="t38",targetState="exitFromStop",cond=whenDispatch("trolleyResume"))
 				}	 
 			}
 		}
