@@ -18,15 +18,15 @@ class Trolley_sonar ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 		return { //this:ActionBasciFsm
 				state("work") { //this:State
 					action { //it:State
-						println("	Trolley: Working...")
+						 MsgUtil.outgreen("Trolley working...")  
 					}
 					 transition(edgeName="t00",targetState="stopped",cond=whenEvent("sonarStop"))
 				}	 
 				state("stopped") { //this:State
 					action { //it:State
-						println("	Trolley: Stopped!")
+						 MsgUtil.outred("Trolley stopped!")  
 					}
-					 transition(edgeName="t01",targetState="work",cond=whenEvent("sonarResume"))
+					 transition(edgeName="t11",targetState="work",cond=whenEvent("sonarResume"))
 				}	 
 			}
 		}

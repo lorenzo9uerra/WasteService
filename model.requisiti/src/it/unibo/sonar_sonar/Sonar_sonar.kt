@@ -16,12 +16,12 @@ class Sonar_sonar ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		val interruptedStateTransitions = mutableListOf<Transition>()
 		
-				var DLIMIT = 50
+				var DLIMIT = 100
 				var Val = 200
 		return { //this:ActionBasciFsm
 				state("scanWait") { //this:State
 					action { //it:State
-						delay(200) 
+						delay(500) 
 					}
 					 transition( edgeName="goto",targetState="scan", cond=doswitch() )
 				}	 

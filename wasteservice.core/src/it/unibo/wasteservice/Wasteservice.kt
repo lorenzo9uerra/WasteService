@@ -31,8 +31,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("home") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 Support.updateTrolleyPos("home")  
-						updateResourceRep( Support.getPrologContent()  
+						updateResourceRep( "tpos(home)"  
 						)
 						println("	WS | Trolley at home")
 					}
@@ -50,9 +49,6 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						}
 						 Position = Support.getDestination("indoor", Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
-						 Support.updateTrolleyPos("travel")  
-						updateResourceRep( Support.getPrologContent()  
-						)
 					}
 					 transition(edgeName="t21",targetState="indoor",cond=whenReply("trolleyDone"))
 					transition(edgeName="t22",targetState="error",cond=whenReply("trolleyFail"))
@@ -61,8 +57,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WT | Trolley at indoor, picking up $Quantity $Material...")
-						 Support.updateTrolleyPos("indoor")  
-						updateResourceRep( Support.getPrologContent()  
+						updateResourceRep( "tpos(indoor)"  
 						)
 						request("trolleyCollect", "trolleyCollect($Material,$Quantity)" ,"trolley" )  
 					}
@@ -75,9 +70,6 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						answer("triggerDeposit", "trolleyPickedUp", "trolleyPickedUp(_)"   )  
 						 Position = Support.getDestination(Box, Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
-						 Support.updateTrolleyPos("travel")  
-						updateResourceRep( Support.getPrologContent()  
-						)
 					}
 					 transition(edgeName="t45",targetState="box",cond=whenReply("trolleyDone"))
 					transition(edgeName="t46",targetState="error",cond=whenReply("trolleyFail"))
@@ -87,7 +79,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WT | Trolley at $Material box, depositing $Quantity $Material...")
 						 Support.updateTrolleyPos(Box)  
-						updateResourceRep( Support.getPrologContent()  
+						updateResourceRep( "tpos($Box)"  
 						)
 						request("trolleyDeposit", "trolleyDeposit(_)" ,"trolley" )  
 					}
@@ -109,9 +101,6 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("$name in ${currentState.stateName} | $currentMsg")
 						 Position = Support.getDestination("home", Position)  
 						request("trolleyMove", "trolleyMove($Position)" ,"trolley" )  
-						 Support.updateTrolleyPos("travel")  
-						updateResourceRep( Support.getPrologContent()  
-						)
 					}
 					 transition(edgeName="t711",targetState="home_rotate",cond=whenReply("trolleyDone"))
 					transition(edgeName="t712",targetState="error",cond=whenReply("trolleyFail"))
@@ -128,10 +117,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("trolleyFail(ERR)"), Term.createTerm("trolleyFail(ERR)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 
-												Support.updateTrolleyPos("unknown") 
-												Support.error = payloadArg(0)
-								updateResourceRep( Support.getPrologContent()  
+								updateResourceRep( "tpos(unknown)\nerror(${payloadArg(0)})"  
 								)
 						}
 						println("$name in ${currentState.stateName} | $currentMsg")
@@ -139,10 +125,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("# WASTESERVICE: ERRORE! AGGIUSTARE #")
 						println("# MANUALMENTE E RIAVVIARE!         #")
 						println("####################################")
-						stateTimer = TimerActor("timer_error", 
-							scope, context!!, "local_tout_wasteservice_error", 500.toLong() )
 					}
-					 transition(edgeName="t015",targetState="home",cond=whenTimeout("local_tout_wasteservice_error"))   
 				}	 
 			}
 		}
