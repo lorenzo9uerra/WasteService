@@ -15,10 +15,6 @@ Emergono due opzioni principali su come gestire il Led:
 
 **Conclusione.** Si ritiene migliore la seconda opzione, vale a dire **dividere gli incarichi**, visto che rispetta il principio di singola responsabilità. Inoltre, questo permetterebbe il riutilizzo dell'attore SonarShim in altri contesti, essendo agnostico al dominio.
 
-### Modifiche
-
-Trolley, come da SPRINT precedenti, usa l'attore *pathexec* di BasicRobot22 per gestire il movimento. Se si usasse l'attore così com'è, anche se si inviasse un messaggio *trolleyStop* il trolley finirebbe il movimento attuale prima di fermarsi, non essendo pathexec a conoscenza del segnale di stop. Si è deciso di modificare *pathexec* per permettergli di accettare gli interrupt lanciati da SonarInterrupter. Verrà incluso nel modello finale dell'architettura logica un semplice esempio di questa interazione.
-
 ### Interazione
 
 Per questo scopo, è opportuno far sì che *trolleyStop* attivi un **interrupt**, vale a dire un tipo speciale di transizione Qak che permette di ritornare allo stato in cui è stata chiamata a fine interruzione (segnalata con apposiat keyword Qak). In questo modo, alla ripresa delle operazioni del sonar tornerebbe al lavoro lasciato in sospeso. Quindi, per il funzionamento di Qak, per permettere questa funzionalità *trolleyStop* e *trolleyResume* dovranno essere dispatch:
@@ -41,6 +37,10 @@ Event sonarDistance : sonarDistance(DIST).
 ```
 
 ![Modello eseguibile di questa analisi](../model.problema/src/pro_sonar_stop.qak)
+
+### Modifiche
+
+Trolley, come da SPRINT precedenti, usa l'attore *pathexec* di BasicRobot22 per gestire il movimento. Se si usasse l'attore così com'è, anche se si inviasse un messaggio *trolleyStop* il trolley finirebbe il movimento attuale prima di fermarsi, non essendo pathexec a conoscenza del segnale di stop. Si è deciso di modificare *pathexec* per permettergli di accettare gli interrupt lanciati da SonarInterrupter. Verrà incluso nel modello finale dell'architettura logica un semplice esempio di questa interazione.
 
 ### Lettura dal sonar
 

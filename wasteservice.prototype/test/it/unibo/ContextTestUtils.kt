@@ -2,6 +2,7 @@ package it.unibo
 
 import it.unibo.kactor.QakContext
 import kotlinx.coroutines.CoroutineScope
+import unibo.comm22.utils.CommUtils
 import kotlin.io.path.createTempFile
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.writeText
@@ -15,6 +16,7 @@ object ContextTestUtils {
         val tempFile = createTempFile("ctxdesc", ".pl")
         tempFile.writeText(contextsDescription)
         QakContext.createContexts(hostName, scope, tempFile.toAbsolutePath().toString(), rulesFilePath)
+        CommUtils.delay(1000)
         tempFile.deleteIfExists()
     }
 }

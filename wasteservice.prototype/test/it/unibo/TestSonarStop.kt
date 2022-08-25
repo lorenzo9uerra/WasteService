@@ -3,37 +3,49 @@ package it.unibo
 import it.unibo.kactor.*
 import it.unibo.kactor.MsgUtil.buildEvent
 import it.unibo.kactor.MsgUtil.buildRequest
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import unibo.comm22.coap.CoapConnection
 import unibo.comm22.utils.ColorsOut
 import unibo.comm22.utils.CommSystemConfig
 import unibo.comm22.utils.CommUtils
-import java.time.Instant
-import java.time.format.DateTimeFormatter
+import java.time.LocalTime
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 
 class TestSonarStop {
     companion object {
-        const val TROLLEY_ACTOR_NAME = "trolley"
-        const val WASTESERVICE_ACTOR_NAME = "wasteservice"
         const val TEST_CONTEXT_NAME = "ctx_wasteservice_proto_ctx"
 
         const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "localhost",  "TCP", "8050").
-            qactor( sonar_interrupt, ctx_wasteservice_proto_ctx, "it.unibo.sonar_interrupt.Sonar_interrupt").
-            qactor( trolley, ctx_wasteservice_proto_ctx, "it.unibo.trolley.Trolley").
+            qactor( sonarinterrupter, $TEST_CONTEXT_NAME, "it.unibo.sonarinterrupter.Sonarinterrupter").
+            qactor( trolley, $TEST_CONTEXT_NAME, "it.unibo.trolley.Trolley").
+            qactor( pathexec, $TEST_CONTEXT_NAME, "it.unibo.pathexec.Pathexec").
+            qactor( timer, $TEST_CONTEXT_NAME, "it.unibo.timer.Timer").
             """
 
-        const val SONAR_CONTEXT_NAME = "ctx_wasteservice_proto_ctx"
-        const val SONAR_ACTOR_NAME = "sonar_interrupt"
-        const val SONAR_HOST = "localhost"
-        const val SONAR_PORT = 8050
+        val contexts = mapOf(
+            "trolley" to "ctx_wasteservice_proto_ctx",
+            "sonarinterrupter" to "ctx_wasteservice_proto_ctx",
+        )
+        val actors = mapOf(
+            "trolley" to "trolley",
+            "sonarinterrupter" to "sonarinterrupter",
+        )
+        val hosts = mapOf(
+            "trolley" to "localhost",
+            "sonarinterrupter" to "localhost",
+        )
+        val ports = mapOf(
+            "trolley" to 8050,
+            "sonarinterrupter" to 8050,
+        )
     }
 
     lateinit var wasteserviceCtx: QakContext
@@ -53,32 +65,34 @@ class TestSonarStop {
     @Test
     fun sonarTest() {
         ColorsOut.outappl("Starting sonar test", ColorsOut.CYAN)
-        trolleyRequest("trolleyMove", "10,10")
-        sonarEvent("sonarStop", "_")
+        val trolleySuccess = trolleyRequestAsync("trolleyMove", "10,10")
+        sonarEvent("sonarDistance", "0")
         CommUtils.delay(500)
-        checkSonarResponse("stopped")
-        sonarEvent("sonarResume", "_")
+        checkTrolleyState("stopped")
+        sonarEvent("sonarDistance", "200")
         CommUtils.delay(500)
-        checkSonarResponse("work")
+        checkTrolleyState("work")
+        assertTrue(trolleySuccess.get(1000, TimeUnit.MILLISECONDS))
     }
 
-    private fun trolleyRequest(id: String, params: String) {
+    private fun trolleyRequestAsync(id: String, params: String): Future<Boolean> {
         val request = buildRequest(
             "test", id,
             "$id($params)",
             "trolley"
         ).toString()
-        var reply: String? = null
-        try {
-            val connTcp = ConnTcp("localhost", TestDeposit.CTX_PORT)
-            ColorsOut.outappl("Asking trolley: $id($params)", ColorsOut.CYAN)
-            reply = connTcp.request(request)
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
+        val connTcp = ConnTcp("localhost", TestDeposit.CTX_PORT)
+        ColorsOut.outappl("Asking trolley: $id($params)", ColorsOut.CYAN)
+        connTcp.forward(request)
+
+        val future = CompletableFuture<Boolean>()
+
+        thread {
+            val reply = connTcp.receiveMsg()
+            future.complete(reply != null && !reply.contains("false"))
         }
-        if (reply != null && reply.contains("false")) {
-            Assert.fail("Trolley request <$request> failed!")
-        }
+
+        return future
     }
 
     private fun sonarEvent(id: String, params: String) {
@@ -95,16 +109,22 @@ class TestSonarStop {
         }
     }
 
-    private fun checkSonarResponse(expectedLedState: String) {
-        val reply = coapRequest("trolley")!!
-        val state = getSonarStateFromReply(reply)
-        assertEquals(expectedLedState, state)
+    private fun checkTrolleyState(expectedTrolleyState: String) {
+        var reply = coapRequest("trolley")
+        var state = getTrolleyStateFromReply(reply)
+        // state null: non ancora impostato la prima volta
+        while (state == null) {
+            CommUtils.delay(200)
+            reply = coapRequest("trolley")
+            state = getTrolleyStateFromReply(reply)
+        }
+        assertEquals(expectedTrolleyState, state)
     }
 
     private fun waitForContexts() {
         ColorsOut.outappl(this.javaClass.name + " waits for WasteService ... ", ColorsOut.GREEN)
-        waitForActor(SONAR_ACTOR_NAME)
-        waitForActor(TROLLEY_ACTOR_NAME)
+        waitForActor(actors["sonarinterrupter"]!!)
+        waitForActor(actors["trolley"]!!)
         ColorsOut.outappl("WasteService loaded", ColorsOut.GREEN)
 
         wasteserviceCtx = sysUtil.getContext(TEST_CONTEXT_NAME)!!
@@ -118,16 +138,17 @@ class TestSonarStop {
         }
     }
 
-    private fun coapRequest(actor: String): String? {
-        val reqConn = CoapConnection("$SONAR_HOST:$SONAR_PORT", "$SONAR_CONTEXT_NAME/$actor")
+    private fun coapRequest(actor: String): String {
+        val reqConn = CoapConnection("${hosts[actor]}:${ports[actor]}", "${contexts[actor]}/${actors[actor]}")
         val answer = reqConn.request("")
         ColorsOut.outappl("coapRequest answer=$answer", ColorsOut.CYAN)
         return answer
     }
 
-    private fun getSonarStateFromReply(reply: String): String {
-        val line = it.unibo.lenziguerra.wasteservice.utils.PrologUtils.getFuncLine(reply, "state")!!;
-        return it.unibo.lenziguerra.wasteservice.utils.PrologUtils.extractPayload(line)[0]
+    private fun getTrolleyStateFromReply(reply: String): String? {
+        return it.unibo.lenziguerra.wasteservice.utils.PrologUtils.getFuncLine(reply, "state")?.let { line ->
+            it.unibo.lenziguerra.wasteservice.utils.PrologUtils.extractPayload(line)[0]
+        }
     }
 
 }
