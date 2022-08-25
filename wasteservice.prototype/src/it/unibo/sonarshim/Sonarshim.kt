@@ -21,10 +21,11 @@ class Sonarshim ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 		return { //this:ActionBasciFsm
 				state("scanWait") { //this:State
 					action { //it:State
+						 Wait = kotlin.random.Random.nextLong(2000, 3500)  
 						stateTimer = TimerActor("timer_scanWait", 
 							scope, context!!, "local_tout_sonarshim_scanWait", Wait )
 					}
-					 transition(edgeName="t00",targetState="scan",cond=whenTimeout("local_tout_sonarshim_scanWait"))   
+					 transition(edgeName="t031",targetState="scan",cond=whenTimeout("local_tout_sonarshim_scanWait"))   
 				}	 
 				state("scan") { //this:State
 					action { //it:State
@@ -33,12 +34,7 @@ class Sonarshim ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 									Val = 200 - Val
 						if(  PrevVal != Val  
 						 ){println("	Sonar: detected distance $Val")
-						if(  PrevVal > 100  
-						 ){forward("stopPath", "stopPath(_)" ,"pathexec" ) 
-						}
-						else
-						 {forward("resumePath", "resumePath(_)" ,"pathexec" ) 
-						 }
+						emit("sonarDistance", "sonarDistance($Val)" ) 
 						updateResourceRep( "$Val"  
 						)
 						}
