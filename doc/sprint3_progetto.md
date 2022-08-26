@@ -15,6 +15,7 @@ Cose da aggiungere:
     - Aggiunta Trolley Activity per miglior monitoraggio in debug, con aggiunta a wasteservicestatusgui
 - SonarGUI per colllaudo
 - Divisione dei contesti
+- Main speciale per qak Sonar
 
 
 ### Struttura del software

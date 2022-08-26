@@ -3,26 +3,21 @@ package it.unibo.lenziguerra.wasteservice.sonar
 import it.unibo.kactor.QakContext
 import it.unibo.lenziguerra.wasteservice.SystemConfig
 import it.unibo.radarSystem22.domain.utils.DomainSystemConfig
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import unibo.comm22.utils.CommSystemConfig
-import unibo.comm22.utils.CommUtils
 import java.io.File
 import java.io.FileWriter
-import java.io.PrintStream
 import java.nio.file.Path
-import java.util.concurrent.Semaphore
 import kotlin.concurrent.thread
 import kotlin.io.path.deleteIfExists
 
 fun main() {
     SystemConfig.setConfiguration()
     DomainSystemConfig.setTheConfiguration("SonarConfig.json")
-    CommSystemConfig.tracing = true
+    CommSystemConfig.setTheConfiguration()
 
-    val contextsFile = SonarContextHelper.createContextDefinition("wasteservice_sonar.pl")
+    val thisContext = "ctx_wasteservice_sonar"
+    val contextsFile = SonarContextHelper.createContextDefinition("wasteservice_sonar.pl", thisContext)
 
     Runtime.getRuntime().addShutdownHook(thread(start=false, block={
         SonarContextHelper.deletePreviousDefinitionFile()
@@ -31,7 +26,7 @@ fun main() {
     }))
 
     runBlocking {
-        QakContext.createContexts("localhost", this, contextsFile, "sysRules.pl")
+        QakContext.createContexts("localhost", this, contextsFile, "sysRules.pl", thisContext)
     }
 }
 
@@ -44,36 +39,40 @@ object SonarContextHelper {
      qactor( sonar_shim, ctx_wasteservice_sonar, "it.unibo.lenziguerra.wasteservice.sonar.SonarShim").
      */
 
-    fun createContextDefinition(baseQakDefFilepath: String): String {
-        val ctxSonarPattern = Regex(
-        "context\\(ctx_wasteservice_sonar,\\s*\"localhost\"" +
+    fun createContextDefinition(baseQakDefFilepath: String, thisContextName: String): String {
+        val thisContextPattern = Regex(
+        "context\\($thisContextName,\\s*\"localhost\"" +
             "\\s*,\\s*\"(?<prot>[^\"]+)\"\\s*,\\s*\"(?<port>[^\"]+)\""
         )
-        val ctxTrolleyPattern = Regex(
-        "context\\((?<context>\\w+),\\s*\"(?<host>host.trolley)\"" +
+        val ctxComponentPattern = Regex(
+        "context\\((?<context>\\w+),\\s*\"host.(?<component>\\w+)\"" +
             "\\s*,\\s*\"(?<prot>[^\"]+)\"\\s*,\\s*\"(?<port>[^\"]+)\""
         )
         val qactorPattern = Regex("qactor\\(")
-        var trolleyCtxBase: String? = null
-        val trolleyHost = if (SystemConfig.hosts["trolley"] == "localhost")
-            "127.0.0.1" else SystemConfig.hosts["trolley"]!!
+        var actorContextsBase: MutableMap<String, String> = mutableMapOf()
 
         val replacedContent = File(baseQakDefFilepath).readLines().map {
-            if (ctxSonarPattern.containsMatchIn(it)) {
-                ctxSonarPattern.replace(it,
-                    "context(ctx_wasteservice_sonar, \"localhost\", " +
+            if (thisContextPattern.containsMatchIn(it)) {
+                thisContextPattern.replace(it,
+                    "context($thisContextName, \"localhost\", " +
                     "\"\${prot}\", \"${SystemConfig.ports["sonar"]}\""
                 )
-            } else if (ctxTrolleyPattern.containsMatchIn(it)) {
-                trolleyCtxBase = ctxTrolleyPattern.find(it)!!.groups["context"]!!.value
-                ctxTrolleyPattern.replace(it,
-                    "context(${SystemConfig.contexts["trolley"]}, " +
-                    "\"$trolleyHost\", \"\${prot}\", \"${SystemConfig.ports["trolley"]}\""
+            } else if (ctxComponentPattern.containsMatchIn(it)) {
+                val match = ctxComponentPattern.find(it)!!
+                val component = match.groups["component"]!!.value
+                val host = if (SystemConfig.hosts[component] == "localhost")
+                    "127.0.0.1" else SystemConfig.hosts[component]!!
+                actorContextsBase[component] = match.groups["context"]!!.value
+                ctxComponentPattern.replace(it,
+                    "context(${SystemConfig.contexts[component]}, " +
+                    "\"$host\", \"\${prot}\", \"${SystemConfig.ports[component]}\""
                 )
-            } else if (trolleyCtxBase != null) {
-                it.replace(trolleyCtxBase!!, SystemConfig.contexts["trolley"]!!)
             } else {
-                it
+                var str = it
+                actorContextsBase.forEach { entry ->
+                    str = str.replace(entry.value, SystemConfig.contexts[entry.key]!!)
+                }
+                str
             }
         }.joinToString("\n")
 
