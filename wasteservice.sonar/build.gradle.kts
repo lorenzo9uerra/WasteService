@@ -84,3 +84,10 @@ task<JavaExec>("runSonarGui") {
 	mainClass.set("it.unibo.lenziguerra.wasteservice.sonar.SonarGuiKt")
 	classpath = java.sourceSets["test"].runtimeClasspath
 }
+
+task<Jar>("jarSonarGui") {
+	group = "build"
+	archiveBaseName.set("wasteservice.sonarStopGui")
+	manifest.attributes["Main-Class"] = "it.unibo.lenziguerra.wasteservice.sonar.SonarGuiKt"
+	manifest.attributes["Class-Path"] = java.sourceSets["test"].runtimeClasspath
+}

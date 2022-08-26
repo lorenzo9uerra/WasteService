@@ -4,6 +4,7 @@
 - divisione dei contesti, e rework delle classi di lancio così usano il config e si riesce a cambiare meglio in base a quello
 - ricontrollare se vanno ancora i test vari
 - reworkare altri test come quello del sonar così sono eseguibili decentemente se possibile
+- Immagini doc SPRINT 3
 
 RICEVIMENTO 08/07
 
