@@ -2,6 +2,7 @@
     "deviceScriptFolder": "../device-helpers/",
     "execVerbose": false,
     "ledAvailable": true,
+    "ledGui": false,
     "radarAvailable": false,
     "radarRemote": false,
     "simulateLed": false,

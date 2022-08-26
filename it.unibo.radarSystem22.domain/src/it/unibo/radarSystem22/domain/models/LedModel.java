@@ -4,6 +4,7 @@ import it.unibo.radarSystem22.domain.NotImplementedException;
 import it.unibo.radarSystem22.domain.interfaces.ILed;
 import it.unibo.radarSystem22.domain.mock.LedMock;
 import it.unibo.radarSystem22.domain.concrete.LedConcrete;
+import it.unibo.radarSystem22.domain.mock.LedMockWithGui;
 import it.unibo.radarSystem22.domain.utils.DomainSystemConfig;
 
 public abstract class LedModel implements ILed {
@@ -12,7 +13,11 @@ public abstract class LedModel implements ILed {
     public static ILed create() {
         ILed led;
         if (DomainSystemConfig.simulation || DomainSystemConfig.simulateLed) {
-            led = createLedMock();
+            if (DomainSystemConfig.ledGui) {
+                led = createLedMockGui();
+            } else {
+                led = createLedMock();
+            }
         } else {
             led = createLedConcrete();
         }
@@ -20,6 +25,9 @@ public abstract class LedModel implements ILed {
     }
     public static ILed createLedMock() {
         return new LedMock();
+    }
+    public static ILed createLedMockGui() {
+        return LedMockWithGui.create();
     }
     public static ILed createLedConcrete() {
         return new LedConcrete();

@@ -11,4 +11,8 @@ public class LedMock extends LedModel {
             color = ColorsOut.RED;
         ColorsOut.outappl("[LedMock] state = " + color + val, ColorsOut.MAGENTA);
     }
+
+    private void setupGui() {
+
+    }
 }
