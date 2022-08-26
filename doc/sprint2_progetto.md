@@ -26,6 +26,7 @@ La struttura dei package diventa la seguente (evidenziati solo i cambiamenti imp
     - it.unibo.lenziguerra.wasteservice.wasteservice
     - it.unibo.lenziguerra.wasteservice.trolley
     - it.unibo.lenziguerra.wasteservice.storage
+    - `wasteservice.qak` (uso delle nuove classi dati)
 - **wasteservice.led**
     - *it.unibo.lenziguerra.wasteservice.led*
 - **wasteservice.statusgui**

@@ -49,6 +49,8 @@ Dispatch stopPath : stopPath(_)
 Dispatch resumePath : resumePath(_)
 ```
 
+Potrebbero essere inviati da SonarInterrupter oppure da Trolley; si è deciso di farli inviare da Trolley, cosicchè esso rimanga l'unico attore che comunica con *pathexecstop*.
+
 Viene incluso nel modello finale dell'architettura logica un semplice esempio di questa interazione.
 
 ### Lettura dal sonar

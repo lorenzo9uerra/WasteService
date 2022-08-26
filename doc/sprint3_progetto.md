@@ -3,7 +3,7 @@
 La progettazione e lo sviluppo delle componenti software stabilite in fase di analisi è stata divisa in questo modo:
 
 - SonarShim, SonarInterrupter : L. Guerra
-- Sistemare Pathexec: F. Lenzi
+- PathexecStop, aggiunte a libreria radarsystem22.domain: F. Lenzi
 
 
 Cose da aggiungere: 
@@ -12,8 +12,9 @@ Cose da aggiungere:
 - Aggiunte a cose di altri sprint
     - truck gui resettabile
     - Posizione TRAVEL per meglio gestire posizioni e blinkaggio
-    - Aggiunta TrolleyActivity per miglior monitoraggio in debug, con aggiunta a wasteservicestatusgui
+    - Aggiunta Trolley Activity per miglior monitoraggio in debug, con aggiunta a wasteservicestatusgui
 - SonarGUI per colllaudo
+- Divisione dei contesti
 
 
 ### Struttura del software
@@ -33,13 +34,16 @@ La struttura dei package diventa la seguente (evidenziati solo i cambiamenti imp
     - it.unibo.lenziguerra.wasteservice.wasteservice
     - it.unibo.lenziguerra.wasteservice.trolley
     - it.unibo.lenziguerra.wasteservice.storage
-    - *wasteservice.qak* (Aggiunta di sonarinterrupter e pathexecstop, modifica di trolley)
+    - `wasteservice.qak` (Aggiunta di sonarinterrupter e pathexecstop, modifica di trolley)
 - wasteservice.led
     - it.unibo.lenziguerra.wasteservice.led
 - wasteservice.statusgui
     - it.unibo.lenziguerra.wasteservice.statusgui
 - **wasteservice.sonar**
     - *it.unibo.lenziguerra.wasteservice.sonar*
+    - `sonar.qak`
+- **wasteservice.pathexec**
+    - `pathexecstop.qak`
 
 ### Modifiche a progetto core
 

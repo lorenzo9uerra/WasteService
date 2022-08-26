@@ -42,6 +42,7 @@ Il software è contenuto nel package *it.unibo.lenziguerra.wasteservice*, eccett
     - *it.unibo.lenziguerra.wasteservice.wasteservice*
     - *it.unibo.lenziguerra.wasteservice.trolley*
     - *it.unibo.lenziguerra.wasteservice.storage*
+    - `wasteservice.qak`
 
 Per scopo di documentazione, il codice allo stato della fine dello SPRINT 1 è stato copiato in una cartella *src-sprint1*.
 
