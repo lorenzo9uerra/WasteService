@@ -1,21 +1,20 @@
 {
-    "simulation": true,
-    "sonarAvailable": true,
-    "testing": false,
-    "tracing": true,
     "sonarVerbose": false,
-    "sonarDistanceMax": 150,
-    "sonarDelay": 100,
-    "deviceScriptFolder": "../device-helpers/",
-
+    "tracing": true,
+    "radarRemote": false,
+    "simulation": true,
+    "simulateLed": false,
+    "testing": false,
     "sonarMockDelta": -1,
     "sonarMockStartDist": 100,
-
-    "radarRemote": false,
-    "simulateLed": false,
     "ledAvailable": false,
+    "sonarAvailable": true,
     "execVerbose": false,
     "simulateSonar": false,
+    "deviceScriptFolder": "../device-helpers/",
     "sudoRequired": false,
+    "ledGui": false,
+    "sonarDistanceMax": 150,
+    "sonarDelay": 100,
     "radarAvailable": false
 }

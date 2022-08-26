@@ -5,7 +5,7 @@ Event sonarDistance : sonarDistance(DIST)
 Dispatch sonarStart : sonarStart(_)
 
 Context ctx_wasteservice_sonar ip [host="localhost" port=8031]
-Context ctx_wasteservice ip [host="host.trolley" port=8023]
+Context ctx_wasteservice ip [host="host.sonarinterrupter" port=8023]
 
 CodedQActor sonar_shim context ctx_wasteservice_sonar className "it.unibo.lenziguerra.wasteservice.sonar.SonarShim"
 
