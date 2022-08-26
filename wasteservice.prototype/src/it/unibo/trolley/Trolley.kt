@@ -51,7 +51,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 								 Pos[0] = payloadArg(0).toInt()  
 								 Pos[1] = payloadArg(1).toInt()  
 								 WaitingPath = true  
-								request("dopath", "dopath(sample)" ,"pathexecws" )  
+								request("dopath", "dopath(sample)" ,"pathexecstop" )  
 						}
 					}
 					 transition(edgeName="t017",targetState="moveSuccess",cond=whenReply("dopathdone"))
@@ -99,7 +99,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						updateResourceRep( "state(work)" + getPosLine() + getContentLine()  
 						)
 						if(  WaitingPath  
-						 ){forward("resumePath", "resumePath(_)" ,"pathexecws" ) 
+						 ){forward("resumePath", "resumePath(_)" ,"pathexecstop" ) 
 						}
 						returnFromInterrupt(interruptedStateTransitions)
 					}
@@ -110,7 +110,7 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						updateResourceRep( "state(stopped)" + getPosLine() + getContentLine()  
 						)
 						if(  WaitingPath  
-						 ){forward("stopPath", "stopPath(_)" ,"pathexecws" ) 
+						 ){forward("stopPath", "stopPath(_)" ,"pathexecstop" ) 
 						}
 					}
 					 transition(edgeName="t019",targetState="exitFromStop",cond=whenDispatch("trolleyResume"))

@@ -20,6 +20,9 @@ Request  dopath    : dopath( PATH  )
 Reply dopathdone   : dopathdone( ARG )
 Reply dopathfail   : dopathfail( ARG )
 
+Dispatch stopPath : stopPath(_)
+Dispatch resumePath : resumePath(_)
+
 Event sonarDistance : sonarDistance(DIST)
 Dispatch trolleyStop : trolleyStop(_)
 Dispatch trolleyResume : trolleyResume(_)
@@ -151,6 +154,7 @@ QActor wasteservice context ctx_wasteservice {
 QActor trolley context ctx_wasteservice {
 	[#
 		val Support = it.unibo.lenziguerra.wasteservice.trolley.TrolleySupport.getSupport()
+		var WaitingPath = false
 	#]
 	State init initial {
 		[# Support.updateState("work") #]
@@ -174,6 +178,11 @@ QActor trolley context ctx_wasteservice {
    		[# Support.updateState("work") #]
 		updateResource [# Support.getPrologContent() #]
   		println("Trolley resuming...")
+  		  		   			
+  		if [# WaitingPath #] {
+  			forward pathexecstop -m resumePath : resumePath(_)
+  		}
+  		
   		returnFromInterrupt
   	}
   	
@@ -183,6 +192,10 @@ QActor trolley context ctx_wasteservice {
   		[# Support.updateState("stopped") #]
 		updateResource [# Support.getPrologContent() #]
   		println("Trolley stopped!")
+  		  		
+  		if [# WaitingPath #] {
+  			forward pathexecstop -m stopPath : stopPath(_)
+  		}
   	}
   	Transition t0 whenMsg trolleyResume -> exitFromStop
 
@@ -194,6 +207,7 @@ QActor trolley context ctx_wasteservice {
 				val Path = Support.preparePath(payloadArg(0).toInt(), payloadArg(1).toInt()) 
 				println("Doing path $Path")
 			#]
+			[# WaitingPath = true #]
 			request pathexecstop -m dopath : dopath($Path)
 		}
 	}
@@ -208,6 +222,7 @@ QActor trolley context ctx_wasteservice {
 				val Path = Support.prepareRotation(payloadArg(0))
 				println("Doing rotation $Path")
 			#]
+			[# WaitingPath = true #]
 			request pathexecstop -m dopath : dopath($Path)
 		}
 	}
@@ -216,18 +231,21 @@ QActor trolley context ctx_wasteservice {
 	
 	State moveSuccess {
 		[# Support.applyPath() #]
+		[# WaitingPath = false #]
 		replyTo trolleyMove with trolleyDone : trolleyDone(_)
 	}
 	Goto idle	
 	
 	State rotateSuccess {
 		[# Support.applyPath() #]
+		[# WaitingPath = false #]
 		replyTo trolleyRotate with trolleyDone : trolleyDone(_)
 	}
 	Goto idle
 	
 	State moveFail {
 		[# Support.updateState("error") #]
+		[# WaitingPath = false #]
 		replyTo trolleyMove with trolleyFail : trolleyFail(move)
     	println("####################################")
     	println("# TROLLEY BLOCCATO! AGGIUSTARE     #")

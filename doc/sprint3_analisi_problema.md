@@ -40,7 +40,16 @@ Event sonarDistance : sonarDistance(DIST).
 
 ### Modifiche
 
-Trolley, come da SPRINT precedenti, usa l'attore *pathexec* di BasicRobot22 per gestire il movimento. Se si usasse l'attore così com'è, anche se si inviasse un messaggio *trolleyStop* il trolley finirebbe il movimento attuale prima di fermarsi, non essendo pathexec a conoscenza del segnale di stop. Si è deciso di modificare *pathexec* creando una nuova versione, **pathexecstop**, per permettergli di accettare gli interrupt lanciati da SonarInterrupter. Viene incluso nel modello finale dell'architettura logica un semplice esempio di questa interazione.
+Trolley, come da SPRINT precedenti, usa l'attore *pathexec* di BasicRobot22 per gestire il movimento. Se si usasse l'attore così com'è, anche se si inviasse un messaggio *trolleyStop* il trolley finirebbe il movimento attuale prima di fermarsi, non essendo pathexec a conoscenza del segnale di stop. Si è deciso di modificare *pathexec* creando una nuova versione, **pathexecstop**, per permettergli di accettare gli interrupt lanciati da SonarInterrupter.
+
+Sono quindi introdotti due dispatch per fermare e riprendere l'esecuzione di *pathexecstop*:
+
+```
+Dispatch stopPath : stopPath(_)
+Dispatch resumePath : resumePath(_)
+```
+
+Viene incluso nel modello finale dell'architettura logica un semplice esempio di questa interazione.
 
 ### Lettura dal sonar
 

@@ -30,6 +30,8 @@ with Diagram('wasteserviceArch', show=False, outformat='png', graph_attr=graphat
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyCollect') >> trolley
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyDeposit') >> trolley
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyRotate') >> trolley
+     trolley >> Edge(color='blue', style='solid', xlabel='resumePath') >> pathexecstop
+     trolley >> Edge(color='blue', style='solid', xlabel='stopPath') >> pathexecstop
      trolley >> Edge(color='magenta', style='solid', xlabel='dopath') >> pathexecstop
      trolley >> Edge(color='blue', style='solid', xlabel='storageDeposit') >> storagemanager
      sys >> Edge(color='red', style='dashed', xlabel='sonarDistance') >> sonarinterrupter

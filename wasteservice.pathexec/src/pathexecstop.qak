@@ -1,15 +1,22 @@
 System pathexecstop
+mqttBroker "broker.hivemq.com" : 1883 eventTopic "unibo/basicrobot"   //broker.hivemq.com
 
 Request  dopath    : dopath( PATH  )
 Reply dopathdone   : dopathdone( ARG )
 Reply dopathfail   : dopathfail( ARG )
+
+Dispatch stopPath : stopPath(_)
+Dispatch resumePath : resumePath(_)
+
+// whenTime + interrupt workaround
+Request setAlarm : setAlarm(TIME)
+Reply triggerAlarm : triggerAlarm(_)
 
 Dispatch cmd       	: cmd(MOVE)     
 Request step       : step( TIME )	
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
 Event alarm        : alarm(X) 
-
 
 Context ctx_pathexecstop ip [host="localhost" port=8025]
 
@@ -61,8 +68,10 @@ QActor pathexecstop context ctx_pathexecstop {
 		//printCurrentMessage
 		updateResource [# "pathexecdoturn($CurMoveTodo)" #]
 		forward basicrobot -m cmd : cmd($CurMoveTodo) //asynch !!!		
+		request timer -m setAlarm : setAlarm(300)
 	}
-	Transition t0 whenTime 300 ->  nextMove  //wait for move done ...
+	Transition t0 whenReply triggerAlarm ->  nextMove  //wait for move done ...
+				  whenInterrupt stopPath -> stopped
   
  	State doMoveW{
 		//printCurrentMessage
@@ -72,6 +81,7 @@ QActor pathexecstop context ctx_pathexecstop {
 	Transition t0 whenEvent alarm     -> endWorkKo
  				  whenReply stepdone  -> nextMove  
 	              whenReply stepfail  -> endWorkKo                       
+  				  whenInterrupt stopPath -> stopped
 	              
 	State endWorkOk{
 		//printCurrentMessage
@@ -90,5 +100,32 @@ QActor pathexecstop context ctx_pathexecstop {
 	}	
 	Goto s0
 
-
+	State stopped {
+		[# MsgUtil.outred("pathexecstop: stopped!") #]
+		updateResource [# pathexecstopped() #]
+	}
+	Transition t0 whenMsg resumePath -> resume
+	
+	State resume {
+		[# MsgUtil.outgreen("pathexecstop: resumed!") #]
+		returnFromInterrupt
+	}
 } 
+
+// Workaround per whenTime + interrupt, usabile da
+// un attore alla volta
+QActor timer context ctx_pathexecstop {
+	State wait initial {
+	}
+	Transition t6 whenRequest setAlarm -> handleAlarm
+	
+	State handleAlarm {
+		onMsg (setAlarm : setAlarm(TIME)) {
+			[# val Time = payloadArg(0).toLong() #]
+			delayVar Time
+			replyTo setAlarm with triggerAlarm : triggerAlarm(_)
+		}
+	}
+	Goto wait
+}
+

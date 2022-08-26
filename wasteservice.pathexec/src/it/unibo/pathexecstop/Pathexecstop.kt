@@ -66,10 +66,10 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						updateResourceRep( "pathexecdoturn($CurMoveTodo)"  
 						)
 						forward("cmd", "cmd($CurMoveTodo)" ,"basicrobot" ) 
-						stateTimer = TimerActor("timer_doMoveTurn", 
-							scope, context!!, "local_tout_pathexecstop_doMoveTurn", 300.toLong() )
+						request("setAlarm", "setAlarm(300)" ,"timer" )  
 					}
-					 transition(edgeName="t01",targetState="nextMove",cond=whenTimeout("local_tout_pathexecstop_doMoveTurn"))   
+					 transition(edgeName="t01",targetState="nextMove",cond=whenReply("triggerAlarm"))
+					interrupthandle(edgeName="t02",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
 				}	 
 				state("doMoveW") { //this:State
 					action { //it:State
@@ -77,9 +77,10 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						)
 						request("step", "step($StepTime)" ,"basicrobot" )  
 					}
-					 transition(edgeName="t02",targetState="endWorkKo",cond=whenEvent("alarm"))
-					transition(edgeName="t03",targetState="nextMove",cond=whenReply("stepdone"))
-					transition(edgeName="t04",targetState="endWorkKo",cond=whenReply("stepfail"))
+					 transition(edgeName="t03",targetState="endWorkKo",cond=whenEvent("alarm"))
+					transition(edgeName="t04",targetState="nextMove",cond=whenReply("stepdone"))
+					transition(edgeName="t05",targetState="endWorkKo",cond=whenReply("stepfail"))
+					interrupthandle(edgeName="t06",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
 				}	 
 				state("endWorkOk") { //this:State
 					action { //it:State
@@ -100,6 +101,20 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						answer("dopath", "dopathfail", "dopathfail($PathStillTodo)"   )  
 					}
 					 transition( edgeName="goto",targetState="s0", cond=doswitch() )
+				}	 
+				state("stopped") { //this:State
+					action { //it:State
+						 MsgUtil.outred("pathexecstop: stopped!")  
+						updateResourceRep( pathexecstopped()  
+						)
+					}
+					 transition(edgeName="t07",targetState="resume",cond=whenDispatch("resumePath"))
+				}	 
+				state("resume") { //this:State
+					action { //it:State
+						 MsgUtil.outgreen("pathexecstop: resumed!")  
+						returnFromInterrupt(interruptedStateTransitions)
+					}
 				}	 
 			}
 		}
