@@ -3,7 +3,6 @@
     "execVerbose": false,
     "tracing": false,
     "ledGui": true,
-
     "sonarVerbose": false,
     "radarRemote": false,
     "testing": false,
