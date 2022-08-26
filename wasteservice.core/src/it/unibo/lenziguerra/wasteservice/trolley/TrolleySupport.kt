@@ -16,8 +16,8 @@ interface ITrolleySupport {
      */
     fun applyPath()
     fun getPrologContent(): String
-    fun collect(material: String, quantity: Float)
-    fun deposit()
+    suspend fun collect(material: String, quantity: Float)
+    suspend fun deposit()
     fun getMaterial(): String
     fun getQuantity(): String
     fun updateState(newState: String)
@@ -60,7 +60,7 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
         return quantity.toString()
     }
 
-    override fun collect(material: String, quantity: Float) {
+    override suspend fun collect(material: String, quantity: Float) {
         val enumMaterial = WasteType.valueOf(material.uppercase())
         if (doCollect(enumMaterial, quantity)) {
             this.material = enumMaterial
@@ -68,16 +68,16 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
         }
     }
 
-    override fun deposit() {
+    override suspend fun deposit() {
         if (doDeposit(this.material!!, this.quantity)) {
             this.material = null
             this.quantity = 0.0f
         }
     }
 
-    abstract fun doCollect(material: WasteType, quantity: Float): Boolean
+    abstract suspend fun doCollect(material: WasteType, quantity: Float): Boolean
 
-    abstract fun doDeposit(material: WasteType, quantity: Float): Boolean
+    abstract suspend fun doDeposit(material: WasteType, quantity: Float): Boolean
 
     private fun rotateTo(dir: String): String {
         var cmd = ""

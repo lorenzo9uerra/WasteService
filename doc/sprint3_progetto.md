@@ -12,6 +12,7 @@ Cose da aggiungere:
 - Aggiunte a cose di altri sprint
     - truck gui resettabile
     - Posizione TRAVEL per meglio gestire posizioni e blinkaggio
+- SonarGUI per colllaudo
 
 
 ### Struttura del software
@@ -56,7 +57,7 @@ Sono stati aggiornati i test plan formalizzati in analisi del problema.
 
 - **Test sonar-stop**: [TestSonarStop.kt](../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestSonarStop.kt). Funzionamento analogo all'analisi del problema.
 
-- **Test sonarshim**: [TestSonarShim.kt](../wasteservice.sonar/test/TestSonarShim.kt). Ora eseguibile, sfrutta la modalità testing del SonarMock di radarsystem.domain per controllare gli output del Sonar.
+- **Test sonarshim**: [TestSonarShim.kt](../wasteservice.sonar/test/it/unibo/lenziguerra/wasteservice/sonar/TestSonarShim.kt). Ora eseguibile, sfrutta la modalità testing del SonarMock di radarsystem.domain per controllare gli output del Sonar.
 
 
 ### Struttura del sistema

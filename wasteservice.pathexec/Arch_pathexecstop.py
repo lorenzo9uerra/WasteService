@@ -24,8 +24,8 @@ with Diagram('pathexecstopArch', show=False, outformat='png', graph_attr=graphat
           timer=Custom('timer','./qakicons/symActorSmall.png')
      with Cluster('ctxbasicrobot', graph_attr=nodeattr):
           basicrobot=Custom('basicrobot(ext)','./qakicons/externalQActor.png')
-     pathexecstop >> Edge(color='blue', style='solid', xlabel='cmd') >> basicrobot
      pathexecstop >> Edge(color='magenta', style='solid', xlabel='setAlarm') >> timer
+     pathexecstop >> Edge(color='blue', style='solid', xlabel='cmd') >> basicrobot
      pathexecstop >> Edge(color='magenta', style='solid', xlabel='step') >> basicrobot
      sys >> Edge(color='red', style='dashed', xlabel='alarm') >> pathexecstop
 diag

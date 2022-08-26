@@ -34,7 +34,6 @@ Dispatch testStorageSet : testStorageSet(JSON_DATA)
 Context ctx_wasteservice ip [host="localhost" port=8023]
 
 // Esterno
-Context ctx_basicrobot ip [host="127.0.0.1" port=8020]
 Context ctx_pathexecstop ip [host="127.0.0.1" port=8025]
 
 ExternalQActor pathexecstop context ctx_pathexecstop
@@ -164,6 +163,7 @@ QActor trolley context ctx_wasteservice {
 	State idle {
 		printCurrentMessage
 		updateResource [# Support.getPrologContent() #]
+		[# MsgUtil.outmagenta("Trolley ready. Current status:") #]
 		println("$Support")
 	}
 	Transition t0 whenRequest trolleyMove -> handleMove
@@ -174,10 +174,10 @@ QActor trolley context ctx_wasteservice {
 				  
 	State exitFromStop{
 		printCurrentMessage
-   		discardMsg Off
    		[# Support.updateState("work") #]
 		updateResource [# Support.getPrologContent() #]
-  		println("Trolley resuming...")
+  		[# MsgUtil.outgreen("Trolley resuming...") #]
+  		println("$WaitingPath")
   		  		   			
   		if [# WaitingPath #] {
   			forward pathexecstop -m resumePath : resumePath(_)
@@ -188,10 +188,10 @@ QActor trolley context ctx_wasteservice {
   	
   	State handleStop{
  		printCurrentMessage
-  		discardMsg On
   		[# Support.updateState("stopped") #]
 		updateResource [# Support.getPrologContent() #]
-  		println("Trolley stopped!")
+  		[# MsgUtil.outred("Trolley stopped!") #]
+  		println("$WaitingPath")
   		  		
   		if [# WaitingPath #] {
   			forward pathexecstop -m stopPath : stopPath(_)
@@ -213,6 +213,7 @@ QActor trolley context ctx_wasteservice {
 	}
 	Transition t0 whenReply dopathdone -> moveSuccess
 				  whenReply dopathfail -> moveFail
+				  whenInterrupt trolleyStop -> handleStop
 				  
 	State handleRotate {
 		[# Support.updateState("work") #]
@@ -227,7 +228,8 @@ QActor trolley context ctx_wasteservice {
 		}
 	}
 	Transition t0 whenReply dopathdone -> rotateSuccess
-			  whenReply dopathfail -> moveFail
+			  	  whenReply dopathfail -> moveFail
+			  	  whenInterrupt trolleyStop -> handleStop
 	
 	State moveSuccess {
 		[# Support.applyPath() #]

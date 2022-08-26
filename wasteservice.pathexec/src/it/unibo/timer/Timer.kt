@@ -19,7 +19,7 @@ class Timer ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 				state("wait") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t68",targetState="handleAlarm",cond=whenRequest("setAlarm"))
+					 transition(edgeName="t610",targetState="handleAlarm",cond=whenRequest("setAlarm"))
 				}	 
 				state("handleAlarm") { //this:State
 					action { //it:State

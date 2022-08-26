@@ -25,7 +25,7 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 									StepTime = pathexecStopSupport.readStepTime() //stepTimeConfig.json
 						updateResourceRep( "pathexecsteptime($StepTime)"  
 						)
-						println("pathexecstop ready. StepTime=$StepTime")
+						 MsgUtil.outmagenta("pathexecstop ready. StepTime=$StepTime")  
 					}
 					 transition(edgeName="t00",targetState="doThePath",cond=whenRequest("dopath"))
 				}	 
@@ -46,6 +46,7 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("nextMove") { //this:State
 					action { //it:State
 						 CurMoveTodo = pathut.nextMove()  
+						println("pathexec curMoveTodo=$CurMoveTodo")
 					}
 					 transition( edgeName="goto",targetState="endWorkOk", cond=doswitchGuarded({ CurMoveTodo.length == 0  
 					}) )
@@ -54,7 +55,14 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				}	 
 				state("doMove") { //this:State
 					action { //it:State
-						delay(300) 
+						request("setAlarm", "setAlarm(300)" ,"timer" )  
+					}
+					 transition(edgeName="t01",targetState="applyMove",cond=whenReply("triggerAlarm"))
+					interrupthandle(edgeName="t02",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
+				}	 
+				state("applyMove") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 					}
 					 transition( edgeName="goto",targetState="doMoveW", cond=doswitchGuarded({ CurMoveTodo == "w"  
 					}) )
@@ -63,28 +71,30 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				}	 
 				state("doMoveTurn") { //this:State
 					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 						updateResourceRep( "pathexecdoturn($CurMoveTodo)"  
 						)
 						forward("cmd", "cmd($CurMoveTodo)" ,"basicrobot" ) 
 						request("setAlarm", "setAlarm(300)" ,"timer" )  
 					}
-					 transition(edgeName="t01",targetState="nextMove",cond=whenReply("triggerAlarm"))
-					interrupthandle(edgeName="t02",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
+					 transition(edgeName="t03",targetState="nextMove",cond=whenReply("triggerAlarm"))
+					interrupthandle(edgeName="t04",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
 				}	 
 				state("doMoveW") { //this:State
 					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 						updateResourceRep( "pathexecdostep($CurMoveTodo)"  
 						)
 						request("step", "step($StepTime)" ,"basicrobot" )  
 					}
-					 transition(edgeName="t03",targetState="endWorkKo",cond=whenEvent("alarm"))
-					transition(edgeName="t04",targetState="nextMove",cond=whenReply("stepdone"))
-					transition(edgeName="t05",targetState="endWorkKo",cond=whenReply("stepfail"))
-					interrupthandle(edgeName="t06",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
+					 transition(edgeName="t05",targetState="endWorkKo",cond=whenEvent("alarm"))
+					transition(edgeName="t06",targetState="nextMove",cond=whenReply("stepdone"))
+					transition(edgeName="t07",targetState="endWorkKo",cond=whenReply("stepfail"))
+					interrupthandle(edgeName="t08",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
 				}	 
 				state("endWorkOk") { //this:State
 					action { //it:State
-						println("endWorkOk: PATH DONE - BYE")
+						 MsgUtil.outgreen("endWorkOk: PATH DONE - BYE")  
 						updateResourceRep( "path $PathTodo done"  
 						)
 						answer("dopath", "dopathdone", "dopathdone(ok)"   )  
@@ -97,7 +107,7 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						 var PathStillTodo = pathut.getPathTodo()  
 						updateResourceRep( "pathstilltodo($PathStillTodo)"  
 						)
-						println("PATH FAILURE - SORRY. PathStillTodo=$PathStillTodo")
+						 MsgUtil.outred("PATH FAILURE - SORRY. PathStillTodo=$PathStillTodo")  
 						answer("dopath", "dopathfail", "dopathfail($PathStillTodo)"   )  
 					}
 					 transition( edgeName="goto",targetState="s0", cond=doswitch() )
@@ -105,14 +115,16 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("stopped") { //this:State
 					action { //it:State
 						 MsgUtil.outred("pathexecstop: stopped!")  
-						updateResourceRep( pathexecstopped()  
+						updateResourceRep( "pathexecstopped()"  
 						)
 					}
-					 transition(edgeName="t07",targetState="resume",cond=whenDispatch("resumePath"))
+					 transition(edgeName="t09",targetState="resume",cond=whenDispatch("resumePath"))
 				}	 
 				state("resume") { //this:State
 					action { //it:State
 						 MsgUtil.outgreen("pathexecstop: resumed!")  
+						updateResourceRep( "pathexecresumed()"  
+						)
 						returnFromInterrupt(interruptedStateTransitions)
 					}
 				}	 

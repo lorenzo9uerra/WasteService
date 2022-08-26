@@ -20,6 +20,7 @@ object SystemConfig {
         "wasteServiceContext" to 8023,
         "led" to 8030,
         "sonar" to 8031,
+        "sonarinterrupter" to 8023,
         "basicrobot" to 8020,
         "pathexecstop" to 8025,
     )
@@ -30,6 +31,7 @@ object SystemConfig {
         "wasteServiceContext" to "localhost",
         "led" to "localhost",
         "sonar" to "localhost",
+        "sonarinterrupter" to "localhost",
         "basicrobot" to "localhost",
         "pathexecstop" to "localhost",
     )
@@ -38,12 +40,14 @@ object SystemConfig {
         "storage" to "storagemanager",
         "wasteServiceContext" to "wasteservice",
         "pathexecstop" to "pathexecstop",
+        "sonarinterrupter" to "sonarinterrupter",
     )
     var contexts = mutableMapOf(
         "trolley" to "ctx_wasteservice",
         "storage" to "ctx_wasteservice",
         "wasteServiceContext" to "ctx_wasteservice",
         "pathexecstop" to "ctx_pathexecstop",
+        "sonarinterrupter" to "ctx_wasteservice",
     )
 
     private var setConf = false
