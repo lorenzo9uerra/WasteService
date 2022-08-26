@@ -20,8 +20,6 @@ object SystemConfig {
         "wasteServiceContext" to 8023,
         "led" to 8030,
         "sonar" to 8031,
-        "basicrobot" to 8020,
-        "pathexecstop" to 8025,
     )
     var hosts = mutableMapOf(
         "trolley" to "localhost",
@@ -30,44 +28,25 @@ object SystemConfig {
         "wasteServiceContext" to "localhost",
         "led" to "localhost",
         "sonar" to "localhost",
-        "basicrobot" to "localhost",
-        "pathexecstop" to "localhost",
     )
     var actors = mutableMapOf(
         "trolley" to "trolley",
         "storage" to "storagemanager",
-        "wasteServiceContext" to "wasteservice",
-        "pathexecstop" to "pathexecstop",
+        "wasteServiceContext" to "wasteservice"
     )
     var contexts = mutableMapOf(
         "trolley" to "ctx_wasteservice",
         "storage" to "ctx_wasteservice",
         "wasteServiceContext" to "ctx_wasteservice",
-        "pathexecstop" to "ctx_pathexecstop",
+        "pathexec" to "ctx_basicrobot",
     )
 
     private var setConf = false
-    private var noWrite = false
-    private var noRead = false
 
     fun setConfiguration(cfgPath: String = "SystemConfig.json", force: Boolean = false) {
-        if ((!setConf || force) && !noRead) {
-            StaticConfig.setConfiguration(this::class, this, cfgPath, noWrite)
+        if (!setConf || force) {
+            StaticConfig.setConfiguration(this::class, this, cfgPath)
             setConf = true
         }
-    }
-
-    // For testing
-    fun disableWrite() {
-        noWrite = true
-    }
-    fun enableWrite() {
-        noWrite = false
-    }
-    fun disableRead() {
-        noRead = true
-    }
-    fun enableRead() {
-        noRead = false
     }
 }

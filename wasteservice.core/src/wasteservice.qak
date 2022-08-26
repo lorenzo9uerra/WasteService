@@ -32,8 +32,9 @@ Context ctx_wasteservice ip [host="localhost" port=8023]
 
 // Esterno
 Context ctx_basicrobot ip [host="127.0.0.1" port=8020]
+Context ctx_pathexecstop ip [host="127.0.0.1" port=8025]
 
-ExternalQActor pathexec context ctx_basicrobot
+ExternalQActor pathexecstop context ctx_pathexecstop
 
 QActor wasteservice context ctx_wasteservice {
 	[#
@@ -193,7 +194,7 @@ QActor trolley context ctx_wasteservice {
 				val Path = Support.preparePath(payloadArg(0).toInt(), payloadArg(1).toInt()) 
 				println("Doing path $Path")
 			#]
-			request pathexec -m dopath : dopath($Path)
+			request pathexecstop -m dopath : dopath($Path)
 		}
 	}
 	Transition t0 whenReply dopathdone -> moveSuccess
@@ -207,7 +208,7 @@ QActor trolley context ctx_wasteservice {
 				val Path = Support.prepareRotation(payloadArg(0))
 				println("Doing rotation $Path")
 			#]
-			request pathexec -m dopath : dopath($Path)
+			request pathexecstop -m dopath : dopath($Path)
 		}
 	}
 	Transition t0 whenReply dopathdone -> rotateSuccess
@@ -333,7 +334,7 @@ QActor storagemanager context ctx_wasteservice {
 }
 
 
-QActor sonar_interrupter context ctx_wasteservice {
+QActor sonarinterrupter context ctx_wasteservice {
 	[# 
 	// gira intorno a impossibilità di usare it.[...] dentro a stato
 	// perchè it è già keyword
