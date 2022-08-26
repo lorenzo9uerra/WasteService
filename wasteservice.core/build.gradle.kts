@@ -24,6 +24,7 @@ repositories {
 
 dependencies {
     implementation(project(":wasteservice.shared"))
+    testImplementation(testFixtures(project(":wasteservice.shared")))
 
     implementation("org.springframework.boot:spring-boot-starter-mustache")
     implementation("org.springframework.boot:spring-boot-starter-web")

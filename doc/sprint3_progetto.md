@@ -31,7 +31,7 @@ La struttura dei package diventa la seguente (evidenziati solo i cambiamenti imp
     - it.unibo.lenziguerra.wasteservice.wasteservice
     - it.unibo.lenziguerra.wasteservice.trolley
     - it.unibo.lenziguerra.wasteservice.storage
-    - *wasteservice.qak* (Aggiunta di sonarinterrupter e pathexecws, modifica di trolley)
+    - *wasteservice.qak* (Aggiunta di sonarinterrupter e pathexecstop, modifica di trolley)
 - wasteservice.led
     - it.unibo.lenziguerra.wasteservice.led
 - wasteservice.statusgui
@@ -54,9 +54,9 @@ Come sopra i due componenti da analisi (SonarShim e SonarInterrupter) sono reali
 
 Sono stati aggiornati i test plan formalizzati in analisi del problema.
 
-- **Test sonar-stop**: [TestSonarStop.kt](../wasteservice.prototype/test/it/unibo/TestSonarStop.kt). Funzionamento analogo all'analisi del problema.
+- **Test sonar-stop**: [TestSonarStop.kt](../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestSonarStop.kt). Funzionamento analogo all'analisi del problema.
 
-- **Test sonarshim**: [TestSonarShim.kt](../wasteservice.prototype/test-disabled/TestSonarShim.kt). Ora eseguibile, sfrutta la modalità testing del SonarMock di radarsystem.domain per controllare gli output del Sonar.
+- **Test sonarshim**: [TestSonarShim.kt](../wasteservice.sonar/test/TestSonarShim.kt). Ora eseguibile, sfrutta la modalità testing del SonarMock di radarsystem.domain per controllare gli output del Sonar.
 
 
 ### Struttura del sistema

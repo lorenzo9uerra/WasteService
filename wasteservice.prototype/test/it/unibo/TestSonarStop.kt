@@ -26,7 +26,7 @@ class TestSonarStop {
         const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "localhost",  "TCP", "8050").
             qactor( sonarinterrupter, $TEST_CONTEXT_NAME, "it.unibo.sonarinterrupter.Sonarinterrupter").
             qactor( trolley, $TEST_CONTEXT_NAME, "it.unibo.trolley.Trolley").
-            qactor( pathexecws, $TEST_CONTEXT_NAME, "it.unibo.pathexecws.Pathexecws").
+            qactor( pathexecstop, $TEST_CONTEXT_NAME, "it.unibo.pathexecstop.pathexecstop").
             qactor( timer, $TEST_CONTEXT_NAME, "it.unibo.timer.Timer").
             """
 
@@ -81,7 +81,7 @@ class TestSonarStop {
             "$id($params)",
             "trolley"
         ).toString()
-        val connTcp = ConnTcp("localhost", TestDeposit.CTX_PORT)
+        val connTcp = ConnTcp("localhost", ports["trolley"]!!)
         ColorsOut.outappl("Asking trolley: $id($params)", ColorsOut.CYAN)
         connTcp.forward(request)
 
@@ -101,7 +101,7 @@ class TestSonarStop {
             "$id($params)"
         ).toString()
         try {
-            val connTcp = ConnTcp("localhost", TestDeposit.CTX_PORT)
+            val connTcp = ConnTcp("localhost", ports["sonarinterrupter"]!!)
             ColorsOut.outappl("Sending event: $id($params)", ColorsOut.CYAN)
             connTcp.forward(event)
         } catch (e: Exception) {

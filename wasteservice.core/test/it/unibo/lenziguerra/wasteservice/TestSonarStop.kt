@@ -3,6 +3,7 @@ package it.unibo.lenziguerra.wasteservice
 import it.unibo.kactor.*
 import it.unibo.kactor.MsgUtil.buildEvent
 import it.unibo.kactor.MsgUtil.buildRequest
+import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -21,18 +22,18 @@ import kotlin.concurrent.thread
 
 class TestSonarStop {
     companion object {
-        const val TEST_CONTEXT_NAME = "ctx_wasteservice_proto_ctx"
+        const val TEST_CONTEXT_NAME = "ctx_wasteservice_test"
+        const val TEST_PORT = 8050
 
-        const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "localhost",  "TCP", "8050").
+        const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "localhost",  "TCP", "$TEST_PORT").
             qactor( sonarinterrupter, $TEST_CONTEXT_NAME, "it.unibo.sonarinterrupter.Sonarinterrupter").
             qactor( trolley, $TEST_CONTEXT_NAME, "it.unibo.trolley.Trolley").
-            qactor( pathexecws, $TEST_CONTEXT_NAME, "it.unibo.pathexecws.Pathexecws").
-            qactor( timer, $TEST_CONTEXT_NAME, "it.unibo.timer.Timer").
+            qactor( pathexecstop, $TEST_CONTEXT_NAME, "it.unibo.lenziguerra.wasteservice.MockPathexecStop").
             """
 
         val contexts = mapOf(
-            "trolley" to "ctx_wasteservice_proto_ctx",
-            "sonarinterrupter" to "ctx_wasteservice_proto_ctx",
+            "trolley" to TEST_CONTEXT_NAME,
+            "sonarinterrupter" to TEST_CONTEXT_NAME,
         )
         val actors = mapOf(
             "trolley" to "trolley",
@@ -43,8 +44,8 @@ class TestSonarStop {
             "sonarinterrupter" to "localhost",
         )
         val ports = mapOf(
-            "trolley" to 8050,
-            "sonarinterrupter" to 8050,
+            "trolley" to TEST_PORT,
+            "sonarinterrupter" to TEST_PORT,
         )
     }
 
@@ -81,7 +82,7 @@ class TestSonarStop {
             "$id($params)",
             "trolley"
         ).toString()
-        val connTcp = ConnTcp("localhost", TestDeposit.CTX_PORT)
+        val connTcp = ConnTcp("localhost", ports["trolley"]!!)
         ColorsOut.outappl("Asking trolley: $id($params)", ColorsOut.CYAN)
         connTcp.forward(request)
 
@@ -89,7 +90,7 @@ class TestSonarStop {
 
         thread {
             val reply = connTcp.receiveMsg()
-            future.complete(reply != null && !reply.contains("false"))
+            future.complete(!reply.contains("false"))
         }
 
         return future
@@ -101,7 +102,7 @@ class TestSonarStop {
             "$id($params)"
         ).toString()
         try {
-            val connTcp = ConnTcp("localhost", TestDeposit.CTX_PORT)
+            val connTcp = ConnTcp("localhost", ports["sonarinterrupter"]!!)
             ColorsOut.outappl("Sending event: $id($params)", ColorsOut.CYAN)
             connTcp.forward(event)
         } catch (e: Exception) {
@@ -146,9 +147,21 @@ class TestSonarStop {
     }
 
     private fun getTrolleyStateFromReply(reply: String): String? {
-        return it.unibo.lenziguerra.wasteservice.utils.PrologUtils.getFuncLine(reply, "state")?.let { line ->
-            it.unibo.lenziguerra.wasteservice.utils.PrologUtils.extractPayload(line)[0]
+        return try {
+            TrolleyStatus.fromProlog(reply).status.name.lowercase()
+        } catch (e: IllegalArgumentException) {
+            null
         }
     }
+}
 
+class MockPathexecStop(name: String) : ActorBasic(name) {
+    override suspend fun actorBody(msg: IApplMessage) {
+        if (msg.msgId() == "dopath") {
+            ColorsOut.outappl("Mock $name | received <$msg>, replying with done...", ColorsOut.ANSI_PURPLE)
+            // answer doesn't work?
+            val reply = MsgUtil.buildReply(name, "dopathdone", "dopathdone(ok)", msg.msgSender())
+            sendMessageToActor(reply, msg.msgSender())
+        }
+    }
 }
