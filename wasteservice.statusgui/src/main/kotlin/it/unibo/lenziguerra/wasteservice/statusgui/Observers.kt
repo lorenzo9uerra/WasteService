@@ -16,21 +16,33 @@ import unibo.comm22.utils.ColorsOut
 import java.util.*
 
 class TrolleyObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHandler {
-    var lastState = TrolleyStatus.State.STOPPED
+    var lastStatus = TrolleyStatus(TrolleyStatus.State.STOPPED, arrayOf(-1,-1),
+        null, 0f, TrolleyStatus.Activity.IDLE
+    )
         private set
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
         if (isSkippableResponse(content)) return
 
-        val tState = TrolleyStatus.fromProlog(content)
-        ColorsOut.outappl("Obs Trolley | state: ${tState.status}", ColorsOut.GREEN)
-        if (lastState != tState.status) {
-            lastState = tState.status
+        val tStatus = TrolleyStatus.fromProlog(content)
+        ColorsOut.outappl("Obs Trolley | state: ${tStatus.status} activity: ${tStatus.activity}", ColorsOut.GREEN)
+        if (lastStatus.status != tStatus.status) {
             for (ws in wsList) {
-                ws.sendMessage(TextMessage("trolleyState: ${tState.status}"))
+                synchronized(ws) {
+                    ws.sendMessage(TextMessage("trolleyState: ${tStatus.status}"))
+                }
             }
         }
+        if (lastStatus.activity != tStatus.activity) {
+            for (ws in wsList) {
+                synchronized(ws) {
+                    ws.sendMessage(TextMessage("trolleyActivity: ${tStatus.activity}"))
+                }
+            }
+        }
+
+        lastStatus = tStatus
     }
 
     override fun onError() {
@@ -55,13 +67,17 @@ class StorageObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHan
             if (sStatus.amounts[WasteType.GLASS] != lastGlass) {
                 lastGlass = sStatus.amounts[WasteType.GLASS]!!
                 for (ws in wsList) {
-                    ws.sendMessage(TextMessage("depositedGlass: ${sStatus.amounts[WasteType.GLASS]}"))
+                    synchronized(ws) {
+                        ws.sendMessage(TextMessage("depositedGlass: ${sStatus.amounts[WasteType.GLASS]}"))
+                    }
                 }
             }
             if (sStatus.amounts[WasteType.PLASTIC] != lastPlastic) {
                 lastPlastic = sStatus.amounts[WasteType.PLASTIC]!!
                 for (ws in wsList) {
-                    ws.sendMessage(TextMessage("depositedPlastic: ${sStatus.amounts[WasteType.PLASTIC]}"))
+                    synchronized(ws) {
+                        ws.sendMessage(TextMessage("depositedPlastic: ${sStatus.amounts[WasteType.PLASTIC]}"))
+                    }
                 }
             }
         }
@@ -85,7 +101,9 @@ class WasteServiceObserver(private val wsList: ArrayList<WebSocketSession>) : Co
         if (lastPos != wStatus.trolleyPos) {
             lastPos = wStatus.trolleyPos
             for (ws in wsList) {
-                ws.sendMessage(TextMessage("trolleyPosition: ${wStatus.trolleyPos}"))
+                synchronized(ws) {
+                    ws.sendMessage(TextMessage("trolleyPosition: ${wStatus.trolleyPos}"))
+                }
             }
         }
     }
@@ -108,7 +126,9 @@ class LedObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHandler
         if (lastState != lState.state) {
             lastState = lState.state
             for (ws in wsList) {
-                ws.sendMessage(TextMessage("ledState: ${lState.state}"))
+                synchronized(ws) {
+                    ws.sendMessage(TextMessage("ledState: ${lState.state}"))
+                }
             }
         }
     }

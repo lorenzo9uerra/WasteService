@@ -18,6 +18,8 @@ function connect() {
 		const dataContent = data.data.split(": ")[1]
 		if (dataType.startsWith("trolleyState") ) {
 			$("#trolleyState").text(dataContent)
+		} else if (dataType.startsWith("trolleyActivity")) {
+			$("#trolleyActivity").text(dataContent)
 		} else if (dataType.startsWith("depositedPlastic")) {
 			$("#depositedPlastic").text(dataContent)
 		} else if (dataType.startsWith("depositedGlass")) {

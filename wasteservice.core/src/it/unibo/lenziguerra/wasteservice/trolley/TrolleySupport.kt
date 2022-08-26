@@ -21,6 +21,7 @@ interface ITrolleySupport {
     fun getMaterial(): String
     fun getQuantity(): String
     fun updateState(newState: String)
+    fun updateActivity(newActivity: String)
 
     // Debug / init
     fun setPosition(x: Int, y: Int)
@@ -40,6 +41,7 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
     private var material: WasteType? = null
 
     private var state = TrolleyStatus.State.WORK
+    private var activity = TrolleyStatus.Activity.IDLE
 
     private lateinit var stagedDirection: String
     private lateinit var stagedPosition: Array<Int>
@@ -218,8 +220,12 @@ abstract class AbstractTrolleyVirtual : ITrolleySupport {
         state = TrolleyStatus.State.valueOf(newState.uppercase())
     }
 
+    override fun updateActivity(newActivity: String) {
+        activity = TrolleyStatus.Activity.valueOf(newActivity.uppercase())
+    }
+
     override fun getPrologContent(): String {
-        return TrolleyStatus(state, position, material, quantity).toString()
+        return TrolleyStatus(state, position, material, quantity, activity).toString()
     }
 
     override fun toString(): String {

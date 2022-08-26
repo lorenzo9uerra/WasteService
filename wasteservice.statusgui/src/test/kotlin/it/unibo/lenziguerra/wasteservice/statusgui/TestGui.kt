@@ -3,6 +3,7 @@ package it.unibo.lenziguerra.wasteservice.statusgui
 import it.unibo.kactor.*
 import it.unibo.lenziguerra.wasteservice.ContextTestUtils
 import it.unibo.lenziguerra.wasteservice.SystemConfig
+import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
 import it.unibo.lenziguerra.wasteservice.utils.WsConnSpring
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.*
@@ -152,8 +153,8 @@ class TestGui {
 	fun testGuiState() {
 		ColorsOut.outappl("Starting gui trolley state test", ColorsOut.CYAN)
 
-		checkGuiResponseState("work", "work")
-		checkGuiResponseState("stopped", "stopped")
+		checkGuiResponseState(TrolleyStatus.State.WORK, "work")
+		checkGuiResponseState(TrolleyStatus.State.STOPPED, "stopped")
 	}
 
 	@Test
@@ -193,9 +194,12 @@ class TestGui {
 		assertEquals(expectedContent, tposSegment.lowercase().trim())
 	}
 
-	private fun checkGuiResponseState(input: String, expectedContent: String) {
+	private fun checkGuiResponseState(input: TrolleyStatus.State, expectedContent: String) {
 		wasteserviceDummyActor.fakeResourceUpdate("tpos(indoor)")
-		trolleyDummyActor.fakeResourceUpdate("state($input)\npos(-1,-1)")
+		trolleyDummyActor.fakeResourceUpdate(
+			TrolleyStatus(input, arrayOf(-1,-1), null, 0f, TrolleyStatus.Activity.IDLE)
+				.toString()
+		)
 
 		CommUtils.delay(500)
 		val guiContent = getGuiContent()
@@ -233,9 +237,9 @@ class TestGui {
 
 		// Returns updates from all
 		wsConn.forward("get")
-		// Repeat 5 times to get all 5 updates, chain them for elaboration
+		// Repeat 6 times to get all 6 updates, chain them for elaboration
 		var sb = StringBuilder()
-		repeat(5) {
+		repeat(6) {
 			sb.append(wsConn.receiveMsg())
 			sb.append("\n")
 		}

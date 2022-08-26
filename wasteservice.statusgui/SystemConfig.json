@@ -1,48 +1,82 @@
 {
     "actors": {
+        "pathexecstop": "pathexecstop",
         "storage": "storagemanager",
         "wasteServiceContext": "wasteservice",
+        "sonarinterrupter": "sonarinterrupter",
         "trolley": "trolley"
     },
     "debugPrint": true,
     "hosts": {
+        "pathexecstop": "localhost",
+        "basicrobot": "localhost",
         "wasteServiceServer": "localhost",
         "led": "localhost",
         "storage": "localhost",
         "wasteServiceContext": "localhost",
         "sonar": "localhost",
+        "sonarinterrupter": "localhost",
         "trolley": "localhost"
     },
     "positions": {
         "plastic_box": [
-            [4, 1],
-            [4, 2]
+            [
+                4,
+                1
+            ],
+            [
+                4,
+                2
+            ]
         ],
         "indoor": [
-            [0, 4],
-            [1, 4]
+            [
+                0,
+                4
+            ],
+            [
+                1,
+                4
+            ]
         ],
         "glass_box": [
-            [3, 4],
-            [4, 4]
+            [
+                3,
+                4
+            ],
+            [
+                4,
+                4
+            ]
         ],
         "home": [
-            [0, 0],
-            [0, 0]
+            [
+                0,
+                0
+            ],
+            [
+                0,
+                0
+            ]
         ]
     },
     "contexts": {
+        "pathexecstop": "ctx_pathexecstop",
         "storage": "ctx_wasteservice",
         "wasteServiceContext": "ctx_wasteservice",
         "pathexec": "ctx_basicrobot",
+        "sonarinterrupter": "ctx_wasteservice",
         "trolley": "ctx_wasteservice"
     },
     "ports": {
+        "pathexecstop": 8025,
+        "basicrobot": 8020,
         "wasteServiceServer": 8080,
         "led": 8030,
         "storage": 8023,
         "wasteServiceContext": 8023,
         "sonar": 8031,
+        "sonarinterrupter": 8023,
         "trolley": 8023
     },
     "DLIMIT": 50

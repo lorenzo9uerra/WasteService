@@ -20,9 +20,9 @@ with Diagram('wasteservice_req_depositArch', show=False, outformat='png', graph_
   with Cluster('env'):
      sys = Custom('','./qakicons/system.png')
      with Cluster('ctxreq_deposit', graph_attr=nodeattr):
-          depositinit=Custom('depositinit','./qakicons/symActorSmall.png')
-          trolley_dep=Custom('trolley_dep','./qakicons/symActorSmall.png')
-          waste_boxes=Custom('waste_boxes','./qakicons/symActorSmall.png')
-     depositinit >> Edge(color='blue', style='solid', xlabel='testDeposit') >> trolley_dep
-     trolley_dep >> Edge(color='blue', style='solid', xlabel='depositWaste') >> waste_boxes
+          dep_trolley=Custom('dep_trolley','./qakicons/symActorSmall.png')
+          dep_waste_boxes=Custom('dep_waste_boxes','./qakicons/symActorSmall.png')
+          dep_init=Custom('dep_init','./qakicons/symActorSmall.png')
+     dep_trolley >> Edge(color='blue', style='solid', xlabel='depositWaste') >> dep_waste_boxes
+     dep_init >> Edge(color='blue', style='solid', xlabel='deposit') >> dep_trolley
 diag

@@ -80,7 +80,8 @@ class StatusGuiWebsocketHandler : TextWebSocketHandler() {
     public override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         // Manual update, first time
         if (message.payload == "get") {
-            session.sendMessage(TextMessage("trolleyState: ${trolleyObserver.lastState}"))
+            session.sendMessage(TextMessage("trolleyState: ${trolleyObserver.lastStatus.status}"))
+            session.sendMessage(TextMessage("trolleyActivity: ${trolleyObserver.lastStatus.activity}"))
             session.sendMessage(TextMessage("depositedGlass: ${storageObserver.lastGlass}"))
             session.sendMessage(TextMessage("depositedPlastic: ${storageObserver.lastPlastic}"))
             session.sendMessage(TextMessage("trolleyPosition: ${wasteServiceObserver.lastPos}"))

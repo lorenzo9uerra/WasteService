@@ -75,6 +75,12 @@ tasks.withType<KotlinCompile> {
 
 //tasks.withType<Test> { useJUnitPlatform() }
 
- application {
- 	mainClass.set("it.unibo.lenziguerra.wasteservice.sonar.SonarMainKt")
- }
+application {
+	mainClass.set("it.unibo.lenziguerra.wasteservice.sonar.SonarMainKt")
+}
+
+task<JavaExec>("runSonarGui") {
+	group = "application"
+	mainClass.set("it.unibo.lenziguerra.wasteservice.sonar.SonarGuiKt")
+	classpath = java.sourceSets["test"].runtimeClasspath
+}

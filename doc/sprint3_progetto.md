@@ -12,6 +12,7 @@ Cose da aggiungere:
 - Aggiunte a cose di altri sprint
     - truck gui resettabile
     - Posizione TRAVEL per meglio gestire posizioni e blinkaggio
+    - Aggiunta TrolleyActivity per miglior monitoraggio in debug, con aggiunta a wasteservicestatusgui
 - SonarGUI per colllaudo
 
 

@@ -3,9 +3,14 @@ package it.unibo.lenziguerra.wasteservice.data
 import it.unibo.lenziguerra.wasteservice.WasteType
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 
-data class TrolleyStatus (val status: State, val pos: Array<Int>, val contentType: WasteType?, val contentAmount: Float) {
+data class TrolleyStatus (val status: State, val pos: Array<Int>, val contentType: WasteType?, val contentAmount: Float,
+    val activity: Activity
+) {
     enum class State {
         WORK, STOPPED, ERROR
+    }
+    enum class Activity {
+        IDLE, TRAVEL, DEPOSIT, COLLECT
     }
 
     companion object {
@@ -13,8 +18,13 @@ data class TrolleyStatus (val status: State, val pos: Array<Int>, val contentTyp
             val statusStr = PrologUtils.getFuncLine(prolStr, "state")?.let {
                 PrologUtils.extractPayload(it)[0]
             } ?: throw IllegalArgumentException("Wrong string for TrolleyStatus: $prolStr")
-
             val status = State.valueOf(statusStr.uppercase())
+
+            val activityStr = PrologUtils.getFuncLine(prolStr, "activity")?.let {
+                PrologUtils.extractPayload(it)[0]
+            } ?: throw IllegalArgumentException("Wrong string for TrolleyStatus: $prolStr")
+            val activity = Activity.valueOf(activityStr.uppercase())
+
             val pos = PrologUtils.getFuncLine(prolStr, "pos")?.let {
                 PrologUtils.extractPayload(it)
             } ?: throw IllegalArgumentException("Wrong string for TrolleyStatus: $prolStr")
@@ -22,18 +32,22 @@ data class TrolleyStatus (val status: State, val pos: Array<Int>, val contentTyp
             val contentLine = PrologUtils.getFuncLine(prolStr, "content")
 
             if (contentLine == null) {
-                return TrolleyStatus(status, pos.map{it.toInt()}.toTypedArray(), null, 0f)
+                return TrolleyStatus(status, pos.map{it.toInt()}.toTypedArray(), null, 0f, activity)
             } else {
                 val contentArgs = PrologUtils.extractPayload(contentLine)
                 val wasteType = WasteType.values().find { it.id == contentArgs[0] }
-                return TrolleyStatus(status, pos.map{it.toInt()}.toTypedArray(), wasteType, contentArgs[1].toFloat())
+                return TrolleyStatus(status, pos.map{it.toInt()}.toTypedArray(), wasteType, contentArgs[1].toFloat(), activity)
             }
         }
     }
 
     override fun toString(): String {
-        return "state(${status.toString().lowercase()})\npos(${pos[0]},${pos[1]})" +
-                (contentType?.let { "\ncontent($contentType,$contentAmount)" } ?: "")
+        return """
+            |state(${status.toString().lowercase()})
+            |pos(${pos[0]},${pos[1]})
+            |activity(${activity.toString().lowercase()})
+            |${contentType?.let { "content($contentType,$contentAmount)" } ?: ""}
+        """.trimMargin()
     }
 
     override fun equals(other: Any?): Boolean {

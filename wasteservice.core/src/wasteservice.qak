@@ -162,6 +162,7 @@ QActor trolley context ctx_wasteservice {
 
 	State idle {
 		printCurrentMessage
+		[# Support.updateActivity("idle") #]
 		updateResource [# Support.getPrologContent() #]
 		[# MsgUtil.outmagenta("Trolley ready. Current status:") #]
 		println("$Support")
@@ -202,6 +203,8 @@ QActor trolley context ctx_wasteservice {
 	State handleMove {
 		printCurrentMessage
 		[# Support.updateState("work") #]
+		[# Support.updateActivity("travel") #]
+		updateResource [# Support.getPrologContent() #]
 		onMsg (trolleyMove : trolleyMove(X,Y) ) {
 			[# 
 				val Path = Support.preparePath(payloadArg(0).toInt(), payloadArg(1).toInt()) 
@@ -217,6 +220,8 @@ QActor trolley context ctx_wasteservice {
 				  
 	State handleRotate {
 		[# Support.updateState("work") #]
+		[# Support.updateActivity("travel") #]
+		updateResource [# Support.getPrologContent() #]
 		printCurrentMessage
 		onMsg (trolleyRotate : trolleyRotate(DIR)) {
 			[#
@@ -264,6 +269,8 @@ QActor trolley context ctx_wasteservice {
 	
 	State handleCollect{
 		[# Support.updateState("work") #]
+		[# Support.updateActivity("collect") #]
+		updateResource [# Support.getPrologContent() #]
 		printCurrentMessage
 		onMsg (trolleyCollect: trolleyCollect(MAT,QNT)){
 			[#
@@ -276,6 +283,8 @@ QActor trolley context ctx_wasteservice {
 	
 	State handleDeposit{
 		[# Support.updateState("work") #]
+		[# Support.updateActivity("deposit") #]
+		updateResource [# Support.getPrologContent() #]
 		printCurrentMessage
 		onMsg (trolleyDeposit: trolleyDeposit(_)){
 			[#
