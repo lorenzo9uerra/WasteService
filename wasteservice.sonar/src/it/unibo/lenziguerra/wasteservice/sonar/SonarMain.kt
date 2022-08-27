@@ -4,6 +4,7 @@ import it.unibo.kactor.QakContext
 import it.unibo.lenziguerra.wasteservice.SystemConfig
 import it.unibo.radarSystem22.domain.utils.DomainSystemConfig
 import kotlinx.coroutines.runBlocking
+import unibo.comm22.utils.ColorsOut
 import unibo.comm22.utils.CommSystemConfig
 import java.io.File
 import java.io.FileWriter
@@ -14,9 +15,9 @@ import kotlin.io.path.deleteIfExists
 fun main() {
     SystemConfig.setConfiguration()
     DomainSystemConfig.setTheConfiguration("SonarConfig.json")
-    CommSystemConfig.setTheConfiguration()
+    CommSystemConfig.tracing = SystemConfig.debugPrint
 
-    val thisContext = "ctx_wasteservice_sonar"
+    val thisContext = SystemConfig.contexts["sonar"]!!
     val contextsFile = SonarContextHelper.createContextDefinition("wasteservice_sonar.pl", thisContext)
 
     Runtime.getRuntime().addShutdownHook(thread(start=false, block={

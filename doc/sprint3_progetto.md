@@ -13,7 +13,7 @@ Cose da aggiungere:
     - truck gui resettabile
     - Posizione TRAVEL per meglio gestire posizioni e blinkaggio
     - Aggiunta Trolley Activity per miglior monitoraggio in debug, con aggiunta a wasteservicestatusgui
-- SonarGUI per colllaudo
+- SonarGUI e RaspGUI per colllaudo
 - Divisione dei contesti
 - Main speciale per qak Sonar
 

@@ -26,7 +26,7 @@ services:
       - robot
   wasteservice.statusgui:
     extra_hosts:
-      wasteservice.led: 192.168.1.15 # Modificare in base a caso
+      wasteservice.led: localhost #192.168.1.15 # Modificare in base a caso
     image: docker.io/filloax/wasteservice.statusgui:0.2
     ports:
       - 8095:8095/tcp

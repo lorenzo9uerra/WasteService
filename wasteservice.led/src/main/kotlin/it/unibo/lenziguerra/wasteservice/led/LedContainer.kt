@@ -23,16 +23,14 @@ fun main() {
     LedContainer().start()
 }
 
-class LedContainer(serverPort: Int = SystemConfig.ports["led"]!!) {
-    val led: IBlinkLed
-    val ledController: LedController
-    val ledServer: BlinkLedCoapServer
+class LedContainer(
+    serverPort: Int = SystemConfig.ports["led"]!!,
+    val led: IBlinkLed = BlinkLed(DeviceFactory.createLed()),
+    val ledController: LedController = LedController(led),
+    val ledServer: BlinkLedCoapServer = BlinkLedCoapServer(serverPort, led),
+) {
 
     init {
-        led = BlinkLed(DeviceFactory.createLed())
-        ledController = LedController(led)
-        ledServer = BlinkLedCoapServer(serverPort, led)
-
         led.updateHandler = { ledServer.sendUpdates() }
     }
 

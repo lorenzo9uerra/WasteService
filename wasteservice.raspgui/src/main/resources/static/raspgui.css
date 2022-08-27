@@ -1,0 +1,67 @@
+
+body {
+    background-color: #0a0a0a;
+    color: #e4e4e4;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    background-color: #141414;
+    height: 100vh;
+    box-shadow: 0 0 2px 0 black inset;
+}
+
+.component {
+    border: 2px white;
+    background-color: #202020;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px;
+}
+
+.ledbox {
+    width: 50%;
+    height: 0;
+    padding-bottom: 50%;
+    margin: auto;
+}
+
+.ledbox.on {
+    --led-color: rgb(42, 180, 42);
+    background-color: var(--led-color);
+    box-shadow: 0 0 10px 0 var(--led-color);
+}
+.ledbox.off {
+    background-color: lightgray
+}
+
+.ledbox p {
+    text-align: center;
+    font-size: 3em;
+    padding: calc(50% - 0.75em) 0;
+    text-transform: uppercase;
+    font-weight: 800;
+    font-family: 'Roboto Flex';
+}
+
+.ledbox.on p {
+    color: #161616
+}
+.ledbox.off p {
+    color: #161616
+}
+/* 
+.sonarButton {
+    width: 50%;
+    height: 0;
+    padding-bottom: 50%;
+}
+
+.sonarButton text {
+    padding: calc(50% - 0.75em) 0;
+} */

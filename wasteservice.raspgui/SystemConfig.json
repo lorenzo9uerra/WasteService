@@ -1,0 +1,84 @@
+{
+    "actors": {
+        "pathexecstop": "pathexecstop",
+        "storage": "storagemanager",
+        "wasteServiceContext": "wasteservice",
+        "sonar": "sonarshim",
+        "sonarinterrupter": "sonarinterrupter",
+        "trolley": "trolley"
+    },
+    "debugPrint": true,
+    "hosts": {
+        "pathexecstop": "localhost",
+        "basicrobot": "localhost",
+        "wasteServiceServer": "localhost",
+        "led": "localhost",
+        "storage": "localhost",
+        "wasteServiceContext": "localhost",
+        "sonar": "localhost",
+        "sonarinterrupter": "localhost",
+        "trolley": "localhost"
+    },
+    "positions": {
+        "indoor": [
+            [
+                0,
+                4
+            ],
+            [
+                1,
+                4
+            ]
+        ],
+        "plastic_box": [
+            [
+                4,
+                1
+            ],
+            [
+                4,
+                2
+            ]
+        ],
+        "glass_box": [
+            [
+                3,
+                4
+            ],
+            [
+                4,
+                4
+            ]
+        ],
+        "home": [
+            [
+                0,
+                0
+            ],
+            [
+                0,
+                0
+            ]
+        ]
+    },
+    "contexts": {
+        "pathexecstop": "ctx_pathexecstop",
+        "storage": "ctx_storagemanager",
+        "wasteServiceContext": "ctx_wasteservice",
+        "sonar": "ctx_wasteservice_sonar",
+        "sonarinterrupter": "ctx_trolley",
+        "trolley": "ctx_trolley"
+    },
+    "ports": {
+        "pathexecstop": 8025,
+        "basicrobot": 8020,
+        "wasteServiceServer": 8080,
+        "led": 8030,
+        "storage": 8071,
+        "wasteServiceContext": 8023,
+        "sonar": 8031,
+        "sonarinterrupter": 8070,
+        "trolley": 8070
+    },
+    "DLIMIT": 50
+}

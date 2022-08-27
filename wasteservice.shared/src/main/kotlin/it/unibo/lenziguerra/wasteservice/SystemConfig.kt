@@ -41,6 +41,7 @@ object SystemConfig {
         "wasteServiceContext" to "wasteservice",
         "pathexecstop" to "pathexecstop",
         "sonarinterrupter" to "sonarinterrupter",
+        "sonar" to "sonarshim",
     )
     var contexts = mutableMapOf(
         "trolley" to "ctx_wasteservice",
@@ -48,6 +49,7 @@ object SystemConfig {
         "wasteServiceContext" to "ctx_wasteservice",
         "pathexecstop" to "ctx_pathexecstop",
         "sonarinterrupter" to "ctx_wasteservice",
+        "sonar" to "ctx_wasteservice_sonar",
     )
 
     private var setConf = false
