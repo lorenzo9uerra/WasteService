@@ -1,48 +1,85 @@
 {
-    "debugPrint": true,
-    "positions": {
-        "plastic_box": [
-            [2,0],
-            [3,0]
-        ],
-        "indoor": [
-            [0,4],
-            [2,4]
-        ],
-        "glass_box": [
-            [4,2],
-            [4,3]
-        ],
-        "home": [
-            [0,0],
-            [0,0]
-        ]
-    },
     "actors": {
+        "pathexecstop": "pathexecstop",
         "wasteServiceContext": "wasteservice",
         "storage": "storagemanager",
+        "sonarinterrupter": "sonarinterrupter",
         "trolley": "trolley"
     },
+    "debugPrint": true,
     "hosts": {
-        "trolley": "wasteservice.core",
-        "storage": "wasteservice.core",
-        "wasteServiceServer": "wasteservice.core",
-        "wasteServiceContext": "wasteservice.core",
-        "pathexec": "robot",
-        "led": "wasteservice.led"
+        "pathexecstop": "localhost",
+        "basicrobot": "localhost",
+        "wasteServiceServer": "localhost",
+        "led": "localhost",
+        "storage": "localhost",
+        "wasteServiceContext": "localhost",
+        "sonar": "localhost",
+        "pathexec": "localhost",
+        "sonarinterrupter": "localhost",
+        "trolley": "localhost"
+    },
+    "positions": {
+        "plastic_box": [
+            [
+                2,
+                0
+            ],
+            [
+                3,
+                0
+            ]
+        ],
+        "indoor": [
+            [
+                0,
+                4
+            ],
+            [
+                2,
+                4
+            ]
+        ],
+        "glass_box": [
+            [
+                4,
+                2
+            ],
+            [
+                4,
+                3
+            ]
+        ],
+        "home": [
+            [
+                0,
+                0
+            ],
+            [
+                0,
+                0
+            ]
+        ]
     },
     "contexts": {
-        "trolley": "ctx_wasteservice",
+        "pathexecstop": "ctx_pathexecstop",
         "storage": "ctx_wasteservice",
         "wasteServiceContext": "ctx_wasteservice",
-        "pathexec": "ctx_basicrobot"
+        "sonar": "ctx_wasteservice",
+        "pathexec": "ctx_basicrobot",
+        "sonarinterrupter": "ctx_wasteservice",
+        "trolley": "ctx_trolley"
     },
     "ports": {
+        "pathexecstop": 8025,
+        "basicrobot": 8020,
         "wasteServiceServer": 8080,
         "led": 8030,
         "storage": 8023,
         "wasteServiceContext": 8023,
+        "sonar": 8031,
         "pathexec": 8023,
+        "sonarinterrupter": 8023,
         "trolley": 8023
     },
     "DLIMIT": 50

@@ -123,6 +123,10 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> { useJUnitPlatform() }
 
+application {
+    mainClass.set("it.unibo.local_ctx_wasteservice.MainCtx_wasteserviceKt")
+}
+
 tasks.bootRun {
     mainClass.set("it.unibo.lenziguerra.wasteservice.wasteservice.WasteserviceApplicationKt")
 }

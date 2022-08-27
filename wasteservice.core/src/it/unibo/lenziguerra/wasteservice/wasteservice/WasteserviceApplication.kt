@@ -32,7 +32,7 @@ class WasteServiceContextBean {
 
 	init {
 		thread {
-			it.unibo.ctx_wasteservice.main()
+            it.unibo.local_ctx_wasteservice.main()
 		}
 
 		var tmpQakCtx = sysUtil.getContext(SystemConfig.contexts["wasteServiceContext"]!!)

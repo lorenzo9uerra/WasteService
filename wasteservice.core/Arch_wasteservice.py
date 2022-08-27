@@ -21,9 +21,11 @@ with Diagram('wasteserviceArch', show=False, outformat='png', graph_attr=graphat
      sys = Custom('','./qakicons/system.png')
      with Cluster('ctx_wasteservice', graph_attr=nodeattr):
           wasteservice=Custom('wasteservice','./qakicons/symActorSmall.png')
+     with Cluster('ctx_trolley', graph_attr=nodeattr):
           trolley=Custom('trolley','./qakicons/symActorSmall.png')
-          storagemanager=Custom('storagemanager','./qakicons/symActorSmall.png')
           sonarinterrupter=Custom('sonarinterrupter','./qakicons/symActorSmall.png')
+     with Cluster('ctx_storagemanager', graph_attr=nodeattr):
+          storagemanager=Custom('storagemanager','./qakicons/symActorSmall.png')
      with Cluster('ctx_pathexecstop', graph_attr=nodeattr):
           pathexecstop=Custom('pathexecstop(ext)','./qakicons/externalQActor.png')
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyMove') >> trolley

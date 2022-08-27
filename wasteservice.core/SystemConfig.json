@@ -68,7 +68,7 @@
         "sonar": "ctx_wasteservice",
         "pathexec": "ctx_basicrobot",
         "sonarinterrupter": "ctx_wasteservice",
-        "trolley": "ctx_wasteservice"
+        "trolley": "ctx_trolley"
     },
     "ports": {
         "pathexecstop": 8025,

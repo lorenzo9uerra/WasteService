@@ -1,0 +1,50 @@
+version: '3' # optional since v1.27.0
+services:
+  wenv:
+    image: docker.io/lnwor/virtualrobotdisi:4.3
+    #image: virtualrobotdisi:4.3
+    ports:
+      - 8090:8090 
+      - 8091:8091/tcp
+      - 8091:8091/udp
+  robot:
+    image: docker.io/natbodocker/basicrobot22:2.0
+    #image: basicrobot22:1.0
+    ports:
+      - 8020:8020/tcp
+      - 8020:8020/udp
+    depends_on:
+      - wenv
+  unibo.pathexecstop:
+    image: docker.io/lnwor/unibo.pathexecstop:1.0
+    ports:
+      - 8025:8025/tcp
+      - 8025:8025/udp
+  wasteservice.core:
+    image: docker.io/lnwor/wasteservice.core:1.1
+    ports:
+      - 8080:8080/tcp
+      - 8080:8080/udp
+      - 8023:8023/tcp
+      - 8023:8023/udp
+  wasteservice.trolley:
+    image: docker.io/lnwor/wasteservice.trolley:1.0
+    ports:
+      - 8070:8070/tcp
+      - 8070:8070/udp
+    depends_on:
+      - wasteservice.core
+  wasteservice.storage:
+    image: docker.io/lnwor/wasteservice.storage:1.0
+    ports:
+      - 8071:8071/tcp
+      - 8071:8071/udp
+    depends_on:
+      - wasteservice.core
+
+## -------------------------------------------------------------
+## TODO See https://docs.docker.com/compose/startup-order/
+## -------------------------------------------------------------
+## docker-compose -f basicrobot22.yaml  up
+## docker-compose run --service-ports wenv
+## docker-compose run --service-ports vrobotclient  ATTIVA ANCHE wenv

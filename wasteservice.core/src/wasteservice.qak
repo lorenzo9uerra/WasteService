@@ -32,6 +32,8 @@ Dispatch testStorageReset : testStorageReset(_)
 Dispatch testStorageSet : testStorageSet(JSON_DATA)
 
 Context ctx_wasteservice ip [host="localhost" port=8023]
+Context ctx_trolley ip [host="localhost" port=8070]
+Context ctx_storagemanager ip [host="localhost" port=8071]
 
 // Esterno
 Context ctx_pathexecstop ip [host="127.0.0.1" port=8025]
@@ -150,7 +152,7 @@ QActor wasteservice context ctx_wasteservice {
     Transition t0 whenTime 500 -> home // TEMPORANEO, UTILE IN FASE DI SVILUPPO IN CASO DI RESET MANUALE VIRTUALENV
 }
 
-QActor trolley context ctx_wasteservice {
+QActor trolley context ctx_trolley {
 	[#
 		val Support = it.unibo.lenziguerra.wasteservice.trolley.TrolleySupport.getSupport()
 		var WaitingPath = false
@@ -300,7 +302,7 @@ QActor trolley context ctx_wasteservice {
 	
 }
 
-QActor storagemanager context ctx_wasteservice {
+QActor storagemanager context ctx_storagemanager {
 	[#
 		var Support = it.unibo.lenziguerra.wasteservice.storage.StorageManagerSupport.getSupport()
 	#]
@@ -363,7 +365,7 @@ QActor storagemanager context ctx_wasteservice {
 }
 
 
-QActor sonarinterrupter context ctx_wasteservice {
+QActor sonarinterrupter context ctx_trolley {
 	[# 
 	// gira intorno a impossibilità di usare it.[...] dentro a stato
 	// perchè it è già keyword
@@ -394,4 +396,3 @@ QActor sonarinterrupter context ctx_wasteservice {
 	}
 	Goto idle
 }
-
