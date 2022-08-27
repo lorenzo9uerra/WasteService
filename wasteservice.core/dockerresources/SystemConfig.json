@@ -8,16 +8,15 @@
     },
     "debugPrint": true,
     "hosts": {
-        "pathexecstop": "localhost",
-        "basicrobot": "localhost",
-        "wasteServiceServer": "localhost",
-        "led": "localhost",
-        "storage": "localhost",
-        "wasteServiceContext": "localhost",
-        "sonar": "localhost",
-        "pathexec": "localhost",
-        "sonarinterrupter": "localhost",
-        "trolley": "localhost"
+        "pathexecstop": "unibo.pathexecstop",
+        "basicrobot": "robot",
+        "wasteServiceServer": "wasteservice.core",
+        "led": "wasteservice.led",
+        "storage": "wasteservice.storage",
+        "wasteServiceContext": "wasteservice.core",
+        "sonar": "wasteservice.sonar",
+        "sonarinterrupter": "wasteservice.trolley",
+        "trolley": "wasteservice.trolley"
     },
     "positions": {
         "plastic_box": [
@@ -63,11 +62,10 @@
     },
     "contexts": {
         "pathexecstop": "ctx_pathexecstop",
-        "storage": "ctx_wasteservice",
+        "storage": "ctx_storagemanager",
         "wasteServiceContext": "ctx_wasteservice",
-        "sonar": "ctx_wasteservice",
-        "pathexec": "ctx_basicrobot",
-        "sonarinterrupter": "ctx_wasteservice",
+        "sonar": "ctx_wasteservice_sonar",
+        "sonarinterrupter": "ctx_trolley",
         "trolley": "ctx_trolley"
     },
     "ports": {
@@ -75,12 +73,11 @@
         "basicrobot": 8020,
         "wasteServiceServer": 8080,
         "led": 8030,
-        "storage": 8023,
+        "storage": 8071,
         "wasteServiceContext": 8023,
         "sonar": 8031,
-        "pathexec": 8023,
-        "sonarinterrupter": 8023,
-        "trolley": 8023
+        "sonarinterrupter": 8070,
+        "trolley": 8070
     },
     "DLIMIT": 50
 }
