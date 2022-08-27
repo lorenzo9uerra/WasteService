@@ -3,6 +3,7 @@ package it.unibo.lenziguerra.wasteservice.storage
 import it.unibo.lenziguerra.wasteservice.WasteType
 import it.unibo.lenziguerra.wasteservice.data.StorageStatus
 import org.json.JSONObject
+import unibo.comm22.utils.ColorsOut
 
 interface IStorageManagerSupport {
     /**
@@ -115,16 +116,25 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<WasteTyp
 
     override fun set(contents: String) {
         val jsonContents = "{$contents}"
-        @Suppress("UNCHECKED_CAST")
-        val contentsMap: Map<WasteType, Float> = (JSONObject(jsonContents).toMap() as Map<String, Float>)
-            .mapKeys { WasteType.valueOf(it.key.uppercase()) }
+        val jsonMap = JSONObject(jsonContents).toMap()
+        if (jsonMap.values.first() !is Float) {
+            ColorsOut.outerr("json Map has wrong format!")
+        }
+        val contentsMap: Map<WasteType, Float> = jsonMap.mapValues {
+            it.value.toString().toFloat() // handle varios types provided by jsonobject in a weird way
+        }.mapKeys {
+            WasteType.valueOf(it.key.uppercase())
+        }
 
         contentsMap.forEach {
             preChange(it.key, it.value)
         }
-        amount.forEach {
+        amount.mapValues {
             if (!contentsMap.containsKey(it.key)) {
                 preChange(it.key, 0f)
+                0f
+            } else {
+                it.value
             }
         }
         amount.clear();

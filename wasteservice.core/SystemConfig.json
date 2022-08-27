@@ -3,6 +3,7 @@
         "pathexecstop": "pathexecstop",
         "wasteServiceContext": "wasteservice",
         "storage": "storagemanager",
+        "sonar": "sonarshim",
         "sonarinterrupter": "sonarinterrupter",
         "trolley": "trolley"
     },
@@ -15,7 +16,6 @@
         "storage": "localhost",
         "wasteServiceContext": "localhost",
         "sonar": "localhost",
-        "pathexec": "localhost",
         "sonarinterrupter": "localhost",
         "trolley": "localhost"
     },
@@ -66,7 +66,6 @@
         "storage": "ctx_wasteservice",
         "wasteServiceContext": "ctx_wasteservice",
         "sonar": "ctx_wasteservice",
-        "pathexec": "ctx_basicrobot",
         "sonarinterrupter": "ctx_wasteservice",
         "trolley": "ctx_trolley"
     },
@@ -78,7 +77,6 @@
         "storage": 8023,
         "wasteServiceContext": 8023,
         "sonar": 8031,
-        "pathexec": 8023,
         "sonarinterrupter": 8023,
         "trolley": 8023
     },
