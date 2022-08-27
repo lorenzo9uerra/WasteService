@@ -3,6 +3,7 @@
         "pathexecstop": "pathexecstop",
         "storage": "storagemanager",
         "wasteServiceContext": "wasteservice",
+        "sonar": "sonarshim",
         "sonarinterrupter": "sonarinterrupter",
         "trolley": "trolley"
     },
@@ -64,6 +65,7 @@
         "pathexecstop": "ctx_pathexecstop",
         "storage": "ctx_wasteservice",
         "wasteServiceContext": "ctx_wasteservice",
+        "sonar": "ctx_wasteservice_sonar",
         "pathexec": "ctx_basicrobot",
         "sonarinterrupter": "ctx_wasteservice",
         "trolley": "ctx_wasteservice"
