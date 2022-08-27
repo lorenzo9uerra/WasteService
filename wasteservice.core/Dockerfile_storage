@@ -1,11 +1,9 @@
 FROM openjdk:12.0.2
-EXPOSE 8080
-EXPOSE 8023
+EXPOSE 8071
 ADD ./build/distributions/wasteservice.core-1.0.tar  /
-ADD ./build/distributions/wasteservice.core-boot-1.0.tar /
 
 
-WORKDIR /wasteservice.core-boot-1.0/bin
+WORKDIR /wasteservice.core-1.0/bin
 COPY ./dockerresources/sysRules.pl ./
 COPY ./dockerresources/wasteservice_storage.pl ./wasteservice.pl
 COPY ./dockerresources/*.json ./
