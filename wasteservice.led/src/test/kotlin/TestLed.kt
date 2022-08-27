@@ -8,6 +8,9 @@ import it.unibo.lenziguerra.wasteservice.BlinkLedState
 import it.unibo.lenziguerra.wasteservice.ContextTestUtils
 import it.unibo.lenziguerra.wasteservice.SystemConfig
 import it.unibo.lenziguerra.wasteservice.data.LedStatus
+import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
+import it.unibo.lenziguerra.wasteservice.data.WasteServiceStatus
+import it.unibo.radarSystem22.domain.utils.DomainSystemConfig
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -42,6 +45,7 @@ class TestLed {
     @Before
     fun up() {
         CommSystemConfig.tracing = false
+        DomainSystemConfig.ledGui = false
 
         thread { runBlocking {
             val sysRulesResource = javaClass.classLoader.getResource("sysRules.pl")!!
@@ -89,13 +93,13 @@ class TestLed {
     // info: home | work | stopped
     private fun sendTrolleyInfo(info: String) {
         if (info == "home") {
-            wasteserviceDummyActor.fakeResourceUpdate("tpos(home)")
+            wasteserviceDummyActor.fakeResourceUpdate(WasteServiceStatus("home").toString())
             // Make stopped false else it would take priority
-            trolleyDummyActor.fakeResourceUpdate("state(work)\npos(-1,-1)")
+            trolleyDummyActor.fakeResourceUpdate(TrolleyStatus("work", arrayOf(-1, -1)).toString())
         } else {
             // Make "trolley" not at home so the status it not replaced by home
-            wasteserviceDummyActor.fakeResourceUpdate("tpos(indoor)")
-            trolleyDummyActor.fakeResourceUpdate("state($info)\npos(-1,-1)")
+            wasteserviceDummyActor.fakeResourceUpdate(WasteServiceStatus("indoor").toString())
+            trolleyDummyActor.fakeResourceUpdate(TrolleyStatus(info, arrayOf(-1, -1)).toString())
         }
     }
 

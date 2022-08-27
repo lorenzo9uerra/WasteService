@@ -4,7 +4,10 @@ import it.unibo.lenziguerra.wasteservice.SystemLocation
 import it.unibo.lenziguerra.wasteservice.WasteType
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 
-data class WasteServiceStatus (val trolleyPos: SystemLocation, val error: String?) {
+data class WasteServiceStatus (val trolleyPos: SystemLocation, val error: String? = null) {
+    constructor(trolleyPosStr: String, error: String? = null)
+        : this(SystemLocation.valueOf(trolleyPosStr.uppercase()), error)
+
     companion object {
         fun fromProlog(prolStr: String): WasteServiceStatus {
             val trolleyPosStr = PrologUtils.getFuncLine(prolStr, "tpos")?.let {

@@ -6,6 +6,8 @@ import it.unibo.lenziguerra.wasteservice.WasteType
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 
 data class LedStatus (val state: BlinkLedState) {
+    constructor(stateStr: String) : this(BlinkLedState.valueOf(stateStr.uppercase()))
+
     companion object {
         fun fromProlog(prolStr: String): LedStatus {
             val stateStr = PrologUtils.getFuncLine(prolStr, "ledState")?.let {

@@ -26,6 +26,14 @@ data class StorageStatus (val amounts: Map<WasteType, Float>, val maxAmounts: Ma
 
             return StorageStatus(amounts, maxAmounts)
         }
+
+        // Same Java signature as constructor
+        fun fromStrMap(amounts: Map<String, Float>, maxAmounts: Map<String, Float>): StorageStatus {
+            return StorageStatus (
+                amounts.mapKeys { WasteType.valueOf(it.key.uppercase()) },
+                maxAmounts.mapKeys { WasteType.valueOf(it.key.uppercase()) },
+            )
+        }
     }
 
     override fun toString(): String {

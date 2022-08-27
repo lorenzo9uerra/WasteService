@@ -13,6 +13,7 @@ class BlinkLedTest {
     @Before
     fun up() {
         DomainSystemConfig.simulateLed = true
+        DomainSystemConfig.ledGui = false
 
         led = BlinkLed(DeviceFactory.createLed())
     }

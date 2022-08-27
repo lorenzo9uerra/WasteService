@@ -3,9 +3,12 @@ package it.unibo.lenziguerra.wasteservice.data
 import it.unibo.lenziguerra.wasteservice.WasteType
 import it.unibo.lenziguerra.wasteservice.utils.PrologUtils
 
-data class TrolleyStatus (val status: State, val pos: Array<Int>, val contentType: WasteType?, val contentAmount: Float,
-    val activity: Activity
+data class TrolleyStatus (val status: State, val pos: Array<Int>, val contentType: WasteType? = null, val contentAmount: Float = 0f,
+    val activity: Activity = Activity.IDLE
 ) {
+    constructor(statusStr: String, pos: Array<Int>, contentType: String? = null, contentAmount: Float = 0f, activityStr: String = "idle")
+        : this(State.valueOf(statusStr.uppercase()), pos, contentType?.let { WasteType.valueOf(it.uppercase()) }, contentAmount, Activity.valueOf(activityStr.uppercase()))
+
     enum class State {
         WORK, STOPPED, ERROR
     }
