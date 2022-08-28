@@ -1,9 +1,9 @@
 - Menzionare i vari contesti all'inizio dell'analisi
 - Rigenerare SPRINT1 e SPRINT2 doc html, modifiche a link test e cose minori varie
 ~~- prova con sonar reale~~
-- divisione dei contesti, e rework delle classi di lancio così usano il config e si riesce a cambiare meglio in base a quello
-- ricontrollare se vanno ancora i test vari
-- reworkare altri test come quello del sonar così sono eseguibili decentemente se possibile
+- ~~divisione dei contesti,~~ e rework delle classi di lancio così usano il config e si riesce a cambiare meglio in base a quello
+~~- ricontrollare se vanno ancora i test vari~~
+~~- reworkare altri test come quello del sonar così sono eseguibili decentemente se possibile~~
 - Immagini doc SPRINT 3
 
 RICEVIMENTO 08/07
