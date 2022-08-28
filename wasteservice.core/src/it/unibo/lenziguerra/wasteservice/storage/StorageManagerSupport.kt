@@ -129,15 +129,6 @@ abstract class AbstractStorageManagerVirtual(private val maxAmount: Map<WasteTyp
         contentsMap.forEach {
             preChange(it.key, it.value)
         }
-        amount.mapValues {
-            if (!contentsMap.containsKey(it.key)) {
-                preChange(it.key, 0f)
-                0f
-            } else {
-                it.value
-            }
-        }
-        amount.clear();
         amount.putAll(contentsMap)
     }
 }
