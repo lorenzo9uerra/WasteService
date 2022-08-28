@@ -2,9 +2,11 @@ package it.unibo.lenziguerra.wasteservice.wasteservice
 
 import it.unibo.kactor.*
 import it.unibo.lenziguerra.wasteservice.ContextTestUtils
+import it.unibo.lenziguerra.wasteservice.PathExecDummyImmediate
 import it.unibo.lenziguerra.wasteservice.SystemConfig
 import it.unibo.lenziguerra.wasteservice.WasteType
 import it.unibo.lenziguerra.wasteservice.data.StorageStatus
+import it.unibo.lenziguerra.wasteservice.utils.LogUtils
 import it.unibo.lenziguerra.wasteservice.utils.MsgUtilsWs.cleanMessage
 import it.unibo.lenziguerra.wasteservice.utils.WsConnSpring
 import kotlinx.coroutines.runBlocking
@@ -62,7 +64,7 @@ class TestRequest {
             waitForActors()
             addTestActors()
 
-            ColorsOut.outappl("TestRequest ready!", ColorsOut.GREEN)
+            LogUtils.threadOut("TestRequest ready!", ColorsOut.GREEN)
         }
 
         @AfterAll
@@ -74,7 +76,7 @@ class TestRequest {
         fun waitForActors() {
             val actorsToWait = listOf("storagemanager", "wasteservice", "trolley")
 
-            ColorsOut.outappl(this::class.java.name + " waits for actors ... ", ColorsOut.GREEN)
+            LogUtils.threadOut(this::class.java.name + " waits for actors ... ", ColorsOut.GREEN)
 
             actorsToWait.forEach {
                 var actor = QakContext.getActor(it)
@@ -86,14 +88,14 @@ class TestRequest {
 
             qakContext = sysUtil.getContext(TEST_CONTEXT_NAME)!!
 
-            ColorsOut.outappl("Actors loaded", ColorsOut.GREEN)
+            LogUtils.threadOut("Actors loaded", ColorsOut.GREEN)
         }
 
         fun addTestActors() {
             val pathexec = PathExecDummyImmediate("pathexecstop")
             qakContext.addActor(pathexec)
 
-            ColorsOut.outappl("Added test actors <${pathexec.name}>", ColorsOut.GREEN)
+            LogUtils.threadOut("Added test actors <${pathexec.name}>", ColorsOut.GREEN)
         }
     }
 
@@ -107,7 +109,7 @@ class TestRequest {
     @BeforeEach
     fun up() {
         startWsConnection()
-        ColorsOut.outappl("Starting TestRequest, port is $port", ColorsOut.CYAN)
+        LogUtils.threadOut("Starting TestRequest, port is $port", ColorsOut.CYAN)
         dispatch(
             "testStorageReset",
             "",
@@ -117,14 +119,14 @@ class TestRequest {
 
     @AfterEach
     fun down() {
-        ColorsOut.outappl(this.javaClass.name + " TEST END", ColorsOut.GREEN)
+        LogUtils.threadOut(this.javaClass.name + " TEST END", ColorsOut.GREEN)
     }
 
     @Test
     fun testAccept() {
         println("Start testAccept")
         val reply: String = askDeposit("glass", 1)
-        ColorsOut.outappl("Reply: $reply", ColorsOut.CYAN)
+        LogUtils.threadOut("Reply: $reply", ColorsOut.CYAN)
         assertTrue(reply.contains("loadaccept"))
     }
 
@@ -144,7 +146,7 @@ class TestRequest {
         )
 
         val reply: String = askDeposit(type, amount)
-        ColorsOut.outappl("Reply: $reply", ColorsOut.CYAN)
+        LogUtils.threadOut("Reply: $reply", ColorsOut.CYAN)
         assertTrue(reply.contains("loadrejected"))
     }
 
@@ -157,9 +159,9 @@ class TestRequest {
             SystemConfig.actors["storage"]!!
         )
         val reply = askDeposit("glass", 1)
-        ColorsOut.outappl("Reply: $reply", ColorsOut.CYAN)
+        LogUtils.threadOut("Reply: $reply", ColorsOut.CYAN)
         val dispatch = wsConn.receiveMsg()
-        ColorsOut.outappl("Received: $dispatch", ColorsOut.CYAN)
+        LogUtils.threadOut("Received: $dispatch", ColorsOut.CYAN)
         assertTrue(dispatch.contains("pickedUp"))
     }
 
@@ -182,30 +184,20 @@ class TestRequest {
             "$TEST_CONTEXT_NAME/${SystemConfig.actors[element]!!}"
         )
         val answer = reqConn.request("")
-        ColorsOut.outappl("coapRequest answer=$answer", ColorsOut.CYAN)
+        LogUtils.threadOut("coapRequest answer=$answer", ColorsOut.CYAN)
         return answer
     }
 
     protected fun dispatch(msgId: String, content: String, dest: String, actor: String = "test") {
         try {
             val msg = MsgUtil.buildDispatch(actor, msgId, content, dest)
-            ColorsOut.outappl("Sending " + cleanMessage(msg), ColorsOut.CYAN)
+            LogUtils.threadOut("Sending " + cleanMessage(msg), ColorsOut.CYAN)
             runBlocking {
                 MsgUtil.sendMsg(msg, QakContext.getActor(msg.msgReceiver())!!)
             }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             fail(e.message)
-        }
-    }
-
-    internal class PathExecDummyImmediate(name: String) : ActorBasic(name) {
-        override suspend fun actorBody(msg: IApplMessage) {
-            if (msg.msgId() == "dopath") {
-                // answer doesn't work?
-                val reply = MsgUtil.buildReply(name, "dopathdone", "dopathdone(ok)", msg.msgSender())
-                sendMessageToActor(reply, msg.msgSender())
-            }
         }
     }
 }
