@@ -23,7 +23,7 @@ services:
     depends_on:
       - robot
   wasteservice.core:
-    image: docker.io/lnwor/wasteservice.core:1.1
+    image: docker.io/lnwor/wasteservice.core:1.2
     ports:
       - 8080:8080/tcp
       - 8080:8080/udp
@@ -47,7 +47,7 @@ services:
     depends_on:
       - wasteservice.core
   wasteservice.statusgui:
-    image: docker.io/filloax/wasteservice.statusgui:1.0
+    image: docker.io/lnwor/wasteservice.statusgui:1.1
     extra_hosts:
       wasteservice.led: 192.168.1.15 # impostare in base al contesto
     ports:
