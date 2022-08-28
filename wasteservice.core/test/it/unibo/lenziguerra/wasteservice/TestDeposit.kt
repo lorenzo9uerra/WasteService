@@ -1,20 +1,14 @@
 package it.unibo.lenziguerra.wasteservice
 
 import it.unibo.kactor.MsgUtil
-import it.unibo.kactor.MsgUtil.buildDispatch
 import it.unibo.kactor.MsgUtil.buildRequest
 import it.unibo.kactor.QakContext
 import it.unibo.kactor.sysUtil
-import it.unibo.lenziguerra.wasteservice.SystemConfig.contexts
 import it.unibo.lenziguerra.wasteservice.data.StorageStatus
 import it.unibo.lenziguerra.wasteservice.utils.LogUtils
 import it.unibo.lenziguerra.wasteservice.utils.MsgUtilsWs
-import it.unibo.lenziguerra.wasteservice.utils.PrologUtils.extractPayload
-import it.unibo.lenziguerra.wasteservice.utils.PrologUtils.getFuncLines
 import kotlinx.coroutines.runBlocking
-import org.assertj.core.api.Assertions
 import org.eclipse.californium.core.CoapObserveRelation
-import org.junit.Assert
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import unibo.comm22.coap.CoapConnection
@@ -119,6 +113,7 @@ class TestDeposit {
 
     @BeforeEach
     fun up() {
+        LogUtils.threadOut(this.javaClass.name + " TEST START", ColorsOut.GREEN)
         startObservingTrolley()
         startObservingWasteservice()
         waitForHome()
@@ -291,7 +286,7 @@ class TestDeposit {
             }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
-            Assertions.fail(e.message)
+            fail(e.message)
         }
     }
 

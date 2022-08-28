@@ -49,7 +49,7 @@ data class TrolleyStatus (val status: State, val pos: Array<Int>, val contentTyp
             |state(${status.toString().lowercase()})
             |pos(${pos[0]},${pos[1]})
             |activity(${activity.toString().lowercase()})
-            |${contentType?.let { "content($contentType,$contentAmount)" } ?: ""}
+            |${contentType?.let { "content(${contentType.name.lowercase()},$contentAmount)" } ?: ""}
         """.trimMargin()
     }
 
