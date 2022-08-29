@@ -48,7 +48,7 @@ services:
       - wasteservice.core
   wasteservice.raspgui:
     hostname: wasteservice.led
-    image: docker.io/filloax/wasteservice.raspgui:1.0
+    image: docker.io/filloax/wasteservice.raspgui:1.1
     ports:
       - 8096:8096/tcp
       - 8096:8096/udp
