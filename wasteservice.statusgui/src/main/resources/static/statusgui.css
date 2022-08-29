@@ -162,6 +162,7 @@ p, h2, h3, h4 {
     box-shadow: 2px 0 2px 0 var(--bar-color);
     width: 1%;
     height: 100%;
+    transition: width 1s ease-in-out;
 }
 .bar.bar-half {
     --bar-color: rgb(236, 236, 52);
