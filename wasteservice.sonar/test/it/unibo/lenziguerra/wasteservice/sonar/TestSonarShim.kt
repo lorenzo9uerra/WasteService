@@ -26,7 +26,7 @@ class TestSonarShim {
     companion object {
         const val SONARS_ACTOR_NAME = "sonarshim"
 
-        const val TEST_CONTEXT_NAME = "ctx_wasteservice_sonar_test"
+        const val TEST_CONTEXT_NAME = "ctx_raspberry_sonar_test"
         const val TEST_CONTEXT_HOST = "localhost"
         const val TEST_CONTEXT_PORT = 8050
         const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "$TEST_CONTEXT_HOST",  "TCP", "$TEST_CONTEXT_PORT").

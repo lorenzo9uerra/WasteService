@@ -11,7 +11,7 @@
         "pathexecstop": "192.168.1.12",
         "basicrobot": "192.168.1.12",
         "wasteServiceServer": "192.168.1.12",
-        "led": "192.168.1.12",
+        "led": "localhost",
         "storage": "192.168.1.12",
         "wasteServiceContext": "192.168.1.12",
         "sonar": "localhost",
@@ -62,22 +62,22 @@
     },
     "contexts": {
         "pathexecstop": "ctx_pathexecstop",
-        "storage": "ctx_wasteservice",
+        "storage": "ctx_storagemanager",
         "wasteServiceContext": "ctx_wasteservice",
-        "sonarinterrupter": "ctx_wasteservice",
-        "trolley": "ctx_wasteservice"
+        "sonar": "ctx_raspberry_sonar",
+        "sonarinterrupter": "ctx_trolley",
+        "trolley": "ctx_trolley"
     },
     "ports": {
         "pathexecstop": 8025,
         "basicrobot": 8020,
         "wasteServiceServer": 8080,
         "led": 8030,
-        "storage": 8023,
+        "storage": 8071,
         "wasteServiceContext": 8023,
         "sonar": 8031,
-        "pathexec": 8023,
-        "sonarinterrupter": 8023,
-        "trolley": 8023
+        "sonarinterrupter": 8070,
+        "trolley": 8070
     },
     "DLIMIT": 50
 }

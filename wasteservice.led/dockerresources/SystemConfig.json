@@ -1,5 +1,41 @@
 {
     "debugPrint": true,
+    "actors": {
+        "wasteServiceContext": "wasteservice",
+        "storage": "storagemanager",
+        "trolley": "trolley"
+    },
+    "hosts": {
+        "pathexecstop": "unibo.pathexecstop",
+        "basicrobot": "robot",
+        "wasteServiceServer": "wasteservice.core",
+        "led": "wasteservice.led",
+        "storage": "wasteservice.storage",
+        "wasteServiceContext": "wasteservice.core",
+        "sonar": "wasteservice.sonar",
+        "sonarinterrupter": "wasteservice.trolley",
+        "trolley": "wasteservice.trolley"
+    },
+    "contexts": {
+        "pathexecstop": "ctx_pathexecstop",
+        "storage": "ctx_storagemanager",
+        "wasteServiceContext": "ctx_wasteservice",
+        "sonar": "ctx_raspberry_sonar",
+        "sonarinterrupter": "ctx_trolley",
+        "trolley": "ctx_trolley"
+    },
+    "ports": {
+        "pathexecstop": 8025,
+        "basicrobot": 8020,
+        "wasteServiceServer": 8080,
+        "led": 8030,
+        "storage": 8071,
+        "wasteServiceContext": 8023,
+        "sonar": 8031,
+        "sonarinterrupter": 8070,
+        "trolley": 8070
+    },
+    "DLIMIT": 50,
     "positions": {
         "plastic_box": [
             [2,0],
@@ -17,33 +53,5 @@
             [0,0],
             [0,0]
         ]
-    },
-    "actors": {
-        "wasteServiceContext": "wasteservice",
-        "storage": "storagemanager",
-        "trolley": "trolley"
-    },
-    "hosts": {
-        "trolley": "wasteservice.core",
-        "storage": "wasteservice.core",
-        "wasteServiceServer": "wasteservice.core",
-        "wasteServiceContext": "wasteservice.core",
-        "pathexec": "robot",
-        "led": "wasteservice.led"
-    },
-    "contexts": {
-        "trolley": "ctx_wasteservice",
-        "storage": "ctx_wasteservice",
-        "wasteServiceContext": "ctx_wasteservice",
-        "pathexec": "ctx_basicrobot"
-    },
-    "ports": {
-        "wasteServiceServer": 8080,
-        "led": 8030,
-        "storage": 8023,
-        "wasteServiceContext": 8023,
-        "pathexec": 8023,
-        "trolley": 8023
-    },
-    "DLIMIT": 50
+    }
 }

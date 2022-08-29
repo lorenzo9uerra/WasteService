@@ -22,7 +22,7 @@
         "pathexecstop": "ctx_pathexecstop",
         "storage": "ctx_storagemanager",
         "wasteServiceContext": "ctx_wasteservice",
-        "sonar": "ctx_wasteservice_sonar",
+        "sonar": "ctx_raspberry_sonar",
         "sonarinterrupter": "ctx_trolley",
         "trolley": "ctx_trolley"
     },

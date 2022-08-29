@@ -24,26 +24,34 @@
         "trolley": "trolley"
     },
     "hosts": {
-        "trolley": "192.168.1.12",
-        "storage": "192.168.1.12",
+        "pathexecstop": "192.168.1.12",
+        "basicrobot": "192.168.1.12",
         "wasteServiceServer": "192.168.1.12",
+        "led": "localhost",
+        "storage": "192.168.1.12",
         "wasteServiceContext": "192.168.1.12",
-        "pathexec": "192.168.1.12",
-        "led": "localhost"
+        "sonar": "localhost",
+        "sonarinterrupter": "192.168.1.12",
+        "trolley": "192.168.1.12"
     },
     "contexts": {
-        "trolley": "ctx_wasteservice",
-        "storage": "ctx_wasteservice",
+        "pathexecstop": "ctx_pathexecstop",
+        "storage": "ctx_storagemanager",
         "wasteServiceContext": "ctx_wasteservice",
-        "pathexec": "ctx_basicrobot"
+        "sonar": "ctx_raspberry_sonar",
+        "sonarinterrupter": "ctx_trolley",
+        "trolley": "ctx_trolley"
     },
     "ports": {
+        "pathexecstop": 8025,
+        "basicrobot": 8020,
         "wasteServiceServer": 8080,
         "led": 8030,
-        "storage": 8023,
+        "storage": 8071,
         "wasteServiceContext": 8023,
-        "pathexec": 8023,
-        "trolley": 8023
+        "sonar": 8031,
+        "sonarinterrupter": 8070,
+        "trolley": 8070
     },
     "DLIMIT": 50
 }

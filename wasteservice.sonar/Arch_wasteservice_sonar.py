@@ -19,8 +19,9 @@ eventedgeattr = {
 with Diagram('wasteservice_sonarArch', show=False, outformat='png', graph_attr=graphattr) as diag:
   with Cluster('env'):
      sys = Custom('','./qakicons/system.png')
-     with Cluster('ctx_wasteservice_sonar', graph_attr=nodeattr):
-          sonar_init=Custom('sonar_init','./qakicons/symActorSmall.png')
-          sonar_shim=Custom('sonar_shim(coded)','./qakicons/codedQActor.png')
-     sonar_init >> Edge(color='blue', style='solid', xlabel='sonarStart') >> sonar_shim
+     with Cluster('ctx_raspberry_sonar', graph_attr=nodeattr):
+          sonarshim=Custom('sonarshim(coded)','./qakicons/codedQActor.png')
+     with Cluster('ctx_trolley', graph_attr=nodeattr):
+          sonarinit=Custom('sonarinit','./qakicons/symActorSmall.png')
+     sonarinit >> Edge(color='blue', style='solid', xlabel='sonarStart') >> sonarshim
 diag

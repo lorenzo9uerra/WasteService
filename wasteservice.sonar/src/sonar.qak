@@ -4,14 +4,14 @@ Event sonarDistance : sonarDistance(DIST)
 
 Dispatch sonarStart : sonarStart(_)
 
-Context ctx_wasteservice_sonar ip [host="localhost" port=8031]
-Context ctx_wasteservice ip [host="host.sonarinterrupter" port=8023]
+Context ctx_raspberry_sonar ip [host="localhost" port=8031]
+Context ctx_trolley ip [host="host.sonarinterrupter" port=8023]
 
-CodedQActor sonar_shim context ctx_wasteservice_sonar className "it.unibo.lenziguerra.wasteservice.sonar.SonarShim"
+CodedQActor sonarshim context ctx_raspberry_sonar className "it.unibo.lenziguerra.wasteservice.sonar.SonarShim"
 
 // Avvia il sistema, rimuovere per test
-QActor sonar_init context ctx_wasteservice_sonar {
+QActor sonarinit context ctx_trolley {
 	State start initial {
-		forward sonar_shim -m sonarStart : sonarStart(_)
+		forward sonarshim -m sonarStart : sonarStart(_)
 	}
 }

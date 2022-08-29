@@ -180,7 +180,6 @@ QActor trolley context ctx_trolley {
    		[# Support.updateState("work") #]
 		updateResource [# Support.getPrologContent() #]
   		[# MsgUtil.outgreen("Trolley resuming...") #]
-  		println("$WaitingPath")
   		  		   			
   		if [# WaitingPath #] {
   			forward pathexecstop -m resumePath : resumePath(_)
@@ -194,7 +193,6 @@ QActor trolley context ctx_trolley {
   		[# Support.updateState("stopped") #]
 		updateResource [# Support.getPrologContent() #]
   		[# MsgUtil.outred("Trolley stopped!") #]
-  		println("$WaitingPath")
   		  		
   		if [# WaitingPath #] {
   			forward pathexecstop -m stopPath : stopPath(_)

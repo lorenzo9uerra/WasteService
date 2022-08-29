@@ -49,7 +49,7 @@ object SystemConfig {
         "wasteServiceContext" to "ctx_wasteservice",
         "pathexecstop" to "ctx_pathexecstop",
         "sonarinterrupter" to "ctx_wasteservice",
-        "sonar" to "ctx_wasteservice_sonar",
+        "sonar" to "ctx_raspberry_sonar",
     )
 
     private var setConf = false
