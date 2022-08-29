@@ -55,7 +55,7 @@ services:
     depends_on:
       - wasteservice.core
   wasteservice.statusgui:
-    image: docker.io/lnwor/wasteservice.statusgui:1.1
+    image: docker.io/lnwor/wasteservice.statusgui:2.0
     ports:
       - 8095:8095/tcp
       - 8095:8095/udp

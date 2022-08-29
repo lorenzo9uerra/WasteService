@@ -47,7 +47,7 @@ services:
     depends_on:
       - wasteservice.core
   wasteservice.statusgui:
-    image: docker.io/lnwor/wasteservice.statusgui:1.1
+    image: docker.io/lnwor/wasteservice.statusgui:2.0
     extra_hosts:
       wasteservice.led: 192.168.1.15 # impostare in base al contesto
     ports:
