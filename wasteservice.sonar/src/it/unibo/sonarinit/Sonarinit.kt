@@ -19,7 +19,11 @@ class Sonarinit ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				state("start") { //this:State
 					action { //it:State
 						forward("sonarStart", "sonarStart(_)" ,"sonarshim" ) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 				}	 
 			}
 		}
