@@ -30,10 +30,6 @@ Reply dopathfail   : dopathfail( ARG )
 Dispatch stopPath : stopPath(_)
 Dispatch resumePath : resumePath(_)
 
-// whenTime + interrupt workaround
-Request setAlarm : setAlarm(TIME)
-Reply triggerAlarm : triggerAlarm(_)
-
 Context ctx_wasteservice_proto_ctx ip [host="localhost" port=8050]
 
 QActor ledcontroller context ctx_wasteservice_proto_ctx {
