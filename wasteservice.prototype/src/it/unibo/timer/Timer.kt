@@ -18,7 +18,11 @@ class Timer ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 		return { //this:ActionBasciFsm
 				state("wait") { //this:State
 					action { //it:State
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t630",targetState="handleAlarm",cond=whenRequest("setAlarm"))
 				}	 
 				state("handleAlarm") { //this:State
@@ -29,7 +33,11 @@ class Timer ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 								delay(Time)
 								answer("setAlarm", "triggerAlarm", "triggerAlarm(_)"   )  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 			}

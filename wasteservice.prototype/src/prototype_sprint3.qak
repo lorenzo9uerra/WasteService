@@ -498,9 +498,8 @@ QActor pathexecstop context ctx_wasteservice_proto_ctx {
 		printCurrentMessage
 		println("pathexecstop | Move progress: ${5 - Counter}")
 		[# Counter-- #]
-		request timer -m setAlarm : setAlarm(250)
 	}
-	Transition t2 whenReply triggerAlarm -> checkWorkEnded
+	Transition t2 whenTime 250 -> checkWorkEnded
 				  whenInterrupt stopPath -> stopped 
 	
 	State checkWorkEnded {		
@@ -525,23 +524,6 @@ QActor pathexecstop context ctx_wasteservice_proto_ctx {
 		println("pathexecstop resumed")
 		returnFromInterrupt
 	}
-}
-
-// Workaround per whenTime + interrupt, usabile da
-// un attore alla volta
-QActor timer context ctx_wasteservice_proto_ctx {
-	State wait initial {
-	}
-	Transition t6 whenRequest setAlarm -> handleAlarm
-	
-	State handleAlarm {
-		onMsg (setAlarm : setAlarm(TIME)) {
-			[# val Time = payloadArg(0).toLong() #]
-			delayVar Time
-			replyTo setAlarm with triggerAlarm : triggerAlarm(_)
-		}
-	}
-	Goto wait
 }
 
 QActor sonarshim context ctx_wasteservice_proto_ctx {

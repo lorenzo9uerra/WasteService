@@ -10,6 +10,5 @@ context(ctx_wasteservice_proto_ctx, "localhost",  "TCP", "8050").
   qactor( storagemanager, ctx_wasteservice_proto_ctx, "it.unibo.storagemanager.Storagemanager").
   qactor( wastetruck, ctx_wasteservice_proto_ctx, "it.unibo.wastetruck.Wastetruck").
   qactor( pathexecstop, ctx_wasteservice_proto_ctx, "it.unibo.pathexecstop.Pathexecstop").
-  qactor( timer, ctx_wasteservice_proto_ctx, "it.unibo.timer.Timer").
   qactor( sonarshim, ctx_wasteservice_proto_ctx, "it.unibo.sonarshim.Sonarshim").
   qactor( sonarinterrupter, ctx_wasteservice_proto_ctx, "it.unibo.sonarinterrupter.Sonarinterrupter").

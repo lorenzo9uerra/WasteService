@@ -20,7 +20,11 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("s0") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t125",targetState="doThePath",cond=whenRequest("dopath"))
 					interrupthandle(edgeName="t126",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
 				}	 
@@ -28,7 +32,11 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						 Counter = 4  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="nextMove", cond=doswitch() )
 				}	 
 				state("nextMove") { //this:State
@@ -36,14 +44,25 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("pathexecstop | Move progress: ${5 - Counter}")
 						 Counter--  
-						request("setAlarm", "setAlarm(250)" ,"timer" )  
+						//genTimer( actor, state )
 					}
-					 transition(edgeName="t227",targetState="checkWorkEnded",cond=whenReply("triggerAlarm"))
+					//After Lenzi Aug2002
+					sysaction { //it:State
+				 	 		//sysaction { //it:State
+				 	 		  stateTimer = TimerActor("timer_nextMove", 
+				 	 			scope, context!!, "local_tout_pathexecstop_nextMove", 250.toLong() )
+				 	 		//}
+					}	 	 
+					 transition(edgeName="t227",targetState="checkWorkEnded",cond=whenTimeout("local_tout_pathexecstop_nextMove"))   
 					interrupthandle(edgeName="t228",targetState="stopped",cond=whenDispatch("stopPath"),interruptedStateTransitions)
 				}	 
 				state("checkWorkEnded") { //this:State
 					action { //it:State
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="endWorkOk", cond=doswitchGuarded({ Counter <= 0  
 					}) )
 					transition( edgeName="goto",targetState="nextMove", cond=doswitchGuarded({! ( Counter <= 0  
@@ -54,14 +73,22 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("endWorkOk: PATH DONE")
 						answer("dopath", "dopathdone", "dopathdone(ok)"   )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="s0", cond=doswitch() )
 				}	 
 				state("stopped") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("pathexecstop stopped")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t329",targetState="resumeFromStop",cond=whenDispatch("resumePath"))
 				}	 
 				state("resumeFromStop") { //this:State
@@ -69,7 +96,11 @@ class Pathexecstop ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("pathexecstop resumed")
 						returnFromInterrupt(interruptedStateTransitions)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 				}	 
 			}
 		}

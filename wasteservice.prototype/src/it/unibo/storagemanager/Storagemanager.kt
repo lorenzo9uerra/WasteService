@@ -24,13 +24,21 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 						println("STORAGE: Glass ${Content["glass"]}/${MaxContent["glass"]}, Plastic ${Content["plastic"]}/${MaxContent["plastic"]}")
 						updateResourceRep( Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n")  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("idle") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t020",targetState="handleAsk",cond=whenRequest("storageAsk"))
 					transition(edgeName="t021",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
 				}	 
@@ -42,7 +50,11 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 								 var SpaceLeft = MaxContent.getOrDefault(payloadArg(0), 0.0) - Content.getOrDefault(payloadArg(0), 0.0)  
 								answer("storageAsk", "storageAt", "storageAt(${payloadArg(0)},$SpaceLeft)"   )  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("handleDeposit") { //this:State
@@ -54,7 +66,11 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 								updateResourceRep( Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n")  
 								)
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}

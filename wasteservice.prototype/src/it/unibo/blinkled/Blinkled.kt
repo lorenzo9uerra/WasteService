@@ -21,12 +21,20 @@ class Blinkled ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 						println("	Led | OFF")
 						updateResourceRep( "ledState(off)"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="listen", cond=doswitch() )
 				}	 
 				state("listen") { //this:State
 					action { //it:State
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t01",targetState="handleSet",cond=whenDispatch("ledSet"))
 				}	 
 				state("handleSet") { //this:State
@@ -37,7 +45,11 @@ class Blinkled ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 								updateResourceRep( "ledState(${payloadArg(0)})"  
 								)
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="listen", cond=doswitch() )
 				}	 
 			}

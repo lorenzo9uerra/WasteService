@@ -28,7 +28,11 @@ class Wasteservicestatusgui ( name: String, scope: CoroutineScope  ) : ActorBasi
 						coapObserverUtil.startObserving(myself ,"wasteservice" )
 						coapObserverUtil.startObserving(myself ,"blinkled" )
 						coapObserverUtil.startObserving(myself ,"storagemanager" )
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="show", cond=doswitch() )
 				}	 
 				state("show") { //this:State
@@ -36,7 +40,11 @@ class Wasteservicestatusgui ( name: String, scope: CoroutineScope  ) : ActorBasi
 						println("	GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]")
 						updateResourceRep( "GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus], Storage: [Glass: $StorageGlass, Plastic: $StoragePlastic]"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t02",targetState="handleUpdate",cond=whenDispatch("coapUpdate"))
 				}	 
 				state("handleUpdate") { //this:State
@@ -64,7 +72,11 @@ class Wasteservicestatusgui ( name: String, scope: CoroutineScope  ) : ActorBasi
 								  					}
 								}
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="show", cond=doswitch() )
 				}	 
 			}
