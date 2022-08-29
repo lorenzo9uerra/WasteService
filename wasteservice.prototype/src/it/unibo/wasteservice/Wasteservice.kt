@@ -31,13 +31,21 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						updateResourceRep( "tpos(home)"  
 						)
 						println("	WS | Start, trolley at home")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="waitRequest", cond=doswitch() )
 				}	 
 				state("waitRequest") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="tIdle3",targetState="handleRequest",cond=whenRequest("loadDeposit"))
 				}	 
 				state("handleRequest") { //this:State
@@ -51,7 +59,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 								println("	WS | Request received $CurrentType $CurrentAmount")
 								request("storageAsk", "storageAsk($CurrentType)" ,"storagemanager" )  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t04",targetState="handleStorageReply",cond=whenReply("storageAt"))
 				}	 
 				state("handleStorageReply") { //this:State
@@ -63,7 +75,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 								println("	WS | Has space: ${payloadArg(1)} for ${payloadArg(0)}")
 								 CurrentRequestPass = CurrentAmount <= payloadArg(1).toDouble()  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="go_indoor", cond=doswitchGuarded({ CurrentRequestPass  
 					}) )
 					transition( edgeName="goto",targetState="rejectRequest", cond=doswitchGuarded({! ( CurrentRequestPass  
@@ -74,7 +90,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WS | rejected")
 						answer("loadDeposit", "loadrejected", "loadrejected(_)"   )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="waitRequest", cond=doswitch() )
 				}	 
 				state("go_indoor") { //this:State
@@ -84,7 +104,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						var X = POS_INDOOR[0]; var Y = POS_INDOOR[1] 
 						request("trolleyMove", "trolleyMove($X,$Y)" ,"trolley" )  
 						answer("loadDeposit", "loadaccept", "loadaccept(_)"   )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t05",targetState="indoor",cond=whenReply("trolleyDone"))
 				}	 
 				state("indoor") { //this:State
@@ -94,7 +118,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						)
 						println("	WT | Trolley at indoor, picking up $CurrentAmount $CurrentType...")
 						request("trolleyCollect", "trolleyCollect($CurrentType,$CurrentAmount)" ,"trolley" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t06",targetState="go_box",cond=whenReply("trolleyDone"))
 				}	 
 				state("go_box") { //this:State
@@ -106,7 +134,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						 ){X = POS_PLASTIC_BOX[0]; Y = POS_PLASTIC_BOX[1] 
 						}
 						request("trolleyMove", "trolleyMove($X,$Y)" ,"trolley" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t07",targetState="box",cond=whenReply("trolleyDone"))
 				}	 
 				state("box") { //this:State
@@ -116,16 +148,26 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						updateResourceRep( "tpos(" + CurrentType + "_box)"  
 						)
 						request("trolleyDeposit", "trolleyDeposit(_)" ,"trolley" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t08",targetState="done",cond=whenReply("trolleyDone"))
 				}	 
 				state("done") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WT | Done deposit action")
-						stateTimer = TimerActor("timer_done", 
-							scope, context!!, "local_tout_wasteservice_done", 0.toLong() )
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+				 	 		//sysaction { //it:State
+				 	 		  stateTimer = TimerActor("timer_done", 
+				 	 			scope, context!!, "local_tout_wasteservice_done", 0.toLong() )
+				 	 		//}
+					}	 	 
 					 transition(edgeName="t09",targetState="go_home",cond=whenTimeout("local_tout_wasteservice_done"))   
 					transition(edgeName="t010",targetState="handleSecondRequest",cond=whenRequest("loadDeposit"))
 				}	 
@@ -140,7 +182,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 								println("	WS | Another request received $CurrentType $CurrentAmount")
 								request("storageAsk", "storageAsk($CurrentType)" ,"storagemanager" )  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t011",targetState="handleSecondStorageReply",cond=whenReply("storageAt"))
 				}	 
 				state("handleSecondStorageReply") { //this:State
@@ -152,7 +198,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 								println("	WS | Has space: ${payloadArg(1)} for ${payloadArg(0)}")
 								 CurrentRequestPass = CurrentAmount <= payloadArg(1).toDouble()  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="go_indoor", cond=doswitchGuarded({ CurrentRequestPass  
 					}) )
 					transition( edgeName="goto",targetState="rejectSecondRequest", cond=doswitchGuarded({! ( CurrentRequestPass  
@@ -162,7 +212,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						answer("loadDeposit", "loadrejected", "loadrejected(_)"   )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="go_home", cond=doswitch() )
 				}	 
 				state("go_home") { //this:State
@@ -170,7 +224,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("$name in ${currentState.stateName} | $currentMsg")
 						var X = POS_HOME[0]; var Y = POS_HOME[1] 
 						request("trolleyMove", "trolleyMove($X,$Y)" ,"trolley" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t012",targetState="home",cond=whenReply("trolleyDone"))
 				}	 
 				state("home") { //this:State
@@ -179,7 +237,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						updateResourceRep( "tpos(home)"  
 						)
 						println("	WS | Trolley at home")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="waitRequest", cond=doswitch() )
 				}	 
 			}

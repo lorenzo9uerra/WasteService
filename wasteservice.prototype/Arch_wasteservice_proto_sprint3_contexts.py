@@ -40,16 +40,24 @@ with Diagram('wasteservice_proto_sprint3_contextsArch', show=False, outformat='p
           basicrobot=Custom('basicrobot','./qakicons/symActorSmall.png')
      ledcontroller >> Edge(color='blue', style='solid', xlabel='ledSet') >> blinkled
      wasteservice >> Edge(color='magenta', style='solid', xlabel='storageAsk') >> storagemanager
+     wasteservice >> Edge(color='green', style='dashed', xlabel='loadrejected') >> sys 
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyMove') >> trolley
+     wasteservice >> Edge(color='green', style='dashed', xlabel='loadaccept') >> sys 
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyCollect') >> trolley
      wasteservice >> Edge(color='blue', style='solid', xlabel='pickedUp') >> wastetruck
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyDeposit') >> trolley
+     wasteservice >> Edge(color='green', style='dashed', xlabel='loadrejected') >> sys 
      trolley >> Edge(color='magenta', style='solid', xlabel='dopath') >> pathexecstop
+     trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
+     trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
      trolley >> Edge(color='blue', style='solid', xlabel='storageDeposit') >> storagemanager
+     trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
      trolley >> Edge(color='blue', style='solid', xlabel='resumePath') >> pathexecstop
      trolley >> Edge(color='blue', style='solid', xlabel='stopPath') >> pathexecstop
+     storagemanager >> Edge(color='green', style='dashed', xlabel='storageAt') >> sys 
      wastetruck >> Edge(color='magenta', style='solid', xlabel='loadDeposit') >> wasteservice
      pathexecstop >> Edge(color='magenta', style='solid', xlabel='step') >> basicrobot
+     pathexecstop >> Edge(color='green', style='dashed', xlabel='dopathdone') >> sys 
      sonarshim >> Edge( xlabel='sonarDistance', **eventedgeattr) >> sys
      sys >> Edge(color='red', style='dashed', xlabel='sonarDistance') >> sonarinterrupter
      sonarinterrupter >> Edge(color='blue', style='solid', xlabel='trolleyStop') >> trolley

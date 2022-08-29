@@ -90,7 +90,7 @@ dependencies {
     /* UNIBO *************************************************************************************************************** */
     implementation(":uniboInterfaces")
     implementation(":2p301")
-    implementation(":unibo.qakactor22-3.1.1")
+    implementation(":unibo.qakactor22-3.2")
     implementation(":it.unibo.radarSystem22.domain-2.0")
     implementation(":unibo.comm22-1.1")
 
@@ -123,9 +123,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> { useJUnitPlatform() }
 
-application {
-    mainClass.set("it.unibo.local_ctx_wasteservice.MainCtx_wasteserviceKt")
-}
+application { mainClass.set("it.unibo.local_ctx_wasteservice.MainCtx_wasteserviceKt") }
 
 tasks.bootRun {
     mainClass.set("it.unibo.lenziguerra.wasteservice.wasteservice.WasteserviceApplicationKt")

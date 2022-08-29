@@ -35,7 +35,11 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						println("$name in ${currentState.stateName} | $currentMsg")
 						updateResourceRep( "state(idle)" + getPosLine() + getContentLine()  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t013",targetState="handleMove",cond=whenRequest("trolleyMove"))
 					transition(edgeName="t014",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
 					transition(edgeName="t015",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
@@ -53,7 +57,11 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 								 WaitingPath = true  
 								request("dopath", "dopath(sample)" ,"pathexecstop" )  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t017",targetState="moveSuccess",cond=whenReply("dopathdone"))
 					interrupthandle(edgeName="t018",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
 				}	 
@@ -62,7 +70,11 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						println("$name in ${currentState.stateName} | $currentMsg")
 						 WaitingPath = false  
 						answer("trolleyMove", "trolleyDone", "trolleyDone(true)"   )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("handleCollect") { //this:State
@@ -77,7 +89,11 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 								 CarryingAmount = payloadArg(1).toDouble()  
 								answer("trolleyCollect", "trolleyDone", "trolleyDone(true)"   )  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("handleDeposit") { //this:State
@@ -90,7 +106,11 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 CarryingType = ""  
 						 CarryingAmount = 0.0  
 						answer("trolleyDeposit", "trolleyDone", "trolleyDone(true)"   )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("exitFromStop") { //this:State
@@ -102,7 +122,11 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 ){forward("resumePath", "resumePath(_)" ,"pathexecstop" ) 
 						}
 						returnFromInterrupt(interruptedStateTransitions)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 				}	 
 				state("handleStop") { //this:State
 					action { //it:State
@@ -112,7 +136,11 @@ class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						if(  WaitingPath  
 						 ){forward("stopPath", "stopPath(_)" ,"pathexecstop" ) 
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t019",targetState="exitFromStop",cond=whenDispatch("trolleyResume"))
 				}	 
 			}

@@ -21,8 +21,12 @@ class Sonarinterrupter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm(
 		return { //this:ActionBasciFsm
 				state("idle") { //this:State
 					action { //it:State
+						//genTimer( actor, state )
 					}
-					 transition(edgeName="t032",targetState="handleDistance",cond=whenEvent("sonarDistance"))
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
+					 transition(edgeName="t031",targetState="handleDistance",cond=whenEvent("sonarDistance"))
 				}	 
 				state("handleDistance") { //this:State
 					action { //it:State
@@ -41,7 +45,11 @@ class Sonarinterrupter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm(
 								}
 								 prevDist = dist  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}

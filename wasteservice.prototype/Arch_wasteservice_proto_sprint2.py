@@ -29,10 +29,17 @@ with Diagram('wasteservice_proto_sprint2Arch', show=False, outformat='png', grap
           wastetruck=Custom('wastetruck','./qakicons/symActorSmall.png')
      ledcontroller >> Edge(color='blue', style='solid', xlabel='ledSet') >> blinkled
      wasteservice >> Edge(color='magenta', style='solid', xlabel='storageAsk') >> storagemanager
+     wasteservice >> Edge(color='green', style='dashed', xlabel='loadrejected') >> sys 
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyMove') >> trolley
+     wasteservice >> Edge(color='green', style='dashed', xlabel='loadaccept') >> sys 
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyCollect') >> trolley
      wasteservice >> Edge(color='blue', style='solid', xlabel='pickedUp') >> wastetruck
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyDeposit') >> trolley
+     wasteservice >> Edge(color='green', style='dashed', xlabel='loadrejected') >> sys 
+     trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
+     trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
      trolley >> Edge(color='blue', style='solid', xlabel='storageDeposit') >> storagemanager
+     trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
+     storagemanager >> Edge(color='green', style='dashed', xlabel='storageAt') >> sys 
      wastetruck >> Edge(color='magenta', style='solid', xlabel='loadDeposit') >> wasteservice
 diag

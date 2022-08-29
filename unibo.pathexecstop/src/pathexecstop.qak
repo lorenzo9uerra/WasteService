@@ -59,9 +59,8 @@ QActor pathexecstop context ctx_pathexecstop {
 	Goto endWorkOk if [# CurMoveTodo.length == 0 #] else doMove
 	
 	State doMove {
-		request timer -m setAlarm : setAlarm(300)
 	}
-	Transition t0 whenReply triggerAlarm ->  applyMove
+	Transition t0 whenTime 300 ->  applyMove
 			  whenInterrupt stopPath -> stopped
 	
 	State applyMove {
@@ -72,10 +71,9 @@ QActor pathexecstop context ctx_pathexecstop {
 	State doMoveTurn {
 		printCurrentMessage
 		updateResource [# "pathexecdoturn($CurMoveTodo)" #]
-		forward basicrobot -m cmd : cmd($CurMoveTodo) //asynch !!!		
-		request timer -m setAlarm : setAlarm(300)
+		forward basicrobot -m cmd : cmd($CurMoveTodo) //asynch !!!
 	}
-	Transition t0 whenReply triggerAlarm ->  nextMove  //wait for move done ...
+	Transition t0 whenTime 300 ->  nextMove  //wait for move done ...
 				  whenInterrupt stopPath -> stopped
   
  	State doMoveW{
@@ -116,22 +114,4 @@ QActor pathexecstop context ctx_pathexecstop {
 		updateResource [# "pathexecresumed()" #]
 		returnFromInterrupt
 	}
-} 
-
-// Workaround per whenTime + interrupt, usabile da
-// un attore alla volta
-QActor timer context ctx_pathexecstop {
-	State wait initial {
-	}
-	Transition t6 whenRequest setAlarm -> handleAlarm
-	
-	State handleAlarm {
-		onMsg (setAlarm : setAlarm(TIME)) {
-			[# val Time = payloadArg(0).toLong() #]
-			delayVar Time
-			replyTo setAlarm with triggerAlarm : triggerAlarm(_)
-		}
-	}
-	Goto wait
 }
-
