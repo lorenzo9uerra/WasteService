@@ -1,4 +1,4 @@
-- Menzionare i vari contesti all'inizio dell'analisi
+~~- Menzionare i vari contesti all'inizio dell'analisi~~
 - Rigenerare SPRINT1 e SPRINT2 doc html, modifiche a link test e cose minori varie
 ~~- prova con sonar reale~~
 - ~~divisione dei contesti,~~ e rework delle classi di lancio così usano il config e si riesce a cambiare meglio in base a quello
