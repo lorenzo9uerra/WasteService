@@ -21,12 +21,12 @@ La struttura dei package diventa la seguente (evidenziati solo i cambiamenti imp
 - wasteservice.shared
     - *it.unibo.lenziguerra.wasteservice* (aggiunti nuovi enumerativi, test fixture, e classi minori)
     - it.unibo.lenziguerra.wasteservice.utils
-    - + *it.unibo.lenziguerra.wasteservice.data* (classi dati, vedi sotto)
+    - \+ *it.unibo.lenziguerra.wasteservice.data* (classi dati, vedi sotto)
 - wasteservice.core
     - it.unibo.lenziguerra.wasteservice.wasteservice
     - it.unibo.lenziguerra.wasteservice.trolley
     - it.unibo.lenziguerra.wasteservice.storage
-    - `wasteservice.qak` (uso delle nuove classi dati)
+    - *`wasteservice.qak`* (uso delle nuove classi dati)
 - **wasteservice.led**
     - *it.unibo.lenziguerra.wasteservice.led*
 - **wasteservice.statusgui**
