@@ -1,45 +1,59 @@
 {{> header}}
 
-<div class="w3-container">
-    <h1>{{title}}</h1>
-</div>
 
 <div id="main-content" class="container">
-    <style>
-        table,
-        th,
-        td {
-            border: 1px solid;
-        }
+    <div class="title w3-container ">
+        <h1>{{title}}</h1>
+    </div>
 
-        table {
-            border-collapse: collapse;
-        }
-    </style>
-
-    <div id="main-area" class="component centered-element">
-        <table>
-            <thead>
-                <tr>
-                    <th>Stato Trolley</th>
-                    <th>Attività Trolley</th>
-                    <th>Posizione Trolley</th>
-                    <th>Vetro Depositato</th>
-                    <th>Plastica Depositata</th>
-                    <th>Stato Led</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td id="trolleyState">-</td>
-                    <td id="trolleyActivity">-</td>
-                    <td id="trolleyPosition">-</td>
-                    <td><a id="depositedGlass">-</a>kg</td>
-                    <td><a id="depositedPlastic">-</a>kg</td>
-                    <td id="ledState">-</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="statusinfo w3-container">
+        <div id="trolley" class="component info-container">
+            <div class="infohead">
+                <div class="icon">
+                </div>
+                <h3>Trolley</h3>
+            </div>
+            <div class="infobox">
+                <div class="info">
+                    <p>Stato</p>
+                    <p id="trolleyState">-</p>
+                </div>
+                <div class="info">
+                    <p>Attività</p>
+                    <p id="trolleyActivity">-</p>
+                </div>
+                <div class="info">
+                    <p>Posizione</p>
+                    <p id="trolleyPosition">-</p>
+                </div>
+            </div>
+        </div>
+        <div id="led" class="component">
+            <div class="ledbox on">
+                <p>Led On</p>
+            </div>
+        </div>
+        <div id="storage" class="component info-container">
+            <div class="infohead">
+                <h3>Deposito</h3>
+            </div>
+            <div class="infobox">
+                <div class="info">
+                    <p>Vetro</p>
+                    <p id="depositedGlass">-</p>
+                    <div class="bar-outer">
+                        <div class="bar" id="glass-bar"></div>
+                    </div>
+                </div>
+                <div class="info">
+                    <p>Plastica</p>
+                    <p id="depositedPlastic">-</p>
+                    <div class="bar-outer">
+                        <div class="bar" id="plastic-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

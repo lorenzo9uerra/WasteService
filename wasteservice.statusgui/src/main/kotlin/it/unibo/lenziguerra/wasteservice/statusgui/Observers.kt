@@ -51,10 +51,8 @@ class TrolleyObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHan
 }
 
 class StorageObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHandler {
-    var lastGlass: Float = -1.0f
-        private set
-    var lastPlastic = -1.0f
-        private set
+    var lastAmounts: Map<WasteType, Float> = mapOf();
+    var lastMax: Map<WasteType, Float> = mapOf();
 
     override fun onLoad(response: CoapResponse) {
         val content = response.responseText
@@ -64,22 +62,22 @@ class StorageObserver(private val wsList: ArrayList<WebSocketSession>) : CoapHan
         ColorsOut.outappl("Obs Storage | contents: ${sStatus.amounts}", ColorsOut.GREEN)
 
         if(sStatus.amounts.isNotEmpty()) {
-            if (sStatus.amounts[WasteType.GLASS] != lastGlass) {
-                lastGlass = sStatus.amounts[WasteType.GLASS]!!
+            if (sStatus.amounts[WasteType.GLASS] != lastAmounts[WasteType.GLASS]) {
                 for (ws in wsList) {
                     synchronized(ws) {
                         ws.sendMessage(TextMessage("depositedGlass: ${sStatus.amounts[WasteType.GLASS]}"))
                     }
                 }
             }
-            if (sStatus.amounts[WasteType.PLASTIC] != lastPlastic) {
-                lastPlastic = sStatus.amounts[WasteType.PLASTIC]!!
+            if (sStatus.amounts[WasteType.PLASTIC] != lastAmounts[WasteType.PLASTIC]) {
                 for (ws in wsList) {
                     synchronized(ws) {
                         ws.sendMessage(TextMessage("depositedPlastic: ${sStatus.amounts[WasteType.PLASTIC]}"))
                     }
                 }
             }
+            lastAmounts = sStatus.amounts
+            lastMax = sStatus.maxAmounts
         }
     }
 

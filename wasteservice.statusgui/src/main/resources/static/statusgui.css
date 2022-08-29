@@ -4,14 +4,180 @@ body {
     margin: 0;
 }
 
+
 h1 {
     text-align: center;
+}
+p, h2, h3, h4 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.container h3 {
+    font-size: 35px;
+}
+.container p {
+    font-size: 20px;
+}
+
+
+.statusinfo {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    justify-content: space-evenly;
+}
+.statusinfo #trolley {
+    flex-grow: 3;
+    min-height: 200px;
+}
+.statusinfo #led {
+    width: 15%;
+    aspect-ratio: 1 / 1;
+    flex: 1 0 auto;
+}
+.statusinfo #storage {
+    flex-grow: 4;
+    width: 100%
+}
+
+.info-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+}
+
+.infohead {
+    flex-basis: 30%;
+    max-width: 200px;
+    min-height: 100%;
+    display: inline-block;
+}
+.infohead .icon {
+    height: 60%;
+}
+#storage .infohead h3 {
+    position: relative;
+    top: 20%;
+}
+
+
+.infobox {
+    min-height: 100%;
+    flex-basis: 75%;
+    flex-grow: 3;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-content: space-around;
+}
+
+.info {
+    display: flex;
+    flex-direction: row;
+}
+
+.info p:first-child {
+    text-align: left;
+    margin-right: 20px;
+    font-weight: bold;
+}
+.info p {
+    text-align: left;
+    top: 50%;
+    flex: 1 1 auto;
+    flex-basis: 100px;
+}
+
+.ledbox {
+    position: relative;
+    width: 100%;
+    top: 25%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    height: 0;
+    padding-bottom: 100%;
+    /* margin: auto; */
+    /* aspect-ratio: 1-1; */
+    --led-color: rgb(42, 180, 42);
+}
+.ledbox.on {
+    background-color: var(--led-color);
+    box-shadow: 0 0 10px 0 var(--led-color);
+}
+.ledbox.off {
+    background-color: lightgray
+}
+.ledbox.blink {
+    animation: blinkcolor 1s infinite;
+}
+@keyframes blinkcolor {
+    0% {
+        background-color: var(--led-color);
+        box-shadow: 0 0 10px 0 var(--led-color);
+    }
+    40% {
+        background-color: var(--led-color);
+        box-shadow: 0 0 10px 0 var(--led-color);
+    }
+    50% {
+        background-color: lightgray;
+        box-shadow: none;
+    }
+    90% {
+        background-color: lightgray;
+        box-shadow: none;
+    }
+    100% {
+        background-color: var(--led-color);
+        box-shadow: 0 0 10px 0 var(--led-color);
+    }
+}
+
+.ledbox p {
+    text-align: center;
+    font-size: 3em;
+    padding: calc(50% - 0.5em) 0;
+    text-transform: uppercase;
+    font-weight: 800;
+    font-family: 'Roboto Flex';
+    color: #161616;
+    line-height: 1;
+}
+.ledbox.blink p {
+    padding: calc(50% - 1.1em) 0;
+}
+
+.bar-outer {
+    background-color: darkgray;
+    width: 100%;
+    height: 20px;
+    margin: auto;
+    border-radius: 0px 5px 0px 0px;
+    margin-left: 20px;
+}
+.bar {
+    --bar-color: rgb(50, 231, 50);
+    background-color: var(--bar-color);
+    box-shadow: 2px 0 2px 0 var(--bar-color);
+    width: 1%;
+    height: 100%;
+}
+.bar.bar-half {
+    --bar-color: rgb(236, 236, 52);
+}
+.bar.bar-almostfull {
+    --bar-color: rgb(233, 170, 53);
+}
+.bar.bar-full {
+    --bar-color: rgb(228, 57, 57);
 }
 
 .container {
     display: flex;
     flex-direction: column;
-    max-width: 800px;
+    max-width: 1000px;
+    height: 100vh;
     margin: 0 auto;
     text-align: center;
     background-color: #141414;
@@ -24,12 +190,4 @@ h1 {
     border-radius: 5px;
     padding: 15px;
     margin: 20px;
-}
-
-.centered-element {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }

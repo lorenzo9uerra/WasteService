@@ -21,7 +21,7 @@ services:
       - 8025:8025/tcp
       - 8025:8025/udp
   wasteservice.core:
-    image: docker.io/lnwor/wasteservice.core:1.1
+    image: docker.io/lnwor/wasteservice.core:1.2
     ports:
       - 8080:8080/tcp
       - 8080:8080/udp

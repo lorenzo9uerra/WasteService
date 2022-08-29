@@ -82,10 +82,13 @@ class StatusGuiWebsocketHandler : TextWebSocketHandler() {
         if (message.payload == "get") {
             session.sendMessage(TextMessage("trolleyState: ${trolleyObserver.lastStatus.status}"))
             session.sendMessage(TextMessage("trolleyActivity: ${trolleyObserver.lastStatus.activity}"))
-            session.sendMessage(TextMessage("depositedGlass: ${storageObserver.lastGlass}"))
-            session.sendMessage(TextMessage("depositedPlastic: ${storageObserver.lastPlastic}"))
+            session.sendMessage(TextMessage("depositedGlass: ${storageObserver.lastAmounts[WasteType.GLASS]}"))
+            session.sendMessage(TextMessage("depositedPlastic: ${storageObserver.lastAmounts[WasteType.PLASTIC]}"))
             session.sendMessage(TextMessage("trolleyPosition: ${wasteServiceObserver.lastPos}"))
             session.sendMessage(TextMessage("ledState: ${ledObserver.lastState}"))
+        } else if (message.payload == "getstoragemax") {
+            session.sendMessage(TextMessage("maxPlastic: ${storageObserver.lastMax[WasteType.PLASTIC]}"))
+            session.sendMessage(TextMessage("maxGlass: ${storageObserver.lastMax[WasteType.GLASS]}"))
         }
     }
 
