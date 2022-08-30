@@ -177,7 +177,7 @@ def rendermarkdown(file):
         out.write("<style>\n")
         with open("css/doc.css") as cssf:
             out.writelines(cssf)
-        out.write("</style>\n")
+        out.write("\n</style>\n")
         with open(file) as infile:
             md_content = infile.read()
             html_rendered = markdown(md_content)
