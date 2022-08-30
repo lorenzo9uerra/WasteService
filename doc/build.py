@@ -170,14 +170,14 @@ def rendermarkdown(file):
         out.write("""<head>
         <link rel="stylesheet" href="../css/w3.css"> 
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
-        <link rel="stylesheet" href="../css/doc.css"> 
+        <!-- <link rel="stylesheet" href="../css/doc.css"> -->
 </head>"""
         )
         out.write("<body>\n")
-        # out.write("<style>\n")
-        # with open("css/doc.css") as cssf:
-        #     out.writelines(cssf)
-        # out.write("</style>\n")
+        out.write("<style>\n")
+        with open("css/doc.css") as cssf:
+            out.writelines(cssf)
+        out.write("</style>\n")
         with open(file) as infile:
             md_content = infile.read()
             html_rendered = markdown(md_content)
