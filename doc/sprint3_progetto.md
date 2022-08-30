@@ -174,6 +174,10 @@ La struttura finale del sistema nello SPRINT 3 è riassunta in questo grafico:
 
 ![modello architettura progetto](img/architettura3_progetto.jpg)
 
+Senza l'evidenziazione delle sole componenti modificate o nuove:
+
+![modello architettura progetto](img/architettura_finale_progetto.jpg)
+
 ### Immagine Docker
 
 Vengono forniti i file docker-compose elencati in seguito. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, alla porta 8090 per visualizzare l'ambiente virtuale del robot, e alla porta 8095 per visualizzare WasteServiceStatusGUI.

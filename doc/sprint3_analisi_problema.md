@@ -81,7 +81,9 @@ Nota: nel prototipo eseguibile di questo SPRINT, sono stati comunque considerati
 
 Ecco quindi l'architettura logica finale del sistema in generale per questo SPRINT:
 
-![modello architettura logica](img/sprint3_pro_arch.jpg)
+![modello architettura logica](img/sprint3_pro_arch.png)
+
+Sono stati evidenziati i contesti, a differenza che negli SPRINT precedenti, data la divisione avvenuta solo ora.
 
 [**Modello eseguibile generale / prototipo.**](../wasteservice.prototype/src/prototype_sprint3.qak)
 
