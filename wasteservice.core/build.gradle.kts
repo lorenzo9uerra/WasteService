@@ -150,13 +150,3 @@ tasks.named<CreateStartScripts>("startScripts") {
         windowsScript.writeText(windowsScript.readText().replace(Regex("set CLASSPATH=.*"), "set CLASSPATH=%APP_HOME%\\\\lib\\\\*"))
     }
 }
-
-distributions {
-    main {
-        contents {
-            from("sysRules.pl") {
-                into("bin/")
-            }
-        }
-    }
-}

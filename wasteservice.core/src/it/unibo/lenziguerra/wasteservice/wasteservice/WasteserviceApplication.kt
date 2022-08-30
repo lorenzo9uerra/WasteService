@@ -3,8 +3,7 @@ package it.unibo.lenziguerra.wasteservice.wasteservice
 import it.unibo.kactor.QakContext
 import it.unibo.kactor.sysUtil
 import it.unibo.lenziguerra.wasteservice.SystemConfig
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.runBlocking
+import it.unibo.lenziguerra.wasteservice.utils.FileUtilsWs
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -34,6 +33,9 @@ class WasteServiceContextBean {
 	final val qakCtx: QakContext
 
 	init {
+		FileUtilsWs.tryExportResource("wasteservice.pl")
+		FileUtilsWs.tryExportResource("sysRules.pl")
+
 		thread {
 			it.unibo.ctx_wasteservice.main()
 		}
