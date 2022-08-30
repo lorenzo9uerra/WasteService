@@ -25,7 +25,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("start") { //this:State
 					action { //it:State
 						println("	WS | Start")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="home", cond=doswitch() )
 				}	 
 				state("home") { //this:State
@@ -35,7 +39,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						updateResourceRep( Support.getPrologContent()  
 						)
 						println("	WS | Trolley at home")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t00",targetState="go_indoor",cond=whenRequest("triggerDeposit"))
 				}	 
 				state("go_indoor") { //this:State
@@ -53,7 +61,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						 Support.updateTrolleyPos("travel")  
 						updateResourceRep( Support.getPrologContent()  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t21",targetState="indoor",cond=whenReply("trolleyDone"))
 					transition(edgeName="t22",targetState="error",cond=whenReply("trolleyFail"))
 				}	 
@@ -65,7 +77,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						updateResourceRep( Support.getPrologContent()  
 						)
 						request("trolleyCollect", "trolleyCollect($Material,$Quantity)" ,"trolley" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t33",targetState="go_box",cond=whenReply("trolleyDone"))
 					transition(edgeName="t34",targetState="error",cond=whenReply("trolleyFail"))
 				}	 
@@ -78,7 +94,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						 Support.updateTrolleyPos("travel")  
 						updateResourceRep( Support.getPrologContent()  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t45",targetState="box",cond=whenReply("trolleyDone"))
 					transition(edgeName="t46",targetState="error",cond=whenReply("trolleyFail"))
 				}	 
@@ -90,7 +110,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						updateResourceRep( Support.getPrologContent()  
 						)
 						request("trolleyDeposit", "trolleyDeposit(_)" ,"trolley" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t57",targetState="done",cond=whenReply("trolleyDone"))
 					transition(edgeName="t58",targetState="error",cond=whenReply("trolleyFail"))
 				}	 
@@ -98,9 +122,15 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WT | Done deposit action")
-						stateTimer = TimerActor("timer_done", 
-							scope, context!!, "local_tout_wasteservice_done", 0.toLong() )
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+				 	 		//sysaction { //it:State
+				 	 		  stateTimer = TimerActor("timer_done", 
+				 	 			scope, context!!, "local_tout_wasteservice_done", 0.toLong() )
+				 	 		//}
+					}	 	 
 					 transition(edgeName="t09",targetState="go_home",cond=whenTimeout("local_tout_wasteservice_done"))   
 					transition(edgeName="t010",targetState="go_indoor",cond=whenRequest("triggerDeposit"))
 				}	 
@@ -112,7 +142,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						 Support.updateTrolleyPos("travel")  
 						updateResourceRep( Support.getPrologContent()  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t711",targetState="home_rotate",cond=whenReply("trolleyDone"))
 					transition(edgeName="t712",targetState="error",cond=whenReply("trolleyFail"))
 				}	 
@@ -120,7 +154,11 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						request("trolleyRotate", "trolleyRotate(down)" ,"trolley" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t713",targetState="home",cond=whenReply("trolleyDone"))
 					transition(edgeName="t714",targetState="error",cond=whenReply("trolleyFail"))
 				}	 
@@ -139,9 +177,15 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("# WASTESERVICE: ERRORE! AGGIUSTARE #")
 						println("# MANUALMENTE E RIAVVIARE!         #")
 						println("####################################")
-						stateTimer = TimerActor("timer_error", 
-							scope, context!!, "local_tout_wasteservice_error", 500.toLong() )
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+				 	 		//sysaction { //it:State
+				 	 		  stateTimer = TimerActor("timer_error", 
+				 	 			scope, context!!, "local_tout_wasteservice_error", 500.toLong() )
+				 	 		//}
+					}	 	 
 					 transition(edgeName="t015",targetState="home",cond=whenTimeout("local_tout_wasteservice_error"))   
 				}	 
 			}

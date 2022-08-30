@@ -30,12 +30,19 @@ with Diagram('wasteserviceArch', show=False, outformat='png', graph_attr=graphat
           pathexecstop=Custom('pathexecstop(ext)','./qakicons/externalQActor.png')
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyMove') >> trolley
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyCollect') >> trolley
+     wasteservice >> Edge(color='green', style='dashed', xlabel='trolleyPickedUp') >> sys 
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyDeposit') >> trolley
      wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyRotate') >> trolley
      trolley >> Edge(color='blue', style='solid', xlabel='resumePath') >> pathexecstop
      trolley >> Edge(color='blue', style='solid', xlabel='stopPath') >> pathexecstop
      trolley >> Edge(color='magenta', style='solid', xlabel='dopath') >> pathexecstop
+     trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
+     trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
+     trolley >> Edge(color='green', style='dashed', xlabel='trolleyFail') >> sys 
+     trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
      trolley >> Edge(color='blue', style='solid', xlabel='storageDeposit') >> storagemanager
+     trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
+     storagemanager >> Edge(color='green', style='dashed', xlabel='storageAt') >> sys 
      sys >> Edge(color='red', style='dashed', xlabel='sonarDistance') >> sonarinterrupter
      sonarinterrupter >> Edge(color='blue', style='solid', xlabel='trolleyStop') >> trolley
      sonarinterrupter >> Edge(color='blue', style='solid', xlabel='trolleyResume') >> trolley
