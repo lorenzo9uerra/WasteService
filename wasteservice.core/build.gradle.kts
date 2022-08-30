@@ -144,3 +144,19 @@ task<JavaExec>("wasteserviceCtxRun") {
     mainClass.set("it.unibo.ctx_wasteservice.MainCtx_wasteserviceKt")
     classpath = java.sourceSets["main"].runtimeClasspath
 }
+
+tasks.named<CreateStartScripts>("startScripts") {
+    doLast {
+        windowsScript.writeText(windowsScript.readText().replace(Regex("set CLASSPATH=.*"), "set CLASSPATH=%APP_HOME%\\\\lib\\\\*"))
+    }
+}
+
+distributions {
+    main {
+        contents {
+            from("sysRules.pl") {
+                into("bin/")
+            }
+        }
+    }
+}

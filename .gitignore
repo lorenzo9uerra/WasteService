@@ -30,3 +30,5 @@ gradle-app.setting
 **/org.eclipse.buildship.core.prefs
 wasteservice.core/.settings/org.eclipse.buildship.core.prefs
 jsconfig.json
+
+test-launcher/**
