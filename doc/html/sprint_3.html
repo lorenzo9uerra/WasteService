@@ -1,0 +1,786 @@
+<head>
+        <link rel="stylesheet" href="../css/w3.css"> 
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+        <link rel="stylesheet" href="../css/doc.css"> 
+</head><body>
+<div>
+  <h1 id="toc_1" class="w3-container w3-indigo">Sprint 3</h1>
+  <section class="toc-sidebar">
+    <div class="sidebar-index w3-deep-purple">
+      <a href="./index.html">Indice generale</a>
+    </div>
+    <div>
+      <a href="#toc_1">Sprint 3</a>
+    </div>
+    <div>
+      <a href="#toc_3">Requirements</a>
+    </div>
+    <div>
+      <a href="#toc_5">Analisi dei Requisiti</a>
+    </div>
+    <div>
+      <a href="#toc_11">Analisi del problema</a>
+    </div>
+    <div>
+      <a href="#toc_21">Progettazione</a>
+    </div>
+    <div>
+      <a href="#toc_31">Riassunto SPRINT 3</a>
+    </div>
+  </section>
+  <h3 id="toc_2" class="w3-container w3-green">Indice</h3>
+  <section class="toc">
+    <ul>
+      <li>
+        <a href="#toc_1">Sprint 3</a>
+        <ul>
+          <li>
+            <a href="#toc_2">Indice</a>
+          </li>
+          <li>
+            <a href="#toc_3">Requirements</a>
+            <ul>
+              <li>
+                <a href="#toc_4">TFRequirements</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#toc_5">Analisi dei Requisiti</a>
+            <ul>
+              <li>
+                <a href="#toc_6">Requisiti e chiarimenti</a>
+              </li>
+              <li>
+                <a href="#toc_7">Glossario</a>
+              </li>
+              <li>
+                <a href="#toc_8">Analisi dei requisiti</a>
+              </li>
+              <li>
+                <a href="#toc_10">Materiale fornito dal committente</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#toc_11">Analisi del problema</a>
+            <ul>
+              <li>
+                <a href="#toc_12">Componenti</a>
+              </li>
+              <li>
+                <a href="#toc_14">Interazione</a>
+              </li>
+              <li>
+                <a href="#toc_15">Modifiche</a>
+              </li>
+              <li>
+                <a href="#toc_16">Lettura dal sonar</a>
+              </li>
+              <li>
+                <a href="#toc_17">Divisione dei contesti</a>
+              </li>
+              <li>
+                <a href="#toc_18">Architettura Logica</a>
+              </li>
+              <li>
+                <a href="#toc_19">Test Plan</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#toc_21">Progettazione</a>
+            <ul>
+              <li>
+                <a href="#toc_22">Struttura del software</a>
+              </li>
+              <li>
+                <a href="#toc_23">Sonar</a>
+              </li>
+              <li>
+                <a href="#toc_24">Trolley stop</a>
+              </li>
+              <li>
+                <a href="#toc_25">PathexecStop</a>
+              </li>
+              <li>
+                <a href="#toc_26">RaspGUI</a>
+              </li>
+              <li>
+                <a href="#toc_27">Modifiche minori</a>
+              </li>
+              <li>
+                <a href="#toc_28">Test</a>
+              </li>
+              <li>
+                <a href="#toc_29">Struttura del sistema</a>
+              </li>
+              <li>
+                <a href="#toc_30">Immagine Docker</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#toc_31">Riassunto SPRINT 3</a>
+            <ul>
+              <li>
+                <a href="#toc_32">Analisi</a>
+              </li>
+              <li>
+                <a href="#toc_33">Progetto</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+  <h2 id="toc_3" class="w3-container w3-teal">Requirements</h2>
+  <p>A company intends to build a WasteService for the <em>separate collection of waste</em>, composed of a set of elements:</p>
+  <ol>
+    <li>
+      <p>a service area (rectangular, flat) that includes:</p>
+      <ul>
+        <li>
+          <p>an INDOOR port, to enter waste material</p>
+        </li>
+        <li>
+          <p>a PlasticBox container, devoted to store objects made of plastic, upto <strong>MAXPB</strong> kg of material.</p>
+        </li>
+        <li>
+          <p>a GlassBox container, devoted to store objects made of glass, upto <strong>MAXGB</strong> kg of material.</p>
+        </li>
+      </ul>
+      <p>The service area is free from internal obstacles, as shown in the following picture:</p>
+      <blockquote>
+        <p>
+          <a href="https://raw.githubusercontent.com/anatali/issLab2022/main/it.unibo.issLabStart/userDocs/Dispense/lezioni/html/_images/WasteServiceRoom.PNG">
+            <img src="https://raw.githubusercontent.com/anatali/issLab2022/main/it.unibo.issLabStart/userDocs/Dispense/lezioni/html/_images/WasteServiceRoom.PNG" alt="WasteServiceRoom.PNG">
+          </a>
+        </p>
+      </blockquote>
+    </li>
+    <li>
+      <p>a DDR robot working as a transport trolley, that is intially situated in its HOME location. The transport trolley has the form of a square of side length <strong>RD</strong>.</p>
+      <p>The transport trolley is used to performa a deposit action that consists in the following phases:</p>
+      <ol>
+        <li>
+          <p>pick up a waste-load from a Waste truck located on the INDOOR</p>
+        </li>
+        <li>
+          <p>go from the INDOOR to the proper waste container</p>
+        </li>
+        <li>
+          <p>deposit the waste-load in the container</p>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <p>a Service-manager (an human being) which supervises the state of the service-area by using a WasteServiceStatusGUI.</p>
+    </li>
+    <li>
+      <p>a Sonar and a Led connected to a RaspnerryPi. The Led is used as a <em>warning devices</em>, according to the following scheme:</p>
+      <ul>
+        <li>
+          <p>the Led is <strong>off</strong> when the transport trolley is at HOME</p>
+        </li>
+        <li>
+          <p>the Led <strong>blinks</strong> while the transport trolley is moving</p>
+        </li>
+        <li>
+          <p>the Led is <strong>on</strong> when transport trolley is stopped.</p>
+        </li>
+      </ul>
+      <p>The Sonar is used as an ‘alarm device’: when it measures a distance less that a prefixed value <strong>DLIMT</strong>, the transport trolley must be stopped. It will be resumed when Sonar detects again a distance higher than <strong>DLIMT</strong>.</p>
+    </li>
+  </ol>
+  <h3 id="toc_4" class="w3-container w3-green">TFRequirements</h3>
+  <p>The main goal of the WasteService software is to allow a Waste truck to deposit its load of <strong>TruckLoad</strong> kg plastic or glass in the proper container.</p>
+  <p>The global story can be described as follows:</p>
+  <ol>
+    <li>
+      <p>The Waste truck driver approaches the INDOOR and sends (using a smart device) a request to store the load, by specifyng the type of the material (plastic or glass) and its TruckLoad.</p>
+    </li>
+    <li>
+      <p>The WasteService sends the answer <em>loadaccept</em> if the final content of proper container will not surpass the maximum value allowed (<em>MAXPB</em> or <em>MAXGB</em>). Otherwise, it sends the answer <em>loadrejecetd</em> and the Waste truck leaves the INDOOR area.</p>
+    </li>
+    <li>
+      <p>When the load is accepted, the transport trolley reaches the INDOOR, picks up the material, goes to the proper container and settles the material. During this activity, the WasteService <strong>blinks</strong> the Led</p>
+    </li>
+    <li>
+      <p>When the deposit action is terminated, the transport trolley excutes another deposit command (if any) or returns to its HOME.</p>
+    </li>
+  </ol>
+  <p>The WasteService must create a WasteServiceStatusGUI that shows to the <em>Service-manager</em>:</p>
+  <ul>
+    <li>
+      <p>the current state of the transport trolley and it position in the room</p>
+    </li>
+    <li>
+      <p>the current weigth of the material stored in the two waste-containers</p>
+    </li>
+    <li>
+      <p>the current state of the Led</p>
+    </li>
+  </ul>
+  <h2 id="toc_5" class="w3-container w3-teal">Analisi dei Requisiti</h2>
+  <p>Per il requisito <em>sonar-stop</em> è stato incluso un modello eseguibile in
+<a href="../#scelta-del-linguaggio-di-modellazione">Qak</a>.</p>
+  <h3 id="toc_6" class="w3-container w3-green">Requisiti e chiarimenti</h3>
+  <ul>
+    <li>
+      <p>
+        <strong>request</strong>: il <em>WasteService</em> accetta richieste di deposito da <em>Waste truck</em> che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare</p>
+      <ul>
+        <li>il sistema può controllare se c'è spazio per un certo materiale: accetta (risposta <em>loadaccept</em>), e rifiuta (risposta <em>loadrejected</em>) le richieste di deposito in caso contrario</li>
+      </ul>
+      <ol>
+        <li>
+          <blockquote>
+            <p>Domanda: le richieste possono essere gestite anche mentre il robot è in attività?</p>
+          </blockquote>
+          <p>Sì, potrebbe arrivare altro camion che chiede.</p>
+        </li>
+        <li>
+          <blockquote>
+            <p>Domanda: solo un camion alla volta in INDOOR?</p>
+          </blockquote>
+          <p>Sì.</p>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <p>
+        <strong>deposit</strong>: il <em>trolley</em>, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa è una <em>deposit action</em>:</p>
+      <ol>
+        <li>Raccolta di rifiuti da <em>Waste truck</em> in INDOOR</li>
+        <li>Andare da INDOOR a contenitore rifiuti (* BOX)</li>
+        <li>Depositare rifiuti nel contenitore</li>
+      </ol>
+    </li>
+    <li>
+      <p>
+        <strong>indoor-more-requests</strong>: il <em>trolley</em>, terminata una <em>deposit action</em>, torna a HOME solo se non ci sono altre richieste da gestire, sennò gestisce subito la richiesta successiva andando a INDOOR</p>
+    </li>
+    <li>
+      <p>
+        <strong>led</strong>: nel sistema è presente un led che:</p>
+      <ul>
+        <li>è <em>acceso</em> se il <em>trolley</em> è a HOME</li>
+        <li>
+          <em>lampeggia</em> se il <em>trolley</em> è in attività</li>
+        <li>è <em>spento</em> se il trolley è in stato di <em>stop</em>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <p>
+        <strong>sonar-stop</strong>: è presente un <em>sonar</em> che, se misura una distanza sotto DLIMIT (valore prefissato), mette il <em>trolley</em> in stato di <em>stop</em> fino a che la distanza non torna a DLIMIT, nel qual caso il <em>trolley</em> riparte</p>
+      <ol>
+        <li>
+          <blockquote>
+            <p>Domanda: cosa vuol dire precisamente <em>stop</em>? Torna a HOME o rimane lì?</p>
+          </blockquote>
+          <p>Si ferma e basta.</p>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <p>
+        <strong>gui</strong>: è presente una gui (<em>WasteServiceStatusGUI</em>) che mostra i seguenti dati:</p>
+      <ul>
+        <li>Stato del <em>trolley</em> e sua posizione</li>
+      </ul>
+      <ol>
+        <li>
+          <blockquote>
+            <p>Domanda: Posizione del trolley: deve essere precisa o informazione più generale (INDOOR, in mezzo, HOME, ecc)?</p>
+          </blockquote>
+          <p>Basta una posizione più generale.</p>
+        </li>
+      </ol>
+      <ul>
+        <li>Carico depositato attuale (in kg)</li>
+        <li>Stato del Led (acceso/spento/lampeggiante)</li>
+      </ul>
+    </li>
+  </ul>
+  <p>In questo terzo SPRINT verrà analizzato il requisito rimanente di
+<strong>sonar-stop</strong>.</p>
+  <h3 id="toc_7" class="w3-container w3-green">Glossario</h3>
+  <ul>
+    <li>
+      <p>
+        <em>WasteService</em>: il servizio centrale che risponde alle richieste dei <em>waste truck</em>
+      </p>
+    </li>
+    <li>
+      <p>
+        <em>Waste truck</em>: i camion che arrivano dall'esterno a depositare rifiuti</p>
+    </li>
+    <li>
+      <p>Area di servizio: <strong>INDOOR</strong>, <strong>PlasticBox</strong>, <strong>GlassBox</strong>, aree definite nella creazione del sistema e punti di riferimento per il <em>trolley</em>. In particolare:</p>
+      <ul>
+        <li>INDOOR: area dove i <em>waste truck</em> si fermano a lasciare il proprio carico, facendo una richiesta di deposito. Essa può contenere un <em>waste truck</em> alla volta</li>
+        <li>PlasticBox: area dove depositare la plastica</li>
+        <li>GlassBox: area dove depositare il vetro</li>
+      </ul>
+    </li>
+    <li>
+      <p>
+        <em>transport trolley</em> (o <em>trolley</em>): robot DDR (differential drive robot), di dimensione approssimabile a quadrato di lato RD, usato per trasportare i rifiuti nel sistema</p>
+    </li>
+    <li>
+      <p>
+        <em>Service-manager</em>: umano che supervisiona il sistema tramite la <em>WasteServiceStatusGUI</em>
+      </p>
+    </li>
+    <li>
+      <p>
+        <em>Sonar</em>: sensore che misura distanza</p>
+    </li>
+    <li>
+      <p>
+        <em>Led</em>: spia luminosa</p>
+    </li>
+  </ul>
+  <h3 id="toc_8" class="w3-container w3-green">Analisi dei requisiti</h3>
+  <h4 id="toc_9">Analisi <strong>sonar-stop</strong>
+  </h4>
+  <p>La lettura dei valori del sonar verranno fatti tramite software fornito dal
+committente, <em>SonarAlone.c</em>.</p>
+  <p>Dai requisiti sono stati individuati due principali messaggi, <em>trolleyStop</em> e
+<em>trolleyResume</em>, che fermeranno il trolley o lo faranno uscire dallo stato di
+stop.</p>
+  <p>Il componente avrà bisogno di comunicare con il resto del sistema, quindi dovrà
+essere un attore.</p>
+  <p>Il tipo di comunicazione con il resto del sistema deve essere definito, incluso il tipo di messaggio costituito da <em>trolleyStop</em> e <em>trolleyResume</em>.</p>
+  <p>
+    <a href="../../model.requisiti/src/sonar-stop.qak">Modello eseguibile Sonar</a>
+  </p>
+  <p>
+    <a href="../../model.requisiti/test-disabled/TestSonarStop.kt">Test plan sonar-stop</a>. Viene incluso un test plan in Kotlin con JUnit, attualmente non eseguibile mancando un sonar pilotabile.</p>
+  <h3 id="toc_10" class="w3-container w3-green">Materiale fornito dal committente</h3>
+  <ul>
+    <li>
+      <p>Robot DDR: viene fornita una componente software, <em>BasicRobot22</em>, che implementa comandi primitivi <em>MOVE = w | s | l | r | h</em>, e permette di fare <em>step</em> in avanti per un certo tempo.</p>
+    </li>
+    <li>
+      <p>Sonar: viene fornito un programma in C, <em>SonarAlone.c</em>, che stampa su standard output la distanza attualmente rilevata dal sonar, configurando le porte GPIO in questo modo:</p>
+      <ul>
+        <li>Porta VCC : pin fisico 4 (+5v)</li>
+        <li>Porta GND : pin fisico 6 (GND)</li>
+        <li>Porta TRIG: pin fisico 11 (WPI 0, BCM 17)</li>
+        <li>Porta ECHO: pin fisico 13 (WPI 2, BCM 27)</li>
+      </ul>
+    </li>
+    <li>
+      <p>Led: vengono forniti gli script bash e <em>led25GpioTurnOn.sh</em> e <em>led25GpioTurnOff.sh</em> per accendere e spegnere un Led connesso alla porta GPIO 25 di un Raspberry Pi.</p>
+    </li>
+  </ul>
+  <h2 id="toc_11" class="w3-container w3-teal">Analisi del problema</h2>
+  <h3 id="toc_12" class="w3-container w3-green">Componenti</h3>
+  <h4 id="toc_13">Requisito <strong>sonar-stop</strong> - componenti</h4>
+  <p>Emergono due opzioni principali su come gestire il Led:</p>
+  <ul>
+    <li>
+      <p>Usare un solo attore Sonar che interagisce direttamente con il dispositivo sonar tramite la libreria e il software fornito e comunica al trolley i messaggi di stop e resume.</p>
+    </li>
+    <li>
+      <p>Dividere gli incarichi tra due componenti:</p>
+      <ul>
+        <li>SonarShim, che interagirebbe con il sonar tramite la libreria o il</li>
+      </ul>
+      <p>software fornito, così da introdurre nel sistema Qak i dati del sonar senza conoscere il dominio.</p>
+      <ul>
+        <li>SonarInterrupter, che rileverebbe la distanza attuale del sonar comunicata da SonarShim e farebbe il confronto con DLIMIT, inviando i messaggi <em>trolleyStop</em> e <em>trolleyResume</em> al Trolley.</li>
+      </ul>
+    </li>
+  </ul>
+  <p>
+    <strong>Conclusione.</strong> Si ritiene migliore la seconda opzione, vale a dire <strong>dividere gli incarichi</strong>, visto che rispetta il principio di singola responsabilità. Inoltre, questo permetterebbe il riutilizzo dell'attore SonarShim in altri contesti, essendo agnostico al dominio.</p>
+  <h3 id="toc_14" class="w3-container w3-green">Interazione</h3>
+  <p>Per questo scopo, è opportuno far sì che <em>trolleyStop</em> attivi un <strong>interrupt</strong>, vale a dire un tipo speciale di transizione Qak che permette di ritornare allo stato in cui è stata chiamata a fine interruzione (segnalata con apposiat keyword Qak). In questo modo, alla ripresa delle operazioni del sonar tornerebbe al lavoro lasciato in sospeso. Quindi, per il funzionamento di Qak, per permettere questa funzionalità <em>trolleyStop</em> e <em>trolleyResume</em> dovranno essere dispatch:</p>
+  <pre>
+    <div class="w3-code">Dispatch trolleyStop : trolleyStop(_)
+Dispatch trolleyResume : trolleyResume(_)
+</div>
+  </pre>
+  <p>Per il modo in cui SonarShim invia i dati sulla distanza, si aprono come per Led e Gui due metodi possibili:</p>
+  <ul>
+    <li>
+      <p>L'uso di osservabilità, vale a dire SonarInterrupter che osserva SonarShim con COaP o altri metodi per rimanere aggiornato sui dati.</p>
+    </li>
+    <li>
+      <p>L'uso di eventi, cioè SonarShim che emette a ogni aggiornamento sulla distanza un evento Qak contenente la nuova distanza.</p>
+    </li>
+  </ul>
+  <p>
+    <strong>Conclusione.</strong> A differenza che per Led e Gui, è stato scelto di usare <strong>eventi</strong>: in questo caso è necessario interagire attivamente e non passivamente con il contesto esistente, quindi l'uso di eventi è più semplice e preferibile, non richiedendo la conoscenza degli attori coinvolti dall'una o dall'altra parte (SonarShim o SonarInterrupter).</p>
+  <pre>
+    <div class="w3-code">Event sonarDistance : sonarDistance(DIST).
+</div>
+  </pre>
+  <p>
+    <img src="../../model.problema/src/pro_sonar_stop.qak" alt="Modello eseguibile di questa analisi">
+  </p>
+  <h3 id="toc_15" class="w3-container w3-green">Modifiche</h3>
+  <p>Trolley, come da SPRINT precedenti, usa l'attore <em>pathexec</em> di BasicRobot22 per gestire il movimento. Se si usasse l'attore così com'è, anche se si inviasse un messaggio <em>trolleyStop</em> il trolley finirebbe il movimento attuale prima di fermarsi, non essendo pathexec a conoscenza del segnale di stop. Si è deciso di modificare <em>pathexec</em> creando una nuova versione, <strong>pathexecstop</strong>, per permettergli di accettare gli interrupt lanciati da SonarInterrupter.</p>
+  <p>Sono quindi introdotti due dispatch per fermare e riprendere l'esecuzione di <em>pathexecstop</em>:</p>
+  <pre>
+    <div class="w3-code">Dispatch stopPath : stopPath(_)
+Dispatch resumePath : resumePath(_)
+</div>
+  </pre>
+  <p>Potrebbero essere inviati da SonarInterrupter oppure da Trolley; si è deciso di farli inviare da Trolley, cosicchè esso rimanga l'unico attore che comunica con <em>pathexecstop</em>.</p>
+  <p>Viene incluso nel modello finale dell'architettura logica un semplice esempio di questa interazione.</p>
+  <h3 id="toc_16" class="w3-container w3-green">Lettura dal sonar</h3>
+  <p>Riguardo al metodo di lettura della distanza rilevata dal sonar, sono possibili due metodi principali:</p>
+  <ul>
+    <li>
+      <p>Polling dei dati: SonarShim dovrebbe avere un thread che periodicamente (e rapidamente) controlla la distanza attuale rilevata.</p>
+    </li>
+    <li>
+      <p>Osservazione: SonarShim osserva passivamente la distanza del sonar, e viene aggiornato sulle sue modifiche.</p>
+    </li>
+  </ul>
+  <p>
+    <strong>Conclusione.</strong> Ovviamente la seconda opzione, <strong>l'osservazione</strong>, migliora la performance ed è più pulita. Il problema principale è che allo stato attuale la libreria <em>radarsystem.domain</em> non supporta questa operazione, e non è possibile estenderla dall'esterno per farlo senza riprogrammare diverse classi fondamentali, perdendo lo scopo dell'usare una libreria. È stato quindi deciso di estendere la libreria per supportare l'osservabilità (almeno da pochi osservatori come per questo caso): per documentazione, analisi e progetto si consulti <a href="./radarSystem.domain_edits.html">il documento apposito</a>.</p>
+  <h3 id="toc_17" class="w3-container w3-green">Divisione dei contesti</h3>
+  <p>Fin'ora i contesti dei vari attori sono stati uniti per semplificare lo sviluppo; per l'effettiva distribuzione gli attori eseguiranno generalmente su contesti diversi in dispositivi diversi, e i contesti sono stati separati di conseguenza:</p>
+  <p>
+    <img src="../img/wasteservice_proto_sprint3_contextsarch.png" alt="">
+  </p>
+  <p>La maggior parte è autoesplicativa; per quanto riguarda sonarinterrupter, è stato deciso di metterlo insieme al Trolley data la sua necessaria conoscenza di esso per via dell'interazione tramite dispatch. Un'alternativa sarebbe potuta essere introdurlo in ctx_raspberry, ma dopo quel contesto avrebbe necessitato conoscenza degli specifici attori di ctx_trolley, che al momento non era necessaria.</p>
+  <p>Si ricordi che Qak è usato come linguaggio di modellazione, ma non necessariamente i vari componenti rappresentati come attori rimarranno tali in sviluppo; comunque, i componenti nello stesso contesto saranno eseguiti nello stesso nodo.</p>
+  <p>Nota: nel prototipo eseguibile di questo SPRINT, sono stati comunque considerati attori nello stesso contesto, per semplicità.</p>
+  <h3 id="toc_18" class="w3-container w3-green">Architettura Logica</h3>
+  <p>Ecco quindi l'architettura logica finale del sistema in generale per questo SPRINT:</p>
+  <p>
+    <img src="../img/sprint3_pro_arch.png" alt="modello architettura logica">
+  </p>
+  <p>Sono stati evidenziati i contesti, a differenza che negli SPRINT precedenti, data la divisione avvenuta solo ora.</p>
+  <p>
+    <a href="../../wasteservice.prototype/src/prototype_sprint3.qak">
+      <strong>Modello eseguibile generale / prototipo.</strong>
+    </a>
+  </p>
+  <p>Incluso anche il grafico corrispondente generato tramite Qak 3.0.</p>
+  <p>
+    <img src="../../wasteservice.prototype/wasteservice_proto_sprint3arch.png" alt="modello architettura logica qak">
+  </p>
+  <p>(Nota: l'attore timer non è un effettivo prodotto di analisi, ma solo un workaround a una limitazione attuale del framework Qak: non sarà presente nel progetto necessariamente.)</p>
+  <h3 id="toc_19" class="w3-container w3-green">Test Plan</h3>
+  <h4 id="toc_20">TestPlan: sonar-stop</h4>
+  <ul>
+    <li>
+      <p>
+        <strong>Test sonar-stop</strong>: <a href="../../wasteservice.prototype/test/it/unibo/TestSonarStop.kt">TestSonarStop.kt</a>. Versione aggiornata del test plan formalizzato in analisi dei requisiti. Invio di <em>trolleyMove</em> e durante il percorso inviare <em>sonarUpdate</em> sotto e sopra DLIMIT, controllando che il trolley si fermi e riprenda correttamente. Questo è di fatto un test per l'attore <em>sonarinterrupter</em>, per <em>sonarshim</em> vedi sotto.</p>
+    </li>
+    <li>
+      <p>
+        <strong>Test sonarshim</strong>: <a href="../../wasteservice.prototype/test-disabled/TestSonarShim.kt">TestSonarShim.kt</a>. Non eseguibile data l'assenza di un effettivo sonar da controllare nel prototipo di analisi. Forza l'invio di certi dati da parte del sonar, e controlla la corretta emissione dell'evento da parte di <em>sonarshim</em>.</p>
+    </li>
+  </ul>
+  <h2 id="toc_21" class="w3-container w3-teal">Progettazione</h2>
+  <p>La progettazione e lo sviluppo delle componenti software stabilite in fase di analisi è stata divisa in questo modo:</p>
+  <ul>
+    <li>SonarShim, SonarInterrupter : L. Guerra</li>
+    <li>PathexecStop, aggiornamento radarsystem22.domain: F. Lenzi</li>
+  </ul>
+  <h3 id="toc_22" class="w3-container w3-green">Struttura del software</h3>
+  <p>Dato che entrambi i componenti relativi al Sonar interagiscono con il sistema Qak, verranno realizzati come attori.</p>
+  <p>I componenti sono stati contenuti in due nuovi progetti:</p>
+  <ul>
+    <li>
+      <em>wasteservice.sonar</em>: componenti relativi al Sonar.</li>
+    <li>
+      <em>wasteservice.pathexec</em>: attore pathexec modificato in pathexecstop.</li>
+  </ul>
+  <p>Inoltre, è stato aggiunto un progetto per semplificare il collaudo tramite Docker di Led e Sonar: <em>wasteservice.raspgui</em>, che fornisce una webapp contenente simulazioni dei componenti Led e Sonar.</p>
+  <p>Sono anche state svolte migliore, correzioni, e pulizia ai componenti degli SPRINT precedenti.</p>
+  <p>La struttura dei package diventa la seguente (evidenziati solo i cambiamenti importanti):</p>
+  <ul>
+    <li>wasteservice.shared<ul>
+        <li>it.unibo.lenziguerra.wasteservice</li>
+        <li>it.unibo.lenziguerra.wasteservice.utils</li>
+        <li>it.unibo.lenziguerra.wasteservice.data</li>
+      </ul>
+    </li>
+    <li>wasteservice.core<ul>
+        <li>it.unibo.lenziguerra.wasteservice.wasteservice</li>
+        <li>it.unibo.lenziguerra.wasteservice.trolley</li>
+        <li>it.unibo.lenziguerra.wasteservice.storage</li>
+        <li>
+          <em>
+            <code>wasteservice.qak</code>
+          </em> (Aggiunta di sonarinterrupter, modifica di trolley per permettere lo stop)</li>
+      </ul>
+    </li>
+    <li>wasteservice.led<ul>
+        <li>it.unibo.lenziguerra.wasteservice.led</li>
+      </ul>
+    </li>
+    <li>wasteservice.statusgui<ul>
+        <li>it.unibo.lenziguerra.wasteservice.statusgui</li>
+      </ul>
+    </li>
+    <li>
+      <strong>wasteservice.sonar</strong>
+      <ul>
+        <li>
+          <em>it.unibo.lenziguerra.wasteservice.sonar</em>
+        </li>
+        <li>
+          <em>
+            <code>sonar.qak</code>
+          </em>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <strong>wasteservice.pathexec</strong>
+      <ul>
+        <li>
+          <em>
+            <code>pathexecstop.qak</code>
+          </em>
+        </li>
+      </ul>
+    </li>
+    <li>(<strong>wasteservice.raspgui</strong>)</li>
+  </ul>
+  <h3 id="toc_23" class="w3-container w3-green">Sonar</h3>
+  <p>Il Sonar, come da analisi, viene gestito tramite la libreria già realizzata <em>it.unibo.radarSystem22.domain</em>, che a sua volta interagisce con il software del committente (<em>SonarAlone</em>). La libreria, come è stato detto in analisi, è stata estesa, con le modifiche visibili al <a href="radarSystem.domain_edits.html">documento apposito</a>.</p>
+  <p>Come sopra i due componenti da analisi (SonarShim e SonarInterrupter) sono realizzati come attori Qak. Il funzionamento di <em>sonarinterrupter</em> è equivalente all'analisi, mentre SonarShim è ora un CodedQActor con la classe apposita <a href="../../wasteservice.sonar/src/it/unibo/lenziguerra/wasteservice/sonar/Sonar.kt">
+      <code>SonarShim</code>
+    </a>.</p>
+  <pre>
+    <div class="w3-code">class SonarShim(name : String) : ActorBasic(name) {
+    [...]
+    override suspend fun actorBody(msg: IApplMessage) {
+        if (msg.msgId() == "sonarStart") {
+            observer = DistanceObserver()
+            observableDistance.subscribe(observer)
+            sonar.activate()
+        }
+    }
+
+    inner class DistanceObserver : IDistanceObserver {
+        override fun update(distance: IDistance) {
+            runBlocking {
+                emit("sonarDistance", "sonarDistance(${distance.`val`.toString()})")
+            }
+        }
+    }
+}
+</div>
+  </pre>
+  <p>Questa classe contiene un DistanceObserver, che registra al sonar osservabile con le modalità di <em>radarsystem22.domain</em> 2.0, e "rimbalza" gli aggiornamenti sulla distanza come evento.</p>
+  <h3 id="toc_24" class="w3-container w3-green">Trolley stop</h3>
+  <p>È stato necessario modificare l'attore <em>trolley</em> per usare le primitive <em>whenInterrupt</em> di Qak per supportare lo stato di stop causato da <em>sonarinterrupter</em>. È stato possibile farlo senza modificare per questo scopo la classe di supporto <code>TrolleySupport</code> sottostante.</p>
+  <pre>
+    <div class="w3-code">    State idle {
+    	[...]
+    }
+    Transition t0 [...]
+    			  whenInterrupt trolleyStop -&gt; handleStop
+
+    State handleMove {
+    	[...]
+    		[# WaitingPath = true #]
+    	[...]
+    }
+    Transition t0 [...]
+    			  whenInterrupt trolleyStop -&gt; handleStop
+
+    State handleStop {
+    	[# Support.updateState("stopped") #]
+    	updateResource [# Support.getPrologContent() #]
+    	  		
+    	if [# WaitingPath #] {
+    		forward pathexecstop -m stopPath : stopPath(_)
+    	}
+    }
+    Transition t0 whenMsg trolleyResume -&gt; exitFromStop
+
+    State exitFromStop {
+    	[# Support.updateState("work") #]
+    	updateResource [# Support.getPrologContent() #]
+    	  		   			
+    	if [# WaitingPath #] {
+    		forward pathexecstop -m resumePath : resumePath(_)
+    	}
+    	
+    	returnFromInterrupt
+    }
+</div>
+  </pre>
+  <p>Ci sono due possibili stati dove innescare l'interruzione, e in base ad essi può inviare un segnale di stop anche a <em>pathexecstop</em> o meno.</p>
+  <p>Per SonarShim è stato realizzato un main particolare, che sostituisce le impostazioni di host e IP del file Qak con quelle incluse in <em>SystemConfig.json</em>.</p>
+  <h3 id="toc_25" class="w3-container w3-green">PathexecStop</h3>
+  <p>L'attore modificato <em>pathexecstop</em> è stato posto in un progetto dedicato, <em>unibo.pathexecstop</em>. Si limita ad entrare in uno stato di stop quando arrivano i dispatch <em>stopPath</em> e <em>resumePath</em>.</p>
+  <pre>
+    <div class="w3-code">    State doMoveW{
+    	[...]
+    }	
+    Transition t0 [...]                      
+    			  whenInterrupt stopPath -&gt; stopped
+
+    State doMoveTurn {
+    	[...]
+    }
+    Transition t0 [...]
+    			  whenInterrupt stopPath -&gt; stopped
+
+</div>
+  </pre>
+  <h3 id="toc_26" class="w3-container w3-green">RaspGUI</h3>
+  <p>Per collaudare meglio il sistema durante lo sviluppo, è stata realizzata una Web-app che simula sia Led che sonar tramite GUI. Questo permette anche di usarla internamente a Docker, che altrimenti non permetterebbe di usare Gui tradizionali realizzate con Swing e simili librerie.</p>
+  <h3 id="toc_27" class="w3-container w3-green">Modifiche minori</h3>
+  <p>Sono state apportate migliore e correzioni agli SPRINT precedenti, riassunte in seguito:</p>
+  <ul>
+    <li>Migliorata l'interfaccia di WasteServiceStatusGUI e della GUI per i piloti dei camion.</li>
+    <li>Aggiunta la possibilità di inviare nuove richieste dalla TruckGui senza aggiornare la pagina</li>
+    <li>Aggiunto il campo Activity allo stato del Trolley, che indica se sia idle, se stia viaggiando, raccogliendo, o depositando oggetti, per aggiungere informazioni utili al collaudo e in generale.</li>
+    <li>Aggiunto "Travel" come posizione del Trolley visualizzata quando non è fermo in una posizioni di interesse, sia per rappresentare meglio i fatti (prima il Trolley era visualizzato come a HOME anche quando era già in viaggio per INDOOR), e aggiornare prima lo stato del Led (così che cominci a lampeggiare più appropriatamente appena il Trolley abbandona HOME).</li>
+  </ul>
+  <p>
+    <img src="../img/wasteservicegui.png" alt="">
+  </p>
+  <p>
+    <img src="../img/statusgui.png" alt="">
+  </p>
+  <h3 id="toc_28" class="w3-container w3-green">Test</h3>
+  <p>Sono stati aggiornati i test plan formalizzati in analisi del problema.</p>
+  <ul>
+    <li>
+      <p>
+        <strong>Test sonar-stop</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestSonarStop.kt">TestSonarStop.kt</a>. Funzionamento analogo all'analisi del problema.</p>
+    </li>
+    <li>
+      <p>
+        <strong>Test sonarshim</strong>: <a href="../../wasteservice.sonar/test/it/unibo/lenziguerra/wasteservice/sonar/TestSonarShim.kt">TestSonarShim.kt</a>. Ora eseguibile, sfrutta la modalità testing del SonarMock di radarsystem.domain per controllare gli output del Sonar.</p>
+    </li>
+  </ul>
+  <p>In luce delle tecniche apprese durante lo sviluppo di SPRINT 2 e SPRINT 3, sono stati aggiornati anche i test dello SPRINT 1, per permetterne l'esecuzione in massa (avviandoli "dalla classe") e senza necessitare l'avvio di componenti esterni come basicrobot; questo è stato fatto creando un attore pathexec fasullo, che ha permesso anche di verificare il corretto movimento del Trolley.</p>
+  <ul>
+    <li>
+      <strong>TestRequest</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/wasteservice/TestRequest.kt">TestRequest.kt</a>
+    </li>
+    <li>
+      <strong>TestDeposit</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestDeposit.kt">TestDeposit.kt</a>
+    </li>
+    <li>
+      <strong>TrolleyTest</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TrolleyTest.kt">TrolleyTest.kt</a>
+    </li>
+    <li>
+      <strong>TestMoreRequests</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestMoreRequests.kt">TestMoreRequests.kt</a>
+    </li>
+  </ul>
+  <h3 id="toc_29" class="w3-container w3-green">Struttura del sistema</h3>
+  <p>La struttura finale del sistema nello SPRINT 3 è riassunta in questo grafico:</p>
+  <p>
+    <img src="../img/architettura3_progetto.jpg" alt="modello architettura progetto">
+  </p>
+  <p>Senza l'evidenziazione delle sole componenti modificate o nuove:</p>
+  <p>
+    <img src="../img/architettura_finale_progetto.jpg" alt="modello architettura progetto">
+  </p>
+  <h3 id="toc_30" class="w3-container w3-green">Immagine Docker</h3>
+  <p>Vengono forniti i file docker-compose elencati in seguito. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, alla porta 8090 per visualizzare l'ambiente virtuale del robot, e alla porta 8095 per visualizzare WasteServiceStatusGUI.</p>
+  <ul>
+    <li>
+      <p>
+        <a href="../../wasteservice3_withmockgui.yaml">wasteservice3_withmockgui.yaml</a>: esegue tutto il sistema in locale, usando la webapp <em>raspGui</em> menzionata precedentemente come mock di Led e Sonar, accessibile alla porta 8096.</p>
+    </li>
+    <li>
+      <p>
+        <a href="../../wasteservice3_norasp.yaml">wasteservice3_norasp.yaml</a>: esegue il sistema senza le componenti Led e Sonar; esse vanno eseguite fuori da Docker sul Raspberry Pi, il quale IP va configurato dentro a questo file yaml nel campo <strong>wasteservice.led</strong> sotto <strong>extra_hosts</strong> del servizio <strong>wasteservice.statusgui</strong>. Per trasferire facilmente i file di distribuzione al Raspberry Pi vengono forniti gli script <strong>scpDistrToRasp.sh</strong> in <a href="../../wasteservice.led/scpDistrToRasp.sh">wasteservice.led</a> e <a href="../../wasteservice.sonar/scpDistrToRasp.sh">wasteservice.sonar</a>, dove occorre configurare l'hostname/IP del raspberry al posto di <code>raspi</code> nei vari comandi.</p>
+    </li>
+  </ul>
+  <h2 id="toc_31" class="w3-container w3-teal">Riassunto SPRINT 3</h2>
+  <p>Il terzo SPRINT riguardava questi requisiti:</p>
+  <ul>
+    <li>
+      <strong>sonar-stop</strong>: è presente un <em>sonar</em> che, se misura una distanza sotto DLIMIT (valore prefissato), mette il <em>trolley</em> in stato di <em>stop</em> fino a che la distanza non torna a DLIMIT, nel qual caso il <em>trolley</em> riparte</li>
+  </ul>
+  <h3 id="toc_32" class="w3-container w3-green">Analisi</h3>
+  <p>In fase di analisi, è stato deciso di dividere Sonar in due componenti, SonarShim sul contesto del Raspberry che emette eventi di aggiornamento sulla distanza usando la libreria <em>radarsystem22.domain</em>, e SonarInterrupter sul contesto del Trolley (data la necessità di conoscerlo per inviare dispatch) che ferma quest'ultimo tramite interrupt. Inoltre, è stato deciso di creare una versione estesa dell'attore Pathexec di BasicRobot22 che sia possibile interrompere a metà di un percorso.</p>
+  <p>Dopo la fase di analisi, l'architettura logica del sistema è stata così pensata:</p>
+  <p>
+    <img src="../img/sprint3_pro_arch.png" alt="modello architettura logica">
+  </p>
+  <p>
+    <a href="../../wasteservice.prototype/src/prototype_sprint3.qak">
+      <strong>Modello eseguibile generale / prototipo.</strong>
+    </a>
+  </p>
+  <p>Per interagire con il sonar è stato usato il software fornito dal committente, SonarAlone.c, controllato tramite la libreria <em>radarsystem22.domain</em>, aggiornata in fase di sviluppo per permettere l'osservabilità della distanza rilevata dal sonar.</p>
+  <p>Sono stati realizzati, in fase di analisi, dei test plan in parte eseguibili sfruttando il prototipo in Qak, per ogni componente e/o requisito. Sono dettagliati nella sezione apposita, e collegati di seguito:</p>
+  <ul>
+    <li>
+      <a href="../../wasteservice.prototype/test/it/unibo/TestSonarStop.kt">TestSonarStop.kt</a>
+    </li>
+    <li>
+      <a href="../../wasteservice.prototype/test-disabled/TestSonarShim.kt">TestSonarShim.kt</a> (Non eseguibile, per ragioni spiegate nel documento di analisi).</li>
+  </ul>
+  <h3 id="toc_33" class="w3-container w3-green">Progetto</h3>
+  <p>I punti salienti della fase di sviluppo sono i seguenti:</p>
+  <ul>
+    <li>
+      <p>Aggiornamento della libreria <em>radarsystem22.domain</em> per permettere osservabilità di sonar e distanza rilevata dal sonar.</p>
+    </li>
+    <li>
+      <p>Realizzazione di SonarShim come osservatore della distanza del sonar che la "rimbalza" come evento al contesto Qak del Trolley.</p>
+    </li>
+    <li>
+      <p>SonarInterrupter realizzato in modo analogo al modello dell'analisi, e Trolley modificato di conseguenza per accettare stop e resume.</p>
+    </li>
+    <li>
+      <p>Realizzazione di unibo.pathexecstop per permettere l'interruzione dell'esecuzione del percorso.</p>
+    </li>
+    <li>
+      <p>Migliorie e correzioni minori generali alle componenti pre-esistenti del sistema.</p>
+    </li>
+  </ul>
+  <p>
+    <img src="../img/architettura3_progetto.jpg" alt="modello architettura logica">
+  </p>
+  <p>I test dell'analisi sono stati adattati all'implementazione:</p>
+  <ul>
+    <li>
+      <strong>Test sonar-stop</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestSonarStop.kt">TestSonarStop.kt</a>
+    </li>
+    <li>
+      <strong>Test sonarshim</strong>: <a href="../../wasteservice.sonar/test/it/unibo/lenziguerra/wasteservice/sonar/TestSonarShim.kt">TestSonarShim.kt</a>
+    </li>
+  </ul>
+  <p>E sono stati migliorati i test dello SPRINT 1 in luce delle tecniche apprese, per evitare la necessità di lanciare programmi terzi:</p>
+  <ul>
+    <li>
+      <strong>TestRequest</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/wasteservice/TestRequest.kt">TestRequest.kt</a>
+    </li>
+    <li>
+      <strong>TestDeposit</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestDeposit.kt">TestDeposit.kt</a>
+    </li>
+    <li>
+      <strong>TrolleyTest</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TrolleyTest.kt">TrolleyTest.kt</a>
+    </li>
+    <li>
+      <strong>TestMoreRequests</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestMoreRequests.kt">TestMoreRequests.kt</a>
+    </li>
+  </ul>
+  <p>Vengono forniti i file Docker-compose elencati in seguito. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste alla porta 8090 per visualizzare l'ambiente virtuale del robot e alla porta 8095 per visualizzare WasteServiceStatusGUI.</p>
+  <p>Vengono forniti i file docker-compose elencati in seguito. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, alla porta 8090 per visualizzare l'ambiente virtuale del robot, e alla porta 8095 per visualizzare WasteServiceStatusGUI.</p>
+  <ul>
+    <li>
+      <p>
+        <a href="../../wasteservice3_withmockgui.yaml">wasteservice3_withmockgui.yaml</a>: esegue tutto il sistema in locale, usando la webapp <em>raspGui</em> come mock di Led e Sonar, accessibile alla porta 8096.</p>
+    </li>
+    <li>
+      <p>
+        <a href="../../wasteservice3_norasp.yaml">wasteservice3_norasp.yaml</a>: esegue il sistema senza le componenti Led e Sonar; esse vanno eseguite fuori da Docker sul Raspberry Pi, il quale IP va configurato dentro a questo file yaml nel campo <strong>wasteservice.led</strong> sotto <strong>extra_hosts</strong> del servizio <strong>wasteservice.statusgui</strong>. Per trasferire facilmente i file di distribuzione al Raspberry Pi vengono forniti gli script <strong>scpDistrToRasp.sh</strong> in <a href="../../wasteservice.led/scpDistrToRasp.sh">wasteservice.led</a> e <a href="../../wasteservice.sonar/scpDistrToRasp.sh">wasteservice.sonar</a>, dove occorre configurare l'hostname/IP del raspberry al posto di <code>raspi</code> nei vari comandi.</p>
+    </li>
+  </ul>
+</div></body>

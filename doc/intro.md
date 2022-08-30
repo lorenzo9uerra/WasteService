@@ -2,6 +2,14 @@
 
 ##### F. Lenzi, L. Guerra
 
+.. toc::
+    :depth: 2
+
+### Indice
+
+.. toc::
+    :depth: 3
+
 ## Introduzione
 
 Questo documento riassume le premesse e le fasi di sviluppo del progetto WasteService realizzato da **Filippo Lenzi** e  **Lorenzo Guerra**.
@@ -28,6 +36,9 @@ Durante lo sviluppo, per semplicità tutti gli attori contenuti nello stesso pro
 
 Una nota importante: questo documento è stato messo per iscritto a progetto finito, e ha lo scopo di riassumere i ragionamenti iniziali e svolti nelle varie fasi del progetto. L'analisi è stata sviluppata nel corso dei vari SPRINT, ed è visibile nei documenti dedicati.
 
+## Scelta del linguaggio di modellazione
+
+Nelle varie fasi di analisi di questo progetto abbiamo usato come linguaggio di modellazione il linguaggio ad attori Qak, essendo il sistema da realizzare un sistema distribuito, quindi adatto ad essere rappresentato tramite attori.
 
 ## Struttura del Progetto
 

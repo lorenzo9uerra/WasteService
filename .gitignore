@@ -32,3 +32,4 @@ wasteservice.core/.settings/org.eclipse.buildship.core.prefs
 jsconfig.json
 
 test-launcher/**
+doc/pages/**

@@ -1,0 +1,167 @@
+<head>
+        <link rel="stylesheet" href="../css/w3.css"> 
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+        <link rel="stylesheet" href="../css/doc.css"> 
+</head><body>
+<div>
+  <h1 id="toc_1" class="w3-container w3-indigo">WasteService - Introduzione</h1>
+  <h5 id="toc_2">F. Lenzi, L. Guerra</h5>
+  <section class="toc-sidebar">
+    <div class="sidebar-index w3-deep-purple">
+      <a href="./index.html">Indice generale</a>
+    </div>
+    <div>
+      <a href="#toc_1">WasteService - Introduzione</a>
+    </div>
+    <div>
+      <a href="#toc_4">Introduzione</a>
+    </div>
+    <div>
+      <a href="#toc_5">Prima analisi</a>
+    </div>
+    <div>
+      <a href="#toc_6">Scelta del linguaggio di modellazione</a>
+    </div>
+    <div>
+      <a href="#toc_7">Struttura del Progetto</a>
+    </div>
+  </section>
+  <h3 id="toc_3" class="w3-container w3-green">Indice</h3>
+  <section class="toc">
+    <ul>
+      <li>
+        <a href="#toc_1">WasteService - Introduzione</a>
+        <ul>
+          <li>
+            <a href="#toc_3">Indice</a>
+          </li>
+          <li>
+            <a href="#toc_4">Introduzione</a>
+          </li>
+          <li>
+            <a href="#toc_5">Prima analisi</a>
+          </li>
+          <li>
+            <a href="#toc_6">Scelta del linguaggio di modellazione</a>
+          </li>
+          <li>
+            <a href="#toc_7">Struttura del Progetto</a>
+            <ul>
+              <li>
+                <a href="#toc_8">Sotto-progetti</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+  <h2 id="toc_4" class="w3-container w3-teal">Introduzione</h2>
+  <p>Questo documento riassume le premesse e le fasi di sviluppo del progetto WasteService realizzato da <strong>Filippo Lenzi</strong> e  <strong>Lorenzo Guerra</strong>.</p>
+  <p>Seguendo il framework di sviluppo SCRUM, la progettazione è stata divisa in 3 SPRINT:</p>
+  <ol>
+    <li>
+      <p>
+        <a href=".././sprint1_lenziGuerra_Report.html">
+          <strong>SPRINT 1</strong>
+        </a>: progettazione della logica <em>core business</em>, vale a dire <strong>WasteService</strong> e <strong>Trolley</strong>, con azione di deposito e componenti annessi.</p>
+    </li>
+    <li>
+      <p>
+        <a href=".././sprint2_lenziGuerra_Report.html">
+          <strong>SPRINT 2</strong>
+        </a>: progettazione delle componenti <strong>Led</strong> e <strong>WasteServiceStatusGUI</strong>, raggruppate data la simile funzionalità ed esigenze.</p>
+    </li>
+    <li>
+      <p>
+        <a href=".././sprint3_lenziGuerra_Report.html">
+          <strong>SPRINT 3</strong>
+        </a>: progettazione della componente <strong>Sonar</strong>, e funzionalità annesse.</p>
+    </li>
+  </ol>
+  <p>Ogni SPRINT ha un documento annesso che contiene requisiti, analisi dei requisiti, analisi del problema, progettazione e sviluppo, test e deploy. I test plan sono stati pensati quanto prima possibile nel corso dello sviluppo di ciascuno SPRINT, e raffinati man mano che proseguivano le fasi di sviluppo.</p>
+  <h2 id="toc_5" class="w3-container w3-teal">Prima analisi</h2>
+  <p>Da una prima analisi dei requisiti del committente, visibili nei documenti dei vari SPRINT, emergono alcuni componenti necessari, riassumibili in questo grafico:</p>
+  <p>
+    <img src="../img/wasteservice_introarch.png" alt="wasteservice, trolley, led, sonar, wasteservicestatusgui">
+  </p>
+  <p>I nomi dei messaggi sono solo indicativi, così come lo è l'attore simulateddriver, che ha lo scopo di indicare l' "entry point" della logica principale del sistema. È stato deciso di usare il supporto BasicRobot22 per il controllo del DDR robot.</p>
+  <p>Durante lo sviluppo, per semplicità tutti gli attori contenuti nello stesso progetto sono stati inclusi in un unico contesto (per esempio, Trolley e WasteService); i contesti sono stati separati nell'ultimo SPRINT.</p>
+  <p>Una nota importante: questo documento è stato messo per iscritto a progetto finito, e ha lo scopo di riassumere i ragionamenti iniziali e svolti nelle varie fasi del progetto. L'analisi è stata sviluppata nel corso dei vari SPRINT, ed è visibile nei documenti dedicati.</p>
+  <h2 id="toc_6" class="w3-container w3-teal">Scelta del linguaggio di modellazione</h2>
+  <p>Nelle varie fasi di analisi di questo progetto abbiamo usato come linguaggio di modellazione il linguaggio ad attori Qak, essendo il sistema da realizzare un sistema distribuito, quindi adatto ad essere rappresentato tramite attori.</p>
+  <h2 id="toc_7" class="w3-container w3-teal">Struttura del Progetto</h2>
+  <pre>
+    <div class="w3-code">├── doc
+├── it.unibo.radarSystem22.domain
+├── model.problema
+├── model.requisiti
+├── qakactor.observer
+├── unibolibs
+├── versioni_vecchie
+├── unibo.pathexecstop
+├── wasteservice.core
+├── wasteservice.led
+├── wasteservice.prototype
+├── wasteservice.shared
+├── wasteservice.sonar
+└── wasteservice.statusgui
+└── wasteservice.raspgui
+</div>
+  </pre>
+  <p>Il progetto è interamente contenuto nella cartella WasteService che verrà
+definita come root, e in <code>/doc</code> è possibile trovare documentazione di vario
+tipo, tra cui i documenti dei vari sprint in formato <em>markdown</em> visualizzabili
+direttamente da <a href="https://github.com/lnwor/WasteService/tree/main/">github</a> e dei
+file in formato <em>html</em> che contengono l'analisi dei requisiti, del problema, il
+documento di progetto e un breve riassunto. È presente anche la documentazione
+che spiega le modifiche al progetto radarSystem.domain fornito dal committente e
+la spiegazione del funzionamento di una utility per trasformare degli attori in
+<em>Qak Observer</em> di una risorsa Coap.</p>
+  <h3 id="toc_8" class="w3-container w3-green">Sotto-progetti</h3>
+  <p>I vari sotto progetti sono stati sviluppati nel corso dei vari SPRINT, e sono stati stabiliti all'interno dello sviluppo di ciascuno.</p>
+  <p>Analisi e prototipi</p>
+  <ul>
+    <li>
+      <code>model.requisiti</code> e <code>model.problema</code>: modelli eseguibili utilizzati per formalizzare l'analisi dei requisiti e del problema.</li>
+    <li>
+      <code>wasteservice.prototype</code>: prototipi funzionanti dell'intero sistema collegati ai vari SPRINT.</li>
+  </ul>
+  <p>Sistema reale</p>
+  <ul>
+    <li>
+      <code>wasteservice.shared</code>¹: classi e librerie in comune tra i vari sotto-progetti.</li>
+    <li>
+      <code>wasteservice.core</code>¹: componenti principali della business logic.</li>
+    <li>
+      <code>wasteservice.led</code>²: controllo del Led.</li>
+    <li>
+      <code>wasteservice.statusgui</code>²: web-server di WasteServiceStatusGUI.</li>
+    <li>
+      <code>unibo.pathexecstop</code>³: versione modificata dell'attore <em>pathexec</em> di BasicRobot22.</li>
+    <li>
+      <code>wasteservice.sonar</code>³: supporto per Sonar.</li>
+  </ul>
+  <p>Librerie e supporti</p>
+  <ul>
+    <li>
+      <code>qakactor.observer</code>²: estensione di Qak per attori-osservatori, successivamente inclusa in Qak 3.0 ma usato comunque per alcune funzionalità aggiuntive specifiche.</li>
+    <li>
+      <code>it.unibo.radarSystem22.domain</code>³: versione 2.0 della libreria realizata per progetti passati, che permette l'osservazione del sonar.</li>
+  </ul>
+  <p>Aggiunte e test</p>
+  <ul>
+    <li>
+      <code>wasteservice.raspgui</code>³: webapp per simulare componenti del Raspberry (Led e Sonar), pensata per l'uso con docker nel collaudo.</li>
+  </ul>
+  <p>In ogni progetto modificato in SPRINT successivi alla creazione sono state incluse cartelle <em>src-sprintN</em> che includono un backup del codice alla fine dello SPRINT corrispondente, per scopo di documentazione dei progressi.</p>
+  <p>
+    <em>¹ realizzato nello SPRINT 1</em>
+  </p>
+  <p>
+    <em>² realizzato nello SPRINT 2</em>
+  </p>
+  <p>
+    <em>³ realizzato nello SPRINT 3</em>
+  </p>
+</div></body>

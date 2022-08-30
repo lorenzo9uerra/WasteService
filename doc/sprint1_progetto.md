@@ -50,9 +50,9 @@ Per scopo di documentazione, il codice allo stato della fine dello SPRINT 1 è s
 
 I test plan stabiliti in analisi sono stati adattati al sistema finale dello SPRINT 1, sono eseguibili in questi file:
 
-* [TestRequest.java](../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/wasteservice/TestRequest.java)
-* [TestDeposit.java](../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestDeposit.java)
-* [TestMoreRequests.java](../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestMoreRequests.java)
+* [TestRequest.java](../wasteservice.core/test-sprint1/it/unibo/lenziguerra/wasteservice/wasteservice/TestRequest.java)
+* [TestDeposit.java](../wasteservice.core/test-sprint1/it/unibo/lenziguerra/wasteservice/TestDeposit.java)
+* [TestMoreRequests.java](../wasteservice.core/test-sprint1/it/unibo/lenziguerra/wasteservice/TestMoreRequests.java)
 
 Note sull'esecuzione: 
 

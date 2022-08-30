@@ -1,5 +1,8 @@
 # Conclusioni
 
+.. toc::
+    :depth: 2
+
 Il progetto WasteService è stato completato in tre SPRINT SCRUM, al termine dei quali il progetto aveva la seguente struttura:
 
 ![](img/architettura_finale_progetto.jpg)
@@ -9,8 +12,6 @@ Il progetto WasteService è stato completato in tre SPRINT SCRUM, al termine dei
 Viene incluso in seguito un video di una demo del progetto in contesto distribuito:
 
 [Demo WasteService Lenzi Guerra](https://youtu.be/wizYutGEHh4)
-
-<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/wizYutGEHh4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
 
 I componenti erano distribuiti nel modo seguente:
 

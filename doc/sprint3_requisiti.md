@@ -1,5 +1,3 @@
-[Ritorna all'inizio](../README.md)
-
 ## Analisi dei Requisiti
 
 Per il requisito *sonar-stop* è stato incluso un modello eseguibile in

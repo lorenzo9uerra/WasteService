@@ -1,0 +1,113 @@
+<head>
+        <link rel="stylesheet" href="../css/w3.css"> 
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+        <link rel="stylesheet" href="../css/doc.css"> 
+</head><body>
+<div>
+  <h1 id="toc_1" class="w3-container w3-indigo">Conclusioni</h1>
+  <section class="toc-sidebar">
+    <div class="sidebar-index w3-deep-purple">
+      <a href="./index.html">Indice generale</a>
+    </div>
+    <div>
+      <a href="#toc_1">Conclusioni</a>
+    </div>
+    <div>
+      <a href="#toc_2">Demo</a>
+    </div>
+    <div>
+      <a href="#toc_3">Test</a>
+    </div>
+  </section>
+  <p>Il progetto WasteService è stato completato in tre SPRINT SCRUM, al termine dei quali il progetto aveva la seguente struttura:</p>
+  <p>
+    <img src="../img/architettura_finale_progetto.jpg" alt="">
+  </p>
+  <h2 id="toc_2" class="w3-container w3-teal">Demo</h2>
+  <p>Viene incluso in seguito un video di una demo del progetto in contesto distribuito:</p>
+  <p>
+    <a href="https://youtu.be/wizYutGEHh4">Demo WasteService Lenzi Guerra</a>
+    <br>
+    <iframe width="560" height="315" src="https://youtube.com/embed/wizYutGEHh4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
+</iframe>
+  </p>
+  <p>I componenti erano distribuiti nel modo seguente:</p>
+  <ul>
+    <li>WasteService e WasteServiceStatusGUI su macchina in rete diversa (schermo visibile tramite condivisione in videochiamata)</li>
+    <li>Led e Sonar su un Raspberry PI (ripreso dalla fotocamera)</li>
+    <li>Trolley e StorageManager sul PC Desktop inquadrato, con altra istanza da browser di WasteServiceStatusGUI</li>
+  </ul>
+  <h2 id="toc_3" class="w3-container w3-teal">Test</h2>
+  <p>Sono elencati di seguito i test per verificare la corretta reificazione dei vari requisiti del committente, e il funzionamento dei componenti aggiunti in fase di analisi e di progetto:</p>
+  <ul>
+    <li>
+      <p>
+        <strong>TestRequest</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/wasteservice/TestRequest.kt">TestRequest.kt</a>
+      </p>
+    </li>
+    <li>
+      <p>
+        <strong>TestDeposit</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestDeposit.kt">TestDeposit.kt</a>
+      </p>
+    </li>
+    <li>
+      <p>
+        <strong>TrolleyTest</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TrolleyTest.kt">TrolleyTest.kt</a>
+      </p>
+    </li>
+    <li>
+      <p>
+        <strong>TestMoreRequests</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestMoreRequests.kt">TestMoreRequests.kt</a>
+      </p>
+    </li>
+    <li>
+      <p>
+        <strong>TestGui</strong>: <a href="../../wasteservice.statusgui/src/test/kotlin/it/unibo/lenziguerra/wasteservice/statusgui/TestGui.kt">TestGui.kt</a>
+      </p>
+    </li>
+    <li>
+      <p>
+        <strong>TestLed</strong>: <a href="../../wasteservice.led/src/test/kotlin/TestLed.kt">TestLed.kt</a>
+      </p>
+    </li>
+    <li>
+      <p>
+        <strong>BlinkLedTest</strong>: <a href="../../wasteservice.led/src/test/kotlin/BlinkLedTest.kt">BlinkLedTest.kt</a>
+      </p>
+    </li>
+    <li>
+      <p>
+        <strong>TestSonarStop</strong>: <a href="../../wasteservice.core/test/it/unibo/lenziguerra/wasteservice/TestSonarStop.kt">TestSonarStop.kt</a>. Funzionamento analogo all'analisi del problema.</p>
+    </li>
+    <li>
+      <p>
+        <strong>TestSonarShim</strong>: <a href="../../wasteservice.sonar/test/it/unibo/lenziguerra/wasteservice/sonar/TestSonarShim.kt">TestSonarShim.kt</a>. Ora eseguibile, sfrutta la modalità testing del SonarMock di radarsystem.domain per controllare gli output del Sonar.</p>
+    </li>
+  </ul>
+  <h3 id="toc_4" class="w3-container w3-green">Deployment</h3>
+  <p>Vengono forniti i file docker-compose elencati in seguito. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, alla porta 8090 per visualizzare l'ambiente virtuale del robot, e alla porta 8095 per visualizzare WasteServiceStatusGUI.</p>
+  <ul>
+    <li>
+      <p>
+        <a href="../../wasteservice3_withmockgui.yaml">wasteservice3_withmockgui.yaml</a>: esegue tutto il sistema in locale, usando la webapp <em>raspGui</em> menzionata precedentemente come mock di Led e Sonar, accessibile alla porta 8096.</p>
+    </li>
+    <li>
+      <p>
+        <a href="../../wasteservice3_norasp.yaml">wasteservice3_norasp.yaml</a>: esegue il sistema senza le componenti Led e Sonar; esse vanno eseguite fuori da Docker sul Raspberry Pi, il quale IP va configurato dentro a questo file yaml nel campo <strong>wasteservice.led</strong> sotto <strong>extra_hosts</strong> del servizio <strong>wasteservice.statusgui</strong>. Per trasferire facilmente i file di distribuzione al Raspberry Pi vengono forniti gli script <strong>scpDistrToRasp.sh</strong> in <a href="../../wasteservice.led/scpDistrToRasp.sh">wasteservice.led</a> e <a href="../../wasteservice.sonar/scpDistrToRasp.sh">wasteservice.sonar</a>, dove occorre configurare l'hostname/IP del raspberry al posto di <code>raspi</code> nei vari comandi.</p>
+    </li>
+  </ul>
+  <p>Le porte usate dal sistema sono le seguenti, a scopo di reindirizzamento e apertura delle porte:</p>
+  <ul>
+    <li>8020 TCP/UDP: BasicRobot22 (contesto)</li>
+    <li>8023 TCP/UDP: WasteService (contesto)</li>
+    <li>8025 TCP/UDP: PathexecStop (contesto)</li>
+    <li>8030 UDP: Led (server Coap per osservabilità)</li>
+    <li>8031 TCP/UDP: SonarShim (contesto)</li>
+    <li>8070 TCP/UDP: Trolley (contesto)</li>
+    <li>8071 TCP/UDP: StorageManager (contesto)</li>
+    <li>8080 TCP: WasteService (da browser, TruckGUI, per inviare richieste da un camion)</li>
+    <li>8090 TCP: VirtualRobot (da browser, ambiente virtuale per BasicRobot)</li>
+    <li>8095 TCP: WasteServiceStatusGUI (da browser)</li>
+    <li>(8096 TCP/UDP: RaspGUI (da browser, per testing) )</li>
+  </ul>
+</div></body>

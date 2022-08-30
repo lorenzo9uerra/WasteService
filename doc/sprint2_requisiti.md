@@ -1,5 +1,3 @@
-[Ritorna all'inizio](../README.md)
-
 ## Analisi dei Requisiti
 
 Per ogni requisito analizzato in questo SPRINT è stato incluso un modello eseguibile in [Qak](#scelta-del-linguaggio-di-modellazione). 

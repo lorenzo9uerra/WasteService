@@ -1,6 +1,6 @@
-## Modifiche a radarSystem22.domain
+# Modifiche a radarSystem22.domain
 
-### Documentazione
+## Documentazione
 
 La libreria radarSystem22.domain, realizzata per progetti precedenti e riutilizzata in WasteService per gestire Led e Sonar, è stata modificata per permetterne l'osservabilità.
 
@@ -42,11 +42,11 @@ Per ottenere un riferimento a `ISonarObservable` e `IDistanceObservable`, è pos
 
 Può essere poi creato un observer ad-hoc per il caso d'uso per il quale si vuole osservare la risorsa in questione.
 
-### Test
+## Test
 
 Sono inclusi dei test per verificare il funzionamento della nuova classe observable: [TestSonarMockObserver.java](../it.unibo.radarSystem22.domain/test/it/unibo/radarSystem22/domain/TestSonarMockObserver.java)
 
-### Analisi e progetto
+## Analisi e progetto
 
 È stato scelto di realizzare le nuove funzionalità seguendo questi principi:
 

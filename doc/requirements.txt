@@ -1,0 +1,4 @@
+mistune==2.0.4
+pygments
+lxml
+cssselect 

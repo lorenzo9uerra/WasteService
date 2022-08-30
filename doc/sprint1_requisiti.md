@@ -1,10 +1,8 @@
-[Ritorna all'inizio](../README.md)
-
-# WasteService - Analisi dei Requisiti
+## Analisi dei Requisiti
 
 Per ogni requisito analizzato in questo SPRINT è stato incluso un modello eseguibile in [Qak](#scelta-del-linguaggio-di-modellazione). 
 
-## Requisiti e chiarimenti
+### Requisiti e chiarimenti
 
 - **request**: il *WasteService* accetta richieste di deposito da *Waste truck* che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare
     - il sistema può controllare se c'è spazio per un certo materiale: accetta (risposta *loadaccept*), e rifiuta (risposta *loadrejected*) le richieste di deposito in caso contrario
@@ -43,7 +41,7 @@ Per ogni requisito analizzato in questo SPRINT è stato incluso un modello esegu
 
 Da questa analisi, emerge che il *core business* del sistema è costituito dai requisiti di **request**, **deposit**, e **indoor-more-requests**. Un primo sprint SCRUM sarà quindi lo sviluppo a partire da questi requisiti centrali, mentre i successivi sprint implementeranno le funzionalità aggiuntive di **led**, **sonar-stop**, e **gui**.
 
-## Glossario
+### Glossario
 
 - *WasteService*: il servizio centrale che risponde alle richieste dei *waste truck*
 
@@ -62,11 +60,11 @@ Da questa analisi, emerge che il *core business* del sistema è costituito dai r
 
 - *Led*: spia luminosa
 
-## Analisi dei requisiti
+### Analisi dei requisiti
 
 Guardando i requisiti definiti dal committente si possono fare delle prime analisi sul da farsi.
 
-### Analisi **request**
+#### Analisi **request**
 
 Si tratta di una domanda con risposta, quindi l'implementazione immediata è request-reply:
 
@@ -92,7 +90,7 @@ Viene definito un primo test plan, eseguibile con le classi generate dal modello
 
 [Test plan Request](../model.requisiti/test/it/unibo/TestRequest.java)
 
-### Analisi **deposit**
+#### Analisi **deposit**
 
 È presente nel sistema un *trolley*; visto che necessita di trovarsi in un altro nodo rispetto al WasteService, e di comunicare con esso, viene modellato come un attore: *Trolley*.
 
@@ -108,13 +106,13 @@ Viene definito un primo test plan, eseguibile con le classi generate dal modello
 
 [Test plan Deposit](../model.requisiti/test/it/unibo/TestDeposit.java)
 
-### Analisi **indoor-more-requests**
+#### Analisi **indoor-more-requests**
 
 Dal requisito in sè non è possibile formalizzare con più precisione l'interazione precisa interna al sistema che lo adempie, rimanendo punti aperti diversi elementi fondamentali (i tipi di interazione tra componenti del sistema). Viene definito un test plan primitivo in seguito:
 
 [Test plan Indoor-More-Requests](../model.requisiti/test-disabled/TestIndoorMoreRequests.java)
 
-## Materiale fornito dal committente
+#### Materiale fornito dal committente
 
 - Robot DDR: viene fornita una componente software, *BasicRobot22*, che implementa comandi primitivi *MOVE = w | s | l | r | h*, e permette di fare *step* in avanti per un certo tempo.
 - Sonar: viene fornito un programma in C, *SonarAlone.c*, che stampa su standard output la distanza attualmente rilevata dal sonar, configurando le porte GPIO in questo modo:
@@ -124,6 +122,6 @@ Dal requisito in sè non è possibile formalizzare con più precisione l'interaz
     - Porta ECHO: pin fisico 13 (WPI 2, BCM 27)
 - Led: vengono forniti gli script bash e *led25GpioTurnOn.sh* e *led25GpioTurnOff.sh* per accendere e spegnere un Led connesso alla porta GPIO 25 di un Raspberry Pi.
 
-## Scelta del linguaggio di modellazione
+### Scelta del linguaggio di modellazione
 
 Nelle varie fasi di analisi di questo progetto abbiamo usato come linguaggio di modellazione il linguaggio ad attori Qak, essendo il sistema da realizzare un sistema distribuito, quindi adatto ad essere rappresentato tramite attori.
