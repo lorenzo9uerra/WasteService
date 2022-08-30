@@ -23,7 +23,9 @@ def build_sprint_doc(title: str, files: "list[str]"):
     outfile = f"pages/{filename}.md"
     with open(outfile, "w") as out:
         # 2 indici, uno usato per sidebar
-        out.write(f"""# {title}
+        out.write(f"""# WasteService - {title}
+
+##### F. Lenzi, L. Guerra
 
 .. toc::
     :depth: 2
@@ -120,6 +122,9 @@ def buildhtml(html: HtmlElement):
     for element in selcss(html, "h3"):
         element.classes.add('w3-container')
         element.classes.add('w3-green')
+    for element in selcss(html, "h5"):
+        element.classes.add('w3-panel')
+        # element.classes.add('w3-font-gray')
     for element in selcss(html, "pre code"):
         div = etree.Element('div')
         div.set("class", "w3-code")

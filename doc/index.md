@@ -1,4 +1,8 @@
-# Indice generale
+# WasteService - Indice generale
+
+##### F. Lenzi e L. Guerra
+
+### Progetto di Ingegneria dei Sistemi Software M  
 
 1. [Introduzione](./intro.md)
 

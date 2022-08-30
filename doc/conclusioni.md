@@ -1,4 +1,6 @@
-# Conclusioni
+# WasteService - Conclusioni
+
+##### F. Lenzi, L. Guerra
 
 .. toc::
     :depth: 2
