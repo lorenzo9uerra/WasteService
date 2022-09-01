@@ -8,7 +8,6 @@ import it.unibo.lenziguerra.wasteservice.data.TrolleyStatus
 import it.unibo.lenziguerra.wasteservice.utils.LogUtils
 import it.unibo.lenziguerra.wasteservice.utils.MsgUtilsWs
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import unibo.comm22.coap.CoapConnection
@@ -20,17 +19,17 @@ import java.util.concurrent.CompletableFuture
 import kotlin.concurrent.thread
 
 
-class TrolleyTest() {
+class TrolleyTest {
     companion object {
-        const val TEST_CONTEXT_NAME = "ctx_wasteservice_test"
+        const val TEST_CONTEXT_NAME = "ctx_wasteservice_test_trolley"
         const val TEST_CONTEXT_HOST = "localhost"
         const val TEST_CONTEXT_PORT = 9652
-        const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "$TEST_CONTEXT_HOST",  "TCP", "$TEST_CONTEXT_PORT").
+        private const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "$TEST_CONTEXT_HOST",  "TCP", "$TEST_CONTEXT_PORT").
             qactor( storagemanager, $TEST_CONTEXT_NAME, "it.unibo.storagemanager.Storagemanager").
             qactor( trolley, $TEST_CONTEXT_NAME, "it.unibo.trolley.Trolley").
         """
 
-        lateinit var qakContext: QakContext
+        private var qakContext: QakContext? = null
 
         lateinit var pathexec: PathExecDummyVerifyPath
 
@@ -46,7 +45,7 @@ class TrolleyTest() {
             SystemConfig.disableRead()
 
             thread { runBlocking {
-                ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl")
+                ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl", TEST_CONTEXT_NAME)
             } }
 
             waitForActors()
@@ -58,11 +57,11 @@ class TrolleyTest() {
         @AfterAll
         @JvmStatic
         fun downClass() {
-            qakContext.terminateTheContext()
+            qakContext?.terminateTheContext()
         }
 
-        fun waitForActors() {
-            val actorsToWait = listOf("storagemanager", "trolley")
+        private fun waitForActors() {
+            val actorsToWait = listOf("storagemanager", "wasteservice", "trolley")
 
             LogUtils.threadOut(this::class.java.name + " waits for actors ... ", ColorsOut.GREEN)
 
@@ -74,20 +73,21 @@ class TrolleyTest() {
                 }
             }
 
-            qakContext = sysUtil.getContext(TEST_CONTEXT_NAME)!!
+            while (qakContext == null) {
+                CommUtils.delay(200)
+                qakContext = sysUtil.getContext(TEST_CONTEXT_NAME)
+            }
 
             LogUtils.threadOut("Actors loaded", ColorsOut.GREEN)
         }
 
-        fun addTestActors() {
+        private fun addTestActors() {
             pathexec = PathExecDummyVerifyPath("pathexecstop")
-            qakContext.addActor(pathexec)
+            qakContext?.addActor(pathexec)
 
             LogUtils.threadOut("Added test actors <${pathexec.name} as ${pathexec::class}>", ColorsOut.GREEN)
         }
     }
-
-    lateinit var ctx_trolley: String
 
     @BeforeEach
     fun up() {
@@ -137,7 +137,7 @@ class TrolleyTest() {
         assertTrue(pos.contentEquals(pathexecPos), "Trolley Position not equal to Real Position")
     }
 
-    fun waitForIdle() {
+    private fun waitForIdle() {
         LogUtils.threadOut("Waiting for trolley to finish activity...")
         var trolleyStatus = TrolleyStatus.fromProlog(coapRequest("trolley"))
         while (trolleyStatus.activity != TrolleyStatus.Activity.IDLE) {
@@ -146,7 +146,7 @@ class TrolleyTest() {
         }
     }
 
-    fun trolleyRequest(msgId: String, params: String, actor: String = "test") {
+    private fun trolleyRequest(msgId: String, params: String, actor: String = "test") {
         val msg = MsgUtil.buildRequest(actor, msgId, "$msgId(${if (params == "") "_" else params})", "trolley")
         val conn = TcpClientSupport.connect(TEST_CONTEXT_HOST, TEST_CONTEXT_PORT, 5)
         LogUtils.threadOut("Sending " + MsgUtilsWs.cleanMessage(msg), ColorsOut.CYAN)
@@ -164,7 +164,7 @@ class TrolleyTest() {
         }
     }
 
-    fun dispatch(msgId: String, content: String, dest: String, actor: String = "test") {
+    private fun dispatch(msgId: String, content: String, dest: String, actor: String = "test") {
         try {
             val msg = MsgUtil.buildDispatch(actor, msgId, content, dest)
             LogUtils.threadOut("Sending " + MsgUtilsWs.cleanMessage(msg), ColorsOut.CYAN)

@@ -21,16 +21,17 @@ import kotlin.concurrent.thread
 
 class TestDeposit {
     companion object {
-        const val TEST_CONTEXT_NAME = "ctx_wasteservice_test"
+        const val TEST_CONTEXT_NAME = "ctx_wasteservice_test_deposit"
         const val TEST_CONTEXT_HOST = "localhost"
         const val TEST_CONTEXT_PORT = 9651
-        const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "$TEST_CONTEXT_HOST",  "TCP", "$TEST_CONTEXT_PORT").
+        private const val TEST_CONTEXT_DESC =
+            """context($TEST_CONTEXT_NAME, "$TEST_CONTEXT_HOST",  "TCP", "$TEST_CONTEXT_PORT").
             qactor( storagemanager, $TEST_CONTEXT_NAME, "it.unibo.storagemanager.Storagemanager").
             qactor( wasteservice, $TEST_CONTEXT_NAME, "it.unibo.wasteservice.Wasteservice").
             qactor( trolley, $TEST_CONTEXT_NAME, "it.unibo.trolley.Trolley").
         """
 
-        lateinit var qakContext: QakContext
+        private var qakContext: QakContext? = null
 
         lateinit var trolleyCoapConnection: CoapConnection
         lateinit var wasteserviceCoapConnection: CoapConnection
@@ -51,9 +52,17 @@ class TestDeposit {
 
             SystemConfig.disableRead()
 
-            thread { runBlocking {
-                ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl")
-            } }
+            thread {
+                runBlocking {
+                    ContextTestUtils.createContextsFromString(
+                        "localhost",
+                        this,
+                        TEST_CONTEXT_DESC,
+                        "sysRules.pl",
+                        TEST_CONTEXT_NAME
+                    )
+                }
+            }
 
             waitForActors()
             addTestActors()
@@ -65,10 +74,10 @@ class TestDeposit {
         @AfterAll
         @JvmStatic
         fun downClass() {
-            qakContext.terminateTheContext()
+            qakContext?.terminateTheContext()
         }
 
-        fun waitForActors() {
+        private fun waitForActors() {
             val actorsToWait = listOf("storagemanager", "wasteservice", "trolley")
 
             LogUtils.threadOut(this::class.java.name + " waits for actors ... ", ColorsOut.GREEN)
@@ -81,19 +90,22 @@ class TestDeposit {
                 }
             }
 
-            qakContext = sysUtil.getContext(TEST_CONTEXT_NAME)!!
+            while (qakContext == null) {
+                CommUtils.delay(200)
+                qakContext = sysUtil.getContext(TEST_CONTEXT_NAME)
+            }
 
             LogUtils.threadOut("Actors loaded", ColorsOut.GREEN)
         }
 
-        fun addTestActors() {
+        private fun addTestActors() {
             val pathexec = PathExecDummyImmediate("pathexecstop")
-            qakContext.addActor(pathexec)
+            qakContext?.addActor(pathexec)
 
             LogUtils.threadOut("Added test actors <${pathexec.name} as ${pathexec::class}>", ColorsOut.GREEN)
         }
 
-        fun startCoapConnections() {
+        private fun startCoapConnections() {
             trolleyCoapConnection = CoapConnection(
                 "$TEST_CONTEXT_HOST:$TEST_CONTEXT_PORT",
                 "$TEST_CONTEXT_NAME/trolley"
@@ -107,9 +119,9 @@ class TestDeposit {
         }
     }
 
-    lateinit var trolleyPosObserver: TrolleyPosObserver
-    lateinit var wasteServiceObserver: WasteServiceTrolleyPosObserver
-    val coapObservers = mutableMapOf<CoapConnection, CoapObserveRelation>()
+    private lateinit var trolleyPosObserver: TrolleyPosObserver
+    private lateinit var wasteServiceObserver: WasteServiceTrolleyPosObserver
+    private val coapObservers = mutableMapOf<CoapConnection, CoapObserveRelation>()
 
     @BeforeEach
     fun up() {
@@ -178,17 +190,24 @@ class TestDeposit {
         fail("Too much time to reach final position, pos history was: ${wasteServiceObserver.history}")
     }
 
-    private fun positionsTest(expectedPositions: List<String>, expectedCoords: List<List<List<Int>>>, maxSecondsWait: Int) {
+    private fun positionsTest(
+        expectedPositions: List<String>,
+        expectedCoords: List<List<List<Int>>>,
+        maxSecondsWait: Int
+    ) {
         resetObserverSemaphores()
         val startTime = System.currentTimeMillis()
         while (System.currentTimeMillis() - startTime < maxSecondsWait * 1000) {
             waitForObserverUpdate(maxSecondsWait * 1000)
             val posHistory = wasteServiceObserver.history
             val coordHistory = trolleyPosObserver.history
-            LogUtils.threadOut("positionsTest: start iteration, known histories: $posHistory, ${coordHistory.map { it.contentToString() }}", ColorsOut.CYAN)
+            LogUtils.threadOut(
+                "positionsTest: start iteration, known histories: $posHistory, ${coordHistory.map { it.contentToString() }}",
+                ColorsOut.CYAN
+            )
 
             if (posHistory.last() == "error") {
-                fail("Movement error! Pos history is " + posHistory);
+                fail("Movement error! Pos history is $posHistory");
             }
             for (j in expectedPositions.indices) {
                 if (j >= posHistory.size) {
@@ -236,7 +255,7 @@ class TestDeposit {
         }
     }
 
-    fun matchesOneCoordInRectangle(coord: IntArray, checkCorners: List<List<Int>>): Boolean {
+    private fun matchesOneCoordInRectangle(coord: IntArray, checkCorners: List<List<Int>>): Boolean {
         for (i in checkCorners[0][0]..checkCorners[1][0]) {
             for (j in checkCorners[0][1]..checkCorners[1][1]) {
                 if (coord[0] == i && coord[1] == j) return true
@@ -246,7 +265,7 @@ class TestDeposit {
     }
 
 
-    fun startDeposit(type: String, amount: Int) {
+    private fun startDeposit(type: String, amount: Int) {
         val startDepositDispatch = buildRequest(
             "test", "triggerDeposit",
             "triggerDeposit($type, $amount)",
@@ -261,7 +280,7 @@ class TestDeposit {
         }
     }
 
-    fun coapRequest(element: String): String {
+    private fun coapRequest(element: String): String {
         val reqConn = CoapConnection(
             "${TEST_CONTEXT_HOST}:${TEST_CONTEXT_PORT}",
             "${TEST_CONTEXT_NAME}/${SystemConfig.actors[element]!!}"
@@ -271,13 +290,15 @@ class TestDeposit {
         return if (answer != "0") {
             answer
         } else {
-            throw IOException("Response null! Wrong element? Called with $element to ip " +
-                    "${TEST_CONTEXT_HOST}:${TEST_CONTEXT_PORT}" +
-                    "/${TEST_CONTEXT_NAME}/${SystemConfig.actors[element]!!}")
+            throw IOException(
+                "Response null! Wrong element? Called with $element to ip " +
+                        "${TEST_CONTEXT_HOST}:${TEST_CONTEXT_PORT}" +
+                        "/${TEST_CONTEXT_NAME}/${SystemConfig.actors[element]!!}"
+            )
         }
     }
 
-    fun dispatch(msgId: String, content: String, dest: String, actor: String = "test") {
+    private fun dispatch(msgId: String, content: String, dest: String, actor: String = "test") {
         try {
             val msg = MsgUtil.buildDispatch(actor, msgId, content, dest)
             LogUtils.threadOut("Sending " + MsgUtilsWs.cleanMessage(msg), ColorsOut.CYAN)
@@ -290,7 +311,7 @@ class TestDeposit {
         }
     }
 
-    fun startObservingTrolley() {
+    private fun startObservingTrolley() {
         trolleyPosObserver = TrolleyPosObserver()
         coapObservers[trolleyCoapConnection] = trolleyCoapConnection.observeResource(trolleyPosObserver)
         LogUtils.threadOut("Added trolley observer", ColorsOut.CYAN)
@@ -300,7 +321,7 @@ class TestDeposit {
         QakContext.getActor("wasteservice")!!.changed()
     }
 
-    fun startObservingWasteservice() {
+    private fun startObservingWasteservice() {
         wasteServiceObserver = WasteServiceTrolleyPosObserver()
         coapObservers[wasteserviceCoapConnection] = wasteserviceCoapConnection.observeResource(wasteServiceObserver)
         LogUtils.threadOut("Added ws observer", ColorsOut.CYAN)
@@ -310,7 +331,7 @@ class TestDeposit {
         QakContext.getActor("trolley")!!.changed()
     }
 
-    fun cleanupObservers() {
+    private fun cleanupObservers() {
         coapObservers.forEach { it.key.removeObserve(it.value) }
         coapObservers.clear()
         trolleyPosObserver.testend = true
@@ -318,19 +339,19 @@ class TestDeposit {
         println("Cleaned up observers")
     }
 
-    fun waitForHome() {
+    private fun waitForHome() {
         println("Waiting for components to be at home")
-        while(true) {
+        while (true) {
             waitForObserverUpdate(5000)
             if (
                 wasteServiceObserver.history.last() == "home" &&
-                trolleyPosObserver.history.last().contentEquals(intArrayOf(0,0))
+                trolleyPosObserver.history.last().contentEquals(intArrayOf(0, 0))
             ) {
                 break
             }
         }
-        wasteServiceObserver.history.let { it.subList(0, it.size-1).clear() }
-        trolleyPosObserver.history.let { it.subList(0, it.size-1).clear() }
+        wasteServiceObserver.history.let { it.subList(0, it.size - 1).clear() }
+        trolleyPosObserver.history.let { it.subList(0, it.size - 1).clear() }
         println("Observers detected ws&tr at home, can start")
     }
 }
