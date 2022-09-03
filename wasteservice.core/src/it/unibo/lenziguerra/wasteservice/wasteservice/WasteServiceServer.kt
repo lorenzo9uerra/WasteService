@@ -149,7 +149,9 @@ class TruckWebsocketHandler : TextWebSocketHandler() {
 
         ColorsOut.out("Trash collect done, message was $contextReply")
         ColorsOut.out("Sending pickup message to waste truck on session $session...")
-        session.sendMessage(TextMessage("pickedUp"))
+        try {
+            session.sendMessage(TextMessage("pickedUp"))
+        } catch (_: Exception){}
     }
 
     private fun storageConnect() {

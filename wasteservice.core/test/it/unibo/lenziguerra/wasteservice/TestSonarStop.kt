@@ -22,7 +22,7 @@ import kotlin.concurrent.thread
 
 class TestSonarStop {
     companion object {
-        const val TEST_CONTEXT_NAME = "ctx_wasteservice_test"
+        const val TEST_CONTEXT_NAME = "ctx_wasteservice_test_sonar"
         const val TEST_PORT = 8050
 
         const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "localhost",  "TCP", "$TEST_PORT").
@@ -56,7 +56,7 @@ class TestSonarStop {
         CommSystemConfig.tracing = false
 
         thread { runBlocking {
-            ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl")
+            ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl", TEST_CONTEXT_NAME)
         } }
 
         waitForContexts()

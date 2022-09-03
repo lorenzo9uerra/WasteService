@@ -1,10 +1,7 @@
 package it.unibo.lenziguerra.wasteservice.wasteservice
 
 import it.unibo.kactor.*
-import it.unibo.lenziguerra.wasteservice.ContextTestUtils
-import it.unibo.lenziguerra.wasteservice.PathExecDummyImmediate
-import it.unibo.lenziguerra.wasteservice.SystemConfig
-import it.unibo.lenziguerra.wasteservice.WasteType
+import it.unibo.lenziguerra.wasteservice.*
 import it.unibo.lenziguerra.wasteservice.data.StorageStatus
 import it.unibo.lenziguerra.wasteservice.utils.LogUtils
 import it.unibo.lenziguerra.wasteservice.utils.MsgUtilsWs.cleanMessage
@@ -30,16 +27,16 @@ import kotlin.concurrent.thread
 @RunWith(SpringRunner::class)
 class TestRequest {
     companion object {
-        const val TEST_CONTEXT_NAME = "ctx_wasteservice_test"
+        const val TEST_CONTEXT_NAME = "ctx_wasteservice_test_request"
         const val TEST_CONTEXT_HOST = "localhost"
         const val TEST_CONTEXT_PORT = 9650
-        const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "$TEST_CONTEXT_HOST",  "TCP", "$TEST_CONTEXT_PORT").
+        private const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "$TEST_CONTEXT_HOST",  "TCP", "$TEST_CONTEXT_PORT").
             qactor( storagemanager, $TEST_CONTEXT_NAME, "it.unibo.storagemanager.Storagemanager").
             qactor( wasteservice, $TEST_CONTEXT_NAME, "it.unibo.wasteservice.Wasteservice").
             qactor( trolley, $TEST_CONTEXT_NAME, "it.unibo.trolley.Trolley").
         """
 
-        lateinit var qakContext: QakContext
+        private var qakContext: QakContext? = null
 
         @BeforeAll
         @JvmStatic
@@ -58,7 +55,7 @@ class TestRequest {
             SystemConfig.disableRead()
 
             thread { runBlocking {
-                ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl")
+                ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl", TEST_CONTEXT_NAME)
             } }
 
             waitForActors()
@@ -70,10 +67,10 @@ class TestRequest {
         @AfterAll
         @JvmStatic
         fun downClass() {
-            qakContext.terminateTheContext()
+            qakContext?.terminateTheContext()
         }
 
-        fun waitForActors() {
+        private fun waitForActors() {
             val actorsToWait = listOf("storagemanager", "wasteservice", "trolley")
 
             LogUtils.threadOut(this::class.java.name + " waits for actors ... ", ColorsOut.GREEN)
@@ -86,14 +83,17 @@ class TestRequest {
                 }
             }
 
-            qakContext = sysUtil.getContext(TEST_CONTEXT_NAME)!!
+            while (qakContext == null) {
+                CommUtils.delay(200)
+                qakContext = sysUtil.getContext(TEST_CONTEXT_NAME)
+            }
 
             LogUtils.threadOut("Actors loaded", ColorsOut.GREEN)
         }
 
-        fun addTestActors() {
+        private fun addTestActors() {
             val pathexec = PathExecDummyImmediate("pathexecstop")
-            qakContext.addActor(pathexec)
+            qakContext?.addActor(pathexec)
 
             LogUtils.threadOut("Added test actors <${pathexec.name}>", ColorsOut.GREEN)
         }
@@ -104,7 +104,7 @@ class TestRequest {
     @LocalServerPort
     private val port: Int? = null
 
-    lateinit private var wsConn: Interaction2021
+    private lateinit var wsConn: Interaction2021
 
     @BeforeEach
     fun up() {

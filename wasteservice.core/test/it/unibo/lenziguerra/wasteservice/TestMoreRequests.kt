@@ -20,16 +20,16 @@ import kotlin.concurrent.thread
 
 class TestMoreRequests {
     companion object {
-        const val TEST_CONTEXT_NAME = "ctx_wasteservice_test"
+        const val TEST_CONTEXT_NAME = "ctx_wasteservice_test_more_requests"
         const val TEST_CONTEXT_HOST = "localhost"
-        const val TEST_CONTEXT_PORT = 9651
+        const val TEST_CONTEXT_PORT = 9653
         const val TEST_CONTEXT_DESC = """context($TEST_CONTEXT_NAME, "$TEST_CONTEXT_HOST",  "TCP", "$TEST_CONTEXT_PORT").
             qactor( storagemanager, $TEST_CONTEXT_NAME, "it.unibo.storagemanager.Storagemanager").
             qactor( wasteservice, $TEST_CONTEXT_NAME, "it.unibo.wasteservice.Wasteservice").
             qactor( trolley, $TEST_CONTEXT_NAME, "it.unibo.trolley.Trolley").
         """
 
-        lateinit var qakContext: QakContext
+        private var qakContext: QakContext? = null
 
         lateinit var wasteserviceCoapConnection: CoapConnection
 
@@ -50,7 +50,7 @@ class TestMoreRequests {
             SystemConfig.disableRead()
 
             thread { runBlocking {
-                ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl")
+                ContextTestUtils.createContextsFromString("localhost", this, TEST_CONTEXT_DESC, "sysRules.pl", TEST_CONTEXT_NAME)
             } }
 
             waitForActors()
@@ -63,10 +63,10 @@ class TestMoreRequests {
         @AfterAll
         @JvmStatic
         fun downClass() {
-            qakContext.terminateTheContext()
+            qakContext?.terminateTheContext()
         }
 
-        fun waitForActors() {
+        private fun waitForActors() {
             val actorsToWait = listOf("storagemanager", "wasteservice", "trolley")
 
             LogUtils.threadOut(this::class.java.name + " waits for actors ... ", ColorsOut.GREEN)
@@ -79,14 +79,18 @@ class TestMoreRequests {
                 }
             }
 
-            qakContext = sysUtil.getContext(TEST_CONTEXT_NAME)!!
+            while (qakContext == null){
+                CommUtils.delay(200)
+                qakContext = sysUtil.getContext(TEST_CONTEXT_NAME)
+            }
+
 
             LogUtils.threadOut("Actors loaded", ColorsOut.GREEN)
         }
 
-        fun addTestActors() {
+        private fun addTestActors() {
             val pathexec = PathExecDummyImmediate("pathexecstop")
-            qakContext.addActor(pathexec)
+            qakContext?.addActor(pathexec)
 
             LogUtils.threadOut("Added test actors <${pathexec.name} as ${pathexec::class}>", ColorsOut.GREEN)
         }

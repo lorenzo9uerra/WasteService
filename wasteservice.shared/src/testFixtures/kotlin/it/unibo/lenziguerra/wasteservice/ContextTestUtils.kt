@@ -14,12 +14,12 @@ object ContextTestUtils {
      * @param contextsDescription Prolog contexts description, such as the content of <systemName>.pl
      */
     @JvmStatic
-    fun createContextsFromString(hostName: String, scope: CoroutineScope, contextsDescription: String, rulesFilePath: String) {
+    fun createContextsFromString(hostName: String, scope: CoroutineScope, contextsDescription: String, rulesFilePath: String, contextName: String) {
         val tempFile = createTempFile("ctxdesc", ".pl")
         FileWriter(tempFile.toAbsolutePath().toString()).use {
             it.write(contextsDescription)
         }
-        QakContext.createContexts(hostName, scope, tempFile.toAbsolutePath().toString(), rulesFilePath)
+        QakContext.createContexts(hostName, scope, tempFile.toAbsolutePath().toString(), rulesFilePath, contextName)
         thread {
             // Wait for createContexts to use it
             CommUtils.delay(1000)
