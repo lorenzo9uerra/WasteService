@@ -182,7 +182,12 @@ class TrolleyTest() {
             "${TEST_CONTEXT_HOST}:${TEST_CONTEXT_PORT}",
             "${TEST_CONTEXT_NAME}/${SystemConfig.actors[element]!!}"
         )
-        val answer = reqConn.request("")
+        var answer = reqConn.request("")
+        val time = System.currentTimeMillis()
+        while (answer == "" && System.currentTimeMillis() - time < 10000) {
+            answer = reqConn.request("")
+            CommUtils.delay(200)
+        }
         LogUtils.threadOut("coapRequest answer=$answer", ColorsOut.CYAN)
         return if (answer != "0") {
             answer
