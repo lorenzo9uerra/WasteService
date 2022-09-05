@@ -10,6 +10,10 @@
 
 3. [SPRINT 2](./sprint_2.md)
 
+    + [QakActor.observer](./qakactor.observer.md)
+
 4. [SPRINT 3](./sprint_3.md)
+
+    + [radarSystem22.domain 2.0](./radarSystem.domain_edits.md)
 
 5. [Conclusione](./conclusioni.md)

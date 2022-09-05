@@ -1,0 +1,126 @@
+<head>
+        <link rel="stylesheet" href="../css/w3.css"> 
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+        <!-- <link rel="stylesheet" href="../css/doc.css"> -->
+</head><body>
+<style>
+
+body {
+    --sidebar-width: 400px;
+    padding-left: calc( var( --sidebar-width ) + 100px);
+    /* max-width: 1000px; */
+    padding-right: 200px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.toc-sidebar {
+    position: fixed;
+    margin-left: 0;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    padding: 0;
+    background-color: rgb(31, 32, 32);
+    font-size: 21px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.toc-sidebar > * {
+    padding: 10px
+}
+.toc-sidebar > div {
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.toc-sidebar > div:hover {
+    background-color: rgb(51, 51, 51);
+}
+.toc-sidebar a {
+    color: white;
+    text-decoration: unset;
+    display: inline-block;
+    width: 100%;
+    height: 0;
+    padding-bottom: 10%;
+}
+
+/* 
+h3 strong {
+    color: #800080; 
+} */
+
+img {
+    max-width: 100%;
+    max-height: 700px;
+}
+
+.w3-code {
+    overflow-x: scroll;
+}
+</style>
+<div>
+  <h1 id="toc_1" class="w3-container w3-indigo">Modifiche a radarSystem22.domain</h1>
+  <h2 id="toc_2" class="w3-container w3-teal">Documentazione</h2>
+  <p>La libreria radarSystem22.domain, realizzata per progetti precedenti e riutilizzata in WasteService per gestire Led e Sonar, è stata modificata per permetterne l'osservabilità.</p>
+  <p>Sono state introdotte le interfaccie ISonarObservable e IDistanceObservable, così riassumibili*:</p>
+  <pre>
+    <div class="w3-code">public interface ISonarObservable {
+    void subscribe(ISonarObserver observer);
+    void unsubscribe(ISonarObserver observer);
+}
+public interface IDistanceObservable {
+    void subscribe(IDistanceObserver observer);
+    void unsubscribe(IDistanceObserver observer);
+
+    void set(IDistance distance);
+    IDistance get();
+}
+</div>
+  </pre>
+  <p>mentre i corrispettivi Observer sono:</p>
+  <pre>
+    <div class="w3-code">public interface ISonarObserver {
+    void activated();
+    void deactivated();
+}
+public interface IDistanceObserver {
+    void update(IDistance dist);
+}
+</div>
+  </pre>
+  <p>** Nota: le interfaccie su file sono in realtà diverse, estendendo diverse interfacce per permettere una maggiore indipendenza ereditaria tra i componenti software.*</p>
+  <p>Queste sono utilizzabili per osservare aggiornamenti del sonar (attivazione e disattivazione) e della distanza.</p>
+  <p>Viene fornita un'implementazione degli observer utilizzabile in locale <em>per quantità ridotte di observer</em>, che altrimenti porterebbe a un rallentamento nelle operazioni primitive del sonar con grandi quantità di utenti (utile però per singoli observer o poco più, come nel caso del sistema), vale a dire <code>DistanceObservableSimple</code> e <code>SonarObservableHandlerSimple</code>.</p>
+  <p>Per ottenere un riferimento a <code>ISonarObservable</code> e <code>IDistanceObservable</code>, è possibile usare i nuovi metodi <code>DeviceFactory.makeSonarObservable(ISonar sonar)</code> e <code>DeviceFactory.makeDistanceObservable(ISonar sonar)</code>. Di default, passando sonar "standard" della libreria, viene usata la suddetta implementazione degli observer.</p>
+  <p>Può essere poi creato un observer ad-hoc per il caso d'uso per il quale si vuole osservare la risorsa in questione.</p>
+  <h2 id="toc_3" class="w3-container w3-teal">Test</h2>
+  <p>Sono inclusi dei test per verificare il funzionamento della nuova classe observable: <a href="../../it.unibo.radarSystem22.domain/test/it/unibo/radarSystem22/domain/TestSonarMockObserver.java">TestSonarMockObserver.java</a>
+  </p>
+  <h2 id="toc_4" class="w3-container w3-teal">Analisi e progetto</h2>
+  <p>È stato scelto di realizzare le nuove funzionalità seguendo questi principi:</p>
+  <ul>
+    <li>Ridurre quanto possibile le modifiche alle classi pre-esistenti, prediligendo composizione e estensione.</li>
+    <li>Rendere flessibile il sistema, non legando le classi di basso livello a specifiche implementazioni o "opinioni".</li>
+    <li>Di conseguenza ai primi due punti, cercare quanto possibile di rendere le classi esistenti (quindi <code>SonarModel</code> e sottoclassi) <em>ignare</em> del concetto di osservabilità, che avviene in modo "indiretto".</li>
+  </ul>
+  <p>Quindi, sono state realizzate diverse interfaccie, le principali riassunte di seguito:</p>
+  <ul>
+    <li>
+      <em>IDistanceMutable</em>: racchiude il concetto di "distanza modificabile", con set e get, SonarModel "vede" solo questa interfaccia non necessitando quindi di conoscere il concetto di osservabilità.</li>
+    <li>
+      <em>IDistanceObservable</em>: estende IDistanceMutable, permettendo alle implementazioni di includere aggiornamenti agli observer internamente al set senza che le classi che usano IDistanceMutable lo debbano conoscere, grazie al polimorfismo. Interfaccia come sopra.</li>
+    <li>
+      <em>ISonarEventHandler</em>: handler di callback di attivazione e disattivazione chiamato dal SonarModel, vedi sotto.</li>
+    <li>
+      <em>ISonarObservable</em>: interfaccia come sopra.</li>
+  </ul>
+  <p>Le modifiche a SonarModel sono state contenute al minimo, come detto a inizio sezione. È stata sostituita l'istanza di IDistance con IDistanceMutable, che viene chiamata per modificare il valore. Questa viene di default istanziata con un DistanceObservableSimple, ma può appunto essere una qualunque altra implementazione anche non observable, slegando le due classi.</p>
+  <p>Inoltre, SonarModel opzionalmente può disporre di un <em>ISonarEventHandler</em> che viene in tal caso chiamato all'attivazione e disattivazione del Sonar. Viene fornita l'implementazione <code>SonarObservableHandlerSimple</code>, che all'attivazione dei callback chiama le funzioni corrispondenti degli Observer registrati internamente all'handler.</p>
+  <section class="toc toc-sidebar">
+    <div class="sidebar-index w3-deep-purple">
+      <a href="./index.html">Indice generale</a>
+    </div>
+  </section>
+</div></body>
