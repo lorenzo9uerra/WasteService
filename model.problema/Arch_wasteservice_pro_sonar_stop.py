@@ -20,13 +20,13 @@ with Diagram('wasteservice_pro_sonar_stopArch', show=False, outformat='png', gra
   with Cluster('env'):
      sys = Custom('','./qakicons/system.png')
      with Cluster('ctxpro_sonar_stop', graph_attr=nodeattr):
-          sonarshim=Custom('sonarshim','./qakicons/symActorSmall.png')
-          sonarinterrupter=Custom('sonarinterrupter','./qakicons/symActorSmall.png')
+          sonar_shim=Custom('sonar_shim','./qakicons/symActorSmall.png')
+          sonar_interrupter=Custom('sonar_interrupter','./qakicons/symActorSmall.png')
           trolley=Custom('trolley','./qakicons/symActorSmall.png')
-          echo=Custom('echo','./qakicons/symActorSmall.png')
-     sonarshim >> Edge( xlabel='sonarDistance', **eventedgeattr) >> sys
-     sys >> Edge(color='red', style='dashed', xlabel='sonarDistance') >> sonarinterrupter
-     sonarinterrupter >> Edge(color='blue', style='solid', xlabel='trolleyStop') >> trolley
-     sonarinterrupter >> Edge(color='blue', style='solid', xlabel='trolleyResume') >> trolley
-     trolley >> Edge(color='magenta', style='solid', xlabel='ping') >> echo
+     sonar_shim >> Edge( xlabel='sonarStop', **eventedgeattr) >> sys
+     sonar_shim >> Edge( xlabel='sonarResume', **eventedgeattr) >> sys
+     sys >> Edge(color='red', style='dashed', xlabel='sonarStop') >> sonar_interrupter
+     sys >> Edge(color='red', style='dashed', xlabel='sonarResume') >> sonar_interrupter
+     sonar_interrupter >> Edge(color='blue', style='solid', xlabel='trolleyStop') >> trolley
+     sonar_interrupter >> Edge(color='blue', style='solid', xlabel='trolleyResume') >> trolley
 diag

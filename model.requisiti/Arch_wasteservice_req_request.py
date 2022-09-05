@@ -20,7 +20,9 @@ with Diagram('wasteservice_req_requestArch', show=False, outformat='png', graph_
   with Cluster('env'):
      sys = Custom('','./qakicons/system.png')
      with Cluster('ctxreq_request', graph_attr=nodeattr):
-          wastetruck_req=Custom('wastetruck_req','./qakicons/symActorSmall.png')
-          wasteservice_req=Custom('wasteservice_req','./qakicons/symActorSmall.png')
-     wastetruck_req >> Edge(color='magenta', style='solid', xlabel='loadDeposit') >> wasteservice_req
+          req_wasteservice=Custom('req_wasteservice','./qakicons/symActorSmall.png')
+          req_wastetruck=Custom('req_wastetruck','./qakicons/symActorSmall.png')
+     req_wasteservice >> Edge(color='green', style='dashed', xlabel='loadrejected') >> sys 
+     req_wasteservice >> Edge(color='green', style='dashed', xlabel='loadaccept') >> sys 
+     req_wastetruck >> Edge(color='magenta', style='solid', xlabel='loadDeposit') >> req_wasteservice
 diag

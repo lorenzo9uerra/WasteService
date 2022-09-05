@@ -24,7 +24,11 @@ class Pro_dep_storagemanager ( name: String, scope: CoroutineScope  ) : ActorBas
 						println("STORAGE: Glass ${Content["glass"]}, Plastic ${Content["plastic"]}")
 						updateResourceRep( Content.entries.map { "content(${it.key},${it.value})" }.joinToString("\n")  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t011",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
 				}	 
 				state("handleDeposit") { //this:State
@@ -33,7 +37,11 @@ class Pro_dep_storagemanager ( name: String, scope: CoroutineScope  ) : ActorBas
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Content[payloadArg(0)] = Content.getOrDefault(payloadArg(0), 0.0) + payloadArg(1).toDouble()  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}

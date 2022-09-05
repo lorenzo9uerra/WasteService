@@ -19,7 +19,11 @@ class Led_trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 				state("wait") { //this:State
 					action { //it:State
 						delay(1000) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="randomStatus", cond=doswitch() )
 				}	 
 				state("randomStatus") { //this:State
@@ -41,7 +45,11 @@ class Led_trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 						  )
 						  }
 						 }
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 			}

@@ -24,9 +24,13 @@ with Diagram('wasteservice_pro_depositArch', show=False, outformat='png', graph_
           pro_dep_trolley=Custom('pro_dep_trolley','./qakicons/symActorSmall.png')
           pro_dep_storagemanager=Custom('pro_dep_storagemanager','./qakicons/symActorSmall.png')
           dep_init=Custom('dep_init','./qakicons/symActorSmall.png')
+     pro_dep_wasteservice >> Edge(color='green', style='dashed', xlabel='loadaccept') >> sys 
      pro_dep_wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyMove') >> pro_dep_trolley
      pro_dep_wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyCollect') >> pro_dep_trolley
      pro_dep_wasteservice >> Edge(color='magenta', style='solid', xlabel='trolleyDeposit') >> pro_dep_trolley
+     pro_dep_trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
+     pro_dep_trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
      pro_dep_trolley >> Edge(color='blue', style='solid', xlabel='storageDeposit') >> pro_dep_storagemanager
+     pro_dep_trolley >> Edge(color='green', style='dashed', xlabel='trolleyDone') >> sys 
      dep_init >> Edge(color='magenta', style='solid', xlabel='loadDeposit') >> pro_dep_wasteservice
 diag

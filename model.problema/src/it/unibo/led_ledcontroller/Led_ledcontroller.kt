@@ -19,12 +19,20 @@ class Led_ledcontroller ( name: String, scope: CoroutineScope  ) : ActorBasicFsm
 				state("init") { //this:State
 					action { //it:State
 						coapObserverUtil.startObserving(myself ,"led_trolley" )
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="observe", cond=doswitch() )
 				}	 
 				state("observe") { //this:State
 					action { //it:State
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t00",targetState="handleStatus",cond=whenDispatch("coapUpdate"))
 				}	 
 				state("handleStatus") { //this:State
@@ -41,7 +49,11 @@ class Led_ledcontroller ( name: String, scope: CoroutineScope  ) : ActorBasicFsm
 								println("Led Controller | Setting led to $Next")
 								forward("ledSet", "ledSet($Next)" ,"led_blinkled" ) 
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="observe", cond=doswitch() )
 				}	 
 			}

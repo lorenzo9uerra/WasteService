@@ -11,56 +11,79 @@ import kotlinx.coroutines.runBlocking
 class Trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope ){
 
 	override fun getInitialState() : String{
-		return "goingIndoor"
+		return "init"
 	}
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		val interruptedStateTransitions = mutableListOf<Transition>()
 		return { //this:ActionBasciFsm
+				state("init") { //this:State
+					action { //it:State
+						//genTimer( actor, state )
+					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+				 	 		//sysaction { //it:State
+				 	 		  stateTimer = TimerActor("timer_init", 
+				 	 			scope, context!!, "local_tout_trolley_init", 0.toLong() )
+				 	 		//}
+					}	 	 
+					 transition(edgeName="t02",targetState="goingIndoor",cond=whenTimeout("local_tout_trolley_init"))   
+					interrupthandle(edgeName="t03",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
+				}	 
 				state("goingIndoor") { //this:State
 					action { //it:State
 						println("Going INDOOR")
-						delay(1000) 
-						println("At INDOOR")
-						request("ping", "ping(_)" ,"echo" )  
+						delay(2000) 
+						//genTimer( actor, state )
 					}
-					 transition(edgeName="t02",targetState="goingBox",cond=whenReply("pong"))
-					interrupthandle(edgeName="t03",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
+					 transition( edgeName="goto",targetState="goingBox", cond=doswitch() )
 				}	 
 				state("goingBox") { //this:State
 					action { //it:State
 						println("Going BOX")
-						delay(1000) 
-						println("At BOX")
-						request("ping", "ping(_)" ,"echo" )  
+						delay(2000) 
+						//genTimer( actor, state )
 					}
-					 transition(edgeName="t14",targetState="goingHome",cond=whenReply("pong"))
-					interrupthandle(edgeName="t15",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
+					 transition( edgeName="goto",targetState="goingHome", cond=doswitch() )
 				}	 
 				state("goingHome") { //this:State
 					action { //it:State
 						println("Going HOME")
-						delay(1000) 
-						println("At HOME")
-						request("ping", "ping(_)" ,"echo" )  
+						delay(2000) 
+						//genTimer( actor, state )
 					}
-					 transition(edgeName="t26",targetState="goingIndoor",cond=whenReply("pong"))
-					interrupthandle(edgeName="t27",targetState="handleStop",cond=whenDispatch("trolleyStop"),interruptedStateTransitions)
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
+					 transition( edgeName="goto",targetState="goingIndoor", cond=doswitch() )
 				}	 
 				state("exitFromStop") { //this:State
 					action { //it:State
-						 MsgUtil.outgreen("Trolley resumed!")  
 						updateResourceRep( "resumed"  
 						)
 						returnFromInterrupt(interruptedStateTransitions)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 				}	 
 				state("handleStop") { //this:State
 					action { //it:State
-						 MsgUtil.outred("Trolley stopped!")  
 						updateResourceRep( "stopped"  
 						)
+						//genTimer( actor, state )
 					}
-					 transition(edgeName="t38",targetState="exitFromStop",cond=whenDispatch("trolleyResume"))
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
+					 transition(edgeName="t04",targetState="exitFromStop",cond=whenDispatch("trolleyResume"))
 				}	 
 			}
 		}

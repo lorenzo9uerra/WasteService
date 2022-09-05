@@ -20,20 +20,32 @@ class Storage_gui ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 					action { //it:State
 						updateResourceRep( "30,30"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("wait") { //this:State
 					action { //it:State
 						delay(1500) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="randomStorage", cond=doswitch() )
 				}	 
 				state("randomStorage") { //this:State
 					action { //it:State
 						updateResourceRep( "${kotlin.random.Random.nextInt(30)},${kotlin.random.Random.nextInt(30)}"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 			}

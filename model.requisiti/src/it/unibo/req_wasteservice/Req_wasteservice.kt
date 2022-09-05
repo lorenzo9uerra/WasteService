@@ -24,7 +24,11 @@ class Req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm(
 				state("idle") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="tIdle0",targetState="handleRequest",cond=whenRequest("loadDeposit"))
 				}	 
 				state("handleRequest") { //this:State
@@ -45,7 +49,11 @@ class Req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm(
 								 {answer("loadDeposit", "loadaccept", "loadaccept(_)"   )  
 								 }
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}

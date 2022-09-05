@@ -39,8 +39,8 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition(edgeName="t020",targetState="handleAsk",cond=whenRequest("storageAsk"))
-					transition(edgeName="t021",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
+					 transition(edgeName="t013",targetState="handleAsk",cond=whenRequest("storageAsk"))
+					transition(edgeName="t014",targetState="handleDeposit",cond=whenDispatch("storageDeposit"))
 				}	 
 				state("handleAsk") { //this:State
 					action { //it:State
@@ -59,7 +59,7 @@ class Storagemanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 				}	 
 				state("handleDeposit") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("storageDeposit(MAT,QNT)"), Term.createTerm("storageDeposit(MAT,QNT)"), 
+						if( checkMsgContent( Term.createTerm("storageDeposit(MAT,QNT)"), Term.createTerm("depositWaste(MAT,QNT)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Content[payloadArg(0)] = Content.getOrDefault(payloadArg(0), 0.0) + payloadArg(1).toDouble()  
 								println("STORAGE: Glass ${Content["glass"]}/${MaxContent["glass"]}, Plastic ${Content["plastic"]}/${MaxContent["plastic"]}")

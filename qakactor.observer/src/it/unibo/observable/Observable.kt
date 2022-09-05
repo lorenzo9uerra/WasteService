@@ -21,7 +21,11 @@ class Observable ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						println("$name in ${currentState.stateName} | $currentMsg")
 						updateResourceRep( "start"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="on", cond=doswitch() )
 				}	 
 				state("on") { //this:State
@@ -29,9 +33,15 @@ class Observable ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						println("$name in ${currentState.stateName} | $currentMsg")
 						updateResourceRep( "on"  
 						)
-						stateTimer = TimerActor("timer_on", 
-							scope, context!!, "local_tout_observable_on", 1000.toLong() )
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+				 	 		//sysaction { //it:State
+				 	 		  stateTimer = TimerActor("timer_on", 
+				 	 			scope, context!!, "local_tout_observable_on", 1000.toLong() )
+				 	 		//}
+					}	 	 
 					 transition(edgeName="t00",targetState="off",cond=whenTimeout("local_tout_observable_on"))   
 				}	 
 				state("off") { //this:State
@@ -39,9 +49,15 @@ class Observable ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						println("$name in ${currentState.stateName} | $currentMsg")
 						updateResourceRep( "off"  
 						)
-						stateTimer = TimerActor("timer_off", 
-							scope, context!!, "local_tout_observable_off", 1000.toLong() )
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+				 	 		//sysaction { //it:State
+				 	 		  stateTimer = TimerActor("timer_off", 
+				 	 			scope, context!!, "local_tout_observable_off", 1000.toLong() )
+				 	 		//}
+					}	 	 
 					 transition(edgeName="t01",targetState="on",cond=whenTimeout("local_tout_observable_off"))   
 				}	 
 			}

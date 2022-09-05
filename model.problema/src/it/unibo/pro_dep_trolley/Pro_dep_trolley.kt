@@ -34,7 +34,11 @@ class Pro_dep_trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						println("$name in ${currentState.stateName} | $currentMsg")
 						updateResourceRep( "state(idle)" + getPosLine() + getContentLine()  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t08",targetState="handleMove",cond=whenRequest("trolleyMove"))
 					transition(edgeName="t09",targetState="handleCollect",cond=whenRequest("trolleyCollect"))
 					transition(edgeName="t010",targetState="handleDeposit",cond=whenRequest("trolleyDeposit"))
@@ -51,7 +55,11 @@ class Pro_dep_trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 								 Pos[1] = payloadArg(1).toInt()  
 								answer("trolleyMove", "trolleyDone", "trolleyDone(true)"   )  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("handleCollect") { //this:State
@@ -66,7 +74,11 @@ class Pro_dep_trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 								 CarryingAmount = payloadArg(1).toDouble()  
 								answer("trolleyCollect", "trolleyDone", "trolleyDone(true)"   )  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("handleDeposit") { //this:State
@@ -79,7 +91,11 @@ class Pro_dep_trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						 CarryingType = ""  
 						 CarryingAmount = 0.0  
 						answer("trolleyDeposit", "trolleyDone", "trolleyDone(true)"   )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}

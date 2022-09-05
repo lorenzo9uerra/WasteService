@@ -20,7 +20,11 @@ class Dep_init ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 					action { //it:State
 						println("Attesa 2 secondi prima di inizio sistema per permettere test manuali...")
 						delay(2000) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="send", cond=doswitch() )
 				}	 
 				state("send") { //this:State
@@ -29,7 +33,11 @@ class Dep_init ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 									var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
 									var Quantity = kotlin.random.Random.nextInt(10, 30)	
 						forward("deposit", "deposit($Material,$Quantity)" ,"dep_trolley" ) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 				}	 
 			}
 		}

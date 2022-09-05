@@ -19,7 +19,11 @@ class Depositinit ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 				state("init") { //this:State
 					action { //it:State
 						delay(1000) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="start", cond=doswitch() )
 				}	 
 				state("start") { //this:State
@@ -28,7 +32,11 @@ class Depositinit ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 									var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
 									var Quantity = kotlin.random.Random.nextInt(10, 30)	
 						forward("testDeposit", "testDeposit($Material,$Quantity)" ,"trolley_dep" ) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 				}	 
 			}
 		}
