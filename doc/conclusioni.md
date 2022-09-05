@@ -1,9 +1,4 @@
-# WasteService - Conclusioni
-
-##### F. Lenzi, L. Guerra
-
-.. toc::
-    :depth: 2
+# Conclusioni
 
 Il progetto WasteService è stato completato in tre SPRINT SCRUM, al termine dei quali il progetto aveva la seguente struttura:
 

@@ -18,7 +18,7 @@ abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
 os.chdir(dname)
 
-def build_sprint_doc(title: str, files: "list[str]"):
+def build_page(title: str, files: "list[str]"):
     filename = title.lower().replace(' ', '_')
     outfile = f"pages/{filename}.md"
     with open(outfile, "w") as out:
@@ -45,7 +45,7 @@ def build_sprint_doc(title: str, files: "list[str]"):
 
 def build_sprint_from_name(title: str):
     sprintid = title.lower().replace(' ', '')
-    return build_sprint_doc(title, [
+    return build_page(title, [
         "requisiti_committente.md",
         f"{sprintid}_requisiti.md",
         f"{sprintid}_analisi_problema.md",
@@ -203,8 +203,11 @@ sprintfiles = [
     build_sprint_from_name(sprint) for sprint in sprints
 ]
 
-rendermarkdown("intro.md")
-rendermarkdown("conclusioni.md")
+build_page("Introduzione", ["introduzione.md"])
+build_page("Conclusioni", ["conclusioni.md"])
+
+rendermarkdown("pages/introduzione.md")
+rendermarkdown("pages/conclusioni.md")
 rendermarkdown("index.md")
 
 for file in sprintfiles:

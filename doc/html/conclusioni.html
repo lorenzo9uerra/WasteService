@@ -71,17 +71,50 @@ img {
       <a href="#toc_1">WasteService - Conclusioni</a>
     </div>
     <div>
-      <a href="#toc_3">Demo</a>
+      <a href="#toc_4">Conclusioni</a>
     </div>
     <div>
-      <a href="#toc_4">Test</a>
+      <a href="#toc_5">Demo</a>
+    </div>
+    <div>
+      <a href="#toc_6">Test</a>
     </div>
   </section>
+  <h3 id="toc_3" class="w3-container w3-green">Indice</h3>
+  <section class="toc">
+    <ul>
+      <li>
+        <a href="#toc_1">WasteService - Conclusioni</a>
+        <ul>
+          <li>
+            <a href="#toc_3">Indice</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#toc_4">Conclusioni</a>
+        <ul>
+          <li>
+            <a href="#toc_5">Demo</a>
+          </li>
+          <li>
+            <a href="#toc_6">Test</a>
+            <ul>
+              <li>
+                <a href="#toc_7">Deployment</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+  <h1 id="toc_4" class="w3-container w3-indigo">Conclusioni</h1>
   <p>Il progetto WasteService è stato completato in tre SPRINT SCRUM, al termine dei quali il progetto aveva la seguente struttura:</p>
   <p>
     <img src="../img/architettura_finale_progetto.jpg" alt="">
   </p>
-  <h2 id="toc_3" class="w3-container w3-teal">Demo</h2>
+  <h2 id="toc_5" class="w3-container w3-teal">Demo</h2>
   <p>Viene incluso in seguito un video di una demo del progetto in contesto distribuito:</p>
   <p>
     <a href="https://youtu.be/wizYutGEHh4">Demo WasteService Lenzi Guerra</a>
@@ -95,7 +128,7 @@ img {
     <li>Led e Sonar su un Raspberry PI (ripreso dalla fotocamera)</li>
     <li>Trolley e StorageManager sul PC Desktop inquadrato, con altra istanza da browser di WasteServiceStatusGUI</li>
   </ul>
-  <h2 id="toc_4" class="w3-container w3-teal">Test</h2>
+  <h2 id="toc_6" class="w3-container w3-teal">Test</h2>
   <p>Sono elencati di seguito i test per verificare la corretta reificazione dei vari requisiti del committente, e il funzionamento dei componenti aggiunti in fase di analisi e di progetto:</p>
   <ul>
     <li>
@@ -142,7 +175,7 @@ img {
         <strong>TestSonarShim</strong>: <a href="../../wasteservice.sonar/test/it/unibo/lenziguerra/wasteservice/sonar/TestSonarShim.kt">TestSonarShim.kt</a>. Ora eseguibile, sfrutta la modalità testing del SonarMock di radarsystem.domain per controllare gli output del Sonar.</p>
     </li>
   </ul>
-  <h3 id="toc_5" class="w3-container w3-green">Deployment</h3>
+  <h3 id="toc_7" class="w3-container w3-green">Deployment</h3>
   <p>Vengono forniti i file docker-compose elencati in seguito. Ci si può connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, alla porta 8090 per visualizzare l'ambiente virtuale del robot, e alla porta 8095 per visualizzare WasteServiceStatusGUI.</p>
   <ul>
     <li>

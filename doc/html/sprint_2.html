@@ -240,7 +240,7 @@ img {
           <p>the Led is <strong>on</strong> when transport trolley is stopped.</p>
         </li>
       </ul>
-      <p>The Sonar is used as an ëalarm deviceí: when it measures a distance less that a prefixed value <strong>DLIMT</strong>, the transport trolley must be stopped. It will be resumed when Sonar detects again a distance higher than <strong>DLIMT</strong>.</p>
+      <p>The Sonar is used as an ‚Äòalarm device‚Äô: when it measures a distance less that a prefixed value <strong>DLIMT</strong>, the transport trolley must be stopped. It will be resumed when Sonar detects again a distance higher than <strong>DLIMT</strong>.</p>
     </li>
   </ol>
   <h3 id="toc_5" class="w3-container w3-green">TFRequirements</h3>
@@ -273,33 +273,33 @@ img {
     </li>
   </ul>
   <h2 id="toc_6" class="w3-container w3-teal">Analisi dei Requisiti</h2>
-  <p>Per ogni requisito analizzato in questo SPRINT Ë stato incluso un modello eseguibile in <a href="../#scelta-del-linguaggio-di-modellazione">Qak</a>.</p>
+  <p>Per ogni requisito analizzato in questo SPRINT √® stato incluso un modello eseguibile in <a href="../#scelta-del-linguaggio-di-modellazione">Qak</a>.</p>
   <h3 id="toc_7" class="w3-container w3-green">Requisiti e chiarimenti</h3>
   <ul>
     <li>
       <p>
         <strong>request</strong>: il <em>WasteService</em> accetta richieste di deposito da <em>Waste truck</em> che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare</p>
       <ul>
-        <li>il sistema puÚ controllare se c'Ë spazio per un certo materiale: accetta (risposta <em>loadaccept</em>), e rifiuta (risposta <em>loadrejected</em>) le richieste di deposito in caso contrario</li>
+        <li>il sistema pu√≤ controllare se c'√® spazio per un certo materiale: accetta (risposta <em>loadaccept</em>), e rifiuta (risposta <em>loadrejected</em>) le richieste di deposito in caso contrario</li>
       </ul>
       <ol>
         <li>
           <blockquote>
-            <p>Domanda: le richieste possono essere gestite anche mentre il robot Ë in attivit‡?</p>
+            <p>Domanda: le richieste possono essere gestite anche mentre il robot √® in attivit√†?</p>
           </blockquote>
-          <p>SÏ, potrebbe arrivare altro camion che chiede.</p>
+          <p>S√¨, potrebbe arrivare altro camion che chiede.</p>
         </li>
         <li>
           <blockquote>
             <p>Domanda: solo un camion alla volta in INDOOR?</p>
           </blockquote>
-          <p>SÏ.</p>
+          <p>S√¨.</p>
         </li>
       </ol>
     </li>
     <li>
       <p>
-        <strong>deposit</strong>: il <em>trolley</em>, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa Ë una <em>deposit action</em>:</p>
+        <strong>deposit</strong>: il <em>trolley</em>, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa √® una <em>deposit action</em>:</p>
       <ol>
         <li>Raccolta di rifiuti da <em>Waste truck</em> in INDOOR</li>
         <li>Andare da INDOOR a contenitore rifiuti (* BOX)</li>
@@ -308,26 +308,26 @@ img {
     </li>
     <li>
       <p>
-        <strong>indoor-more-requests</strong>: il <em>trolley</em>, terminata una <em>deposit action</em>, torna a HOME solo se non ci sono altre richieste da gestire, sennÚ gestisce subito la richiesta successiva andando a INDOOR</p>
+        <strong>indoor-more-requests</strong>: il <em>trolley</em>, terminata una <em>deposit action</em>, torna a HOME solo se non ci sono altre richieste da gestire, senn√≤ gestisce subito la richiesta successiva andando a INDOOR</p>
     </li>
     <li>
       <p>
-        <strong>led</strong>: nel sistema Ë presente un led che:</p>
+        <strong>led</strong>: nel sistema √® presente un led che:</p>
       <ul>
-        <li>Ë <em>acceso</em> se il <em>trolley</em> Ë a HOME</li>
+        <li>√® <em>acceso</em> se il <em>trolley</em> √® a HOME</li>
         <li>
-          <em>lampeggia</em> se il <em>trolley</em> Ë in attivit‡</li>
-        <li>Ë <em>spento</em> se il trolley Ë in stato di <em>stop</em>
+          <em>lampeggia</em> se il <em>trolley</em> √® in attivit√†</li>
+        <li>√® <em>spento</em> se il trolley √® in stato di <em>stop</em>
         </li>
       </ul>
     </li>
     <li>
       <p>
-        <strong>sonar-stop</strong>: Ë presente un <em>sonar</em> che, se misura una distanza sotto DLIMIT (valore prefissato), mette il <em>trolley</em> in stato di <em>stop</em> fino a che la distanza non torna a DLIMIT, nel qual caso il <em>trolley</em> riparte</p>
+        <strong>sonar-stop</strong>: √® presente un <em>sonar</em> che, se misura una distanza sotto DLIMIT (valore prefissato), mette il <em>trolley</em> in stato di <em>stop</em> fino a che la distanza non torna a DLIMIT, nel qual caso il <em>trolley</em> riparte</p>
       <ol>
         <li>
           <blockquote>
-            <p>Domanda: cosa vuol dire precisamente <em>stop</em>? Torna a HOME o rimane lÏ?</p>
+            <p>Domanda: cosa vuol dire precisamente <em>stop</em>? Torna a HOME o rimane l√¨?</p>
           </blockquote>
           <p>Si ferma e basta.</p>
         </li>
@@ -335,16 +335,16 @@ img {
     </li>
     <li>
       <p>
-        <strong>gui</strong>: Ë presente una gui (<em>WasteServiceStatusGUI</em>) che mostra i seguenti dati:</p>
+        <strong>gui</strong>: √® presente una gui (<em>WasteServiceStatusGUI</em>) che mostra i seguenti dati:</p>
       <ul>
         <li>Stato del <em>trolley</em> e sua posizione</li>
       </ul>
       <ol>
         <li>
           <blockquote>
-            <p>Domanda: Posizione del trolley: deve essere precisa o informazione pi˘ generale (INDOOR, in mezzo, HOME, ecc)?</p>
+            <p>Domanda: Posizione del trolley: deve essere precisa o informazione pi√π generale (INDOOR, in mezzo, HOME, ecc)?</p>
           </blockquote>
-          <p>Basta una posizione pi˘ generale.</p>
+          <p>Basta una posizione pi√π generale.</p>
         </li>
       </ol>
       <ul>
@@ -368,7 +368,7 @@ img {
     <li>
       <p>Area di servizio: <strong>INDOOR</strong>, <strong>PlasticBox</strong>, <strong>GlassBox</strong>, aree definite nella creazione del sistema e punti di riferimento per il <em>trolley</em>. In particolare:</p>
       <ul>
-        <li>INDOOR: area dove i <em>waste truck</em> si fermano a lasciare il proprio carico, facendo una richiesta di deposito. Essa puÚ contenere un <em>waste truck</em> alla volta</li>
+        <li>INDOOR: area dove i <em>waste truck</em> si fermano a lasciare il proprio carico, facendo una richiesta di deposito. Essa pu√≤ contenere un <em>waste truck</em> alla volta</li>
         <li>PlasticBox: area dove depositare la plastica</li>
         <li>GlassBox: area dove depositare il vetro</li>
       </ul>
@@ -393,28 +393,28 @@ img {
   </ul>
   <h3 id="toc_9" class="w3-container w3-green">Analisi dei requisiti</h3>
   <h4 id="toc_10">Analisi <strong>led</strong>:</h4>
-  <p>La gestione del Led verr‡ fatta tramite il software fornito dal committente, gli script <em>led25GpioTurnOn.sh</em> e <em>led25GpioTurnOff.sh</em>. L'azienda dispone gi‡ di una libreria per gestire tramite Java il Led con questi script, cioË <em>it.unibo.radarSystem22.domain</em>, quindi sar‡ opportuno utilizzarla.</p>
+  <p>La gestione del Led verr√† fatta tramite il software fornito dal committente, gli script <em>led25GpioTurnOn.sh</em> e <em>led25GpioTurnOff.sh</em>. L'azienda dispone gi√† di una libreria per gestire tramite Java il Led con questi script, cio√® <em>it.unibo.radarSystem22.domain</em>, quindi sar√† opportuno utilizzarla.</p>
   <p>Dai requisiti, si evincono tre primitive che il led deve poter eseguire: accendersi, spegnersi, e lampeggiare, che verranno chiamate <em>turnOn</em>, <em>turnOff</em>, <em>blink</em>. Il software fornito e la libreria che lo controlla implementano solo le prime due, quindi questo <em>abstraction gap</em> va colmato realizzando un componente intermedio, che chiameremo <strong>BlinkLed</strong>, che implementa la terza primitiva. Questo componente deve comunicare con il resto del sistema, quindi viene modellato come attore.</p>
   <p>
     <img src="../img/sprint2_req_led.png" alt="">
   </p>
   <p>La natura precisa di questo attore lascia punti aperti che verranno gestiti in fase di analisi del problema.</p>
   <p>Inoltre, il Led deve poter conoscere lo stato del Trolley.
-Anche questo puÚ essere implementato in pi˘ modi che rimangono un punto aperto.</p>
+Anche questo pu√≤ essere implementato in pi√π modi che rimangono un punto aperto.</p>
   <p>
     <a href="../../model.requisiti/src/led.qak">Modello eseguibile Led</a>
   </p>
-  <p>Intanto perÚ, puÚ gi‡ essere abbozzato un TestPlan:</p>
+  <p>Intanto per√≤, pu√≤ gi√† essere abbozzato un TestPlan:</p>
   <p>
     <a href="../../model.requisiti/test/it/unibo/TestLed.kt">Test plan Led</a>
   </p>
   <h4 id="toc_11">Analisi <strong>gui</strong>:</h4>
-  <p>Date le risorse pre-esistenti dell'azienda e il lavoro molto ridotto rispetto alle alternative, Ë opportuno implementare <em>WasteServiceStatusGUI</em> come web-app.</p>
-  <p>Anche in questo caso, dovendo comunicare con il resto del sistema, Ë opportuno modellarla come attore:</p>
+  <p>Date le risorse pre-esistenti dell'azienda e il lavoro molto ridotto rispetto alle alternative, √® opportuno implementare <em>WasteServiceStatusGUI</em> come web-app.</p>
+  <p>Anche in questo caso, dovendo comunicare con il resto del sistema, √® opportuno modellarla come attore:</p>
   <p>
     <img src="../img/sprint2_req_gui.png" alt="">
   </p>
-  <p>In questo documento, il nome <em>StatusGUI</em> verr‡ usato come sinonimo di <em>WasteServiceStatusGUI</em> per comodit‡.</p>
+  <p>In questo documento, il nome <em>StatusGUI</em> verr√† usato come sinonimo di <em>WasteServiceStatusGUI</em> per comodit√†.</p>
   <p>Come per il Led, il tipo di comunicazione con il resto del sistema rimane un punto aperto.</p>
   <p>
     <a href="../../model.requisiti/src/gui.qak">Modello eseguibile Gui</a>
@@ -454,10 +454,10 @@ Anche questo puÚ essere implementato in pi˘ modi che rimangono un punto aperto.<
     </li>
   </ul>
   <p>
-    <strong>Conclusione.</strong> Si ritiene migliore la seconda opzione, vale a dire <strong>dividere gli incarichi</strong>, visto che rispetta il principio di singola responsabilit‡. Inoltre, questo permetterebbe il riutilizzo dell'attore BlinkLed in altri contesti, essendo agnostico al dominio.</p>
+    <strong>Conclusione.</strong> Si ritiene migliore la seconda opzione, vale a dire <strong>dividere gli incarichi</strong>, visto che rispetta il principio di singola responsabilit√†. Inoltre, questo permetterebbe il riutilizzo dell'attore BlinkLed in altri contesti, essendo agnostico al dominio.</p>
   <h3 id="toc_16" class="w3-container w3-green">Interazione</h3>
-  <p>Il problema della comunicazione per <strong>led</strong> e <strong>gui</strong> Ë analogo, quindi verranno analizzati insieme.</p>
-  <p>Escludendo di usare comunicazione punto-punto come dispatch e richieste, data la scarsa espandibilit‡ e la complicazione nella necessit‡ di modificare ogni attore da analizzare, le opzioni attuali sono due:</p>
+  <p>Il problema della comunicazione per <strong>led</strong> e <strong>gui</strong> √® analogo, quindi verranno analizzati insieme.</p>
+  <p>Escludendo di usare comunicazione punto-punto come dispatch e richieste, data la scarsa espandibilit√† e la complicazione nella necessit√† di modificare ogni attore da analizzare, le opzioni attuali sono due:</p>
   <ul>
     <li>
       <p>Usare eventi: si potrebbero aggiungere emissioni di eventi contenenti i dati di stato attuale dei vari attori di interesse per Led e WasteServiceStatusGui, incluso il Led i cui dati sono visualizzati dalla Gui.</p>
@@ -469,11 +469,11 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
       </pre>
     </li>
     <li>
-      <p>Osservabilit‡: come detto nel progetto dello SPRINT 1, i vari attori sono osservabili tramite COAP. Quindi un'opzione sarebbe rendere LedController e StatusGUI osservatori degli attori rilevanti (e rendere osservabile il Led) e aggiungere alle informazioni osservabili degli attori di interesse eventuali dati mancanti.</p>
+      <p>Osservabilit√†: come detto nel progetto dello SPRINT 1, i vari attori sono osservabili tramite COAP. Quindi un'opzione sarebbe rendere LedController e StatusGUI osservatori degli attori rilevanti (e rendere osservabile il Led) e aggiungere alle informazioni osservabili degli attori di interesse eventuali dati mancanti.</p>
     </li>
   </ul>
   <p>
-    <strong>Conclusione.</strong> Viene ritenuta come opzione migliore la seconda, l'uso di <strong>observer</strong>, visto che gli attori creati nello SPRINT 1 sono gi‡ risorse osservabili con le informazioni necessarie; quindi, non sarebbe necessaria alcuna modifica al software gi‡ sviluppato per adempiere a questo requisito, il che sarebbe un grande vantaggio. Inoltre, il fatto che COAP sia un protocollo gi‡ definito renderebbe ancora pi˘ facile l'estendibilit‡.</p>
+    <strong>Conclusione.</strong> Viene ritenuta come opzione migliore la seconda, l'uso di <strong>observer</strong>, visto che gli attori creati nello SPRINT 1 sono gi√† risorse osservabili con le informazioni necessarie; quindi, non sarebbe necessaria alcuna modifica al software gi√† sviluppato per adempiere a questo requisito, il che sarebbe un grande vantaggio. Inoltre, il fatto che COAP sia un protocollo gi√† definito renderebbe ancora pi√π facile l'estendibilit√†.</p>
   <p>In luce di queste considerazioni, sono quindi aggiornati i modelli eseguibili di Led e Gui:</p>
   <ul>
     <li>
@@ -483,21 +483,21 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
       <a href="../../model.problema/src/pro_gui.qak">Modello eseguibile Gui</a>
     </li>
   </ul>
-  <p>Per realizzarli, Ë stata sviluppata una utility per Qak per permettere agli attori di agire da osservatori, oltre che da risorse osservabili. Ulteriori dettagli sono presenti nel file <a href="qakactor.observer.html">qakactor.observer.md</a>.</p>
+  <p>Per realizzarli, √® stata sviluppata una utility per Qak per permettere agli attori di agire da osservatori, oltre che da risorse osservabili. Ulteriori dettagli sono presenti nel file <a href="qakactor.observer.html">qakactor.observer.md</a>.</p>
   <h3 id="toc_17" class="w3-container w3-green">Posizione trolley</h3>
-  <p>La posizione del Trolley, come da analisi dello Sprint 1, non Ë ad esso nota in termini di nomi del dominio ("home", "indoor", ecc.) essendo esso usato come "attuatore", ma solo in termini di coordinate numeriche. La componente che conosce la posizione del Trolley in termini di nomi dei luoghi Ë WasteService.</p>
-  <p>Dovendo StatusGUI conoscere la posizione del Trolley in termini di nomi dei luoghi, si pongono due possibilit‡:</p>
+  <p>La posizione del Trolley, come da analisi dello Sprint 1, non √® ad esso nota in termini di nomi del dominio ("home", "indoor", ecc.) essendo esso usato come "attuatore", ma solo in termini di coordinate numeriche. La componente che conosce la posizione del Trolley in termini di nomi dei luoghi √® WasteService.</p>
+  <p>Dovendo StatusGUI conoscere la posizione del Trolley in termini di nomi dei luoghi, si pongono due possibilit√†:</p>
   <ul>
     <li>
-      <p>StatusGUI potrebbe osservare anche WasteService, che comunque gi‡ fornisce questa informazione come risorsa.</p>
+      <p>StatusGUI potrebbe osservare anche WasteService, che comunque gi√† fornisce questa informazione come risorsa.</p>
     </li>
     <li>
       <p>StatusGUI potrebbe continuare ad osservare solo il Trolley e a decodificare il nome delle posizioni dalla configurazione.</p>
     </li>
   </ul>
   <p>
-    <strong>Conclusioni.</strong> » stato deciso il primo approccio, ritenuto pi˘ vicino al principio di singola responsabilit‡; invece di mettere la logica di rilevazione del luogo dalla posizione in pi˘ componenti, la si mette in un componente solo (WasteService) e si chiede ad esso lo stato attuale del dato.</p>
-  <p>LedController ha un problema simile, cioË sapere se Trolley si trovi a HOME o meno: viene usata una soluzione analoga.</p>
+    <strong>Conclusioni.</strong> √à stato deciso il primo approccio, ritenuto pi√π vicino al principio di singola responsabilit√†; invece di mettere la logica di rilevazione del luogo dalla posizione in pi√π componenti, la si mette in un componente solo (WasteService) e si chiede ad esso lo stato attuale del dato.</p>
+  <p>LedController ha un problema simile, cio√® sapere se Trolley si trovi a HOME o meno: viene usata una soluzione analoga.</p>
   <h3 id="toc_18" class="w3-container w3-green">Architettura Logica</h3>
   <p>Ecco quindi l'architettura logica finale del sistema in generale per questo SPRINT:</p>
   <p>
@@ -522,13 +522,13 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
       <strong>Test Gui</strong>: creazione di server COAP "fasullo" allo stesso indirizzo del contesto del sistema principale osservato. Invio di dati che portano a vari stati della Gui, e verifica che la pagina risultante venga modificata correttamente.</li>
   </ul>
   <h2 id="toc_22" class="w3-container w3-teal">Progettazione</h2>
-  <p>La progettazione e lo sviluppo delle componenti software stabilite in fase di analisi Ë stata divisa in questo modo:</p>
+  <p>La progettazione e lo sviluppo delle componenti software stabilite in fase di analisi √® stata divisa in questo modo:</p>
   <ul>
     <li>BlinkLed, LedController: F. Lenzi</li>
     <li>WasteServiceStatusGUI: L. Guerra</li>
   </ul>
   <h3 id="toc_23" class="w3-container w3-green">Struttura del software</h3>
-  <p>Dato che entrambi i componenti non interagivano con il sistema Qak se non tramite l'osservazione della risorsa server COaP, sono stati realizzati come <strong>semplici oggetti</strong>, non attori, dotati di capacit‡ di osservazione mediante una <code>CoapConnection</code> (libreria <em>unibo.comm22</em>) che sfrutta la libreria Californium per Coap.</p>
+  <p>Dato che entrambi i componenti non interagivano con il sistema Qak se non tramite l'osservazione della risorsa server COaP, sono stati realizzati come <strong>semplici oggetti</strong>, non attori, dotati di capacit√† di osservazione mediante una <code>CoapConnection</code> (libreria <em>unibo.comm22</em>) che sfrutta la libreria Californium per Coap.</p>
   <p>Questo permette di semplificare abbastanza la struttura, non richiedendo contesti di attori e conseguenti adattatori observer-attore come quello realizzato per rappresentare il modello dell'analisi. Infatti, i progetti dei due componenti non includono o conoscono neanche il framework Qak.</p>
   <p>I componenti sono stati contenuti in due nuovi progetti:</p>
   <ul>
@@ -574,8 +574,8 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
     </li>
   </ul>
   <h3 id="toc_24" class="w3-container w3-green">Classi dati</h3>
-  <p>Come da analisi, non sarebbe servito modificare il progetto core per permettere il funzionamento dei nuovi componenti, essendo gli attori gi‡ impostati per essere osservabili con dati rilevanti. Sono state comunque fatte modifiche minori, soprattutto per usare le <strong>classi dati</strong> aggiunte in questo SPRINT.</p>
-  <p>Per strutturare in modo pi˘ semplice e consistente il formato dei dati contenuti nelle risorse osservabili COaP, questi dati sono stati incapsulati in apposite <em>data class</em> Kotlin, contenute in <em>wasteservice.shared:it.unibo.lenziguerra.wasteservice.data</em>. Esse hanno metodi <code>fromProlog</code> e <code>toString</code> per convertire i dati da stringa osservata a dato di dominio, con enumerativi vari rilevanti:</p>
+  <p>Come da analisi, non sarebbe servito modificare il progetto core per permettere il funzionamento dei nuovi componenti, essendo gli attori gi√† impostati per essere osservabili con dati rilevanti. Sono state comunque fatte modifiche minori, soprattutto per usare le <strong>classi dati</strong> aggiunte in questo SPRINT.</p>
+  <p>Per strutturare in modo pi√π semplice e consistente il formato dei dati contenuti nelle risorse osservabili COaP, questi dati sono stati incapsulati in apposite <em>data class</em> Kotlin, contenute in <em>wasteservice.shared:it.unibo.lenziguerra.wasteservice.data</em>. Esse hanno metodi <code>fromProlog</code> e <code>toString</code> per convertire i dati da stringa osservata a dato di dominio, con enumerativi vari rilevanti:</p>
   <pre>
     <div class="w3-code">data class TrolleyStatus (val status: State, val pos: Array&lt;Int&gt;, val contentType: WasteType?, val contentAmount: Float) {
     enum class State {
@@ -595,14 +595,14 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
 }
 </div>
   </pre>
-  <p>La stringa restituita da queste classi Ë quella che viene passata a <code>updateResource</code> nei vari attori (o equivalente per il Led).</p>
+  <p>La stringa restituita da queste classi √® quella che viene passata a <code>updateResource</code> nei vari attori (o equivalente per il Led).</p>
   <h3 id="toc_25" class="w3-container w3-green">Led</h3>
-  <p>Il led, come da analisi, viene gestito tramite la libreria gi‡ realizzata <em>it.unibo.radarSystem22.domain</em>, che a sua volta interagisce con il software del committente (<em>led25GpioTurnOn.sh</em> e <em>led25GpioTurnOff.sh</em>).</p>
+  <p>Il led, come da analisi, viene gestito tramite la libreria gi√† realizzata <em>it.unibo.radarSystem22.domain</em>, che a sua volta interagisce con il software del committente (<em>led25GpioTurnOn.sh</em> e <em>led25GpioTurnOff.sh</em>).</p>
   <p>Come sopra i due componenti da analisi (BlinkLed e LedController) sono realizzati non come attori Qak, ma come POJO. In particolare, vengono realizate queste classi:</p>
   <ul>
     <li>
       <p>
-        <strong>BlinkLed</strong>: wrapper per le classi di <em>radarSystem22.domain</em>, che permette di impostare il led, oltre che ad acceso o spento, a uno stato di lampeggiamento, ed Ë osservabile. Analogo all'attore BlinkLed in analisi.</p>
+        <strong>BlinkLed</strong>: wrapper per le classi di <em>radarSystem22.domain</em>, che permette di impostare il led, oltre che ad acceso o spento, a uno stato di lampeggiamento, ed √® osservabile. Analogo all'attore BlinkLed in analisi.</p>
     </li>
     <li>
       <p>
@@ -618,7 +618,7 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
     </li>
   </ul>
   <h4 id="toc_26">BlinkLed</h4>
-  <p>Da requisiti, il led deve poter essere impostato in stato di lampeggiamento, acceso, o spento, realizzando le primitive <em>turnOn</em>, <em>turnOff</em>, e <em>blink</em>. L'interfaccia della classe BlinkLed, <code>IBlinkLed</code>, Ë quindi la seguente:</p>
+  <p>Da requisiti, il led deve poter essere impostato in stato di lampeggiamento, acceso, o spento, realizzando le primitive <em>turnOn</em>, <em>turnOff</em>, e <em>blink</em>. L'interfaccia della classe BlinkLed, <code>IBlinkLed</code>, √® quindi la seguente:</p>
   <pre>
     <div class="w3-code">interface IBlinkLed {
     fun turnOn()
@@ -631,8 +631,8 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
 </div>
   </pre>
   <p>
-    <code>BlinkLedState</code> Ë un nuovo enumerativo che corrisponde ai tre stati possibili. La funzione updateHandler, invece, Ë un callback che puÚ essere impostato per rendere osservabile il <code>BlinkLed</code>, chiamato a ogni cambiamento di stato.</p>
-  <p>Il lampeggiamento in <code>BlinkLed</code> Ë realizzato creando un thread apposito al cambiamento di stato:</p>
+    <code>BlinkLedState</code> √® un nuovo enumerativo che corrisponde ai tre stati possibili. La funzione updateHandler, invece, √® un callback che pu√≤ essere impostato per rendere osservabile il <code>BlinkLed</code>, chiamato a ogni cambiamento di stato.</p>
+  <p>Il lampeggiamento in <code>BlinkLed</code> √® realizzato creando un thread apposito al cambiamento di stato:</p>
   <pre>
     <div class="w3-code">BlinkLedState.BLINKING -&gt; thread {
     while (status == BlinkLedState.BLINKING) {
@@ -644,28 +644,28 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
 }
 </div>
   </pre>
-  <p>esso non viene attivato se il Led sta gi‡ lampeggiando.</p>
+  <p>esso non viene attivato se il Led sta gi√† lampeggiando.</p>
   <h4 id="toc_27">LedController</h4>
   <p>
-    <code>LedController</code> riceve un <code>IBlinkLed</code>, e crea due connessioni Coap con il contesto Qak di <em>wasteservice.core</em> per osservare lo stato sia di WasteService che di Trolley, come da analisi. Il funzionamento Ë analogo all'attore dell'analisi, con due handler Coap per gestire le due risorse osservate.</p>
+    <code>LedController</code> riceve un <code>IBlinkLed</code>, e crea due connessioni Coap con il contesto Qak di <em>wasteservice.core</em> per osservare lo stato sia di WasteService che di Trolley, come da analisi. Il funzionamento √® analogo all'attore dell'analisi, con due handler Coap per gestire le due risorse osservate.</p>
   <h4 id="toc_28">BlinkLedCoapServer</h4>
   <p>
-    <code>BlinkLedCoapServer</code> Ë un semplice wrapper per <code>CoapServer</code> di Californium, che contiene una <code>CoapResourceBlinkLed</code>, contenente un riferimento a <code>ILed</code>. Offre una funzione sendUpdates che invia aggiornamenti a tutti gli Observer della risorsa connessi. Espone la risorsa all'Uri <em>/led</em>.</p>
+    <code>BlinkLedCoapServer</code> √® un semplice wrapper per <code>CoapServer</code> di Californium, che contiene una <code>CoapResourceBlinkLed</code>, contenente un riferimento a <code>ILed</code>. Offre una funzione sendUpdates che invia aggiornamenti a tutti gli Observer della risorsa connessi. Espone la risorsa all'Uri <em>/led</em>.</p>
   <h4 id="toc_29">LedContainer</h4>
   <p>
-    <code>LedContainer</code> si limita a configurare i vari componenti e istanziarli, e offrire il punto di ingresso del sistema. Il main, infatti, Ë lÏ contenuto. In particolare, crea un istanza di <code>ILed</code> di <em>radarSystem22.domain</em> reale o mock in base alla configurazione della libreria, contenuta in <em>DomainSystemConfig.json</em>.</p>
+    <code>LedContainer</code> si limita a configurare i vari componenti e istanziarli, e offrire il punto di ingresso del sistema. Il main, infatti, √® l√¨ contenuto. In particolare, crea un istanza di <code>ILed</code> di <em>radarSystem22.domain</em> reale o mock in base alla configurazione della libreria, contenuta in <em>DomainSystemConfig.json</em>.</p>
   <p>Inoltre, rende il led osservabile impostando il callback per lanciare <em>sendUpdates</em> nel <code>BlinkLedCoapServer</code>:</p>
   <pre>
     <div class="w3-code">led.updateHandler = { ledServer.sendUpdates() }
 </div>
   </pre>
   <h3 id="toc_30" class="w3-container w3-green">WasteServiceStatusGUI</h3>
-  <p>Come da analisi, WasteServiceStatusGUI Ë stata implementata come web application. Il server web Ë realizzato, come per WasteService, tramite il framework Spring Boot. In particolare, la pagina web rimane connessa al server tramite <em>WebSocket</em>, per permettere aggiornamenti in diretta dei dati da monitorare senza aggiornare la pagina.</p>
-  <p>L'osservazione dei dati Ë svolta dal <code>WebSocketHandler</code> Spring che gestisce le connessioni, implementato nella classe <code>StatusGuiWebsocketHandler</code>.</p>
+  <p>Come da analisi, WasteServiceStatusGUI √® stata implementata come web application. Il server web √® realizzato, come per WasteService, tramite il framework Spring Boot. In particolare, la pagina web rimane connessa al server tramite <em>WebSocket</em>, per permettere aggiornamenti in diretta dei dati da monitorare senza aggiornare la pagina.</p>
+  <p>L'osservazione dei dati √® svolta dal <code>WebSocketHandler</code> Spring che gestisce le connessioni, implementato nella classe <code>StatusGuiWebsocketHandler</code>.</p>
   <h4 id="toc_31">StatusGuiWebsocketHandler</h4>
   <p>
     <code>StatusGuiWebsocketHandler</code> tiene traccia di ogni sessione di WebSocket attualmente attiva, e contiene le 4 <code>CoapConnection</code> ai componenti del sistema osservati (gli attori <em>wasteservice</em>, <em>trolley</em>, <em>storagemanager</em> e il <code>BlinkLedCoapServer</code>), ciascuna gestita da un Observer. Gli Observer inviano a ogni sessione WebSocket attiva aggiornamenti sui dati ogni volta che la risorsa osservata cambia.</p>
-  <p>L'handler in sË accetta un unico input da parte delle sessioni di WebSocket, vale a dire la stringa <em>get</em>, alla quale risponde con aggiornamenti su tutti i dati. Questa viene usata al caricamento della pagina per inizializzare la StatusGUI.</p>
+  <p>L'handler in s√® accetta un unico input da parte delle sessioni di WebSocket, vale a dire la stringa <em>get</em>, alla quale risponde con aggiornamenti su tutti i dati. Questa viene usata al caricamento della pagina per inizializzare la StatusGUI.</p>
   <h4 id="toc_32">Observer</h4>
   <p>Gli observer sono estensioni di <code>CoapHandler</code> della libreria Californium, una classe per ogni risorsa osservata. Le classi sono presenti nel file <a href="../../wasteservice.statusgui/src/main/kotlin/it/unibo/lenziguerra/wasteservice/statusgui/Observers.kt">Observers.kt</a>. Ogni observer contiene un riferimento alla lista di sessioni WebSocket attive, e invia aggiornamenti alla ricezione dei dati.</p>
   <h3 id="toc_33" class="w3-container w3-green">Altro</h3>
@@ -676,8 +676,8 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
     <li>Correzione all'uso di <code>WebSocketHandler</code> di Spring Boot in <code>WasteServiceServer</code> per coerenza con StatusGUI, usa <em>@Component</em> e <em>@AutoWired</em> per evitare di inizializzare l'handler 2 volte con Spring.</li>
   </ul>
   <h3 id="toc_34" class="w3-container w3-green">Test</h3>
-  <p>I test dell'analisi sono stati adattati al sistema, funzionando nello stesso modo, cioË creazione di contesto Qak con attori mock la cui risorsa viene arbitrariamente pilotata nel test e osservata dai componenti da testare. TestGui Ë eseguibile anche dalla classe di test, senza dover per forza eseguire un test alla volta.</p>
-  <p>I test possono inoltre essere eseguiti senza avviare nessun software oltre al test, invece di richiedere WEnv/BasicRobot come nello SPRINT precedente. Questo grazie alla maggiore flessibilit‡ data dalla struttura ad Observer.</p>
+  <p>I test dell'analisi sono stati adattati al sistema, funzionando nello stesso modo, cio√® creazione di contesto Qak con attori mock la cui risorsa viene arbitrariamente pilotata nel test e osservata dai componenti da testare. TestGui √® eseguibile anche dalla classe di test, senza dover per forza eseguire un test alla volta.</p>
+  <p>I test possono inoltre essere eseguiti senza avviare nessun software oltre al test, invece di richiedere WEnv/BasicRobot come nello SPRINT precedente. Questo grazie alla maggiore flessibilit√† data dalla struttura ad Observer.</p>
   <ul>
     <li>
       <a href="../../wasteservice.statusgui/src/test/kotlin/it/unibo/lenziguerra/wasteservice/statusgui/TestGui.kt">TestGui.kt</a>
@@ -686,20 +686,20 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
       <a href="../../wasteservice.led/src/test/kotlin/TestLed.kt">TestLed.kt</a>
     </li>
   </ul>
-  <p>» stato inoltre aggiunto un test per verificare il corretto funzionamento del lampeggiamento in BlinkLed:</p>
+  <p>√à stato inoltre aggiunto un test per verificare il corretto funzionamento del lampeggiamento in BlinkLed:</p>
   <ul>
     <li>
       <a href="../../wasteservice.led/src/test/kotlin/BlinkLedTest.kt">BlinkLedTest.kt</a>
     </li>
   </ul>
   <h3 id="toc_35" class="w3-container w3-green">Struttura del sistema</h3>
-  <p>La struttura finale del sistema nello SPRINT 2 Ë riassunta in questo grafico:</p>
+  <p>La struttura finale del sistema nello SPRINT 2 √® riassunta in questo grafico:</p>
   <p>
     <img src="../img/architettura2_progetto.jpg" alt="modello architettura progetto">
   </p>
   <p>Le connessioni di WasteServiceStatusGUI sono riassunte per testo per semplificare il grafico.</p>
   <h3 id="toc_36" class="w3-container w3-green">Immagine Docker</h3>
-  <p>Vengono forniti i file Docker-compose elencati in seguito. Ci si puÚ connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, alla porta 8090 per visualizzare l'ambiente virtuale del robot, e alla porta 8095 per visualizzare WasteServiceStatusGUI.</p>
+  <p>Vengono forniti i file Docker-compose elencati in seguito. Ci si pu√≤ connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, alla porta 8090 per visualizzare l'ambiente virtuale del robot, e alla porta 8095 per visualizzare WasteServiceStatusGUI.</p>
   <ul>
     <li>
       <p>
@@ -714,23 +714,23 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
   <p>Il secondo SPRINT riguardava questi requisiti:</p>
   <ul>
     <li>
-      <strong>led</strong>: nel sistema Ë presente un led che:<ul>
-        <li>Ë <em>acceso</em> se il <em>trolley</em> Ë a HOME</li>
+      <strong>led</strong>: nel sistema √® presente un led che:<ul>
+        <li>√® <em>acceso</em> se il <em>trolley</em> √® a HOME</li>
         <li>
-          <em>lampeggia</em> se il <em>trolley</em> Ë in attivit‡</li>
-        <li>Ë <em>spento</em> se il trolley Ë in stato di <em>stop</em>
+          <em>lampeggia</em> se il <em>trolley</em> √® in attivit√†</li>
+        <li>√® <em>spento</em> se il trolley √® in stato di <em>stop</em>
         </li>
       </ul>
     </li>
     <li>
-      <strong>gui</strong>: Ë presente una gui (<em>WasteServiceStatusGUI</em>) che mostra i seguenti dati:<ul>
+      <strong>gui</strong>: √® presente una gui (<em>WasteServiceStatusGUI</em>) che mostra i seguenti dati:<ul>
         <li>Stato del <em>trolley</em> e sua posizione</li>
       </ul>
     </li>
   </ul>
   <h3 id="toc_38" class="w3-container w3-green">Analisi</h3>
-  <p>In fase di analisi, Ë stato deciso di realizzare i due nuovi componenti sfruttando il pattern Observer, rendendoli Observer delle risorse osservabili realizzate nello SPRINT 1.</p>
-  <p>Dopo la fase di analisi, l'architettura logica del sistema Ë stata cosÏ pensata:</p>
+  <p>In fase di analisi, √® stato deciso di realizzare i due nuovi componenti sfruttando il pattern Observer, rendendoli Observer delle risorse osservabili realizzate nello SPRINT 1.</p>
+  <p>Dopo la fase di analisi, l'architettura logica del sistema √® stata cos√¨ pensata:</p>
   <p>
     <img src="../img/sprint2_pro_arch.jpg" alt="modello architettura logica">
   </p>
@@ -738,9 +738,9 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
     <a href="../../wasteservice.prototype/src/prototype_sprint2.qak">
       <strong>Modello eseguibile generale / prototipo.</strong>
     </a> Si noti come rispetto al modello eseguibile dello SPRINT 1, non sia stato necessario modificare niente del codice preesistente ma sia bastato aggiungere gli attori-osservatori.</p>
-  <p>» stato realizzato un supporto a Qak per rendere un attore Observer di altri attori o risorse Coap, <a href="qakactor.observer.html">qakactor.observer</a>.</p>
+  <p>√à stato realizzato un supporto a Qak per rendere un attore Observer di altri attori o risorse Coap, <a href="qakactor.observer.html">qakactor.observer</a>.</p>
   <p>Sono usati per interagire con il led i componenti forniti dal committente, <em>led25GpioTurnOn.sh</em> e <em>led25GpioTurnOff.sh</em>, controllati con la libreria <em>it.unibo.radarSystem22.domain</em> realizzata per progetti precedenti.</p>
-  <p>Sono stati realizzati, in fase di analisi, dei test plan gi‡ eseguibili sfruttando il prototipo in Qak, per ogni requisito. Sono dettagliati nella sezione apposita, e collegati di seguito:</p>
+  <p>Sono stati realizzati, in fase di analisi, dei test plan gi√† eseguibili sfruttando il prototipo in Qak, per ogni requisito. Sono dettagliati nella sezione apposita, e collegati di seguito:</p>
   <ul>
     <li>
       <a href="../../wasteservice.prototype/test/it/unibo/TestLed.kt">TestLed.kt</a>
@@ -755,15 +755,15 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
       <p>Sono state realizzate <em>data class</em> per standardizzare i dati contenuti nelle risorse osservabili Coap.</p>
     </li>
     <li>
-      <p>Sia il sotto-sistema di <em>wasteservice.led</em> che quello di <em>wasteservice.gui</em> sono realizzati non usando il framework Qak, dato che l'interazione con il sistema centrale Ë limitata all'osservazione tramite connessioni Coap, il che semplifica la realizzazione dei due sotto-sistemi.</p>
+      <p>Sia il sotto-sistema di <em>wasteservice.led</em> che quello di <em>wasteservice.gui</em> sono realizzati non usando il framework Qak, dato che l'interazione con il sistema centrale √® limitata all'osservazione tramite connessioni Coap, il che semplifica la realizzazione dei due sotto-sistemi.</p>
     </li>
     <li>
       <p>
-        <em>wasteservice.led</em> Ë un componente passivo, costituito da vari POJO, che osserva le risorse Trolley e WasteService e gestisce il led di conseguenza.</p>
+        <em>wasteservice.led</em> √® un componente passivo, costituito da vari POJO, che osserva le risorse Trolley e WasteService e gestisce il led di conseguenza.</p>
     </li>
     <li>
       <p>
-        <em>wasteservice.gui</em> Ë realizzato come webserver Spring Boot che serve una webapp, che viene aggiornata tramite WebSocket dagli Observer delle varie risorse osservate.</p>
+        <em>wasteservice.gui</em> √® realizzato come webserver Spring Boot che serve una webapp, che viene aggiornata tramite WebSocket dagli Observer delle varie risorse osservate.</p>
     </li>
   </ul>
   <p>
@@ -779,7 +779,7 @@ Event ledStatus : ledStatus(STATUS) //on|blink|off
     </li>
   </ul>
   <p>Possono essere eseguiti senza lanciare programmi esterni, a differenza dei test dello SPRINT 1.</p>
-  <p>Vengono forniti i file Docker-compose elencati in seguito. Ci si puÚ connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste alla porta 8090 per visualizzare l'ambiente virtuale del robot e alla porta 8095 per visualizzare WasteServiceStatusGUI.</p>
+  <p>Vengono forniti i file Docker-compose elencati in seguito. Ci si pu√≤ connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste alla porta 8090 per visualizzare l'ambiente virtuale del robot e alla porta 8095 per visualizzare WasteServiceStatusGUI.</p>
   <ul>
     <li>
       <p>

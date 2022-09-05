@@ -1,16 +1,4 @@
-# WasteService - Introduzione
-
-##### F. Lenzi, L. Guerra
-
-.. toc::
-    :depth: 2
-
-### Indice
-
-.. toc::
-    :depth: 3
-
-## Introduzione
+# Introduzione
 
 Questo documento riassume le premesse e le fasi di sviluppo del progetto WasteService realizzato da **Filippo Lenzi** e  **Lorenzo Guerra**.
 

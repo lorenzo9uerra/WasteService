@@ -243,7 +243,7 @@ img {
           <p>the Led is <strong>on</strong> when transport trolley is stopped.</p>
         </li>
       </ul>
-      <p>The Sonar is used as an ëalarm deviceí: when it measures a distance less that a prefixed value <strong>DLIMT</strong>, the transport trolley must be stopped. It will be resumed when Sonar detects again a distance higher than <strong>DLIMT</strong>.</p>
+      <p>The Sonar is used as an ‚Äòalarm device‚Äô: when it measures a distance less that a prefixed value <strong>DLIMT</strong>, the transport trolley must be stopped. It will be resumed when Sonar detects again a distance higher than <strong>DLIMT</strong>.</p>
     </li>
   </ol>
   <h3 id="toc_5" class="w3-container w3-green">TFRequirements</h3>
@@ -276,33 +276,33 @@ img {
     </li>
   </ul>
   <h2 id="toc_6" class="w3-container w3-teal">Analisi dei Requisiti</h2>
-  <p>Per ogni requisito analizzato in questo SPRINT Ë stato incluso un modello eseguibile in <a href="../#scelta-del-linguaggio-di-modellazione">Qak</a>.</p>
+  <p>Per ogni requisito analizzato in questo SPRINT √® stato incluso un modello eseguibile in <a href="../#scelta-del-linguaggio-di-modellazione">Qak</a>.</p>
   <h3 id="toc_7" class="w3-container w3-green">Requisiti e chiarimenti</h3>
   <ul>
     <li>
       <p>
         <strong>request</strong>: il <em>WasteService</em> accetta richieste di deposito da <em>Waste truck</em> che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare</p>
       <ul>
-        <li>il sistema puÚ controllare se c'Ë spazio per un certo materiale: accetta (risposta <em>loadaccept</em>), e rifiuta (risposta <em>loadrejected</em>) le richieste di deposito in caso contrario</li>
+        <li>il sistema pu√≤ controllare se c'√® spazio per un certo materiale: accetta (risposta <em>loadaccept</em>), e rifiuta (risposta <em>loadrejected</em>) le richieste di deposito in caso contrario</li>
       </ul>
       <ol>
         <li>
           <blockquote>
-            <p>Domanda: le richieste possono essere gestite anche mentre il robot Ë in attivit‡?</p>
+            <p>Domanda: le richieste possono essere gestite anche mentre il robot √® in attivit√†?</p>
           </blockquote>
-          <p>SÏ, potrebbe arrivare altro camion che chiede.</p>
+          <p>S√¨, potrebbe arrivare altro camion che chiede.</p>
         </li>
         <li>
           <blockquote>
             <p>Domanda: solo un camion alla volta in INDOOR?</p>
           </blockquote>
-          <p>SÏ.</p>
+          <p>S√¨.</p>
         </li>
       </ol>
     </li>
     <li>
       <p>
-        <strong>deposit</strong>: il <em>trolley</em>, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa Ë una <em>deposit action</em>:</p>
+        <strong>deposit</strong>: il <em>trolley</em>, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa √® una <em>deposit action</em>:</p>
       <ol>
         <li>Raccolta di rifiuti da <em>Waste truck</em> in INDOOR</li>
         <li>Andare da INDOOR a contenitore rifiuti (* BOX)</li>
@@ -311,26 +311,26 @@ img {
     </li>
     <li>
       <p>
-        <strong>indoor-more-requests</strong>: il <em>trolley</em>, terminata una <em>deposit action</em>, torna a HOME solo se non ci sono altre richieste da gestire, sennÚ gestisce subito la richiesta successiva andando a INDOOR</p>
+        <strong>indoor-more-requests</strong>: il <em>trolley</em>, terminata una <em>deposit action</em>, torna a HOME solo se non ci sono altre richieste da gestire, senn√≤ gestisce subito la richiesta successiva andando a INDOOR</p>
     </li>
     <li>
       <p>
-        <strong>led</strong>: nel sistema Ë presente un led che:</p>
+        <strong>led</strong>: nel sistema √® presente un led che:</p>
       <ul>
-        <li>Ë <em>acceso</em> se il <em>trolley</em> Ë a HOME</li>
+        <li>√® <em>acceso</em> se il <em>trolley</em> √® a HOME</li>
         <li>
-          <em>lampeggia</em> se il <em>trolley</em> Ë in attivit‡</li>
-        <li>Ë <em>spento</em> se il trolley Ë in stato di <em>stop</em>
+          <em>lampeggia</em> se il <em>trolley</em> √® in attivit√†</li>
+        <li>√® <em>spento</em> se il trolley √® in stato di <em>stop</em>
         </li>
       </ul>
     </li>
     <li>
       <p>
-        <strong>sonar-stop</strong>: Ë presente un <em>sonar</em> che, se misura una distanza sotto DLIMIT (valore prefissato), mette il <em>trolley</em> in stato di <em>stop</em> fino a che la distanza non torna a DLIMIT, nel qual caso il <em>trolley</em> riparte</p>
+        <strong>sonar-stop</strong>: √® presente un <em>sonar</em> che, se misura una distanza sotto DLIMIT (valore prefissato), mette il <em>trolley</em> in stato di <em>stop</em> fino a che la distanza non torna a DLIMIT, nel qual caso il <em>trolley</em> riparte</p>
       <ol>
         <li>
           <blockquote>
-            <p>Domanda: cosa vuol dire precisamente <em>stop</em>? Torna a HOME o rimane lÏ?</p>
+            <p>Domanda: cosa vuol dire precisamente <em>stop</em>? Torna a HOME o rimane l√¨?</p>
           </blockquote>
           <p>Si ferma e basta.</p>
         </li>
@@ -338,16 +338,16 @@ img {
     </li>
     <li>
       <p>
-        <strong>gui</strong>: Ë presente una gui (<em>WasteServiceStatusGUI</em>) che mostra i seguenti dati:</p>
+        <strong>gui</strong>: √® presente una gui (<em>WasteServiceStatusGUI</em>) che mostra i seguenti dati:</p>
       <ul>
         <li>Stato del <em>trolley</em> e sua posizione</li>
       </ul>
       <ol>
         <li>
           <blockquote>
-            <p>Domanda: Posizione del trolley: deve essere precisa o informazione pi˘ generale (INDOOR, in mezzo, HOME, ecc)?</p>
+            <p>Domanda: Posizione del trolley: deve essere precisa o informazione pi√π generale (INDOOR, in mezzo, HOME, ecc)?</p>
           </blockquote>
-          <p>Basta una posizione pi˘ generale.</p>
+          <p>Basta una posizione pi√π generale.</p>
         </li>
       </ol>
       <ul>
@@ -356,7 +356,7 @@ img {
       </ul>
     </li>
   </ul>
-  <p>Da questa analisi, emerge che il <em>core business</em> del sistema Ë costituito dai requisiti di <strong>request</strong>, <strong>deposit</strong>, e <strong>indoor-more-requests</strong>. Un primo sprint SCRUM sar‡ quindi lo sviluppo a partire da questi requisiti centrali, mentre i successivi sprint implementeranno le funzionalit‡ aggiuntive di <strong>led</strong>, <strong>sonar-stop</strong>, e <strong>gui</strong>.</p>
+  <p>Da questa analisi, emerge che il <em>core business</em> del sistema √® costituito dai requisiti di <strong>request</strong>, <strong>deposit</strong>, e <strong>indoor-more-requests</strong>. Un primo sprint SCRUM sar√† quindi lo sviluppo a partire da questi requisiti centrali, mentre i successivi sprint implementeranno le funzionalit√† aggiuntive di <strong>led</strong>, <strong>sonar-stop</strong>, e <strong>gui</strong>.</p>
   <h3 id="toc_8" class="w3-container w3-green">Glossario</h3>
   <ul>
     <li>
@@ -371,7 +371,7 @@ img {
     <li>
       <p>Area di servizio: <strong>INDOOR</strong>, <strong>PlasticBox</strong>, <strong>GlassBox</strong>, aree definite nella creazione del sistema e punti di riferimento per il <em>trolley</em>. In particolare:</p>
       <ul>
-        <li>INDOOR: area dove i <em>waste truck</em> si fermano a lasciare il proprio carico, facendo una richiesta di deposito. Essa puÚ contenere un <em>waste truck</em> alla volta</li>
+        <li>INDOOR: area dove i <em>waste truck</em> si fermano a lasciare il proprio carico, facendo una richiesta di deposito. Essa pu√≤ contenere un <em>waste truck</em> alla volta</li>
         <li>PlasticBox: area dove depositare la plastica</li>
         <li>GlassBox: area dove depositare il vetro</li>
       </ul>
@@ -398,7 +398,7 @@ img {
   <p>Guardando i requisiti definiti dal committente si possono fare delle prime analisi sul da farsi.</p>
   <h4 id="toc_10">Analisi <strong>request</strong>
   </h4>
-  <p>Si tratta di una domanda con risposta, quindi l'implementazione immediata Ë request-reply:</p>
+  <p>Si tratta di una domanda con risposta, quindi l'implementazione immediata √® request-reply:</p>
   <pre>
     <div class="w3-code">Request loadDeposit : loadDeposit(MAT, QNT)
 Reply loadaccept : loadaccept()
@@ -424,10 +424,10 @@ QActor wasteservice context ctxwasteservice {...}
   </p>
   <h4 id="toc_11">Analisi <strong>deposit</strong>
   </h4>
-  <p>» presente nel sistema un <em>trolley</em>; visto che necessita di trovarsi in un altro nodo rispetto al WasteService, e di comunicare con esso, viene modellato come un attore: <em>Trolley</em>.</p>
-  <p>Esso, da requisiti, usa un robot DDR che <em>lavora come trolley</em>. Sono gi‡ fornite componenti software che implementano il controllo di un robot DDR tramite operazioni primitive (vedi <a href="../#materiale-fornito-dal-committente">Materiale fornito dal committente</a>), cioË BasicRobot22. Quindi, il Trolley dovr‡ interagire con BasicRobot22 tramite i comandi primitivi di quest'ultimo, per controllare il robot DDR.</p>
+  <p>√à presente nel sistema un <em>trolley</em>; visto che necessita di trovarsi in un altro nodo rispetto al WasteService, e di comunicare con esso, viene modellato come un attore: <em>Trolley</em>.</p>
+  <p>Esso, da requisiti, usa un robot DDR che <em>lavora come trolley</em>. Sono gi√† fornite componenti software che implementano il controllo di un robot DDR tramite operazioni primitive (vedi <a href="../#materiale-fornito-dal-committente">Materiale fornito dal committente</a>), cio√® BasicRobot22. Quindi, il Trolley dovr√† interagire con BasicRobot22 tramite i comandi primitivi di quest'ultimo, per controllare il robot DDR.</p>
   <p>L'interazione tra <em>Trolley</em> e <em>WasteService</em> riguardante l'innesco e lo svolgimento di una <em>deposit action</em> lascia invece aperte diverse opzioni, che sono discusse successivamente in fase di analisi del problema.</p>
-  <p>La struttura dell'operazione Ë descritta nel modello eseguibile seguente:</p>
+  <p>La struttura dell'operazione √® descritta nel modello eseguibile seguente:</p>
   <p>
     <a href="../../model.requisiti/src/deposit.qak">Modello eseguibile Deposit</a>
   </p>
@@ -437,7 +437,7 @@ QActor wasteservice context ctxwasteservice {...}
   </p>
   <h4 id="toc_12">Analisi <strong>indoor-more-requests</strong>
   </h4>
-  <p>Dal requisito in sË non Ë possibile formalizzare con pi˘ precisione l'interazione precisa interna al sistema che lo adempie, rimanendo punti aperti diversi elementi fondamentali (i tipi di interazione tra componenti del sistema). Viene definito un test plan primitivo in seguito:</p>
+  <p>Dal requisito in s√® non √® possibile formalizzare con pi√π precisione l'interazione precisa interna al sistema che lo adempie, rimanendo punti aperti diversi elementi fondamentali (i tipi di interazione tra componenti del sistema). Viene definito un test plan primitivo in seguito:</p>
   <p>
     <a href="../../model.requisiti/test-disabled/TestIndoorMoreRequests.java">Test plan Indoor-More-Requests</a>
   </p>
@@ -457,15 +457,15 @@ QActor wasteservice context ctxwasteservice {...}
   <p>Nelle varie fasi di analisi di questo progetto abbiamo usato come linguaggio di modellazione il linguaggio ad attori Qak, essendo il sistema da realizzare un sistema distribuito, quindi adatto ad essere rappresentato tramite attori.</p>
   <h2 id="toc_15" class="w3-container w3-teal">Analisi del problema</h2>
   <h3 id="toc_16" class="w3-container w3-green">Componenti</h3>
-  <p>Data la numerosa quantit‡ di componenti che comunicano tra loro, implementare la logica del sistema come un insieme di attori Ë abbastanza naturale.</p>
+  <p>Data la numerosa quantit√† di componenti che comunicano tra loro, implementare la logica del sistema come un insieme di attori √® abbastanza naturale.</p>
   <h4 id="toc_17">Requisito <strong>request</strong> - componenti</h4>
-  <p>Il WasteService Ë rappresentato come gi‡ detto in analisi dei requisiti da un attore.</p>
+  <p>Il WasteService √® rappresentato come gi√† detto in analisi dei requisiti da un attore.</p>
   <p>Inoltre, per poter interagire con i cassonetti, sono introdotti degli attori di Storage per comunicare modifiche allo storage e inviare aggiornamenti a componenti di controllo per futuri Sprint.</p>
   <p>Anche qua due opzioni possibili:</p>
   <ul>
     <li>
       <p>
-        <em>Storage manager centrale</em>: un solo attore che gestisce tutti i cassonetti, tenendo traccia dei contenuti attuali e facendo da unico fronte di comunicazione nel sistema per questi dati. Questo semplificherebbe la comunicazione non richiedendo di distinguere il destinatario in base al materiale, ma richiedendo forse pi˘ complessit‡ nel caso, per esempio, in cui i dati di storage siano ricavati da sensori su ogni cassonetto, che quindi dovrebbero aggiornare separatamente lo stesso controllore contenente lo StorageManager.</p>
+        <em>Storage manager centrale</em>: un solo attore che gestisce tutti i cassonetti, tenendo traccia dei contenuti attuali e facendo da unico fronte di comunicazione nel sistema per questi dati. Questo semplificherebbe la comunicazione non richiedendo di distinguere il destinatario in base al materiale, ma richiedendo forse pi√π complessit√† nel caso, per esempio, in cui i dati di storage siano ricavati da sensori su ogni cassonetto, che quindi dovrebbero aggiornare separatamente lo stesso controllore contenente lo StorageManager.</p>
       <pre>
         <div class="w3-code">QActor storage context ctxwasteservice {...}
 </div>
@@ -476,7 +476,7 @@ QActor wasteservice context ctxwasteservice {...}
     </li>
     <li>
       <p>
-        <em>Storage manager separati</em>: un attore per cassonetto (rappresentato nell'esempio sopra), che andr‡ quindi separatamente interpellato in base al tipo di materiale. La soluzione sarebbe la pi˘ intuitiva ma con i problemi sopraelencati.</p>
+        <em>Storage manager separati</em>: un attore per cassonetto (rappresentato nell'esempio sopra), che andr√† quindi separatamente interpellato in base al tipo di materiale. La soluzione sarebbe la pi√π intuitiva ma con i problemi sopraelencati.</p>
       <pre>
         <div class="w3-code">QActor storage_glass context ctxwasteservice {...}
 QActor storage_paper context ctxwasteservice {...}
@@ -488,7 +488,7 @@ QActor storage_paper context ctxwasteservice {...}
     </li>
   </ul>
   <p>
-    <strong>Conclusione.</strong> Si Ë ritenuta migliore la prima opzione, cioË <strong>usare un solo componente StorageManager</strong>, rendendo pi˘ semplice la pianificazione e la progettazione del sistema, a livello di architettura e interazione, oltre a rendere pi˘ facile l'espansione (per esempio, aggiungendo altri tipi di cassonetto) tramite configurazione interna al componente, che nel secondo caso richiederebbe la creazione di nuovi componenti.</p>
+    <strong>Conclusione.</strong> Si √® ritenuta migliore la prima opzione, cio√® <strong>usare un solo componente StorageManager</strong>, rendendo pi√π semplice la pianificazione e la progettazione del sistema, a livello di architettura e interazione, oltre a rendere pi√π facile l'espansione (per esempio, aggiungendo altri tipi di cassonetto) tramite configurazione interna al componente, che nel secondo caso richiederebbe la creazione di nuovi componenti.</p>
   <p>
     <img src="../img/arch_request_1.png" alt="">
   </p>
@@ -496,17 +496,17 @@ QActor storage_paper context ctxwasteservice {...}
   <h4 id="toc_19">Posizione delle aree di interesse</h4>
   <p>Da requisiti, si suppone che le posizioni e grandezza delle aree di HOME, INDOOR, e cassonetti vari, siano decise a priori e a priori comunicate al trolley prima dell'inizio del movimento. Riguardo a come questo sia deciso si consulti <a href="../#configurazione">Configurazione</a>.</p>
   <h4 id="toc_20">Pathfinding</h4>
-  <p>Data una posizione di partenza e di arrivo verso la quale il trolley deve navigare, questo puÚ calcolare due tipi di percorso:</p>
+  <p>Data una posizione di partenza e di arrivo verso la quale il trolley deve navigare, questo pu√≤ calcolare due tipi di percorso:</p>
   <ol>
     <li>
-      <p>Dividendo la stanza in una griglia quadrata di lato RD, il trolley puÚ semplicemente navigare lungo le direzioni cartesiane, prima ad una coordinata della destinazione e poi all'altra.</p>
+      <p>Dividendo la stanza in una griglia quadrata di lato RD, il trolley pu√≤ semplicemente navigare lungo le direzioni cartesiane, prima ad una coordinata della destinazione e poi all'altra.</p>
       <p>
         <img src="../img/navigazione_cart.jpg" alt="">
       </p>
       <p>
-        <strong>PRO</strong>: si dispone gi‡ di componenti in grado di generare e seguire percorsi su griglia in direzioni cartesiane, l'implementazione sarebbe quindi semplice</p>
+        <strong>PRO</strong>: si dispone gi√† di componenti in grado di generare e seguire percorsi su griglia in direzioni cartesiane, l'implementazione sarebbe quindi semplice</p>
       <p>
-        <strong>CONTRO</strong>: pi˘ lento dell'alternativa.</p>
+        <strong>CONTRO</strong>: pi√π lento dell'alternativa.</p>
     </li>
     <li>
       <p>Il trolley compie un percorso diretto a destinazione ignorando la griglia.</p>
@@ -514,38 +514,38 @@ QActor storage_paper context ctxwasteservice {...}
         <img src="../img/navigazione_diretta.jpg" alt="">
       </p>
       <p>
-        <strong>PRO</strong>: il percorso sarebbe diretto e pi˘ veloce.</p>
+        <strong>PRO</strong>: il percorso sarebbe diretto e pi√π veloce.</p>
       <p>
-        <strong>CONTRO</strong>: non disponendo di componenti gi‡ implementate per questo scopo, andrebbe programmata la logica di pathfinding e navigazione per questa casistica.</p>
+        <strong>CONTRO</strong>: non disponendo di componenti gi√† implementate per questo scopo, andrebbe programmata la logica di pathfinding e navigazione per questa casistica.</p>
     </li>
   </ol>
   <p>
-    <strong>Conclusione.</strong> Data la scala ridotta del problema, e la scarsa urgenza di esso, si ritiene migliore la prima opzione, la <strong>navigazione cartesiana</strong>, che permette di riutilizzare i componenti di navigazione di robot gi‡ a disposizione ottimizzando i tempi di sviluppo.</p>
+    <strong>Conclusione.</strong> Data la scala ridotta del problema, e la scarsa urgenza di esso, si ritiene migliore la prima opzione, la <strong>navigazione cartesiana</strong>, che permette di riutilizzare i componenti di navigazione di robot gi√† a disposizione ottimizzando i tempi di sviluppo.</p>
   <h4 id="toc_21">Gestione della deposit action</h4>
-  <p>Esistono pi˘ opzioni per quanto riguarda quale componente
+  <p>Esistono pi√π opzioni per quanto riguarda quale componente
 debba gestire la deposit action:</p>
   <ol>
     <li>
       <p>Trolley potrebbe svolgere internamente la gestione dei vari passaggi, ricevendo da WasteService solo le istruzioni per iniziare una deposit action. Questo richiederebbe di spostare la logica di business dentro al Trolley, in parte.</p>
     </li>
     <li>
-      <p>Il Trolley potrebbe essere un puro attuatore, offrendo un' "interfaccia" di operazioni primitive, cioË <em>spostarsi verso delle coordinate</em>, <em>caricare i rifiuti</em> (da WasteTruck) e <em>scaricare i rifiuti</em> (nel cassonetto). Il WasteService si occuperebbe di gestire la successione dei passaggi di una deposit action, mentre il Trolley necessiterebbe solo di gestire la sequenza delle operazioni primitive del BasicRobot per raggiungere le posizioni, non conoscendo logica di business.</p>
+      <p>Il Trolley potrebbe essere un puro attuatore, offrendo un' "interfaccia" di operazioni primitive, cio√® <em>spostarsi verso delle coordinate</em>, <em>caricare i rifiuti</em> (da WasteTruck) e <em>scaricare i rifiuti</em> (nel cassonetto). Il WasteService si occuperebbe di gestire la successione dei passaggi di una deposit action, mentre il Trolley necessiterebbe solo di gestire la sequenza delle operazioni primitive del BasicRobot per raggiungere le posizioni, non conoscendo logica di business.</p>
     </li>
   </ol>
   <p>
     <strong>Conclusione.</strong>  Per avere una migliore gestione dei dati, e non dividere troppo la logica di business tra nodi diversi, abbiamo deciso per la seconda opzione, <strong>trattare il Trolley come attuatore e lasciare a WasteService la gestione dell'azione di deposito</strong>. Questo porta a una semplificazione della struttura interna del Trolley, ma al contempo ad una complicazione di WasteService, che deve contemporaneamente gestire richieste e risposte con WasteTruck, e i passaggi della deposit action.</p>
   <p>Per una formalizzazione degli stati, si consulti <a href="../#architettura-logica">Architettura Logica</a>.</p>
-  <p>Inoltre, questa modalit‡ permette di assolvere il requisito <strong>indoor-more-requests</strong> senza richiedere interazioni apposite tra WasteService e Trolley in caso di nuove richieste durante l'operazione precedente; nel primo caso, sarebbe stato necessario far conoscere al Trolley l'arrivo di richieste per permettere di sapere se tornare o meno ad HOME.</p>
-  <p>Per poter verificare i requisiti, Ë necessario poter conoscere la posizione del Trolley, in termini di quale luogo di interesse Ë stato raggiunto. Visto che con questa modalit‡ Trolley non conosce le posizioni delle vare aree di interesse (dato che riceve direttamente comandi per spostarsi a una certa coordinata), Ë necessario che comunichi a WasteService la sua posizione numerica. Per farlo, in maniera coerente con il metodo di navigazione scelto si divide la stanza in una griglia, con caselle quadrate di lato RD (grandezza del trolley, da requisiti). Le coordinate dei luoghi d'interesse sono cosÏ indicate:</p>
+  <p>Inoltre, questa modalit√† permette di assolvere il requisito <strong>indoor-more-requests</strong> senza richiedere interazioni apposite tra WasteService e Trolley in caso di nuove richieste durante l'operazione precedente; nel primo caso, sarebbe stato necessario far conoscere al Trolley l'arrivo di richieste per permettere di sapere se tornare o meno ad HOME.</p>
+  <p>Per poter verificare i requisiti, √® necessario poter conoscere la posizione del Trolley, in termini di quale luogo di interesse √® stato raggiunto. Visto che con questa modalit√† Trolley non conosce le posizioni delle vare aree di interesse (dato che riceve direttamente comandi per spostarsi a una certa coordinata), √® necessario che comunichi a WasteService la sua posizione numerica. Per farlo, in maniera coerente con il metodo di navigazione scelto si divide la stanza in una griglia, con caselle quadrate di lato RD (grandezza del trolley, da requisiti). Le coordinate dei luoghi d'interesse sono cos√¨ indicate:</p>
   <ul>
-    <li>(0,0) Ë la casella in alto a sinistra della stanza.</li>
-    <li>(X, Y) Ë la casella X caselle a destra, e Y caselle in basso, rispetto a (0,0)</li>
-    <li>Un luogo d'interesse copre una o pi˘ caselle, ed Ë delimitato indicando casella in alto a sinistra e casella in basso a destra.</li>
+    <li>(0,0) √® la casella in alto a sinistra della stanza.</li>
+    <li>(X, Y) √® la casella X caselle a destra, e Y caselle in basso, rispetto a (0,0)</li>
+    <li>Un luogo d'interesse copre una o pi√π caselle, ed √® delimitato indicando casella in alto a sinistra e casella in basso a destra.</li>
   </ul>
   <h4 id="toc_22">Idee per possibile ottimizzazione</h4>
-  <p>Si Ë notato infine che, data la staticit‡ dell'ambiente, i percorsi in caso di funzionamento regolare hanno un numero ridotto, essendo sempre tra le stesse (e poche) posizioni. Quindi, se necessario, potrebbe essere possibile precalcolare i percorsi, e riutilizzare sempre gli stessi senza richiedere la generazione ogni volta; nel caso per qualche motivo il trolley si ritrovi in una posizione fuori dalle aspettative, il percorso andrebbe comunque calcolato ad hoc.</p>
+  <p>Si √® notato infine che, data la staticit√† dell'ambiente, i percorsi in caso di funzionamento regolare hanno un numero ridotto, essendo sempre tra le stesse (e poche) posizioni. Quindi, se necessario, potrebbe essere possibile precalcolare i percorsi, e riutilizzare sempre gli stessi senza richiedere la generazione ogni volta; nel caso per qualche motivo il trolley si ritrovi in una posizione fuori dalle aspettative, il percorso andrebbe comunque calcolato ad hoc.</p>
   <h3 id="toc_23" class="w3-container w3-green">Configurazione</h3>
-  <p>Da requisiti, diversi valori, cioË</p>
+  <p>Da requisiti, diversi valori, cio√®</p>
   <ul>
     <li>
       <em>DLIMIT</em>
@@ -554,8 +554,8 @@ debba gestire la deposit action:</p>
     <li>La posizione e area di INDOOR</li>
     <li>La posizione e area di GLASS BOX e PLASTIC BOX</li>
   </ul>
-  <p>sono impostati a priori. Questo puÚ essere realizzato cablando i valori nel codice, ma l'opzione pi˘ sensata Ë quella di usare dei file di configurazione, modificabili dall'utente.</p>
-  <p>In questo SPRINT, considerando solo il core business dell'applicazione, l'unico componente che necessita di conoscere i dati di configurazione Ë WasteService. Quindi, il file di configurazione sar‡ collocato all'interno del suo nodo.</p>
+  <p>sono impostati a priori. Questo pu√≤ essere realizzato cablando i valori nel codice, ma l'opzione pi√π sensata √® quella di usare dei file di configurazione, modificabili dall'utente.</p>
+  <p>In questo SPRINT, considerando solo il core business dell'applicazione, l'unico componente che necessita di conoscere i dati di configurazione √® WasteService. Quindi, il file di configurazione sar√† collocato all'interno del suo nodo.</p>
   <p>Un esempio:</p>
   <p>
     <em>WasteService.json</em>
@@ -575,13 +575,13 @@ debba gestire la deposit action:</p>
   <h3 id="toc_24" class="w3-container w3-green">Interazione</h3>
   <h4 id="toc_25">Requisito <strong>request</strong>
   </h4>
-  <p>» necessario che (in caso di loadaccept) il waste truck sappia quando lo scarico dei rifiuti da parte del trolley Ë stato completato per poter ripartire. Ci sono diverse opzioni:</p>
+  <p>√à necessario che (in caso di loadaccept) il waste truck sappia quando lo scarico dei rifiuti da parte del trolley √® stato completato per poter ripartire. Ci sono diverse opzioni:</p>
   <ol>
     <li>
-      <p>La risposta (loadaccept) potrebbe essere semplicemente inviata solo a scarico completato, a differenza di loadrejected che verrebbe inviata appena possibile. Una volta arrivata la risposta, il camion potrebbe partire. La conseguenza di questo approccio sarebbe l'impossibilit‡ di rilevare errori da parte del Waste truck: "vedrebbe" nella UI un'attesa senza sapere se Ë per via dello scarico rifiuti in corso oppure per un errore.</p>
+      <p>La risposta (loadaccept) potrebbe essere semplicemente inviata solo a scarico completato, a differenza di loadrejected che verrebbe inviata appena possibile. Una volta arrivata la risposta, il camion potrebbe partire. La conseguenza di questo approccio sarebbe l'impossibilit√† di rilevare errori da parte del Waste truck: "vedrebbe" nella UI un'attesa senza sapere se √® per via dello scarico rifiuti in corso oppure per un errore.</p>
     </li>
     <li>
-      <p>La risposta (loadaccept) arriva subito come per loadrejected, per informare il Waste truck il prima possibile, e viene inviato un successivo messaggio pickedUp per notificare l'avvenuto scarico e la possibilit‡ di partire. Questo richiede che il Waste truck sia anche in grado di ricevere passivamente messaggi, e non solo inviare richieste e ricevere risposte come da requisiti; Ë possibile, ma richiede accorgimenti pi˘ specifici nello sviluppo.</p>
+      <p>La risposta (loadaccept) arriva subito come per loadrejected, per informare il Waste truck il prima possibile, e viene inviato un successivo messaggio pickedUp per notificare l'avvenuto scarico e la possibilit√† di partire. Questo richiede che il Waste truck sia anche in grado di ricevere passivamente messaggi, e non solo inviare richieste e ricevere risposte come da requisiti; √® possibile, ma richiede accorgimenti pi√π specifici nello sviluppo.</p>
       <pre>
         <div class="w3-code">Dispatch pickedUp : pickedUp()
 </div>
@@ -589,7 +589,7 @@ debba gestire la deposit action:</p>
     </li>
   </ol>
   <p>
-    <strong>Conclusione.</strong> Si ritiene migliore la seconda opzione, <strong>la partenza del camion dopo un dispatch pickedUp</strong>: il vantaggio dal punto di vista dell'utente (non necessariamente competente nella tecnologia) nel sapere subito se Ë stato accettato o meno il carico, e non rimanere bloccati in una schermata di attesa o equivalente anche in caso di successo, vale la pena di avere ulteriori accortezze in implementazione.</p>
+    <strong>Conclusione.</strong> Si ritiene migliore la seconda opzione, <strong>la partenza del camion dopo un dispatch pickedUp</strong>: il vantaggio dal punto di vista dell'utente (non necessariamente competente nella tecnologia) nel sapere subito se √® stato accettato o meno il carico, e non rimanere bloccati in una schermata di attesa o equivalente anche in caso di successo, vale la pena di avere ulteriori accortezze in implementazione.</p>
   <p>Inoltre, WasteService deve poter sapere da StorageManager lo stato attuale di riempimento dei cassonetti.</p>
   <ol>
     <li>
@@ -609,7 +609,7 @@ Reply storageAt : storageAt(MAT, QNT)
     </li>
   </ol>
   <p>
-    <strong>Conclusione.</strong> Per adempiere a questo requisito si Ë ritenuta migliore la prima opzione, <strong>request-reply</strong>; nel secondo caso, WasteService dovrebbe salvare in una variabile interna di stato il dato aggiornato ogni volta che lo riceve, cosa che potrebbe avvenire in qualunque momento, invece di chiederlo semplicemente all'occorrenza.</p>
+    <strong>Conclusione.</strong> Per adempiere a questo requisito si √® ritenuta migliore la prima opzione, <strong>request-reply</strong>; nel secondo caso, WasteService dovrebbe salvare in una variabile interna di stato il dato aggiornato ogni volta che lo riceve, cosa che potrebbe avvenire in qualunque momento, invece di chiederlo semplicemente all'occorrenza.</p>
   <p>
     <img src="../img/an_int_request.png" alt="modello request">
   </p>
@@ -638,18 +638,18 @@ Reply trolleyDone : trolleyDone(OK)
     </li>
   </ol>
   <p>
-    <strong>Conclusione.</strong> Si sceglie la seconda opzione, modellare le operazioni primitive come <strong>request-response</strong>, perchË permette a Trolley di non conoscere WasteService ma di agire solo in risposta a delle richieste.</p>
+    <strong>Conclusione.</strong> Si sceglie la seconda opzione, modellare le operazioni primitive come <strong>request-response</strong>, perch√® permette a Trolley di non conoscere WasteService ma di agire solo in risposta a delle richieste.</p>
   <p>Inoltre, per iniziare lo scarico nel cassonetto viene comunicato il deposito di un materiale da parte del trolley:</p>
   <pre>
     <div class="w3-code">Dispatch storageDeposit : storageDeposit(MAT, QNT)
 </div>
   </pre>
-  <p>Questo messaggio viene inviato da Trolley a StorageManager, ed Ë necessario per trattare allo stesso modo la situazione di test virtuale e il caso reale; infatti, un caso reale potrebbe usare un sensore nei cassonetti per aggiornare i dati sui contenuti noti a StorageManager, mentre in una situazione virtuale questo deve essere necessariamente aggiornato tramite messaggi.</p>
-  <p>In un caso reale, bisogna quindi testare la consistenza tra dati noti a StorageManager dopo l'invio del messaggio, e i dati reali dei contenuti. Un test plan per questo caso Ë il seguente:</p>
+  <p>Questo messaggio viene inviato da Trolley a StorageManager, ed √® necessario per trattare allo stesso modo la situazione di test virtuale e il caso reale; infatti, un caso reale potrebbe usare un sensore nei cassonetti per aggiornare i dati sui contenuti noti a StorageManager, mentre in una situazione virtuale questo deve essere necessariamente aggiornato tramite messaggi.</p>
+  <p>In un caso reale, bisogna quindi testare la consistenza tra dati noti a StorageManager dopo l'invio del messaggio, e i dati reali dei contenuti. Un test plan per questo caso √® il seguente:</p>
   <p>
     <a href="../../wasteservice.prototype/test/it/unibo/TestDepositReal.java.disabled">Test plan per confronto dati veri e gestiti</a>
   </p>
-  <p>Il modello per le componenti correlate a deposit Ë il seguente:</p>
+  <p>Il modello per le componenti correlate a deposit √® il seguente:</p>
   <p>
     <img src="../img/an_int_deposit.png" alt="modello deposit">
   </p>
@@ -679,7 +679,7 @@ Reply trolleyDone : trolleyDone(OK)
   <ul>
     <li>
       <p>
-        <strong>Test Deny</strong>: si invia una richiesta di loadDeposit al WasteService per una quantit‡ maggiore di quella che i cassonetti possono ospitare e si verifica che risponda con un <em>loadrejected</em>.</p>
+        <strong>Test Deny</strong>: si invia una richiesta di loadDeposit al WasteService per una quantit√† maggiore di quella che i cassonetti possono ospitare e si verifica che risponda con un <em>loadrejected</em>.</p>
     </li>
     <li>
       <p>
@@ -696,11 +696,11 @@ Reply trolleyDone : trolleyDone(OK)
   <ul>
     <li>
       <p>
-        <strong>Test TrolleyCollect</strong>: Invia richiesta trolleyCollect con quantit‡ N e materiale M. Verifica che dopo la richiesta Trolley contenga i materiali corrispondenti.</p>
+        <strong>Test TrolleyCollect</strong>: Invia richiesta trolleyCollect con quantit√† N e materiale M. Verifica che dopo la richiesta Trolley contenga i materiali corrispondenti.</p>
     </li>
     <li>
       <p>
-        <strong>Test TrolleyDeposit</strong>: Invia richiesta trolleyDeposit con Trolley gi‡ contenente materiale M in quantit‡ M. Verifica che dopo la richiesta Trolley non contenga pi˘ materiali, e StorageManager contenga i materiali nelle quantit‡ indicate.</p>
+        <strong>Test TrolleyDeposit</strong>: Invia richiesta trolleyDeposit con Trolley gi√† contenente materiale M in quantit√† M. Verifica che dopo la richiesta Trolley non contenga pi√π materiali, e StorageManager contenga i materiali nelle quantit√† indicate.</p>
     </li>
     <li>
       <p>
@@ -716,7 +716,7 @@ Reply trolleyDone : trolleyDone(OK)
     </li>
     <li>
       <p>
-        <strong>Test Deposit</strong>: Invia richiesta di deposito con quantit‡ N. Verifica che StorageManager finisca con quantit‡ aumentata di N a deposit action terminata.</p>
+        <strong>Test Deposit</strong>: Invia richiesta di deposito con quantit√† N. Verifica che StorageManager finisca con quantit√† aumentata di N a deposit action terminata.</p>
     </li>
   </ul>
   <h4 id="toc_31">TestPlan: indoor-more-requests</h4>
@@ -732,7 +732,7 @@ Reply trolleyDone : trolleyDone(OK)
     </li>
   </ul>
   <h2 id="toc_32" class="w3-container w3-teal">Progettazione</h2>
-  <p>La progettazione e lo sviluppo delle componenti software stabilite in fase di analisi Ë stata divisa in questo modo:</p>
+  <p>La progettazione e lo sviluppo delle componenti software stabilite in fase di analisi √® stata divisa in questo modo:</p>
   <ul>
     <li>Trolley, e interazione con BasicRobot: L. Guerra</li>
     <li>Wasteservice (parte relativa a interazione e controllo Trolley): L. Guerra</li>
@@ -740,9 +740,9 @@ Reply trolleyDone : trolleyDone(OK)
     <li>StorageManager: F. Lenzi</li>
     <li>WasteTruck (ricezione pickUp e GUI): F. Lenzi</li>
   </ul>
-  <p>» stato possibile dividere facilmente lo sviluppo di WasteService per la struttura che Ë stata adottata, dettagliata <a href="../#wasteservice">in seguito</a>.</p>
+  <p>√à stato possibile dividere facilmente lo sviluppo di WasteService per la struttura che √® stata adottata, dettagliata <a href="../#wasteservice">in seguito</a>.</p>
   <h3 id="toc_33" class="w3-container w3-green">In generale</h3>
-  <p>In fase di progettazione e sviluppo, i vari attori facenti parti del sistema sono stati strutturati come risorsa osservabile COaP, con dati in formato Prolog, sfruttando la libreria QakActor, sia per facilitare l'espansione futura in successivi SPRINT, sia per rendere pi˘ facile il testing.</p>
+  <p>In fase di progettazione e sviluppo, i vari attori facenti parti del sistema sono stati strutturati come risorsa osservabile COaP, con dati in formato Prolog, sfruttando la libreria QakActor, sia per facilitare l'espansione futura in successivi SPRINT, sia per rendere pi√π facile il testing.</p>
   <p>Per esempio Trolley, quando osservato, fornisce questi dati in formato Prolog:</p>
   <pre>
     <div class="w3-code">state(work)
@@ -751,16 +751,16 @@ pos(X,Y)
 </div>
   </pre>
   <p>con <code>content</code> opzionale se non trasporta carichi.</p>
-  <p>Inoltre, ad ogni attore Qak Ë stat associata una classe Kotlin di support, per ridurre il codice nel file Qak e permettere comportamenti di classe pi˘ complessi. Ogni classe implementa un'interfaccia che contiene le propriet‡ e metodi accessibili dall'attore.</p>
+  <p>Inoltre, ad ogni attore Qak √® stat associata una classe Kotlin di support, per ridurre il codice nel file Qak e permettere comportamenti di classe pi√π complessi. Ogni classe implementa un'interfaccia che contiene le propriet√† e metodi accessibili dall'attore.</p>
   <h3 id="toc_34" class="w3-container w3-green">Struttura del software</h3>
-  <p>Il sistema Ë stato realizzato in linguaggio Kotlin, e parti minori in Java, ed Ë stato diviso in pi˘ progetti:</p>
+  <p>Il sistema √® stato realizzato in linguaggio Kotlin, e parti minori in Java, ed √® stato diviso in pi√π progetti:</p>
   <ul>
     <li>
-      <em>wasteservice.shared</em>: contiene la classe di configurazione <code>SystemConfig</code>, enumerativi, e utilit‡ comuni alle varie parti del sistema.</li>
+      <em>wasteservice.shared</em>: contiene la classe di configurazione <code>SystemConfig</code>, enumerativi, e utilit√† comuni alle varie parti del sistema.</li>
     <li>
-      <em>wasteservice.core</em>: contiene il core business dell'applicazione, vale a dire WasteService, Trolley, e StorageManager, che Ë stato implementato in questo SPRINT.</li>
+      <em>wasteservice.core</em>: contiene il core business dell'applicazione, vale a dire WasteService, Trolley, e StorageManager, che √® stato implementato in questo SPRINT.</li>
   </ul>
-  <p>Il software Ë contenuto nel package <em>it.unibo.lenziguerra.wasteservice</em>, eccetto le classi Kotlin generate da Qak che sono nel percorso attribuito da quel sistema. In particolare i due progetti contengono questi package:</p>
+  <p>Il software √® contenuto nel package <em>it.unibo.lenziguerra.wasteservice</em>, eccetto le classi Kotlin generate da Qak che sono nel percorso attribuito da quel sistema. In particolare i due progetti contengono questi package:</p>
   <ul>
     <li>
       <strong>wasteservice.shared</strong>
@@ -792,7 +792,7 @@ pos(X,Y)
       </ul>
     </li>
   </ul>
-  <p>Per scopo di documentazione, il codice allo stato della fine dello SPRINT 1 Ë stato copiato in una cartella <em>src-sprint1</em>.</p>
+  <p>Per scopo di documentazione, il codice allo stato della fine dello SPRINT 1 √® stato copiato in una cartella <em>src-sprint1</em>.</p>
   <h3 id="toc_35" class="w3-container w3-green">Test</h3>
   <p>I test plan stabiliti in analisi sono stati adattati al sistema finale dello SPRINT 1, sono eseguibili in questi file:</p>
   <ul>
@@ -808,26 +808,26 @@ pos(X,Y)
   </ul>
   <p>Note sull'esecuzione:</p>
   <ul>
-    <li>» necessario avviare BasicRobot22 prima di eseguire i test, Ë incluso un <a href="../../wasteservice.core/basicrobot22.yaml">file docker</a> per farlo facilmente, con le impostazioni della mappa che seguono il dominio del problema.</li>
-    <li>I test vanno avviati un metodo alla volta, ed Ë necessario aggiornare la pagina di VirtualEnv di BasicRobot tra le esecuzioni, a causa di requisiti di VirtualEnv e Qak.</li>
+    <li>√à necessario avviare BasicRobot22 prima di eseguire i test, √® incluso un <a href="../../wasteservice.core/basicrobot22.yaml">file docker</a> per farlo facilmente, con le impostazioni della mappa che seguono il dominio del problema.</li>
+    <li>I test vanno avviati un metodo alla volta, ed √® necessario aggiornare la pagina di VirtualEnv di BasicRobot tra le esecuzioni, a causa di requisiti di VirtualEnv e Qak.</li>
   </ul>
   <h3 id="toc_36" class="w3-container w3-green">WasteService</h3>
   <h4 id="toc_37">Divisione</h4>
-  <p>» stata presa la decisione di implementare WasteService come due entit‡ software distinte ma interagenti nello stesso nodo:</p>
+  <p>√à stata presa la decisione di implementare WasteService come due entit√† software distinte ma interagenti nello stesso nodo:</p>
   <ul>
     <li>
       <em>WasteServiceServer</em>, un applicazione web realizzata con il framework SpringBoot che espone un interfaccia per i WasteTruck, e gestisce le loro richieste e le relative autorizzazioni.</li>
     <li>
       <em>WasteService</em> propter, un attore Qak con annessa classe di supporto, che si occupa di gestire l'operazione di deposito coordinando il Trolley che agisce da attuatore come da analisi.</li>
   </ul>
-  <p>Questo permette di realizzare facilmente l'interazione e l'interfaccia per il WasteTruck, oltre ad avere il vantaggio di disaccoppiare l'operazione di deposito dalla gestione delle richieste: il modello degli stati sviluppato in analisi portava a rispondere a una richiesta arrivata da un WasteTruck solo alla fine di una operazione di deposito. In questo modo, invece, il server Ë sempre in ascolto di richieste, e in grado di gestirle.</p>
+  <p>Questo permette di realizzare facilmente l'interazione e l'interfaccia per il WasteTruck, oltre ad avere il vantaggio di disaccoppiare l'operazione di deposito dalla gestione delle richieste: il modello degli stati sviluppato in analisi portava a rispondere a una richiesta arrivata da un WasteTruck solo alla fine di una operazione di deposito. In questo modo, invece, il server √® sempre in ascolto di richieste, e in grado di gestirle.</p>
   <p>Questo ha inoltre, come effetto secondario, permesso agli sviluppatori di lavorare separatamente alle due parti del progetto (gestione richieste e operazione di deposito)</p>
   <h4 id="toc_38">Richieste</h4>
   <p>La parte di WasteService che da analisi interagisce con WasteTruck viene implementata come server web: la pagina servita fa le veci dell'attore nel modello di analisi WasteTruck.</p>
   <p>Questa pagina contiene script che comunicano con il server di WasteService tramite WebSocket, permettendo sia di inviare richieste e ricevere risposte, sia di ascoltare sulla connessione per la notifica di carico raccolto. WasteTruck diventa quindi, da attore, una pagina web, che viene aperta dal pilota del Waste Truck.</p>
-  <p>Tramite WebSocket, la pagina del WasteTruck Ë in grado di rimanere in ascolto per aggiornamenti sulla raccolta del carico, come da analisi (dispatch <code>pickedUp</code>).</p>
+  <p>Tramite WebSocket, la pagina del WasteTruck √® in grado di rimanere in ascolto per aggiornamenti sulla raccolta del carico, come da analisi (dispatch <code>pickedUp</code>).</p>
   <p>Il server, per gestire le richieste, deve chiedere come da analisi informazioni a StorageManager: per farlo agisce da "alieno" al contesto Qak, stabilendo una connessione TCP con il contesto di StorageManager (in questa prima versione, ospitato per demo nello stesso nodo). Chiede al Trolley tramite COaP dati sul suo contenuto attuale, per lo stesso motivo.</p>
-  <p>L'inizio dell'operazione di deposito viene fatto inviando da "alieno" una richiesta tramite TCP al contesto di WasteService attore ospitato in locale: viene introdotta una nuova richiesta per coordinare le due "met‡" di WasteService:</p>
+  <p>L'inizio dell'operazione di deposito viene fatto inviando da "alieno" una richiesta tramite TCP al contesto di WasteService attore ospitato in locale: viene introdotta una nuova richiesta per coordinare le due "met√†" di WasteService:</p>
   <pre>
     <div class="w3-code">Request triggerDeposit : triggerDeposit(MAT,QNT)
 Reply trolleyPickedUp : trolleyPickedUp(_)
@@ -835,16 +835,16 @@ Reply trolleyPickedUp : trolleyPickedUp(_)
   </pre>
   <p>WasteServiceServer invia <code>triggerDeposit</code> all'attore per avviare l'operazione di deposito, e riceve <code>trolleyPickedUp</code> per sapere quando inviare <code>pickedUp</code> al WasteTruck come da analisi.</p>
   <h4 id="toc_39">Deposit</h4>
-  <p>WasteService attore Ë simile al modello dell'analisi. » in grado di stabilire la coordinata pi˘ vicina al trolley tra quelle incluse nel rettangolo della area di destinazione, e coordina il Trolley attraverso le varie fasi della <em>deposit action</em>.</p>
-  <p>Il requisito <strong>indoor-more-requests</strong> Ë adempiuto in modo semplice: WasteService attore, per comportamento default di Qak, mette in coda eventuali richieste di <code>triggerDeposit</code> arrivate durante una <em>deposit action</em>, e decide se mandare a HOME o a INDOOR il Trolley a operazione finita in base alla presenza o meno di ulteriori richieste in coda.</p>
-  <p>L'attore, come detto, Ë osservabile tramite COaP: la risorsa espone questi dati:</p>
+  <p>WasteService attore √® simile al modello dell'analisi. √à in grado di stabilire la coordinata pi√π vicina al trolley tra quelle incluse nel rettangolo della area di destinazione, e coordina il Trolley attraverso le varie fasi della <em>deposit action</em>.</p>
+  <p>Il requisito <strong>indoor-more-requests</strong> √® adempiuto in modo semplice: WasteService attore, per comportamento default di Qak, mette in coda eventuali richieste di <code>triggerDeposit</code> arrivate durante una <em>deposit action</em>, e decide se mandare a HOME o a INDOOR il Trolley a operazione finita in base alla presenza o meno di ulteriori richieste in coda.</p>
+  <p>L'attore, come detto, √® osservabile tramite COaP: la risorsa espone questi dati:</p>
   <pre>
     <div class="w3-code">tpos(LOC) // Posizione del trolley in termini di nome ("home", "indoor", ecc.)
 {error(ERR)} // Errore (opz.), nel caso il sistema abbia errori
 </div>
   </pre>
   <h4 id="toc_40">Gestione errori</h4>
-  <p>In caso di errori, cioË, allo stato virtuale del sistema,collisione del Trolley, il sistema si blocca e necessita di una risoluzione manuale del problema seguita da un riavvio. Questo comportamento Ë stato deciso data l'impossibilit‡ di risolvere dal lato del sistema problemi di questa natura, che in un caso reale sarebbero dati da incidenti fisici nell'area risolvibili solo da un operatore.</p>
+  <p>In caso di errori, cio√®, allo stato virtuale del sistema,collisione del Trolley, il sistema si blocca e necessita di una risoluzione manuale del problema seguita da un riavvio. Questo comportamento √® stato deciso data l'impossibilit√† di risolvere dal lato del sistema problemi di questa natura, che in un caso reale sarebbero dati da incidenti fisici nell'area risolvibili solo da un operatore.</p>
   <p>
     <img src="../img/prog1_wasteservice_arch.jpg" alt="architettura di WasteService">
   </p>
@@ -855,15 +855,15 @@ Reply trolleyPickedUp : trolleyPickedUp(_)
     <em>Diagramma sintetico delle interazioni di WasteService in caso di richiesta, a scopo esplicativo</em>
   </p>
   <h3 id="toc_41" class="w3-container w3-green">Trolley</h3>
-  <p>Per lo spostamento del Trolley, come da analisi, si Ë pensato di utilizzare il componente software <em>BasicRobot</em>. In particolare, il Trolley interagisce con l'attore <em>pathexec</em>, che permette di svolgere percorsi costituiti da una serie di comandi (w: forward, r: gira a destra, l: gira a sinistra) con una singola interazione request-reply.</p>
-  <p>Il Trolley agisce, come da analisi, come semplice attuatore. Espone come "interfaccia" la possibilit‡ di inviare richieste <code>trolleyDeposit</code>, <code>trolleyCollect</code>, e <code>trolleyMove</code>. Le risposte inviate dal robot sono state espanse da una singola risposta <code>trolleyDone(OK)</code> da analisi, a due risposte <code>trolleyDone</code> e <code>trolleyFail(REASON)</code>, per rendere pi˘ semplice la distinzione dei casi in Qak.</p>
-  <p>Le prime due richieste sono interamente gestite dalla classe di supporto legata al trolley, <em>ITrolleySupport</em>; al momento Ë implementata per il caso virtuale, ma Ë facilmente espandibile per un eventuale caso reale.</p>
-  <p>L'operazione di movimento Ë come sopra gestita da <em>pathexec</em>: la classe di supporto genera il percorso a partire dalla posizione di partenza e dalle coordinate target, poi Trolley lo invia a <em>pathexec</em> e in caso di successo aggiorna la posizione memorizzata. Essa, infatti, tiene traccia di posizione e direzione attuali del robot.</p>
-  <p>» stata inoltre aggiunta un'operazione <code>trolleyRotate</code>, per permettere la rotazione senza movimento, usata per tornare rivolti nella posizione iniziale una volta tornati a HOME.</p>
+  <p>Per lo spostamento del Trolley, come da analisi, si √® pensato di utilizzare il componente software <em>BasicRobot</em>. In particolare, il Trolley interagisce con l'attore <em>pathexec</em>, che permette di svolgere percorsi costituiti da una serie di comandi (w: forward, r: gira a destra, l: gira a sinistra) con una singola interazione request-reply.</p>
+  <p>Il Trolley agisce, come da analisi, come semplice attuatore. Espone come "interfaccia" la possibilit√† di inviare richieste <code>trolleyDeposit</code>, <code>trolleyCollect</code>, e <code>trolleyMove</code>. Le risposte inviate dal robot sono state espanse da una singola risposta <code>trolleyDone(OK)</code> da analisi, a due risposte <code>trolleyDone</code> e <code>trolleyFail(REASON)</code>, per rendere pi√π semplice la distinzione dei casi in Qak.</p>
+  <p>Le prime due richieste sono interamente gestite dalla classe di supporto legata al trolley, <em>ITrolleySupport</em>; al momento √® implementata per il caso virtuale, ma √® facilmente espandibile per un eventuale caso reale.</p>
+  <p>L'operazione di movimento √® come sopra gestita da <em>pathexec</em>: la classe di supporto genera il percorso a partire dalla posizione di partenza e dalle coordinate target, poi Trolley lo invia a <em>pathexec</em> e in caso di successo aggiorna la posizione memorizzata. Essa, infatti, tiene traccia di posizione e direzione attuali del robot.</p>
+  <p>√à stata inoltre aggiunta un'operazione <code>trolleyRotate</code>, per permettere la rotazione senza movimento, usata per tornare rivolti nella posizione iniziale una volta tornati a HOME.</p>
   <p>
-    <em>Basicrobot</em> permette di implementare il movimento del robot in modo indipendente dalla tecnologia, il che lo rende un componente utile in fase di testing. Infatti, prima di utilizzare un robot reale, sar‡ possibile osservare i movimenti del trolley grazie a <em>WEnv</em>.</p>
-  <p>Come per <em>WasteService</em>, un errore blocca il sistema fino alla risoluzione manuale, per le ragioni gi‡ indicate.</p>
-  <p>Come detto sopra, inoltre, il Trolley Ë una risorsa COaP osservabile, esponendo questi dati:</p>
+    <em>Basicrobot</em> permette di implementare il movimento del robot in modo indipendente dalla tecnologia, il che lo rende un componente utile in fase di testing. Infatti, prima di utilizzare un robot reale, sar√† possibile osservare i movimenti del trolley grazie a <em>WEnv</em>.</p>
+  <p>Come per <em>WasteService</em>, un errore blocca il sistema fino alla risoluzione manuale, per le ragioni gi√† indicate.</p>
+  <p>Come detto sopra, inoltre, il Trolley √® una risorsa COaP osservabile, esponendo questi dati:</p>
   <pre>
     <div class="w3-code">state(work) // In questo SPRINT costante, espandibile per includere altri stati (stop, ecc.)
 pos(X, Y) // Posizione numerica
@@ -874,7 +874,7 @@ pos(X, Y) // Posizione numerica
     <img src="../img/prog1_trolley.jpg" alt="architettura Trolley">
   </p>
   <h3 id="toc_42" class="w3-container w3-green">StorageManager</h3>
-  <p>StorageManager, in modo analogo a Trolley, Ë rappresentato come classe Qak associata a classe Kotlin di support. Come Trolley rimane aperta all'espansione per un ipotetico caso reale.</p>
+  <p>StorageManager, in modo analogo a Trolley, √® rappresentato come classe Qak associata a classe Kotlin di support. Come Trolley rimane aperta all'espansione per un ipotetico caso reale.</p>
   <p>La risorsa COaP esposta mostra questi dati:</p>
   <pre>
     <div class="w3-code">// Per ogni materiale contenuto:
@@ -882,24 +882,24 @@ content(MAT, QNT, MAX)
 </div>
   </pre>
   <h3 id="toc_43" class="w3-container w3-green">Struttura del sistema</h3>
-  <p>La struttura finale del sistema nello SPRINT 1 Ë riassunta in questo grafico:</p>
+  <p>La struttura finale del sistema nello SPRINT 1 √® riassunta in questo grafico:</p>
   <p>
     <img src="../img/architettura1_progetto.jpg" alt="architettura progetto">
   </p>
   <h3 id="toc_44" class="w3-container w3-green">Immagine Docker</h3>
-  <p>Viene fornito <a href="../../wasteservice.core/wasteservice.yaml">wasteservice.yaml</a> per eseguire il sistema con Docker. Ci si puÚ connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, e alla porta 8090 per visualizzare l'ambiente virtuale del robot.</p>
+  <p>Viene fornito <a href="../../wasteservice.core/wasteservice.yaml">wasteservice.yaml</a> per eseguire il sistema con Docker. Ci si pu√≤ connettere alla porta 8080 per aprire l'interfaccia per i WasteTruck usata per inviare richieste, e alla porta 8090 per visualizzare l'ambiente virtuale del robot.</p>
   <h2 id="toc_45" class="w3-container w3-teal">Riassunto SPRINT 1</h2>
   <p>Questo primo SPRINT riguardava questi requisiti:</p>
   <ul>
     <li>
       <strong>request</strong>: il <em>WasteService</em> accetta richieste di deposito da <em>Waste truck</em> che arrivano nella zona specificata come INDOOR, che specificicano il tipo di materiale da depositare.</li>
     <li>
-      <strong>deposit</strong>: il <em>trolley</em>, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa Ë una <em>deposit action</em>.</li>
+      <strong>deposit</strong>: il <em>trolley</em>, quando viene attivato, raccoglie i materiali a INDOOR, e li deposita, in base al tipo, in GLASS BOX o PLASTIC BOX; questa √® una <em>deposit action</em>.</li>
     <li>
       <strong>indoor-more-requests</strong>: il <em>trolley</em>, terminata una <em>deposit action</em>, torna a HOME solo se non ci sono altre richieste da gestire, altrimenti gestisce subito la richiesta successiva andando a INDOOR.</li>
   </ul>
   <h3 id="toc_46" class="w3-container w3-green">Analisi</h3>
-  <p>Dopo la fase di analisi, l'architettura logica del sistema Ë stata cosÏ pensata:</p>
+  <p>Dopo la fase di analisi, l'architettura logica del sistema √® stata cos√¨ pensata:</p>
   <p>
     <img src="../img/arch_logica.png" alt="modello architettura logica">
   </p>
@@ -911,8 +911,8 @@ content(MAT, QNT, MAX)
       <strong>Prototipo eseguibile</strong>
     </a>
   </p>
-  <p>Il sistema Ë stato pensato per usare la componente esterna BasicRobot22, per semplificare le interazioni con robot reali e virtuali.</p>
-  <p>Sono stati realizzati, in fase di analisi, dei test plan gi‡ eseguibili sfruttando il prototipo in Qak, per ogni requisito. Sono dettagliati nella sezione apposita, e collegati di seguito:</p>
+  <p>Il sistema √® stato pensato per usare la componente esterna BasicRobot22, per semplificare le interazioni con robot reali e virtuali.</p>
+  <p>Sono stati realizzati, in fase di analisi, dei test plan gi√† eseguibili sfruttando il prototipo in Qak, per ogni requisito. Sono dettagliati nella sezione apposita, e collegati di seguito:</p>
   <ul>
     <li>
       <a href="../../wasteservice.prototype/test/it/unibo/TestRequest.java">TestRequest.java</a>
@@ -928,16 +928,16 @@ content(MAT, QNT, MAX)
   <p>I punti salienti della fase di sviluppo sono i seguenti:</p>
   <ul>
     <li>
-      <p>L'interfaccia per permettere ai WasteTruck Ë stata realizzata come applicazione web tramite il framework SpringBoot, che comunica con il sistema tramite WebSocket.</p>
+      <p>L'interfaccia per permettere ai WasteTruck √® stata realizzata come applicazione web tramite il framework SpringBoot, che comunica con il sistema tramite WebSocket.</p>
     </li>
     <li>
-      <p>WasteService Ë stato realizzato come due componenti distinte e collegate: un server web Spring Boot che fornisce la pagina per fare richieste e le gestisce, e un attore Qak che coordina la <em>deposit action</em> del Trolley.</p>
+      <p>WasteService √® stato realizzato come due componenti distinte e collegate: un server web Spring Boot che fornisce la pagina per fare richieste e le gestisce, e un attore Qak che coordina la <em>deposit action</em> del Trolley.</p>
     </li>
     <li>
       <p>Il Trolley realizza il movimento interagendo con BasicRobot22, in particolare l'attore <em>pathexec</em>. Trolley genera il percorso per la destinazione, e lo invia a quest'ultimo attore.</p>
     </li>
     <li>
-      <p>Ogni attore Ë una risorsa osservabile COaP con dati utili, permettendo pi˘ facile testing e futura espandibilit‡.</p>
+      <p>Ogni attore √® una risorsa osservabile COaP con dati utili, permettendo pi√π facile testing e futura espandibilit√†.</p>
     </li>
   </ul>
   <p>
@@ -957,8 +957,8 @@ content(MAT, QNT, MAX)
   </ul>
   <p>Note sull'esecuzione:</p>
   <ul>
-    <li>» necessario avviare BasicRobot22 prima di eseguire i test, Ë incluso un <a href="../../wasteservice.core/basicrobot22.yaml">file docker</a> per farlo facilmente, con le impostazioni della mappa che seguono il dominio del problema.</li>
-    <li>I test vanno avviati un metodo alla volta, ed Ë necessario aggiornare la pagina di VirtualEnv di BasicRobot tra le esecuzioni, a causa di requisiti di VirtualEnv e Qak.</li>
+    <li>√à necessario avviare BasicRobot22 prima di eseguire i test, √® incluso un <a href="../../wasteservice.core/basicrobot22.yaml">file docker</a> per farlo facilmente, con le impostazioni della mappa che seguono il dominio del problema.</li>
+    <li>I test vanno avviati un metodo alla volta, ed √® necessario aggiornare la pagina di VirtualEnv di BasicRobot tra le esecuzioni, a causa di requisiti di VirtualEnv e Qak.</li>
   </ul>
   <p>Viene anche fornita un'<strong>immagine Docker</strong> per avviare il sistema in modo semplice: <a href="../../wasteservice.core/wasteservice.yaml">wasteservice.yaml</a>.</p>
 </div></body>
