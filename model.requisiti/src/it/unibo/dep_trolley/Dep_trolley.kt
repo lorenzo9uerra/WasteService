@@ -25,7 +25,11 @@ class Dep_trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 						println("	Trolley | At home")
 						updateResourceRep( "pos(home)"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t00",targetState="go_indoor",cond=whenDispatch("deposit"))
 				}	 
 				state("go_indoor") { //this:State
@@ -38,7 +42,11 @@ class Dep_trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 											CarryingAmount = payloadArg(1).toDouble()	
 						}
 						delay(500) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="indoor", cond=doswitch() )
 				}	 
 				state("indoor") { //this:State
@@ -48,14 +56,22 @@ class Dep_trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 						updateResourceRep( "pos(indoor)"  
 						)
 						delay(500) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="go_box", cond=doswitch() )
 				}	 
 				state("go_box") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						delay(500) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="box", cond=doswitch() )
 				}	 
 				state("box") { //this:State
@@ -65,13 +81,21 @@ class Dep_trolley ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 						)
 						delay(200) 
 						forward("depositWaste", "depositWaste($CarryingType,$CarryingAmount)" ,"dep_waste_boxes" ) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="done", cond=doswitch() )
 				}	 
 				state("done") { //this:State
 					action { //it:State
 						println("	Trolley | Done deposit action")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 				}	 
 			}
 		}

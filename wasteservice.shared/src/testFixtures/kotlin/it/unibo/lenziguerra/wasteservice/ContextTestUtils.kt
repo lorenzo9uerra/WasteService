@@ -14,7 +14,10 @@ object ContextTestUtils {
      * @param contextsDescription Prolog contexts description, such as the content of <systemName>.pl
      */
     @JvmStatic
-    fun createContextsFromString(hostName: String, scope: CoroutineScope, contextsDescription: String, rulesFilePath: String, contextName: String) {
+    fun createContextsFromString(hostName: String, scope: CoroutineScope, contextsDescription: String,
+                                 rulesFilePath: String,
+                                 contextName: String? = null
+    ) {
         val tempFile = createTempFile("ctxdesc", ".pl")
         FileWriter(tempFile.toAbsolutePath().toString()).use {
             it.write(contextsDescription)

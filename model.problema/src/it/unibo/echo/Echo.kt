@@ -18,13 +18,21 @@ class Echo ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope
 		return { //this:ActionBasciFsm
 				state("wait") { //this:State
 					action { //it:State
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t19",targetState="reply",cond=whenRequest("ping"))
 				}	 
 				state("reply") { //this:State
 					action { //it:State
 						answer("ping", "pong", "pong(_)"   )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 			}

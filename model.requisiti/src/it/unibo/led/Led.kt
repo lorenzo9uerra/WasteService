@@ -21,19 +21,31 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("on") { //this:State
 					action { //it:State
 						println("	Led | ON")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t00",targetState="handleStatus",cond=whenEvent("trolleyStatus"))
 				}	 
 				state("off") { //this:State
 					action { //it:State
 						println("	Led | OFF")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t01",targetState="handleStatus",cond=whenEvent("trolleyStatus"))
 				}	 
 				state("blinking") { //this:State
 					action { //it:State
 						println("	Led | BLINKING")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t02",targetState="handleStatus",cond=whenEvent("trolleyStatus"))
 				}	 
 				state("handleStatus") { //this:State
@@ -47,7 +59,11 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 													else -> 2
 												}
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="on", cond=doswitchGuarded({ Next == 1  
 					}) )
 					transition( edgeName="goto",targetState="elseOffBlink", cond=doswitchGuarded({! ( Next == 1  
@@ -55,7 +71,11 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				}	 
 				state("elseOffBlink") { //this:State
 					action { //it:State
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="off", cond=doswitchGuarded({ Next == 0  
 					}) )
 					transition( edgeName="goto",targetState="blinking", cond=doswitchGuarded({! ( Next == 0  

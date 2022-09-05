@@ -16,13 +16,17 @@ class Sonar_sonar ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		val interruptedStateTransitions = mutableListOf<Transition>()
 		
-				var DLIMIT = 100
+				var DLIMIT = 50
 				var Val = 200
 		return { //this:ActionBasciFsm
 				state("scanWait") { //this:State
 					action { //it:State
-						delay(500) 
+						delay(200) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="scan", cond=doswitch() )
 				}	 
 				state("scan") { //this:State
@@ -37,7 +41,11 @@ class Sonar_sonar ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 						if(  Val > DLIMIT && PrevVal <= DLIMIT  
 						 ){emit("sonarResume", "sonarResume(_)" ) 
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="scanWait", cond=doswitch() )
 				}	 
 			}

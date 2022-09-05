@@ -19,22 +19,34 @@ class Observer ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 				state("s0") { //this:State
 					action { //it:State
 						coapObserverUtil.startObserving(myself ,"observable" )
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("idle") { //this:State
 					action { //it:State
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t02",targetState="handleUpdate",cond=whenDispatch("coapUpdate"))
 				}	 
 				state("handleUpdate") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						if( checkMsgContent( Term.createTerm("coapUpdate(RESOURCE,VALUE)"), Term.createTerm("coapUpdate(RESOURCE,VALUE)"), 
+						if( checkMsgContent( Term.createTerm("coapUpdate(VALUE)"), Term.createTerm("coapUpdate(VALUE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("Received COAP update from ${payloadArg(0)}! Value is: ${payloadArg(1)}")
+								println("Received COAP update! Value is: ${payloadArg(0)}")
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}

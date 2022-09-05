@@ -24,7 +24,11 @@ class Dep_waste_boxes ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						println("	BOXES: Paper $ContentPlastic, Glass $ContentGlass")
 						updateResourceRep( "glass(" + ContentGlass + ")\nplastic(" + ContentPlastic + ")"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t01",targetState="handleDeposit",cond=whenDispatch("depositWaste"))
 				}	 
 				state("handleDeposit") { //this:State
@@ -38,7 +42,11 @@ class Dep_waste_boxes ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 								 { ContentPlastic += payloadArg(1).toDouble()  
 								 }
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}

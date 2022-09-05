@@ -31,7 +31,11 @@ class Pro_dep_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 						updateResourceRep( "tpos(home)"  
 						)
 						println("	WS | Trolley at home")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t00",targetState="go_indoor",cond=whenRequest("loadDeposit"))
 				}	 
 				state("go_indoor") { //this:State
@@ -46,7 +50,11 @@ class Pro_dep_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 								var X = POS_INDOOR[0]; var Y = POS_INDOOR[1] 
 								request("trolleyMove", "trolleyMove($X,$Y)" ,"pro_dep_trolley" )  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t01",targetState="indoor",cond=whenReply("trolleyDone"))
 				}	 
 				state("indoor") { //this:State
@@ -56,7 +64,11 @@ class Pro_dep_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 						)
 						println("	WT | Trolley at indoor, picking up $CurrentAmount $CurrentType...")
 						request("trolleyCollect", "trolleyCollect($CurrentType,$CurrentAmount)" ,"pro_dep_trolley" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t02",targetState="go_box",cond=whenReply("trolleyDone"))
 				}	 
 				state("go_box") { //this:State
@@ -67,7 +79,11 @@ class Pro_dep_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 						 ){X = POS_PLASTIC_BOX[0]; Y = POS_PLASTIC_BOX[1] 
 						}
 						request("trolleyMove", "trolleyMove($X,$Y)" ,"pro_dep_trolley" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t03",targetState="box",cond=whenReply("trolleyDone"))
 				}	 
 				state("box") { //this:State
@@ -77,16 +93,26 @@ class Pro_dep_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 						updateResourceRep( "tpos(" + CurrentType + "_box)"  
 						)
 						request("trolleyDeposit", "trolleyDeposit(_)" ,"pro_dep_trolley" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t04",targetState="done",cond=whenReply("trolleyDone"))
 				}	 
 				state("done") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WT | Done deposit action")
-						stateTimer = TimerActor("timer_done", 
-							scope, context!!, "local_tout_pro_dep_wasteservice_done", 0.toLong() )
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+				 	 		//sysaction { //it:State
+				 	 		  stateTimer = TimerActor("timer_done", 
+				 	 			scope, context!!, "local_tout_pro_dep_wasteservice_done", 0.toLong() )
+				 	 		//}
+					}	 	 
 					 transition(edgeName="t05",targetState="go_home",cond=whenTimeout("local_tout_pro_dep_wasteservice_done"))   
 					transition(edgeName="t06",targetState="go_indoor",cond=whenRequest("loadDeposit"))
 				}	 
@@ -95,7 +121,11 @@ class Pro_dep_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 						println("$name in ${currentState.stateName} | $currentMsg")
 						var X = POS_HOME[0]; var Y = POS_HOME[1] 
 						request("trolleyMove", "trolleyMove($X,$Y)" ,"pro_dep_trolley" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t07",targetState="home",cond=whenReply("trolleyDone"))
 				}	 
 			}

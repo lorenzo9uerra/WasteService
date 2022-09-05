@@ -1,0 +1,114 @@
+<head>
+        <link rel="stylesheet" href="../css/w3.css"> 
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+        <!-- <link rel="stylesheet" href="../css/doc.css"> -->
+</head><body>
+<style>
+
+body {
+    --sidebar-width: 400px;
+    padding-left: calc( var( --sidebar-width ) + 100px);
+    /* max-width: 1000px; */
+    padding-right: 200px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.toc-sidebar {
+    position: fixed;
+    margin-left: 0;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    padding: 0;
+    background-color: rgb(31, 32, 32);
+    font-size: 21px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.toc-sidebar > * {
+    padding: 10px
+}
+.toc-sidebar > div {
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.toc-sidebar > div:hover {
+    background-color: rgb(51, 51, 51);
+}
+.toc-sidebar a {
+    color: white;
+    text-decoration: unset;
+    display: inline-block;
+    width: 100%;
+    height: 0;
+    padding-bottom: 10%;
+}
+
+/* 
+h3 strong {
+    color: #800080; 
+} */
+
+img {
+    max-width: 100%;
+    max-height: 700px;
+}
+
+.w3-code {
+    overflow-x: scroll;
+}
+</style>
+<div>
+  <h1 id="toc_1" class="w3-container w3-indigo">Qakactor Observer</h1>
+  <p>La utility Qakactor Observer è composta da una classe Kotlin <code>CoapObserverActor</code>, e una utility per utilizzarla da Qak <code>coapObserverUtil</code>. Permette di rendere degli attori Qak Observer di una risorsa Coap, sia generica che nello specifico altri attori Qak che sono risorse osservabili.</p>
+  <p>Il progetto è disponibile <a href="https://github.com/lnwor/WasteService/tree/main/qakactor.observer">su Github</a>.</p>
+  <p>Sempre su Github si può scaricare la <a href="https://github.com/lnwor/WasteService/blob/main/unibolibs/qakactor.observer-1.0.jar?raw=true">libreria in formato jar</a>
+  </p>
+  <h2 id="toc_2" class="w3-container w3-teal">Esempio</h2>
+  <p>Un esempio di uso è il seguente:</p>
+  <pre>
+    <div class="w3-code">// Inizio file
+Dispatch coapUpdate : coapUpdate(RESOURCE, VALUE)
+
+// [...] interno di attore
+State s0 initial {
+   qrun coapObserverUtil.startObserving(myself, "observable")
+   /* qrun coapObserverUtil.startObserving(myself, "ctx_observertest", "observable") */
+   /* qrun coapObserverUtil.startObservingHost(myself, "localhost:9000", "ctx_observertest/observable") */
+}
+Goto listen
+
+State listen {
+}
+Transition t0 whenMsg coapUpdate -&gt; handleUpdate
+
+State handleUpdate {
+    onMsg(coapUpdate : coapUpdate(RESOURCE, VALUE)) {
+        // [...]
+    }
+}
+Goto listen
+</div>
+  </pre>
+  <p>Un esempio completo è <a href="https://github.com/lnwor/WasteService/blob/main/qakactor.observer/test/observerdemo.qak">qui disponibile</a>
+  </p>
+  <h2 id="toc_3" class="w3-container w3-teal">Funzionamento e scelte di sviluppo</h2>
+  <h3 id="toc_4" class="w3-container w3-green">Handler Coap</h3>
+  <p>La libreria fornisce una classe CoapHandler, <code>CoapObserverActor</code>, che riceve in costruzione un attore "proprietario". Quando arrivano degli update Coap, li invia al proprietario incapsulati in un <strong>dispatch</strong> di tipo coapUpdate, che va quindi definito all'interno del file qak.</p>
+  <pre>
+    <div class="w3-code">Dispatch coapUpdate : coapUpdate(RESOURCE, VALUE)
+</div>
+  </pre>
+  <p>Il proprietario può quindi gestire aggiornamenti Coap come un qualunque altro dispatch, distinguendo la risorsa che li invia tramite il primo parametro RESOURCE. Viene anche impostata come mittente del messaggio, ma è stato ritenuto più intuitivo per l'uso dentro Qak renderla disponibile anche all'interno di payloadArg(0).</p>
+  <p>È stato scelto di implementare l'osservazione come dispatch e non evento, per rappresentare la natura specifica dell'osservazione: non viene inviato il dato a tutti, ma solo a chi lo osserva.</p>
+  <h3 id="toc_5" class="w3-container w3-green">Classe di utility</h3>
+  <p>La classe fornita <code>coapObserverUtil</code> offre metodi statici per iniziare e finire di osservare una risorsa, sia per host e uri assoluti, sia in termini relativi a Qak fornendo nome dell'attore e opzionalmente del contesto (usando il contesto dell'attore osservante di default).</p>
+  <p>Possono essere semplicemente lanciati tramite <code>qrun</code> usando la keyword <code>myself</code> come primo argomento.</p>
+  <section class="toc toc-sidebar">
+    <div class="sidebar-index w3-deep-purple">
+      <a href="./index.html">Indice generale</a>
+    </div>
+  </section>
+</div></body>

@@ -19,7 +19,11 @@ class Blinkled_gui ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("wait") { //this:State
 					action { //it:State
 						delay(1500) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="randomStatus", cond=doswitch() )
 				}	 
 				state("randomStatus") { //this:State
@@ -37,7 +41,11 @@ class Blinkled_gui ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 									}
 						updateResourceRep( Status  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 			}

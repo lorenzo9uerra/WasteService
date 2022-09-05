@@ -22,7 +22,11 @@ class Dep_init ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 									var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
 									var Quantity = kotlin.random.Random.nextInt(10, 30)	
 						request("loadDeposit", "loadDeposit($Material,$Quantity)" ,"pro_dep_wasteservice" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t012",targetState="secondSend",cond=whenReply("loadaccept"))
 				}	 
 				state("secondSend") { //this:State
@@ -32,12 +36,20 @@ class Dep_init ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 									var Material = if (kotlin.random.Random.nextFloat() > 0.5) "glass" else "plastic"
 									var Quantity = kotlin.random.Random.nextInt(10, 30)	
 						request("loadDeposit", "loadDeposit($Material,$Quantity)" ,"pro_dep_wasteservice" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t013",targetState="fin",cond=whenReply("loadaccept"))
 				}	 
 				state("fin") { //this:State
 					action { //it:State
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 				}	 
 			}
 		}

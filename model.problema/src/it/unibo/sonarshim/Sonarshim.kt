@@ -22,9 +22,15 @@ class Sonarshim ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				state("scanWait") { //this:State
 					action { //it:State
 						 Wait = kotlin.random.Random.nextLong(1000, 3500)  
-						stateTimer = TimerActor("timer_scanWait", 
-							scope, context!!, "local_tout_sonarshim_scanWait", Wait )
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+				 	 		//sysaction { //it:State
+				 	 		  stateTimer = TimerActor("timer_scanWait", 
+				 	 			scope, context!!, "local_tout_sonarshim_scanWait", Wait )
+				 	 		//}
+					}	 	 
 					 transition(edgeName="t00",targetState="scan",cond=whenTimeout("local_tout_sonarshim_scanWait"))   
 				}	 
 				state("scan") { //this:State
@@ -38,7 +44,11 @@ class Sonarshim ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						updateResourceRep( "$Val"  
 						)
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="scanWait", cond=doswitch() )
 				}	 
 			}

@@ -24,7 +24,11 @@ class Pro_req_storagemanager ( name: String, scope: CoroutineScope  ) : ActorBas
 						println("STORAGE: Glass ${Content["glass"]}, Plastic ${Content["plastic"]}")
 						updateResourceRep( "glass(" + Content["glass"] + ")\nplastic(" + Content["plastic"] + ")"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t02",targetState="handleAsk",cond=whenRequest("storageAsk"))
 				}	 
 				state("handleAsk") { //this:State
@@ -35,7 +39,11 @@ class Pro_req_storagemanager ( name: String, scope: CoroutineScope  ) : ActorBas
 								 var Amount = kotlin.random.Random.Default.nextDouble(15.0, 50.0)  
 								answer("storageAsk", "storageAt", "storageAt(${payloadArg(0)},$Amount)"   )  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}

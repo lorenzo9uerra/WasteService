@@ -2,5 +2,5 @@
 % wasteservice_req_request description   
 %====================================================================================
 context(ctxreq_request, "localhost",  "TCP", "8050").
- qactor( wastetruck_req, ctxreq_request, "it.unibo.wastetruck_req.Wastetruck_req").
-  qactor( wasteservice_req, ctxreq_request, "it.unibo.wasteservice_req.Wasteservice_req").
+ qactor( req_wasteservice, ctxreq_request, "it.unibo.req_wasteservice.Req_wasteservice").
+  qactor( req_wastetruck, ctxreq_request, "it.unibo.req_wastetruck.Req_wastetruck").

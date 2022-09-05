@@ -23,7 +23,11 @@ class Pro_req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 				state("idle") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="tIdle0",targetState="handleRequest",cond=whenRequest("loadDeposit"))
 				}	 
 				state("handleRequest") { //this:State
@@ -37,7 +41,11 @@ class Pro_req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 								println("	WS | Request received $CurrentType $CurrentAmount")
 								request("storageAsk", "storageAsk($CurrentType)" ,"pro_req_storagemanager" )  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t01",targetState="handleStorageReply",cond=whenReply("storageAt"))
 				}	 
 				state("handleStorageReply") { //this:State
@@ -49,7 +57,11 @@ class Pro_req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 								println("	WS | Has space: ${payloadArg(1)} for ${payloadArg(0)}")
 								 CurrentRequestPass = CurrentAmount <= payloadArg(1).toDouble()  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="sendTrolley", cond=doswitchGuarded({ CurrentRequestPass  
 					}) )
 					transition( edgeName="goto",targetState="rejectRequest", cond=doswitchGuarded({! ( CurrentRequestPass  
@@ -60,7 +72,11 @@ class Pro_req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	WS | rejected")
 						answer("loadDeposit", "loadrejected", "loadrejected(_)"   )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 				state("sendTrolley") { //this:State
@@ -71,7 +87,11 @@ class Pro_req_wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasic
 						delay(1000) 
 						println("	WS | done, sending away truck")
 						forward("pickedUp", "pickedUp(_)" ,"pro_req_wastetruck" ) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="idle", cond=doswitch() )
 				}	 
 			}

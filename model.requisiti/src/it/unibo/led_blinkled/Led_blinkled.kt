@@ -23,7 +23,11 @@ class Led_blinkled ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("	Led | ON")
 						updateResourceRep( "on"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t00",targetState="handleStatus",cond=whenEvent("trolleyStatus"))
 				}	 
 				state("off") { //this:State
@@ -31,7 +35,11 @@ class Led_blinkled ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("	Led | OFF")
 						updateResourceRep( "off"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t01",targetState="handleStatus",cond=whenEvent("trolleyStatus"))
 				}	 
 				state("blinking") { //this:State
@@ -39,7 +47,11 @@ class Led_blinkled ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("	Led | BLINKING")
 						updateResourceRep( "blinking"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t02",targetState="handleStatus",cond=whenEvent("trolleyStatus"))
 				}	 
 				state("handleStatus") { //this:State
@@ -53,7 +65,11 @@ class Led_blinkled ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 													else -> 2
 												}
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="on", cond=doswitchGuarded({ Next == 1  
 					}) )
 					transition( edgeName="goto",targetState="elseOffBlink", cond=doswitchGuarded({! ( Next == 1  
@@ -61,7 +77,11 @@ class Led_blinkled ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				}	 
 				state("elseOffBlink") { //this:State
 					action { //it:State
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="off", cond=doswitchGuarded({ Next == 0  
 					}) )
 					transition( edgeName="goto",targetState="blinking", cond=doswitchGuarded({! ( Next == 0  

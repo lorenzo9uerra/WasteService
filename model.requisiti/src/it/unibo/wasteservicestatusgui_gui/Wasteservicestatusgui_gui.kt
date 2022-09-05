@@ -23,7 +23,11 @@ class Wasteservicestatusgui_gui ( name: String, scope: CoroutineScope  ) : Actor
 				state("show") { //this:State
 					action { //it:State
 						println("	GUI: Trolley [Position: $TrolleyPos, Status: $TrolleyStatus], Led [$LedStatus]")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t00",targetState="updateLed",cond=whenEvent("ledStatus"))
 					transition(edgeName="t01",targetState="updateTrolley",cond=whenEvent("trolleyStatus"))
 				}	 
@@ -33,7 +37,11 @@ class Wasteservicestatusgui_gui ( name: String, scope: CoroutineScope  ) : Actor
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 LedStatus = payloadArg(0)  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="show", cond=doswitch() )
 				}	 
 				state("updateTrolley") { //this:State
@@ -43,7 +51,11 @@ class Wasteservicestatusgui_gui ( name: String, scope: CoroutineScope  ) : Actor
 								 TrolleyStatus = payloadArg(0)  
 								 TrolleyPos    = payloadArg(1)  
 						}
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="show", cond=doswitch() )
 				}	 
 			}

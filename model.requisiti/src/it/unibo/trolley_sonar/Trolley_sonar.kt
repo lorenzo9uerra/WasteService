@@ -18,19 +18,23 @@ class Trolley_sonar ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 		return { //this:ActionBasciFsm
 				state("work") { //this:State
 					action { //it:State
-						updateResourceRep( "work"  
-						)
-						 MsgUtil.outgreen("Trolley working...")  
+						println("	Trolley: Working...")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t00",targetState="stopped",cond=whenEvent("sonarStop"))
 				}	 
 				state("stopped") { //this:State
 					action { //it:State
-						updateResourceRep( "stopped"  
-						)
-						 MsgUtil.outred("Trolley stopped!")  
+						println("	Trolley: Stopped!")
+						//genTimer( actor, state )
 					}
-					 transition(edgeName="t11",targetState="work",cond=whenEvent("sonarResume"))
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
+					 transition(edgeName="t01",targetState="work",cond=whenEvent("sonarResume"))
 				}	 
 			}
 		}

@@ -19,7 +19,11 @@ class Trolley_gui ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 				state("wait") { //this:State
 					action { //it:State
 						delay(1000) 
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="randomStatus", cond=doswitch() )
 				}	 
 				state("randomStatus") { //this:State
@@ -53,7 +57,11 @@ class Trolley_gui ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 						 }
 						updateResourceRep( "$Status, $Position"  
 						)
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 			}

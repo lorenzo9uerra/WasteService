@@ -26,7 +26,11 @@ class Pro_req_wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 									var Quantity = kotlin.random.Random.nextInt(10, 30)	
 						println("	Truck with $Material in amount $Quantity arrived")
 						request("loadDeposit", "loadDeposit($Material,$Quantity)" ,"pro_req_wasteservice" )  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t13",targetState="handleAccepted",cond=whenReply("loadaccept"))
 					transition(edgeName="t14",targetState="handleRejected",cond=whenReply("loadrejected"))
 				}	 
@@ -34,14 +38,22 @@ class Pro_req_wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	Truck denied")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="waitArrival", cond=doswitch() )
 				}	 
 				state("handleAccepted") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("	Truck accepted")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition(edgeName="t05",targetState="waitArrival",cond=whenDispatch("pickedUp"))
 				}	 
 				state("waitArrival") { //this:State
@@ -50,7 +62,11 @@ class Pro_req_wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 						 var DelayTime : kotlin.Long = kotlin.random.Random.nextLong(7000, 10000)  
 						delay(DelayTime)
 						 Times--  
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 					 transition( edgeName="goto",targetState="req", cond=doswitchGuarded({ Times > 0  
 					}) )
 					transition( edgeName="goto",targetState="finish", cond=doswitchGuarded({! ( Times > 0  
@@ -59,7 +75,11 @@ class Pro_req_wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 				state("finish") { //this:State
 					action { //it:State
 						println("	Termine simulazione Qak")
+						//genTimer( actor, state )
 					}
+					//After Lenzi Aug2002
+					sysaction { //it:State
+					}	 	 
 				}	 
 			}
 		}

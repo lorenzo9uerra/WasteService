@@ -59,12 +59,12 @@ class DocRenderer(mistune.HTMLRenderer):
             return link
         else:
             # Assume markdown links lead to other rendered pages
-            if not re.search(r'\.md$', link):
-                link = "../" + link
-            if re.search(r'sprint(\d).*\.md', link):
-                link = re.sub(r'sprint(\d).*\.md', "sprint_$1.md", link)
-
             link = re.sub(r'\.md$', '.html', link)
+            if not re.search(r'\.html$', link):
+                link = "../" + link
+            if re.search(r'sprint(\d).*\.html', link):
+                link = re.sub(r'sprint(\d).*\.html', "sprint_\g<1>.html", link)
+
             return link
 
     def check_youtube_embed(self, link):
@@ -209,6 +209,8 @@ build_page("Conclusioni", ["conclusioni.md"])
 rendermarkdown("pages/introduzione.md")
 rendermarkdown("pages/conclusioni.md")
 rendermarkdown("index.md")
+rendermarkdown("qakactor.observer.md")
+rendermarkdown("radarSystem.domain_edits.md")
 
 for file in sprintfiles:
     rendermarkdown(file)

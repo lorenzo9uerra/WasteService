@@ -46,7 +46,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition(edgeName="tIdle3",targetState="handleRequest",cond=whenRequest("loadDeposit"))
+					 transition(edgeName="tIdle0",targetState="handleRequest",cond=whenRequest("loadDeposit"))
 				}	 
 				state("handleRequest") { //this:State
 					action { //it:State
@@ -64,7 +64,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition(edgeName="t04",targetState="handleStorageReply",cond=whenReply("storageAt"))
+					 transition(edgeName="t01",targetState="handleStorageReply",cond=whenReply("storageAt"))
 				}	 
 				state("handleStorageReply") { //this:State
 					action { //it:State
@@ -109,7 +109,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition(edgeName="t05",targetState="indoor",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t02",targetState="indoor",cond=whenReply("trolleyDone"))
 				}	 
 				state("indoor") { //this:State
 					action { //it:State
@@ -123,7 +123,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition(edgeName="t06",targetState="go_box",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t03",targetState="go_box",cond=whenReply("trolleyDone"))
 				}	 
 				state("go_box") { //this:State
 					action { //it:State
@@ -139,7 +139,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition(edgeName="t07",targetState="box",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t04",targetState="box",cond=whenReply("trolleyDone"))
 				}	 
 				state("box") { //this:State
 					action { //it:State
@@ -153,7 +153,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition(edgeName="t08",targetState="done",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t05",targetState="done",cond=whenReply("trolleyDone"))
 				}	 
 				state("done") { //this:State
 					action { //it:State
@@ -168,8 +168,8 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				 	 			scope, context!!, "local_tout_wasteservice_done", 0.toLong() )
 				 	 		//}
 					}	 	 
-					 transition(edgeName="t09",targetState="go_home",cond=whenTimeout("local_tout_wasteservice_done"))   
-					transition(edgeName="t010",targetState="handleSecondRequest",cond=whenRequest("loadDeposit"))
+					 transition(edgeName="t06",targetState="go_home",cond=whenTimeout("local_tout_wasteservice_done"))   
+					transition(edgeName="t07",targetState="handleSecondRequest",cond=whenRequest("loadDeposit"))
 				}	 
 				state("handleSecondRequest") { //this:State
 					action { //it:State
@@ -187,7 +187,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition(edgeName="t011",targetState="handleSecondStorageReply",cond=whenReply("storageAt"))
+					 transition(edgeName="t08",targetState="handleSecondStorageReply",cond=whenRequest("storageAsk"))
 				}	 
 				state("handleSecondStorageReply") { //this:State
 					action { //it:State
@@ -229,7 +229,7 @@ class Wasteservice ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition(edgeName="t012",targetState="home",cond=whenReply("trolleyDone"))
+					 transition(edgeName="t09",targetState="home",cond=whenReply("trolleyDone"))
 				}	 
 				state("home") { //this:State
 					action { //it:State

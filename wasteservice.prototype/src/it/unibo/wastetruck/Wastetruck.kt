@@ -31,8 +31,8 @@ class Wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition(edgeName="t122",targetState="handleAccepted",cond=whenReply("loadaccept"))
-					transition(edgeName="t123",targetState="handleRejected",cond=whenReply("loadrejected"))
+					 transition(edgeName="t115",targetState="handleAccepted",cond=whenReply("loadaccept"))
+					transition(edgeName="t116",targetState="handleRejected",cond=whenReply("loadrejected"))
 				}	 
 				state("handleRejected") { //this:State
 					action { //it:State
@@ -54,7 +54,7 @@ class Wastetruck ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 					//After Lenzi Aug2002
 					sysaction { //it:State
 					}	 	 
-					 transition(edgeName="t024",targetState="waitArrival",cond=whenDispatch("pickedUp"))
+					 transition(edgeName="t017",targetState="waitArrival",cond=whenDispatch("pickedUp"))
 				}	 
 				state("waitArrival") { //this:State
 					action { //it:State
