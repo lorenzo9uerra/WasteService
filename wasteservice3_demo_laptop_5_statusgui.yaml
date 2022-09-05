@@ -1,0 +1,12 @@
+version: '3' # optional since v1.27.0
+services:
+  wasteservice.statusgui:
+    extra_hosts:
+      # wasteservice.core: 127.0.0.1
+      # wasteservice.trolley: 127.0.0.1
+      # wasteservice.storage: 127.0.0.1
+      wasteservice.led: 192.168.166.115
+    image: docker.io/lnwor/wasteservice.statusgui:2.0
+    ports:
+      - 8095:8095/tcp
+      - 8095:8095/udp
