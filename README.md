@@ -26,7 +26,7 @@ SPRINT 2
 
 SPRINT 3
 
-* [Analisi dei requisiti](doc/sprint3requisiti.md)
+* [Analisi dei requisiti](doc/sprint3_requisiti.md)
 
 * [Analisi del problema](doc/sprint3_analisi_problema.md)
 
