@@ -2,7 +2,7 @@
 
 *Gruppo Lenzi F. e Guerra L.*
 
-[Introduzione](doc/intro.md)
+[Introduzione](doc/introduzione.md)
 
 SPRINT 1
 
