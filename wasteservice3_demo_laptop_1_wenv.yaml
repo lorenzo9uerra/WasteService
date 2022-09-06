@@ -1,8 +1,0 @@
-version: '3' # optional since v1.27.0
-services:
-  wenv:
-    image: docker.io/lnwor/virtualrobotdisi:4.3
-    ports:
-      - 8090:8090 
-      - 8091:8091/tcp
-      - 8091:8091/udp
