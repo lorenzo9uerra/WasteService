@@ -4,7 +4,7 @@
 
 ### Progetto di Ingegneria dei Sistemi Software M  
 
-1. [Introduzione](./intro.md)
+1. [Introduzione](./introduzione.md)
 
 2. [SPRINT 1](./sprint_1.md)
 
