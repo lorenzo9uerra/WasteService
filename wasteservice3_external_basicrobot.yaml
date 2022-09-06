@@ -1,0 +1,47 @@
+version: '3' # optional since v1.27.0
+services:
+  unibo.pathexecstop:
+    extra_hosts:
+      robot: 127.0.0.1 # inserire l'ip che espone basicrobot22
+    image: docker.io/lnwor/unibo.pathexecstop:1.1
+    ports:
+      - 8025:8025/tcp
+      - 8025:8025/udp
+  wasteservice.core:
+    image: docker.io/lnwor/wasteservice.core:1.2
+    ports:
+      - 8080:8080/tcp
+      - 8080:8080/udp
+      - 8023:8023/tcp
+      - 8023:8023/udp
+      - unibo.pathexecstop
+  wasteservice.trolley:
+    image: docker.io/lnwor/wasteservice.trolley:1.0
+    ports:
+      - 8070:8070/tcp
+      - 8070:8070/udp
+    depends_on:
+      - wasteservice.core
+  wasteservice.storage:
+    image: docker.io/lnwor/wasteservice.storage:1.0
+    ports:
+      - 8071:8071/tcp
+      - 8071:8071/udp
+    depends_on:
+      - wasteservice.core
+  wasteservice.raspgui:
+    hostname: wasteservice.led
+    image: docker.io/filloax/wasteservice.raspgui:1.1
+    ports:
+      - 8096:8096/tcp
+      - 8096:8096/udp
+    depends_on:
+      - wasteservice.core
+  wasteservice.statusgui:
+    image: docker.io/lnwor/wasteservice.statusgui:2.0
+    ports:
+      - 8095:8095/tcp
+      - 8095:8095/udp
+    depends_on:
+      - wasteservice.core
+      - wasteservice.raspgui
